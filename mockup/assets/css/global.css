@@ -1,0 +1,152 @@
+/* =========================================
+   SPMIS GLOBAL MOCKUP CSS
+   ========================================= */
+
+/* --- 1. FONTS --- */
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
+
+/* --- 2. VARIABLES (From shadcn/ui) --- */
+:root {
+    --background: #faf9f5;
+    --foreground: #3d3929;
+    --card: #f5f4ef;
+    --card-foreground: #141413;
+    --popover: #ffffff;
+    --popover-foreground: #28261b;
+    --primary: #c96442;
+    --primary-foreground: #ffffff;
+    --secondary: #e9e6dc;
+    --secondary-foreground: #535146;
+    --muted: #ede9de;
+    --muted-foreground: #6e6d68;
+    --accent: #e9e6dc;
+    --accent-foreground: #28261b;
+    --destructive: #141413;
+    --destructive-foreground: #ffffff;
+    --border: #dad9d4;
+    --input: #b4b2a7;
+    --ring: #c96442;
+    --sidebar: #f5f4ee;
+    --sidebar-foreground: #3d3d3a;
+    --sidebar-primary: #c96442;
+    --sidebar-primary-foreground: #fbfbfb;
+    --sidebar-accent: #e9e6dc;
+    --sidebar-accent-foreground: #343434;
+    --sidebar-border: #ebebeb;
+    --sidebar-ring: #b5b5b5;
+
+    --font-sans: 'Outfit', sans-serif;
+    --font-mono: 'Geist Mono', monospace;
+
+    --radius: 1rem;
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+}
+
+.dark {
+    --background: #262624;
+    --foreground: #f1f1ef;
+    --card: #2c2c2b;
+    --card-foreground: #faf9f5;
+    --primary: #d97757;
+    --primary-foreground: #141413;
+    --destructive: #ef4444;
+    --border: #3e3e38;
+    --input: #52514a;
+    --ring: #d97757;
+    --sidebar: #1f1e1d;
+    --sidebar-foreground: #c3c0b6;
+    --sidebar-border: #ebebeb;
+}
+
+/* --- 3. BASE STYLES (Replacing @layer base) --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-color: var(--border);
+}
+
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- 4. LAYOUT SKELETON --- */
+.app-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 100vh;
+}
+
+.app-sidebar {
+    background-color: var(--sidebar);
+    color: var(--sidebar-foreground);
+    border-right: 1px solid var(--sidebar-border);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-main {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* --- 5. COMPONENTS --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.btn-destructive {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+}
+
+.card {
+    background-color: var(--card);
+    color: var(--card-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--input);
+    border-radius: var(--radius-sm);
+    background-color: transparent;
+    font-family: var(--font-sans);
+    color: var(--foreground);
+}
+
+.input-field:focus {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
