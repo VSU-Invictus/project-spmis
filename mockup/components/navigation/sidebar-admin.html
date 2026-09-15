@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standalone Sidebar Navigation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Navigate parent window when used in an iframe -->
+    <base target="_parent">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #141413;
+        }
+
+        .bg-sidebar { background-color: #21201E; }
+        .border-sidebar-right { border-color: #181716; }
+        
+        /* Active Navigation Item State */
+        .nav-btn-active {
+            background-color: #FAF8F5;
+            color: #A35233;
+        }
+        
+        /* Inactive Navigation Item State */
+        .nav-btn-inactive {
+            background-color: transparent;
+            color: #98938D;
+        }
+        .nav-btn-inactive:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #FFFFFF;
+        }
+
+        /* Bottom Account Profile Card Styling */
+        .bg-account-card { background-color: #2B2A27; }
+        .bg-avatar { background-color: #F7E2D6; }
+        .text-avatar { color: #A35233; }
+        .border-divider { border-color: #8C4328; }
+
+        /* Dark Theme Scrollbar for Sidebar Navigation */
+        .dark-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .dark-scrollbar::-webkit-scrollbar-track {
+            background: #21201E;
+        }
+        .dark-scrollbar::-webkit-scrollbar-thumb {
+            background: #3E3D39;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-[#141413] min-h-screen">
+
+    <!-- ========================= STANDALONE NAVIGATION SIDEBAR ========================= -->
+    <aside id="sidebar-menu" class="fixed top-0 left-0 bottom-0 w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50">
+        
+        <div class="flex flex-col gap-1">
+            <!-- Brand Title Header -->
+            <div class="h-[48px] flex items-center px-2 pt-1 mb-2">
+                <h1 class="font-extrabold text-[20px] leading-[26px] text-white tracking-tight">Admin Portal</h1>
+            </div>
+
+            <!-- Navigation Links Stream -->
+            <nav class="flex flex-col gap-[3px]" id="sidebar-nav">
+                
+                <!-- 1. Dashboard -->
+                <a href="../../pages/admin/dashboard.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+
+                <!-- 2. Faculty Applications -->
+                <a href="../../pages/admin/faculty-applications.html" onclick="setActiveNav(this)" class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#A35233" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Faculty Applications</span>
+                </a>
+
+                <!-- 3. Student Applications -->
+                <a href="../../pages/admin/student-applications.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Student Applications</span>
+                </a>
+
+                <!-- 4. Program Applications -->
+                <a href="../../pages/admin/program-applications.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Program Applications</span>
+                </a>
+
+                <!-- 5. Department Application (Wrapped text matching reference) -->
+                <a href="../../pages/admin/department-applications.html" onclick="setActiveNav(this)" class="nav-btn-inactive py-2 px-3.5 rounded-2xl flex items-start gap-[12px] text-[13px] font-semibold transition-all leading-tight">
+                    <svg class="w-[18px] h-[18px] shrink-0 mt-0.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Department<br>Application</span>
+                </a>
+
+                <!-- 6. Students -->
+                <a href="../../pages/admin/students.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Students</span>
+                </a>
+
+                <!-- 7. Departments -->
+                <a href="../../pages/admin/departments.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Departments</span>
+                </a>
+
+                <!-- 8. Programs -->
+                <a href="../../pages/admin/programs.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Programs</span>
+                </a>
+
+                <!-- 9. Faculty -->
+                <a href="../../pages/admin/faculty.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Faculty</span>
+                </a>
+
+                <!-- 10. Audit Log -->
+                <a href="../../pages/admin/audit-log.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                    </svg>
+                    <span>Audit Log</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- User Profile Card & Footer Divider -->
+        <div class="mt-auto pt-3 flex flex-col gap-3">
+            <!-- Accent Line Divider -->
+            <div class="h-[1px] w-full border-b border-divider opacity-80"></div>
+
+            <!-- User Profile Box -->
+            <div class="bg-account-card rounded-[18px] h-[58px] w-full px-3.5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <!-- Avatar Badge -->
+                    <div class="bg-avatar w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0">
+                        <span class="text-avatar font-bold text-[17px] leading-none">A</span>
+                    </div>
+
+                    <!-- User Information Labels -->
+                    <div class="flex flex-col">
+                        <span class="text-white text-[13px] font-bold leading-tight">Admin User</span>
+                        <span class="text-[#929292] text-[11px] font-medium leading-tight">System Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+    <!-- ========================= END REUSABLE SIDEBAR ========================= -->
+
+    <script>
+        // Dynamic navigation active state switcher
+        function setActiveNav(element) {
+            document.querySelectorAll('#sidebar-nav a').forEach(nav => {
+                const isDept = (nav.getAttribute('href') || '').includes('department-application');
+                nav.className = isDept
+                    ? 'nav-btn-inactive py-2 px-3.5 rounded-2xl flex items-start gap-[12px] text-[13px] font-semibold transition-all leading-tight'
+                    : 'nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all';
+                const svg = nav.querySelector('svg');
+                if (svg) svg.setAttribute('stroke', 'currentColor');
+            });
+
+            const isCurrentDept = (element.getAttribute('href') || '').includes('department-application');
+            element.className = isCurrentDept
+                ? 'nav-btn-active py-2 px-3.5 rounded-[16px] flex items-start gap-[12px] text-[13px] font-bold transition-all shadow-sm leading-tight'
+                : 'nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm';
+            const activeSvg = element.querySelector('svg');
+            if (activeSvg) activeSvg.setAttribute('stroke', '#A35233');
+        }
+
+        // Auto-detect current active page from parent URL
+        try {
+            const currentPath = (window.parent.location.pathname || window.location.pathname).toLowerCase();
+            document.querySelectorAll('#sidebar-nav a').forEach(link => {
+                const href = (link.getAttribute('href') || '').toLowerCase();
+                const pageName = href.substring(href.lastIndexOf('/') + 1);
+                if (pageName && currentPath.endsWith(pageName)) {
+                    setActiveNav(link);
+                }
+            });
+        } catch (e) {
+            // Fallback for security / cross-origin
+        }
+    </script>
+</body>
+</html>
