@@ -19,34 +19,34 @@
       background-color: #30302E;
       color: #FFFFFF;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
 
     /* Main App Outer Boundary Box */
     .app-canvas {
       box-sizing: border-box;
       position: relative;
-      width: 1440px;
-      height: 1038px;
+      width: 100vw;
+      height: 100vh;
       background: #30302E;
       border: 1px solid #D97251;
-      border-radius: 10px;
+      border-radius: 0;
       overflow: hidden;
     }
 
     /* --- SIDEBAR (NAV BAR) --- */
     .nav-bar {
       position: absolute;
-      width: 248px;
-      height: 1024px;
+      width: 238px;
+      height: 100%;
       left: 0px;
       top: 0px;
       background: #21201E;
       border-right: 1px solid #141413;
-      padding-top: 24px;
+      padding-top: 20px;
     }
 
     .brand-header {
@@ -106,8 +106,8 @@
       position: absolute;
       width: 216px;
       height: 1px;
-      left: 16px;
-      top: 932px;
+      left: 11px;
+      bottom: 76px;
       background: #D97757;
     }
 
@@ -118,10 +118,10 @@
       padding: 0px 12px 0px 7px;
       gap: 10px;
       position: absolute;
-      width: 224px;
-      height: 68px;
+      width: 214px;
+      height: 54px;
       left: 12px;
-      top: 933px;
+      bottom: 12px;
       background: #3A3832;
       border-radius: 12px;
     }
@@ -164,13 +164,14 @@
     .section-container {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
-      padding: 0px;
+      align-items: flex-start;
+      padding: 14px 0 0 0;
       position: absolute;
-      width: 1118px;
-      height: 503px;
-      left: 294px;
-      top: 49px;
+      width: calc(100% - 238px);
+      height: calc(100% - 4px);
+      left: 238px;
+      top: 0;
+      box-sizing: border-box;
     }
 
     /* Header Container */
@@ -180,10 +181,11 @@
       justify-content: space-between;
       align-items: flex-start;
       padding: 0px;
-      width: 1118px;
-      height: 60px;
+      width: calc(100% - 10px);
+      height: auto;
       flex: none;
       align-self: stretch;
+      margin-left: 10px;
     }
 
     .heading-wrapper {
@@ -210,21 +212,23 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      padding: 24px 0px 0px;
+      padding: 14px 0 0;
       gap: 12px;
-      width: 1118px;
-      height: 62px;
+      width: calc(100% - 10px);
+      height: 52px;
       flex: none;
       align-self: stretch;
+      margin-left: 10px;
     }
 
     /* Search Box Input */
     .search-wrapper {
       position: relative;
-      width: 820px;
+      width: auto;
       min-width: 280px;
       height: 38px;
-      flex: 450;
+      flex: 1 1 auto;
+      max-width: none;
     }
 
     .search-input {
@@ -235,7 +239,7 @@
       align-items: flex-start;
       padding: 8px 16px 8px 40px;
       position: absolute;
-      width: 450px;
+      width: 100%;
       height: 38px;
       left: 0px;
       top: 0px;
@@ -314,11 +318,12 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: 20px 0px 0px;
-      width: 1118px;
-      height: 260px;
+      padding: 10px 0 0;
+      width: calc(100% - 10px);
+      height: auto;
       flex: none;
       align-self: stretch;
+      margin-left: 10px;
     }
 
     .table-container {
@@ -327,13 +332,15 @@
       flex-direction: column;
       align-items: flex-start;
       padding: 0px;
-      width: 1118px;
-      height: 240px;
+      width: 100%;
+      max-width: none;
+      height: 290px;
       background: #FFFDFA;
       border: 1px solid #EDE7DC;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
       border-radius: 12px;
       overflow: hidden;
+      margin-left: 0;
     }
 
     .table-scroll {
@@ -341,8 +348,9 @@
       flex-direction: column;
       align-items: flex-start;
       padding: 0px;
-      width: 1116px;
-      height: 238px;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
       overflow-y: auto;
     }
 
@@ -353,7 +361,7 @@
       justify-content: center;
       align-items: flex-start;
       padding: 0px;
-      width: 1116px;
+      width: 100%;
       height: 43.5px;
       background: #EDE3D0;
       flex: none;
@@ -364,14 +372,15 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: 12.5px 20px 14px;
+      padding: 12.5px 12px 14px;
       font-family: 'Inter';
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11px;
       line-height: 16px;
       color: #544D45;
 
       border: none;
+      box-sizing: border-box;
     }
 
     .th-cell.checkbox-cell {
@@ -381,11 +390,11 @@
       height: 28.5px;
     }
 
-    .th-cell.col-id { width: 159.23px; }
-    .th-cell.col-name { width: 241.55px; }
-    .th-cell.col-program { width: 275.64px; }
-    .th-cell.col-source { width: 221.36px; }
-    .th-cell.col-date { width: 164.22px; }
+    .th-cell.col-id { width: auto; flex: 159.23 1 0; }
+    .th-cell.col-name { width: auto; flex: 241.55 1 0; }
+    .th-cell.col-program { width: auto; flex: 275.64 1 0; }
+    .th-cell.col-source { width: auto; flex: 221.36 1 0; }
+    .th-cell.col-date { width: auto; flex: 164.22 1 0; }
 
     /* Custom Checkbox Styling */
     .custom-checkbox {
@@ -410,7 +419,7 @@
       flex-direction: column;
       align-items: flex-start;
       padding: 0px;
-      width: 1116px;
+      width: 100%;
     }
 
     .table-row {
@@ -420,7 +429,7 @@
       justify-content: center;
       align-items: flex-start;
       padding: 0px;
-      width: 1116px;
+      width: 100%;
       height: 49px;
       border-top: 1px solid #F2ECE1;
     }
@@ -429,10 +438,11 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: 16px 20px 17px;
+      padding: 16px 12px 17px;
       font-family: 'Inter';
-      font-size: 12px;
+      font-size: 11px;
       line-height: 16px;
+      box-sizing: border-box;
     }
 
     .td-cell.checkbox-cell {
@@ -442,30 +452,35 @@
     }
 
     .td-cell.col-id {
-      width: 159.23px;
+      width: auto;
+      flex: 159.23 1 0;
       font-weight: 500;
       color: #1A1918;
     }
 
     .td-cell.col-name {
-      width: 241.55px;
+      width: auto;
+      flex: 241.55 1 0;
       font-weight: 400;
       color: #5E574F;
     }
 
     .td-cell.col-program {
-      width: 275.64px;
+      width: auto;
+      flex: 275.64 1 0;
       font-weight: 500;
       color: #1A1918;
     }
 
     .td-cell.col-source {
-      width: 221.36px;
-      padding: 14.5px 20px;
+      width: auto;
+      flex: 221.36 1 0;
+      padding: 14.5px 12px;
     }
 
     .td-cell.col-date {
-      width: 164.22px;
+      width: auto;
+      flex: 164.22 1 0;
       font-weight: 400;
       color: #5E574F;
     }
@@ -502,11 +517,14 @@
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: flex-end;
-      align-items: flex-start;
-      padding: 13px 0px;
+      align-items: center;
+      padding: 10px 0 0;
       gap: 12px;
-      width: 1118px;
-      height: 58px;
+      width: calc(100% - 10px);
+      max-width: none;
+      height: auto;
+      margin-top: 0;
+      margin-left: 10px;
     }
 
     .action-btn-group {
