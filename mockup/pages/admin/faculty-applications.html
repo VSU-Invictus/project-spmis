@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -14,49 +14,46 @@
       padding: 0;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: #30302E;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #30302E;
-      color: #FFFFFF;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+      color: #fff;
     }
 
-    /* Main App Canvas Boundary */
-    .app-canvas {
-      box-sizing: border-box;
-      position: relative;
-      width: 1440px;
-      height: 1038px;
-      background: #30302E;
-      border: 1px solid #D97251;
-      border-radius: 10px;
+    body {
       overflow: hidden;
     }
 
-    /* --- SIDEBAR NAVIGATION --- */
+    .app-canvas {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #30302E;
+      border: 1px solid #D97251;
+      overflow: hidden;
+    }
+
     .nav-bar {
       position: absolute;
-      width: 248px;
-      height: 1024px;
-      left: 0px;
-      top: 0px;
+      left: 0;
+      top: 0;
+      width: 238px;
+      height: 100%;
       background: #21201E;
       border-right: 1px solid #141413;
-      padding-top: 24px;
+      padding-top: 20px;
     }
 
     .brand-header {
-      font-family: 'Inter';
-      font-weight: 700;
-      font-size: 20px;
-      line-height: 24px;
-      color: #FFFFFF;
       padding: 0 24px;
       margin-bottom: 24px;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 24px;
+      color: #fff;
     }
 
     .nav-list {
@@ -73,22 +70,27 @@
       gap: 12px;
       padding: 10px 16px;
       border-radius: 10px;
-      cursor: pointer;
-      text-decoration: none;
       color: #929292;
+      text-decoration: none;
       font-size: 14px;
       font-weight: 500;
       transition: all 0.2s ease;
     }
 
     .nav-item:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: #FFFFFF;
+      background: rgba(255,255,255,0.05);
+      color: #fff;
     }
 
     .nav-item.active {
       background: #FAF9F5;
       color: #B4552D;
+    }
+
+    .nav-item.active .nav-icon path,
+    .nav-item.active .nav-icon rect,
+    .nav-item.active .nav-icon circle {
+      stroke: #B4552D;
     }
 
     .nav-icon {
@@ -97,35 +99,33 @@
       flex-shrink: 0;
     }
 
-    /* Account / Profile Card */
     .account-divider {
       position: absolute;
+      left: 11px;
+      bottom: 76px;
       width: 216px;
       height: 1px;
-      left: 16px;
-      top: 932px;
       background: #D97757;
     }
 
     .faculty-account {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 0px 12px 0px 7px;
-      gap: 10px;
       position: absolute;
-      width: 224px;
-      height: 68px;
       left: 12px;
-      top: 933px;
+      bottom: 12px;
+      width: 214px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px 0 7px;
       background: #3A3832;
       border-radius: 12px;
     }
 
     .avatar {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       width: 36px;
       height: 36px;
       background: #FBE7DE;
@@ -142,103 +142,82 @@
     }
 
     .account-name {
-      font-weight: 500;
       font-size: 13px;
       line-height: 16px;
-      color: #FFFFFF;
+      color: #fff;
+      font-weight: 500;
     }
 
     .account-role {
-      font-weight: 400;
       font-size: 11px;
       line-height: 13px;
       color: #929292;
+      font-weight: 400;
     }
 
-    /* --- MAIN CONTENT CONTAINER --- */
     .section-container {
+      position: absolute;
+      left: 238px;
+      top: 0;
+      width: calc(100% - 238px);
+      height: calc(100% - 4px);
+      padding: 14px 0 0 0;
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
-      padding: 0px;
-      position: absolute;
-      width: 1118px;
-      height: 503px;
-      left: 294px;
-      top: 49px;
+      align-items: flex-start;
+      box-sizing: border-box;
     }
 
-    /* Title Row */
     .header-container {
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
       align-items: flex-start;
-      padding: 0px;
-      width: 1118px;
-      height: 60px;
-      flex: none;
-      align-self: stretch;
+      width: calc(100% - 10px);
+      margin-left: 10px;
     }
 
     .heading-wrapper {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: 0px;
-      width: 322.2px;
+      width: 322px;
       height: 60px;
     }
 
     .heading-title {
-      width: 250px;
-      height: 36px;
-      font-family: 'Inter';
-      font-style: normal;
-      font-weight: 700;
       font-size: 30px;
       line-height: 36px;
+      font-weight: 700;
       letter-spacing: -0.75px;
-      color: #FFFFFF;
+      color: #fff;
     }
 
-    /* Controls Bar: Search & Filters */
     .controls-container {
       display: flex;
-      flex-direction: row;
       align-items: center;
-      padding: 24px 0px 0px;
       gap: 12px;
-      width: 1118px;
-      height: 62px;
-      flex: none;
-      align-self: stretch;
+      width: calc(100% - 10px);
+      height: 52px;
+      margin-left: 10px;
+      padding-top: 14px;
     }
 
     .search-wrapper {
       position: relative;
-      width: 820px;
+      flex: 1 1 auto;
       min-width: 280px;
       height: 38px;
-      flex: 450;
     }
 
     .search-input {
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 8px 16px 8px 40px;
       position: absolute;
-      width: 450px;
+      left: 0;
+      top: 0;
+      width: 100%;
       height: 38px;
-      left: 0px;
-      top: 0px;
-      background: #FFFFFF;
+      padding: 8px 16px 8px 40px;
+      background: #fff;
       border: 1px solid #E4DED5;
       border-radius: 12px;
-      font-family: 'Inter';
       font-size: 14px;
       color: #2D2A27;
       outline: none;
@@ -250,65 +229,54 @@
 
     .search-icon {
       position: absolute;
-      width: 16px;
-      height: 16px;
       left: 14px;
       top: 11px;
+      width: 16px;
+      height: 16px;
       pointer-events: none;
+      z-index: 2;
     }
 
-    /* Dropdown Elements */
     .dropdown-container {
       position: relative;
       height: 38px;
-      flex: none;
     }
 
-    .dropdown-container.type { width: 151px; }
-    .dropdown-container.sort { width: 123px; }
+    .dropdown-container.type {
+      width: 151px;
+    }
+
+    .dropdown-container.sort {
+      width: 123px;
+    }
 
     .dropdown-select {
-      box-sizing: border-box;
-      position: absolute;
       width: 100%;
       height: 38px;
-      left: 0px;
-      top: 0px;
-      background: #FFFFFF;
+      padding: 0 28px 0 14px;
+      background: #fff;
       border: 1px solid #E4DED5;
       border-radius: 12px;
-      padding: 0 30px 0 17px;
-      font-family: 'Inter';
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 16px;
       color: #2D2A27;
+      font-size: 12px;
+      font-weight: 500;
       appearance: none;
-      cursor: pointer;
       outline: none;
     }
 
     .dropdown-chevron {
       position: absolute;
+      right: 10px;
+      top: 12px;
       width: 14px;
       height: 14px;
-      top: 12px;
       pointer-events: none;
     }
 
-    .dropdown-container.type .dropdown-chevron { left: 127px; }
-    .dropdown-container.sort .dropdown-chevron { left: 99px; }
-
-    /* Table Container Styling */
     .table-margin-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 20px 0px 0px;
-      width: 1118px;
-      height: 260px;
-      flex: none;
-      align-self: stretch;
+      padding: 10px 0 0;
+      width: calc(100% - 10px);
+      margin-left: 10px;
     }
 
     .table-container {
@@ -316,160 +284,116 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: 0px;
-      width: 1118px;
-      height: 240px;
-      background: #FFFDFA;
+      padding: 0;
+      width: 100%;
+      max-width: none;
+      background: #fffdfb;
       border: 1px solid #EDE7DC;
-      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
       border-radius: 12px;
       overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      margin-left: 0;
     }
 
-    .table-scroll {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 0px;
-      width: 1116px;
-      height: 238px;
-      overflow-y: auto;
-    }
-
-    /* Table Header */
     .table-header-row {
       display: flex;
       flex-direction: row;
       justify-content: center;
       align-items: flex-start;
-      padding: 0px;
-      width: 1116px;
+      width: 100%;
       height: 43.5px;
       background: #EDE3D0;
-      flex: none;
-      align-self: stretch;
-      margin: -1px 0px;
     }
 
     .th-cell {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: 12.5px 20px 14px;
-      height: 42.5px;
-      font-family: 'Inter';
-      font-weight: 700;
-      font-size: 12px;
-      line-height: 16px;
+      padding: 13px 12px;
+      height: 43.5px;
       color: #544D45;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 16px;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
 
     .th-cell.checkbox-cell {
-      align-items: center;
-      padding: 12px 20px 16.5px;
       width: 54px;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 20px 16px;
+      height: 28.5px;
     }
 
-    .th-cell.col-name { width: 186.72px; }
-    .th-cell.col-email { width: 220.45px; }
-    .th-cell.col-dept { width: 288.84px; }
-    .th-cell.col-role { width: 106.16px; }
-    .th-cell.col-status { width: 113.27px; }
-    .th-cell.col-date { width: 146.56px; }
+    .th-cell.checkbox-cell .custom-checkbox {
+      display: none;
+    }
 
-    /* Custom Checkbox */
+    .th-cell.col-name { width: auto; flex: 200 1 0; }
+    .th-cell.col-email { width: auto; flex: 200 1 0; }
+    .th-cell.col-dept { width: auto; flex: 250 1 0; }
+    .th-cell.col-role { width: auto; flex: 120 1 0; }
+    .th-cell.col-status { width: auto; flex: 140 1 0; }
+    .th-cell.col-date { width: auto; flex: 160 1 0; }
+
     .custom-checkbox {
-      box-sizing: border-box;
       width: 13px;
       height: 13px;
-      border: 3px solid #D97251;
+      border: 2px solid #d17653;
       border-radius: 2px;
       appearance: none;
-      cursor: pointer;
-      background-color: transparent;
-      outline: none;
+      background: transparent;
     }
 
     .custom-checkbox:checked {
-      background-color: #D97251;
+      background: #d17653;
     }
 
-    /* Table Body Rows */
     .table-body {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: 0px;
-      width: 1116px;
-      flex: none;
-      align-self: stretch;
+      padding: 0;
+      width: 100%;
     }
 
     .table-row {
-      box-sizing: border-box;
       display: flex;
       flex-direction: row;
       justify-content: center;
       align-items: flex-start;
-      padding: 0px;
-      width: 1116px;
+      width: 100%;
       height: 49px;
       border-top: 1px solid #F2ECE1;
-      margin: -1px 0px;
     }
 
     .td-cell {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: 16px 20px 17px;
-      font-family: 'Inter';
-      font-size: 12px;
+      padding: 16px 12px 17px;
+      font-size: 14px;
       line-height: 16px;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
 
     .td-cell.checkbox-cell {
-      align-items: center;
-      padding: 15.5px 20px 19.5px;
       width: 54px;
-      height: 48px;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 20px 19px;
     }
 
-    .td-cell.col-name {
-      width: 186.72px;
-      font-weight: 500;
-      color: #1A1918;
-    }
+    .td-cell.col-name { width: auto; flex: 200 1 0; font-weight: 500; color: #5E574F; }
+    .td-cell.col-email { width: auto; flex: 200 1 0; font-weight: 500; color: #1A1918; }
+    .td-cell.col-dept { width: auto; flex: 250 1 0; font-weight: 600; color: #1A1918; }
+    .td-cell.col-role { width: auto; flex: 120 1 0; padding: 14.5px 12px; }
+    .td-cell.col-status { width: auto; flex: 140 1 0; padding: 14.5px 12px; }
+    .td-cell.col-date { width: auto; flex: 160 1 0; font-weight: 500; color: #5E574F; }
 
-    .td-cell.col-email {
-      width: 220.45px;
-      font-weight: 400;
-      color: #5E574F;
-    }
-
-    .td-cell.col-dept {
-      width: 288.84px;
-      font-weight: 500;
-      color: #1A1918;
-    }
-
-    .td-cell.col-role {
-      width: 106.16px;
-      padding: 14.5px 20px;
-    }
-
-    .td-cell.col-status {
-      width: 113.27px;
-      padding: 14.5px 20px;
-    }
-
-    .td-cell.col-date {
-      width: 146.56px;
-      font-weight: 400;
-      color: #5E574F;
-    }
-
-    /* Role & Status Badges */
     .badge-pill {
       display: flex;
       flex-direction: row;
@@ -477,42 +401,54 @@
       padding: 2px 10px;
       border-radius: 9999px;
       font-weight: 500;
-      font-size: 11px;
+      font-size: 12px;
       line-height: 16px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .role-faculty {
+      background: #f0f4ff;
+      color: #3a5cc7;
+      width: 74px;
       height: 20px;
     }
 
-    .badge-pill.role-faculty {
-      background: #E8F0FE;
-      color: #1A73E8;
+    .role-admin {
+      background: #f8e8d6;
+      color: #8a5e1f;
+      width: 74px;
+      height: 20px;
     }
 
-    .badge-pill.role-admin {
-      background: #F3EBD9;
-      color: #715C32;
+    .status-pending {
+      background: #fcece5;
+      color: #c65d3d;
+      width: 75px;
+      height: 20px;
     }
 
-    .badge-pill.status-pending {
-      background: #FCECE5;
-      color: #C25B3E;
+    .status-active {
+      background: #eaf7ee;
+      color: #2f7b4d;
+      width: 75px;
+      height: 20px;
     }
 
-    .badge-pill.status-active {
-      background: #E6F4EA;
-      color: #137333;
-    }
-
-    /* Bottom Control & Pagination Bar */
     .bottom-bar-container {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: flex-end;
-      align-items: flex-start;
-      padding: 13px 0px;
+      align-items: center;
+      padding: 10px 0 0;
       gap: 12px;
-      width: 1118px;
-      height: 58px;
+      width: calc(100% - 10px);
+      max-width: none;
+      height: auto;
+      margin-top: 0;
+      margin-left: 10px;
     }
 
     .action-btn-group {
@@ -522,6 +458,12 @@
       margin-right: auto;
     }
 
+    .pagination-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .pill-btn {
       box-sizing: border-box;
       display: flex;
@@ -529,189 +471,58 @@
       justify-content: center;
       align-items: center;
       height: 30px;
-      border: 1px solid #D6CFC4;
-      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
-      border-radius: 9999px;
-      font-family: 'Inter';
-      font-weight: 500;
+      padding: 7px 20px;
+      border-radius: 999px;
+      border: 1px solid #d6cfc4;
+      background: #fff;
+      color: #2a2724;
       font-size: 12px;
       line-height: 16px;
+      font-weight: 500;
       cursor: pointer;
-      outline: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .pill-btn:hover {
-      opacity: 0.9;
-    }
-
-    .pill-btn.select-all {
-      padding: 7px 20px;
-      background: #FFFFFF;
-      color: #2A2724;
-      width: 120px;
-    }
-
-    .pill-btn.accept {
-      padding: 7px 20px;
-      background: #2E7D32;
-      color: #FFFFFF;
-      border-color: #2E7D32;
-      width: 94px;
-    }
-
-    .pill-btn.reject {
-      padding: 7px 20px;
-      background: #FB4E5A;
-      color: #FFFFFF;
-      border-color: #FB4E5A;
-      width: 94px;
-    }
-
-    .pagination-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
 
     .pill-btn.pagination {
       padding: 6px 16px;
-      background: #FFFFFF;
-      color: #2A2724;
-      width: 84px;
+    }
+
+    .pill-btn.accept {
+      background: #2c7e39;
+      border-color: #2c7e39;
+      color: #fff;
+    }
+
+    .pill-btn.reject {
+      background: #f9464a;
+      border-color: #f9464a;
+      color: #fff;
     }
 
     .page-text {
-      font-family: 'Inter';
-      font-weight: 400;
+      color: #a39d96;
       font-size: 12px;
+      font-weight: 400;
       line-height: 16px;
-      color: #9C948B;
-      width: 64px;
     }
   </style>
 </head>
 <body>
-
   <div class="app-canvas">
-    
-    <!-- LEFT NAVIGATION BAR -->
     <nav class="nav-bar">
       <div class="brand-header">Admin Portal</div>
       <ul class="nav-list">
-        <li>
-          <a href="#" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-            </svg>
-            Dashboard
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-item active">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none">
-              <rect x="3" y="3" width="6" height="6" rx="1.5" stroke="#B4552D" stroke-width="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5" stroke="#B4552D" stroke-width="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5" stroke="#B4552D" stroke-width="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5" stroke="#B4552D" stroke-width="1.5"/>
-            </svg>
-            Faculty Applications
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-            </svg>
-            Student Applications
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-            </svg>
-            Program Applications
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-            </svg>
-            Department Application
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-            </svg>
-            Students
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-            </svg>
-            Departments
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-            </svg>
-            Programs
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-            </svg>
-            Faculty
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-item">
-            <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-              <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-              <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-            </svg>
-            Audit Log
-          </a>
-        </li>
+        <li><a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Dashboard</a></li>
+        <li><a href="#" class="nav-item active"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Faculty Applications</a></li>
+        <li><a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Student Applications</a></li>
+        <li><a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Program Applications</a></li>
+        <li><a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Department Application</a></li>
+        <li><a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Students</a></li>
+        <li><a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Departments</a></li>
+        <li><a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Programs</a></li>
+        <li><a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Faculty</a></li>
+        <li><a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Audit Log</a></li>
       </ul>
-
-      <!-- Bottom Profile Panel -->
       <div class="account-divider"></div>
       <div class="faculty-account">
         <div class="avatar">A</div>
@@ -722,27 +533,22 @@
       </div>
     </nav>
 
-    <!-- RIGHT / MAIN SECTION -->
     <main class="section-container">
-      
-      <!-- Top Title -->
       <header class="header-container">
         <div class="heading-wrapper">
           <h2 class="heading-title">Faculty Proposals</h2>
         </div>
       </header>
 
-      <!-- Controls Row -->
       <div class="controls-container">
         <div class="search-wrapper">
           <svg class="search-icon" viewBox="0 0 16 16" fill="none">
             <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" stroke-width="1.33"/>
             <path d="M10.5 10.5L14 14" stroke="#8A837A" stroke-width="1.33" stroke-linecap="round"/>
           </svg>
-          <input type="text" class="search-input" placeholder="Search by student name or keyword...">
+          <input type="text" class="search-input" placeholder="Search by faculty name or keyword...">
         </div>
 
-        <!-- Type Filter -->
         <div class="dropdown-container type">
           <select class="dropdown-select">
             <option>Type: All</option>
@@ -754,7 +560,6 @@
           </svg>
         </div>
 
-        <!-- Sort Order -->
         <div class="dropdown-container sort">
           <select class="dropdown-select">
             <option>Oldest</option>
@@ -766,101 +571,62 @@
         </div>
       </div>
 
-      <!-- Data Table Area -->
       <div class="table-margin-container">
         <div class="table-container">
-          <div class="table-scroll">
-            
-            <!-- Table Header -->
-            <div class="table-header-row">
-              <div class="th-cell checkbox-cell">
-                <input type="checkbox" class="custom-checkbox">
-              </div>
-              <div class="th-cell col-name">Name</div>
-              <div class="th-cell col-email">Email Address</div>
-              <div class="th-cell col-dept">Department</div>
-              <div class="th-cell col-role">Role</div>
-              <div class="th-cell col-status">Status</div>
-              <div class="th-cell col-date">Registered Date</div>
+          <div class="table-header-row">
+            <div class="th-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+            <div class="th-cell col-name">Name</div>
+            <div class="th-cell col-email">Email Address</div>
+            <div class="th-cell col-dept">Department</div>
+            <div class="th-cell col-role">Role</div>
+            <div class="th-cell col-status">Status</div>
+            <div class="th-cell col-date">Registered Date</div>
+          </div>
+
+          <div class="table-body">
+            <div class="table-row">
+              <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+              <div class="td-cell col-name">Dr. Eleanor Vance</div>
+              <div class="td-cell col-email">e.vance@university.edu</div>
+              <div class="td-cell col-dept">Department of Computer Science</div>
+              <div class="td-cell col-role"><span class="badge-pill role-faculty">faculty</span></div>
+              <div class="td-cell col-status"><span class="badge-pill status-pending">pending</span></div>
+              <div class="td-cell col-date">2026-09-10</div>
             </div>
 
-            <!-- Table Rows -->
-            <div class="table-body">
-              
-              <!-- Row 1 -->
-              <div class="table-row">
-                <div class="td-cell checkbox-cell">
-                  <input type="checkbox" class="custom-checkbox">
-                </div>
-                <div class="td-cell col-name">Dr. Eleanor Vance</div>
-                <div class="td-cell col-email">e.vance@university.edu</div>
-                <div class="td-cell col-dept">Department of Computer Science</div>
-                <div class="td-cell col-role">
-                  <span class="badge-pill role-faculty">faculty</span>
-                </div>
-                <div class="td-cell col-status">
-                  <span class="badge-pill status-pending">pending</span>
-                </div>
-                <div class="td-cell col-date">2026-09-10</div>
-              </div>
+            <div class="table-row">
+              <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+              <div class="td-cell col-name">Prof. Marcus Brody</div>
+              <div class="td-cell col-email">m.brody@university.edu</div>
+              <div class="td-cell col-dept">Department of Information Technology</div>
+              <div class="td-cell col-role"><span class="badge-pill role-admin">admin</span></div>
+              <div class="td-cell col-status"><span class="badge-pill status-active">active</span></div>
+              <div class="td-cell col-date">2026-09-09</div>
+            </div>
 
-              <!-- Row 2 -->
-              <div class="table-row">
-                <div class="td-cell checkbox-cell">
-                  <input type="checkbox" class="custom-checkbox">
-                </div>
-                <div class="td-cell col-name">Prof. Marcus Brody</div>
-                <div class="td-cell col-email">m.brody@university.edu</div>
-                <div class="td-cell col-dept">Department of Information Technology</div>
-                <div class="td-cell col-role">
-                  <span class="badge-pill role-admin">admin</span>
-                </div>
-                <div class="td-cell col-status">
-                  <span class="badge-pill status-active">active</span>
-                </div>
-                <div class="td-cell col-date">2026-09-09</div>
-              </div>
+            <div class="table-row">
+              <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+              <div class="td-cell col-name">Dr. Sophia Al-Mansoor</div>
+              <div class="td-cell col-email">s.almansoor@university.edu</div>
+              <div class="td-cell col-dept">Department of Applied Mathematics</div>
+              <div class="td-cell col-role"><span class="badge-pill role-faculty">faculty</span></div>
+              <div class="td-cell col-status"><span class="badge-pill status-pending">pending</span></div>
+              <div class="td-cell col-date">2026-09-08</div>
+            </div>
 
-              <!-- Row 3 -->
-              <div class="table-row">
-                <div class="td-cell checkbox-cell">
-                  <input type="checkbox" class="custom-checkbox">
-                </div>
-                <div class="td-cell col-name">Dr. Sophia Al-Mansoor</div>
-                <div class="td-cell col-email">s.almansoor@university.edu</div>
-                <div class="td-cell col-dept">Department of Applied Mathematics</div>
-                <div class="td-cell col-role">
-                  <span class="badge-pill role-faculty">faculty</span>
-                </div>
-                <div class="td-cell col-status">
-                  <span class="badge-pill status-pending">pending</span>
-                </div>
-                <div class="td-cell col-date">2026-09-08</div>
-              </div>
-
-              <!-- Row 4 -->
-              <div class="table-row">
-                <div class="td-cell checkbox-cell">
-                  <input type="checkbox" class="custom-checkbox">
-                </div>
-                <div class="td-cell col-name">Prof. Arthur Pendelton</div>
-                <div class="td-cell col-email">a.pendelton@university.edu</div>
-                <div class="td-cell col-dept">Department of Biological Sciences</div>
-                <div class="td-cell col-role">
-                  <span class="badge-pill role-faculty">faculty</span>
-                </div>
-                <div class="td-cell col-status">
-                  <span class="badge-pill status-active">active</span>
-                </div>
-                <div class="td-cell col-date">2026-09-05</div>
-              </div>
-
+            <div class="table-row">
+              <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+              <div class="td-cell col-name">Prof. Arthur Pendelton</div>
+              <div class="td-cell col-email">a.pendelton@university.edu</div>
+              <div class="td-cell col-dept">Department of Biological Sciences</div>
+              <div class="td-cell col-role"><span class="badge-pill role-faculty">faculty</span></div>
+              <div class="td-cell col-status"><span class="badge-pill status-active">active</span></div>
+              <div class="td-cell col-date">2026-09-05</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Action & Pagination Controls Bar -->
       <div class="bottom-bar-container">
         <div class="action-btn-group">
           <button class="pill-btn select-all">Select All</button>
@@ -874,10 +640,7 @@
           <button class="pill-btn pagination">Next</button>
         </div>
       </div>
-
     </main>
-
   </div>
-
 </body>
 </html>
