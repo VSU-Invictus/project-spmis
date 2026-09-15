@@ -1,807 +1,906 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty - Admin Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal - Faculty</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: #30302E;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #fff;
+    }
+
     body {
-        font-family: 'Inter', sans-serif;
-        background-color: #1e1e1d;
-        color: #FFFFFF;
-        min-height: 100vh;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
+      overflow: hidden;
     }
 
-    .bg-dashboard-outer { background-color: #30302E; }
-    .bg-sidebar { background-color: #21201E; }
-    .border-sidebar { border-color: #141413; }
-    .bg-account-card { background-color: #3A3832; }
-    .bg-avatar { background-color: #FBE7DE; }
-    .text-avatar { color: #B84E32; }
-    .border-divider { background-color: #D97757; }
-    .border-dashboard { border-color: #D97251; }
-
-    .nav-btn-active {
-        background-color: #FAF9F5;
-        color: #B4552D;
+    button, input, select, textarea {
+      font: inherit;
     }
 
-    .nav-btn-inactive {
-        background-color: transparent;
-        color: #FFFFFF;
+    button {
+      cursor: pointer;
     }
 
-    .nav-btn-inactive:hover {
-        background-color: rgba(255, 255, 255, 0.05);
+    .app-canvas {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #30302E;
+      border: 1px solid #D97251;
+      overflow: hidden;
     }
 
-    .font-intel-mono {
-        font-family: 'Intel One Mono', monospace;
+    .sidebar-frame {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 260px;
+      height: 100%;
+      border: none;
+      z-index: 50;
     }
 
-    .text-zorba { color: #A0988E; }
-    .text-flint { color: #716A60; }
-    .text-cod-gray { color: #1A1918; }
-    .text-soya-bean { color: #5E574F; }
-    .text-fuscous-gray { color: #544D45; }
-    .text-crail { color: #C25B3E; }
-    .text-shingle-fawn { color: #715C32; }
-    .text-red-damask { color: #D97251; }
-    .text-role { color: #929292; }
-
-    .bg-romance { background-color: #FFFDFA; }
-    .bg-old-lace { background-color: #FCECE5; }
-    .bg-panache { background-color: #E8F5E9; }
-    .bg-zumthor { background-color: #E8F0FE; }
-    .bg-aths-special { background-color: #EDE3D0; }
-    .bg-parchment { background-color: #F3EBD9; }
-
-    .border-pearl-bush { border-color: #EDE7DC; }
-    .border-ecru-white { border-color: #F2ECE1; }
-
-    .custom-scrollbar::-webkit-scrollbar {
-        height: 6px;
-        width: 6px;
+    .section-container {
+      position: absolute;
+      left: 260px;
+      top: 0;
+      width: calc(100% - 260px);
+      height: calc(100% - 4px);
+      padding: 14px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: #EDE3D0;
-        border-radius: 4px;
+    .header-container {
+      display: flex;
+      align-items: flex-start;
+      width: calc(100% - 10px);
+      margin-left: 10px;
     }
 
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #D97251;
-        border-radius: 4px;
+    .heading-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 322px;
+      height: 60px;
     }
 
-    .page-content-scroll {
-        overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: #D97251 #EDE3D0;
+    .heading-title {
+      font-size: 30px;
+      line-height: 36px;
+      font-weight: 700;
+      letter-spacing: -0.75px;
+      color: #fff;
     }
 
-    /* Modal overlay behavior */
+    .controls-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: calc(100% - 10px);
+      min-height: 52px;
+      margin-left: 10px;
+      padding-top: 14px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 280px;
+      height: 38px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 38px;
+      padding: 8px 16px 8px 40px;
+      background: #fff;
+      border: 1px solid #E4DED5;
+      border-radius: 12px;
+      font-size: 14px;
+      color: #2D2A27;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: #8A837A;
+    }
+
+    .search-input:focus,
+    .dropdown-select:focus {
+      border-color: #D97251;
+      box-shadow: 0 0 0 1px #D97251;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 11px;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .dropdown-container {
+      position: relative;
+      height: 38px;
+      flex: 0 0 auto;
+    }
+
+    .dropdown-container.status { width: 145px; }
+    .dropdown-container.department { width: 190px; }
+    .dropdown-container.audit { width: 128px; }
+
+    .dropdown-select {
+      width: 100%;
+      height: 38px;
+      padding: 0 30px 0 14px;
+      background: #fff;
+      border: 1px solid #E4DED5;
+      border-radius: 12px;
+      color: #2D2A27;
+      font-size: 12px;
+      font-weight: 500;
+      appearance: none;
+      outline: none;
+    }
+
+    .dropdown-chevron {
+      position: absolute;
+      right: 11px;
+      top: 12px;
+      width: 14px;
+      height: 14px;
+      pointer-events: none;
+    }
+
+    .add-button {
+      height: 38px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #D97251;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background .15s ease, transform .15s ease;
+    }
+
+    .add-button:hover {
+      background: #C45F3E;
+      transform: translateY(-1px);
+    }
+
+    .table-margin-container {
+      padding: 10px 0 0;
+      width: calc(100% - 10px);
+      margin-left: 10px;
+      flex: 0 0 auto;
+    }
+
+    .table-container {
+      width: 100%;
+      background: #FFFDFA;
+      border: 1px solid #EDE7DC;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      table-layout: fixed;
+    }
+
+    thead {
+      background: #EDE3D0;
+    }
+
+    th {
+      height: 44px;
+      padding: 0 14px;
+      color: #544D45;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    td {
+      height: 49px;
+      padding: 0 14px;
+      color: #3A3632;
+      font-size: 12px;
+      border-top: 1px solid #F0EAE0;
+      vertical-align: middle;
+    }
+
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      height: 23px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .badge-approved {
+      background: #F3EBD9;
+      color: #715C32;
+    }
+
+    .badge-faculty {
+      background: #E8F0FE;
+      color: #1A73E8;
+    }
+
+    .badge-admin {
+      background: #F3EBD9;
+      color: #715C32;
+    }
+
+    .action-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      height: 30px;
+      min-width: 72px;
+      padding: 0 14px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .pill-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .edit-btn {
+      border: 1px solid #D8D0C4;
+      background: #fff;
+      color: #2D2A27;
+    }
+
+    .remove-btn {
+      border: 0;
+      background: #F05A5F;
+      color: #fff;
+    }
+
+    .bottom-bar-container {
+      width: calc(100% - 10px);
+      margin-left: 10px;
+      padding-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .pagination-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pagination {
+      border: 1px solid #D8D0C4;
+      background: #fff;
+      color: #2D2A27;
+    }
+
+    .page-text {
+      color: #D1CBC2;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .empty-state {
+      display: none;
+      width: 100%;
+      height: 145px;
+      align-items: center;
+      justify-content: center;
+      color: #716A60;
+      font-size: 12px;
+      background: #FFFDFA;
+    }
+
+    /* Modal interaction matches the recorded prototype:
+       background dims, centered modal, then success toast after close. */
     .modal-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 70;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-        background: rgba(0, 0, 0, 0.58);
-        backdrop-filter: blur(1px);
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,.58);
+      backdrop-filter: blur(1px);
     }
 
     .modal-overlay.show {
-        display: flex;
-        animation: fadeIn 0.16s ease-out;
+      display: flex;
+      animation: overlayIn .16s ease-out;
     }
 
     .modal-card {
-        position: relative;
-        background: #4A4D4C;
-        border: 1px solid #D97251;
-        border-radius: 13px;
-        color: #FFFFFF;
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
-        animation: modalIn 0.18s ease-out;
+      position: relative;
+      width: min(390px, 100%);
+      min-height: 425px;
+      padding: 22px 48px 28px;
+      background: #484B4A;
+      border: 1px solid #D97251;
+      border-radius: 12px;
+      box-shadow: 0 22px 55px rgba(0,0,0,.4);
+      animation: modalIn .18s ease-out;
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    .modal-card.compact {
+      min-height: 258px;
+      width: min(390px, 100%);
+      padding: 20px 42px 24px;
     }
 
-    @keyframes modalIn {
-        from { opacity: 0; transform: translateY(8px) scale(.985); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
+    .modal-card.faculty {
+      min-height: 535px;
+      width: min(440px, 100%);
     }
 
-    .entity-modal {
-        width: min(365px, 100%);
-        min-height: 455px;
-        padding: 20px 58px 28px;
-    }
-
-    .reason-modal {
-        width: min(375px, 100%);
-        min-height: 248px;
-        padding: 18px 43px;
-    }
-
-    .faculty-modal {
-        width: min(430px, 100%);
-        min-height: 520px;
-        padding: 20px 46px 28px;
-    }
-
-    .modal-card h2 {
-        margin: 0;
-        text-align: center;
-        font-family: 'Intel One Mono', monospace;
-        font-size: 18px;
-        font-weight: 600;
+    .modal-title {
+      color: #fff;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
     }
 
     .modal-close {
-        position: absolute;
-        top: 10px;
-        right: 13px;
-        width: 31px;
-        height: 31px;
-        border: 0;
-        background: transparent;
-        cursor: pointer;
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      color: #1E1D1B;
+      font-size: 26px;
+      line-height: 26px;
     }
-
-    .modal-close::before,
-    .modal-close::after {
-        content: "";
-        position: absolute;
-        top: 15px;
-        left: 0;
-        width: 31px;
-        height: 1px;
-        background: #171716;
-    }
-
-    .modal-close::before { transform: rotate(45deg); }
-    .modal-close::after { transform: rotate(-45deg); }
 
     .modal-form {
-        min-height: 380px;
-        display: flex;
-        flex-direction: column;
+      min-height: 345px;
+      display: flex;
+      flex-direction: column;
     }
 
-    .reason-modal .modal-form { min-height: 194px; }
-    .faculty-modal .modal-form { min-height: 445px; }
+    .modal-card.compact .modal-form {
+      min-height: 190px;
+    }
+
+    .modal-card.faculty .modal-form {
+      min-height: 455px;
+    }
 
     .modal-form label {
-        margin: 54px 0 8px;
-        font-family: 'Intel One Mono', monospace;
-        font-size: 11px;
-        font-weight: 600;
+      margin: 48px 0 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
     }
 
-    .reason-modal .modal-form label { margin-top: 14px; }
-
-    .faculty-modal .modal-form label {
-        margin: 16px 0 7px;
+    .modal-card.compact .modal-form label {
+      margin-top: 16px;
     }
 
-    .faculty-modal .modal-form label:first-of-type {
-        margin-top: 38px;
+    .modal-card.faculty .modal-form label {
+      margin: 14px 0 7px;
     }
 
-    .modal-form input,
-    .modal-form textarea,
-    .modal-form select {
-        width: 100%;
-        border: 0;
-        border-radius: 7px;
-        background: #FFFDFA;
-        color: #28261F;
-        outline: none;
-        font-size: 11px;
+    .modal-card.faculty .modal-form label:first-of-type {
+      margin-top: 30px;
     }
 
     .modal-form input,
+    .modal-form select,
+    .modal-form textarea {
+      width: 100%;
+      border: 0;
+      border-radius: 7px;
+      background: #FFFDFA;
+      color: #28261F;
+      outline: none;
+      font-size: 11px;
+    }
+
+    .modal-form input,
     .modal-form select {
-        height: 35px;
-        padding: 0 10px;
+      height: 36px;
+      padding: 0 10px;
     }
 
     .modal-form textarea {
-        min-height: 158px;
-        padding: 10px;
-        resize: none;
+      min-height: 120px;
+      padding: 10px;
+      resize: none;
     }
 
     .modal-form input:focus,
-    .modal-form textarea:focus,
-    .modal-form select:focus {
-        box-shadow: 0 0 0 2px #D97251;
+    .modal-form select:focus,
+    .modal-form textarea:focus {
+      box-shadow: 0 0 0 2px #D97251;
     }
 
     .modal-submit {
-        width: 100%;
-        height: 38px;
-        margin-top: auto;
-        border: 0;
-        border-radius: 6px;
-        background: #30302E;
-        color: #FFFFFF;
-        font-size: 11px;
-        cursor: pointer;
+      width: 100%;
+      height: 38px;
+      margin-top: auto;
+      border: 0;
+      border-radius: 7px;
+      background: #30302E;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
     }
 
-    .modal-submit:hover {
-        background: #262624;
+    .toast {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 120;
+      display: none;
+      min-width: 210px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      background: #D97251;
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
+      font-size: 11px;
+      font-weight: 600;
     }
 
-    /* Figma/video-style notification: appears after modal closes */
-    .success-toast {
-        position: fixed;
-        top: 102px;
-        right: 22px;
-        z-index: 80;
-        display: none;
-        min-width: 190px;
-        padding: 13px 14px;
-        border-radius: 10px;
-        background: #D97251;
-        color: white;
-        font-family: 'Intel One Mono', monospace;
-        font-size: 10px;
-        font-weight: 600;
-        box-shadow: 0 10px 28px rgba(0,0,0,.22);
-    }
-
-    .success-toast.show {
-        display: block;
-        animation: toastIn .2s ease-out;
-    }
-
-    @keyframes toastIn {
-        from { opacity: 0; transform: translateY(-6px); }
-        to { opacity: 1; transform: translateY(0); }
+    .toast.show {
+      display: block;
+      animation: toastIn .2s ease-out;
     }
 
     .masked-review {
-        width: 132px;
-        height: 12px;
-        margin: auto;
-        background: #625D55;
+      width: 128px;
+      height: 12px;
+      margin: 0 auto;
+      border-radius: 2px;
+      background: #625D55;
     }
 
-    @media (max-width: 1023px) {
-        body { overflow: auto; }
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
-</style>
 
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(8px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .app-canvas {
+        min-width: 880px;
+        min-height: 640px;
+        overflow: auto;
+      }
+    }
+  </style>
 </head>
-<body class="flex justify-center items-center min-h-screen p-0">
+<body>
+  <div class="app-canvas">
+    <iframe
+      src="../../components/navigation/sidebar-admin.html"
+      id="sidebar-frame"
+      class="sidebar-frame"
+      title="Admin Sidebar">
+    </iframe>
 
-<div class="bg-dashboard-outer border-dashboard border rounded-[10px] w-screen h-screen flex flex-col lg:flex-row shadow-2xl relative overflow-hidden">
-    
-<div class="lg:hidden bg-sidebar p-4 border-b border-sidebar flex items-center justify-between">
-    <h1 class="font-intel-mono font-semibold text-lg text-white">Admin Portal</h1>
-    <button onclick="toggleMobileMenu()" class="p-2 text-white hover:bg-white/10 rounded-lg">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-    </button>
-</div>
-
-    <aside id="sidebar-menu" class="hidden lg:flex flex-col shrink-0 w-full lg:w-[238px] bg-sidebar border-r border-sidebar relative h-full justify-between p-2 select-none">
-            
-            <div class="flex flex-col gap-1">
-                <!-- Brand Title -->
-                <div class="h-[60px] flex items-center justify-center pt-2">
-                    <span class="font-intel-mono font-semibold text-[20px] leading-[28px] text-white tracking-wide">Admin Portal</span>
-                </div>
-
-                <!-- Navigation List -->
-                <nav class="flex flex-col gap-[8px] mt-4">
-                    <!-- Dashboard (Active Button) -->
-                    <a href="dashboard.html" class="nav-btn-inactive h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
-
-                    <!-- Faculty Applications -->
-                    <a href="faculty-applications.html" class="nav-btn-inactive h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span>Faculty Applications</span>
-                    </a>
-
-                    <!-- Student Applications -->
-                    <a href="student-applications.html" class="nav-btn-inactive h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span>Student Applications</span>
-                    </a>
-
-                    <!-- Program Applications -->
-                    <a href="program-applications.html" class="nav-btn-inactive h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span>Program Applications</span>
-                    </a>
-
-                    <!-- Department Application -->
-                    <a href="department-applications.html" class="nav-btn-inactive h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span class="truncate">Department Application</span>
-                    </a>
-
-                    <!-- Students -->
-                    <a href="students.html" class="nav-btn-inactive h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span>Students</span>
-                    </a>
-
-                    <!-- Departments -->
-                    <a href="departments.html" class="nav-btn-inactive h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span>Departments</span>
-                    </a>
-
-                    <!-- Programs -->
-                    <a href="programs.html" class="nav-btn-inactive h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span>Programs</span>
-                    </a>
-
-                    <!-- Faculty -->
-                    <a href="faculty.html" class="nav-btn-active h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#B4552D" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span>Faculty</span>
-                    </a>
-
-                    <!-- Audit Log -->
-                    <a href="audit-log.html" class="nav-btn-inactive h-[39px] px-4 rounded-[10px] flex items-center gap-[14px] text-sm font-medium transition-colors">
-                        <svg class="w-[20px] h-[20px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.5">
-                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1"/>
-                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1"/>
-                            <rect x="11" y="11" width="6.5" height="6.5" rx="1"/>
-                        </svg>
-                        <span>Audit Log</span>
-                    </a>
-                </nav>
-            </div>
-
-            <!-- Bottom Section (Account Card & Divider) -->
-            <div class="mt-auto pt-3 flex flex-col gap-2">
-                <!-- Divider Line -->
-                <div class="h-[1px] w-[216px] mx-auto border-divider opacity-90 mb-1"></div>
-
-                <!-- Faculty / Admin Account Card -->
-                <div class="bg-account-card rounded-[12px] h-[54px] w-[214px] mx-auto px-3 flex items-center gap-3">
-                    <!-- Avatar -->
-                    <div class="bg-avatar w-[28px] h-[28px] rounded-full flex items-center justify-center shrink-0">
-                        <span class="text-avatar font-bold text-[16px] leading-[22px]">a</span>
-                    </div>
-
-                    <!-- User Information -->
-                    <div class="flex flex-col gap-[2px]">
-                        <span class="text-white text-[12px] font-medium leading-[15px] truncate max-w-[120px]">Dr. Vance</span>
-                        <span class="text-role text-[10px] leading-[12px]">System Admin</span>
-                    </div>
-                </div>
-            </div>
-
-        </aside>
-
-    <main class="flex-1 p-3 sm:p-4 lg:p-5 flex flex-col justify-between overflow-hidden">
-        <div class="page-content-scroll pr-1">
-            <div class="flex items-center justify-between border-b border-[#42423F] pb-3 mb-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-3 h-3 rounded-full bg-[#D97251]"></div>
-                    <span class="text-xs font-semibold tracking-wider text-zorba uppercase">Admin Portal / Faculty</span>
-                </div>
-                <div class="flex items-center gap-3 text-xs text-zorba">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#3d3d3a] border border-[#484844]">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        System Live
-                    </span>
-                    <span class="hidden sm:inline text-xs text-zorba">AY 2026-2027</span>
-                </div>
-            </div>
-
-            <header class="mb-4">
-                <h1 class="text-2xl sm:text-[26px] font-bold text-white tracking-tight leading-tight sm:leading-[38px]">Faculty</h1>
-                <p class="text-[12px] text-zorba leading-5 mt-1">Manage faculty accounts and override editable account fields.</p>
-            </header>
-
-<section>
-    <div class="flex items-center justify-between gap-4 mb-3">
-        <input id="search" type="search" placeholder="Search by faculty name or email..."
-            class="h-[38px] w-[450px] max-w-[52%] rounded-[10px] border border-[#D8D3CA] bg-white px-5 text-[12px] text-cod-gray outline-none focus:border-[#D97251]">
-
-        <div class="flex items-center gap-3">
-            <select id="deptFilter" class="h-[38px] w-[165px] rounded-[10px] border border-[#D8D3CA] bg-white px-3 text-[12px] text-cod-gray">
-                <option value="all">Department: All</option>
-                <option>Department of Computer Science</option>
-                <option>Department of Information Technology</option>
-                <option>Department of Applied Mathematics</option>
-                <option>Department of Biological Sciences</option>
-            </select>
-
-            <button id="addBtn" class="h-[38px] px-4 rounded-[10px] bg-[#D97251] text-white text-[11px] font-semibold hover:bg-[#C25B3E]">
-                ＋ Add Faculty
-            </button>
+    <main class="section-container">
+      <div class="header-container">
+        <div class="heading-wrapper">
+          <h1 class="heading-title">Faculty</h1>
         </div>
-    </div>
+      </div>
 
-    <div id="tableWrap" class="bg-romance border border-pearl-bush rounded-[12px] overflow-hidden shadow-sm">
-        <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left border-collapse min-w-[820px]">
-                <thead>
-                    <tr class="bg-aths-special text-fuscous-gray text-[10px] font-bold h-[36px]">
-                        <th class="py-2 px-4">Name</th>
-                        <th class="py-2 px-4">Email Address</th>
-                        <th class="py-2 px-4">Department</th>
-                        <th class="py-2 px-4 text-center">Role</th>
-                        <th class="py-2 px-4 text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody" class="text-xs"><tr class="border-t border-ecru-white" data-name="Dr. Eleanor Vance" data-email="e.vance@university.edu" data-dept="Department of Computer Science" data-role="faculty">
-        <td class="py-2.5 px-4 font-medium text-cod-gray">Dr. Eleanor Vance</td>
-        <td class="py-2.5 px-4 text-soya-bean">e.vance@university.edu</td>
-        <td class="py-2.5 px-4 text-soya-bean">Department of Computer Science</td>
-        <td class="py-2.5 px-4 text-center">
-            <span class="inline-flex min-w-[58px] justify-center px-2 py-0.5 rounded-full bg-zumthor text-[#1A73E8] text-[10px] font-medium">faculty</span>
-        </td>
-        <td class="py-2.5 px-4">
-            <div class="flex justify-end gap-2">
-                <button type="button" class="btn-edit min-w-[72px] rounded-full border border-[#D8D0C4] bg-white px-4 py-1.5 text-[10px] text-cod-gray">Edit</button>
-                <button type="button" class="btn-remove min-w-[72px] rounded-full bg-[#FF4E55] px-4 py-1.5 text-[10px] text-cod-gray">Remove</button>
-            </div>
-        </td>
-    </tr>
-<tr class="border-t border-ecru-white" data-name="Prof. Marcus Brody" data-email="m.brody@university.edu" data-dept="Department of Information Technology" data-role="admin">
-        <td class="py-2.5 px-4 font-medium text-cod-gray">Prof. Marcus Brody</td>
-        <td class="py-2.5 px-4 text-soya-bean">m.brody@university.edu</td>
-        <td class="py-2.5 px-4 text-soya-bean">Department of Information Technology</td>
-        <td class="py-2.5 px-4 text-center">
-            <span class="inline-flex min-w-[58px] justify-center px-2 py-0.5 rounded-full bg-parchment text-shingle-fawn text-[10px] font-medium">admin</span>
-        </td>
-        <td class="py-2.5 px-4">
-            <div class="flex justify-end gap-2">
-                <button type="button" class="btn-edit min-w-[72px] rounded-full border border-[#D8D0C4] bg-white px-4 py-1.5 text-[10px] text-cod-gray">Edit</button>
-                <button type="button" class="btn-remove min-w-[72px] rounded-full bg-[#FF4E55] px-4 py-1.5 text-[10px] text-cod-gray">Remove</button>
-            </div>
-        </td>
-    </tr>
-<tr class="border-t border-ecru-white" data-name="Dr. Sophia Al-Mansoor" data-email="s.almansoor@university.edu" data-dept="Department of Applied Mathematics" data-role="faculty">
-        <td class="py-2.5 px-4 font-medium text-cod-gray">Dr. Sophia Al-Mansoor</td>
-        <td class="py-2.5 px-4 text-soya-bean">s.almansoor@university.edu</td>
-        <td class="py-2.5 px-4 text-soya-bean">Department of Applied Mathematics</td>
-        <td class="py-2.5 px-4 text-center">
-            <span class="inline-flex min-w-[58px] justify-center px-2 py-0.5 rounded-full bg-zumthor text-[#1A73E8] text-[10px] font-medium">faculty</span>
-        </td>
-        <td class="py-2.5 px-4">
-            <div class="flex justify-end gap-2">
-                <button type="button" class="btn-edit min-w-[72px] rounded-full border border-[#D8D0C4] bg-white px-4 py-1.5 text-[10px] text-cod-gray">Edit</button>
-                <button type="button" class="btn-remove min-w-[72px] rounded-full bg-[#FF4E55] px-4 py-1.5 text-[10px] text-cod-gray">Remove</button>
-            </div>
-        </td>
-    </tr>
-<tr class="border-t border-ecru-white" data-name="Prof. Arthur Pendelton" data-email="a.pendelton@university.edu" data-dept="Department of Biological Sciences" data-role="faculty">
-        <td class="py-2.5 px-4 font-medium text-cod-gray">Prof. Arthur Pendelton</td>
-        <td class="py-2.5 px-4 text-soya-bean">a.pendelton@university.edu</td>
-        <td class="py-2.5 px-4 text-soya-bean">Department of Biological Sciences</td>
-        <td class="py-2.5 px-4 text-center">
-            <span class="inline-flex min-w-[58px] justify-center px-2 py-0.5 rounded-full bg-zumthor text-[#1A73E8] text-[10px] font-medium">faculty</span>
-        </td>
-        <td class="py-2.5 px-4">
-            <div class="flex justify-end gap-2">
-                <button type="button" class="btn-edit min-w-[72px] rounded-full border border-[#D8D0C4] bg-white px-4 py-1.5 text-[10px] text-cod-gray">Edit</button>
-                <button type="button" class="btn-remove min-w-[72px] rounded-full bg-[#FF4E55] px-4 py-1.5 text-[10px] text-cod-gray">Remove</button>
-            </div>
-        </td>
-    </tr></tbody>
+      <div class="controls-container">
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="none">
+  <circle cx="7" cy="7" r="4.5" stroke="#6C655D" stroke-width="1.3"/>
+  <path d="M10.5 10.5L14 14" stroke="#6C655D" stroke-width="1.3" stroke-linecap="round"/>
+</svg>
+          <input id="searchInput" class="search-input" type="search" placeholder="Search by faculty name or email...">
+        </div>
+
+        <div class="dropdown-container department">
+          <select id="departmentFilter" class="dropdown-select">
+            <option value="all">Department: All</option>
+            <option>Department of Computer Science</option>
+            <option>Department of Information Technology</option>
+            <option>Department of Applied Mathematics</option>
+            <option>Department of Biological Sciences</option>
+          </select>
+          <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+  <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+        </div>
+
+        <button id="addButton" type="button" class="add-button">+ Add Faculty</button>
+      </div>
+
+      <div class="table-margin-container">
+        <div class="table-container">
+          <div class="table-scroll">
+            <table style="min-width: 960px;">
+              <thead>
+                <tr>
+                  <th style="width: 21%;">Name</th>
+                  <th style="width: 22%;">Email Address</th>
+                  <th style="width: 29%;">Department</th>
+                  <th class="text-center" style="width: 10%;">Role</th>
+                  <th class="text-right" style="width: 18%;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+            <tr data-name="dr. eleanor vance" data-email="e.vance@university.edu" data-department="Department of Computer Science" data-role="faculty">
+              <td>Dr. Eleanor Vance</td>
+              <td>e.vance@university.edu</td>
+              <td>Department of Computer Science</td>
+              <td class="text-center"><span class="badge-pill badge-faculty">faculty</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="prof. marcus brody" data-email="m.brody@university.edu" data-department="Department of Information Technology" data-role="admin">
+              <td>Prof. Marcus Brody</td>
+              <td>m.brody@university.edu</td>
+              <td>Department of Information Technology</td>
+              <td class="text-center"><span class="badge-pill badge-admin">admin</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="dr. sophia al-mansoor" data-email="s.almansoor@university.edu" data-department="Department of Applied Mathematics" data-role="faculty">
+              <td>Dr. Sophia Al-Mansoor</td>
+              <td>s.almansoor@university.edu</td>
+              <td>Department of Applied Mathematics</td>
+              <td class="text-center"><span class="badge-pill badge-faculty">faculty</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="prof. arthur pendelton" data-email="a.pendelton@university.edu" data-department="Department of Biological Sciences" data-role="faculty">
+              <td>Prof. Arthur Pendelton</td>
+              <td>a.pendelton@university.edu</td>
+              <td>Department of Biological Sciences</td>
+              <td class="text-center"><span class="badge-pill badge-faculty">faculty</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+              </tbody>
             </table>
+          </div>
+          <div id="emptyState" class="empty-state">No faculty found.</div>
         </div>
-    </div>
+      </div>
 
-    <div id="empty" class="hidden bg-romance border border-pearl-bush rounded-[12px] py-10 text-center text-[12px] text-flint">
-        No faculty found.
-    </div>
+      <div class="bottom-bar-container">
+        <div class="pagination-wrapper">
+          <button class="pill-btn pagination" type="button">Previous</button>
+          <span class="page-text">Page 1 of 3</span>
+          <button class="pill-btn pagination" type="button">Next</button>
+        </div>
+      </div>
+    </main>
 
-    <div class="mt-3 flex justify-end items-center gap-3 text-[10px] text-zorba">
-        <button class="rounded-full border border-[#D8D3CA] bg-white px-4 py-2 text-cod-gray">Previous</button>
-        <span>Page 1 of 3</span>
-        <button class="rounded-full border border-[#D8D3CA] bg-white px-4 py-2 text-cod-gray">Next</button>
-    </div>
-</section>
-
-<div id="facultyModal" class="modal-overlay">
-    <section class="modal-card faculty-modal">
-        <button id="closeFaculty" class="modal-close" aria-label="Close"></button>
-        <h2 id="facultyTitle">Add Faculty</h2>
+    <div id="facultyModal" class="modal-overlay">
+      <section class="modal-card faculty">
+        <button id="closeFaculty" class="modal-close" type="button" aria-label="Close">×</button>
+        <h2 id="facultyModalTitle" class="modal-title">Add Faculty</h2>
 
         <form id="facultyForm" class="modal-form">
-            <label for="facultyName">Name</label>
-            <input id="facultyName" required>
+          <label for="facultyName">Name</label>
+          <input id="facultyName" type="text" required>
 
-            <label for="facultyEmail">Email Address</label>
-            <input id="facultyEmail" type="email" required>
+          <label for="facultyEmail">Email Address</label>
+          <input id="facultyEmail" type="email" required>
 
-            <label for="facultyDept">Department</label>
-            <select id="facultyDept">
-                <option>Department of Computer Science</option>
-                <option>Department of Information Technology</option>
-                <option>Department of Applied Mathematics</option>
-                <option>Department of Biological Sciences</option>
-            </select>
+          <label for="facultyDepartment">Department</label>
+          <select id="facultyDepartment">
+            <option>Department of Computer Science</option>
+            <option>Department of Information Technology</option>
+            <option>Department of Applied Mathematics</option>
+            <option>Department of Biological Sciences</option>
+          </select>
 
-            <label for="facultyRole">Role</label>
-            <select id="facultyRole">
-                <option value="faculty">faculty</option>
-                <option value="admin">admin</option>
-            </select>
+          <label for="facultyRole">Role</label>
+          <select id="facultyRole">
+            <option value="faculty">faculty</option>
+            <option value="admin">admin</option>
+          </select>
 
-            <button class="modal-submit" type="submit">Submit</button>
+          <button type="submit" class="modal-submit">Submit</button>
         </form>
-    </section>
-</div>
+      </section>
+    </div>
 
-<div id="deleteModal" class="modal-overlay">
-    <section class="modal-card reason-modal">
-        <button id="closeDelete" class="modal-close" aria-label="Close"></button>
-        <h2>Remove Faculty</h2>
+    <div id="removeModal" class="modal-overlay">
+      <section class="modal-card compact">
+        <button id="closeRemove" class="modal-close" type="button" aria-label="Close">×</button>
+        <h2 class="modal-title">Remove Faculty</h2>
 
-        <form id="deleteForm" class="modal-form">
-            <label for="reason">Reason:</label>
-            <textarea id="reason" placeholder="Type here..." required></textarea>
-            <button class="modal-submit" type="submit">Submit</button>
+        <form id="removeForm" class="modal-form">
+          <label for="removeReason">Reason:</label>
+          <textarea id="removeReason" placeholder="Type here..." required></textarea>
+          <button type="submit" class="modal-submit">Submit</button>
         </form>
-    </section>
-</div>
+      </section>
+    </div>
 
-<div id="toast" class="success-toast">Faculty Added Successfully</div>
+    <div id="toast" class="toast">Faculty Added Successfully</div>
 
-<script>
-    const addBtn = document.getElementById('addBtn');
-    const facultyModal = document.getElementById('facultyModal');
-    const deleteModal = document.getElementById('deleteModal');
-    const facultyTitle = document.getElementById('facultyTitle');
-    const facultyForm = document.getElementById('facultyForm');
-    const nameInput = document.getElementById('facultyName');
-    const emailInput = document.getElementById('facultyEmail');
-    const deptInput = document.getElementById('facultyDept');
-    const roleInput = document.getElementById('facultyRole');
-    const deleteForm = document.getElementById('deleteForm');
-    const reason = document.getElementById('reason');
-    const tbody = document.getElementById('tbody');
-    const search = document.getElementById('search');
-    const deptFilter = document.getElementById('deptFilter');
-    const toast = document.getElementById('toast');
 
-    let mode = 'create';
-    let selected = null;
+    <script>
+      function setSidebarActive(fileName) {
+        const frame = document.getElementById('sidebar-frame');
+        if (!frame) return;
 
-    function openModal(modal) {
+        frame.addEventListener('load', () => {
+          try {
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            const links = doc.querySelectorAll('#sidebar-nav a');
+
+            links.forEach(link => {
+              link.classList.remove('nav-btn-active', 'font-bold', 'shadow-sm');
+              link.classList.add('nav-btn-inactive', 'font-semibold');
+
+              const svg = link.querySelector('svg');
+              if (svg) svg.setAttribute('stroke', 'currentColor');
+
+              if ((link.getAttribute('href') || '').endsWith(fileName)) {
+                link.classList.remove('nav-btn-inactive', 'font-semibold');
+                link.classList.add('nav-btn-active', 'font-bold', 'shadow-sm');
+                if (svg) svg.setAttribute('stroke', '#A35233');
+              }
+            });
+          } catch (_) {}
+        });
+      }
+
+    <script>
+      setSidebarActive('faculty.html');
+
+      const tableBody = document.getElementById('tableBody');
+      const searchInput = document.getElementById('searchInput');
+      const departmentFilter = document.getElementById('departmentFilter');
+      const emptyState = document.getElementById('emptyState');
+      const facultyModal = document.getElementById('facultyModal');
+      const removeModal = document.getElementById('removeModal');
+      const facultyForm = document.getElementById('facultyForm');
+      const removeForm = document.getElementById('removeForm');
+      const facultyName = document.getElementById('facultyName');
+      const facultyEmail = document.getElementById('facultyEmail');
+      const facultyDepartment = document.getElementById('facultyDepartment');
+      const facultyRole = document.getElementById('facultyRole');
+      const removeReason = document.getElementById('removeReason');
+      const facultyModalTitle = document.getElementById('facultyModalTitle');
+      const toast = document.getElementById('toast');
+
+      let mode = 'create';
+      let selectedRow = null;
+
+      function openModal(modal) {
         modal.classList.add('show');
-    }
+      }
 
-    function closeModal(modal) {
+      function closeModal(modal) {
         modal.classList.remove('show');
-    }
+      }
 
-    function notify(message) {
+      function showToast(message) {
         toast.textContent = message;
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2200);
-    }
+        window.setTimeout(() => toast.classList.remove('show'), 2200);
+      }
 
-    addBtn.onclick = () => {
+      function roleBadge(role) {
+        const cls = role === 'admin' ? 'badge-admin' : 'badge-faculty';
+        return `<span class="badge-pill ${cls}">${role}</span>`;
+      }
+
+      function filterRows() {
+        const query = searchInput.value.trim().toLowerCase();
+        const department = departmentFilter.value;
+        let visibleCount = 0;
+
+        [...tableBody.rows].forEach(row => {
+          const matchesText =
+            row.dataset.name.includes(query) ||
+            row.dataset.email.includes(query);
+
+          const matchesDepartment =
+            department === 'all' || row.dataset.department === department;
+
+          const visible = matchesText && matchesDepartment;
+          row.style.display = visible ? '' : 'none';
+          if (visible) visibleCount++;
+        });
+
+        emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
+      }
+
+      document.getElementById('addButton').addEventListener('click', () => {
         mode = 'create';
-        selected = null;
-        facultyTitle.textContent = 'Add Faculty';
-        nameInput.value = '';
-        emailInput.value = '';
+        selectedRow = null;
+        facultyModalTitle.textContent = 'Add Faculty';
+        facultyName.value = '';
+        facultyEmail.value = '';
+        facultyDepartment.selectedIndex = 0;
+        facultyRole.value = 'faculty';
         openModal(facultyModal);
-    };
+      });
 
-    document.getElementById('closeFaculty').onclick = () => closeModal(facultyModal);
-    document.getElementById('closeDelete').onclick = () => closeModal(deleteModal);
-
-    tbody.onclick = (event) => {
+      tableBody.addEventListener('click', event => {
         const row = event.target.closest('tr');
         if (!row) return;
 
-        if (event.target.classList.contains('btn-edit')) {
-            mode = 'edit';
-            selected = row;
-            facultyTitle.textContent = 'Edit Faculty';
-            nameInput.value = row.dataset.name;
-            emailInput.value = row.dataset.email;
-            deptInput.value = row.dataset.dept;
-            roleInput.value = row.dataset.role;
-            openModal(facultyModal);
+        if (event.target.classList.contains('edit-btn')) {
+          mode = 'edit';
+          selectedRow = row;
+          facultyModalTitle.textContent = 'Edit Faculty';
+          facultyName.value = row.children[0].textContent.trim();
+          facultyEmail.value = row.children[1].textContent.trim();
+          facultyDepartment.value = row.dataset.department;
+          facultyRole.value = row.dataset.role;
+          openModal(facultyModal);
         }
 
-        if (event.target.classList.contains('btn-remove')) {
-            selected = row;
-            reason.value = '';
-            openModal(deleteModal);
+        if (event.target.classList.contains('remove-btn')) {
+          selectedRow = row;
+          removeReason.value = '';
+          openModal(removeModal);
         }
-    };
+      });
 
-    facultyForm.onsubmit = (event) => {
+      facultyForm.addEventListener('submit', event => {
         event.preventDefault();
 
-        const n = nameInput.value.trim();
-        const e = emailInput.value.trim();
-        const d = deptInput.value;
-        const r = roleInput.value;
+        const name = facultyName.value.trim();
+        const email = facultyEmail.value.trim();
+        const department = facultyDepartment.value;
+        const role = facultyRole.value;
 
-        if (!n || !e) return;
+        if (!name || !email) return;
 
-        if (mode === 'edit' && selected) {
-            selected.dataset.name = n;
-            selected.dataset.email = e;
-            selected.dataset.dept = d;
-            selected.dataset.role = r;
+        if (mode === 'edit' && selectedRow) {
+          selectedRow.dataset.name = name.toLowerCase();
+          selectedRow.dataset.email = email.toLowerCase();
+          selectedRow.dataset.department = department;
+          selectedRow.dataset.role = role;
 
-            selected.children[0].textContent = n;
-            selected.children[1].textContent = e;
-            selected.children[2].textContent = d;
-            selected.children[3].innerHTML =
-                `<span class="inline-flex min-w-[58px] justify-center px-2 py-0.5 rounded-full ${r === 'faculty' ? 'bg-zumthor text-[#1A73E8]' : 'bg-parchment text-shingle-fawn'} text-[10px] font-medium">${r}</span>`;
+          selectedRow.children[0].textContent = name;
+          selectedRow.children[1].textContent = email;
+          selectedRow.children[2].textContent = department;
+          selectedRow.children[3].innerHTML = roleBadge(role);
 
-            closeModal(facultyModal);
-            setTimeout(() => notify('Faculty Updated Successfully'), 120);
+          closeModal(facultyModal);
+          window.setTimeout(() => showToast('Faculty Updated Successfully'), 120);
         } else {
-            const row = document.createElement('tr');
-            row.className = 'border-t border-ecru-white';
-            row.dataset.name = n;
-            row.dataset.email = e;
-            row.dataset.dept = d;
-            row.dataset.role = r;
+          const row = document.createElement('tr');
+          row.dataset.name = name.toLowerCase();
+          row.dataset.email = email.toLowerCase();
+          row.dataset.department = department;
+          row.dataset.role = role;
 
-            row.innerHTML = `
-                <td class="py-2.5 px-4 font-medium text-cod-gray">${n}</td>
-                <td class="py-2.5 px-4 text-soya-bean">${e}</td>
-                <td class="py-2.5 px-4 text-soya-bean">${d}</td>
-                <td class="py-2.5 px-4 text-center">
-                    <span class="inline-flex min-w-[58px] justify-center px-2 py-0.5 rounded-full ${r === 'faculty' ? 'bg-zumthor text-[#1A73E8]' : 'bg-parchment text-shingle-fawn'} text-[10px] font-medium">${r}</span>
-                </td>
-                <td class="py-2.5 px-4">
-                    <div class="flex justify-end gap-2">
-                        <button type="button" class="btn-edit min-w-[72px] rounded-full border border-[#D8D0C4] bg-white px-4 py-1.5 text-[10px] text-cod-gray">Edit</button>
-                        <button type="button" class="btn-remove min-w-[72px] rounded-full bg-[#FF4E55] px-4 py-1.5 text-[10px] text-cod-gray">Remove</button>
-                    </div>
-                </td>`;
+          row.innerHTML = `
+            <td>${name}</td>
+            <td>${email}</td>
+            <td>${department}</td>
+            <td class="text-center">${roleBadge(role)}</td>
+            <td class="text-right">
+              <div class="action-group">
+                <button class="pill-btn edit-btn" type="button">Edit</button>
+                <button class="pill-btn remove-btn" type="button">Remove</button>
+              </div>
+            </td>`;
 
-            tbody.prepend(row);
-
-            closeModal(facultyModal);
-            setTimeout(() => notify('Faculty Added Successfully'), 120);
+          tableBody.prepend(row);
+          closeModal(facultyModal);
+          window.setTimeout(() => showToast('Faculty Added Successfully'), 120);
         }
 
         filterRows();
-    };
+      });
 
-    deleteForm.onsubmit = (event) => {
+      removeForm.addEventListener('submit', event => {
         event.preventDefault();
+        if (!selectedRow || !removeReason.value.trim()) return;
 
-        if (!selected || !reason.value.trim()) return;
-
-        selected.remove();
-        selected = null;
-
-        closeModal(deleteModal);
-        setTimeout(() => notify('Faculty Removed Successfully'), 120);
+        selectedRow.remove();
+        selectedRow = null;
+        closeModal(removeModal);
+        window.setTimeout(() => showToast('Faculty Removed Successfully'), 120);
         filterRows();
-    };
+      });
 
-    function filterRows() {
-        const q = search.value.toLowerCase();
-        const d = deptFilter.value;
-        let visible = 0;
+      document.getElementById('closeFaculty').addEventListener('click', () => closeModal(facultyModal));
+      document.getElementById('closeRemove').addEventListener('click', () => closeModal(removeModal));
+      searchInput.addEventListener('input', filterRows);
+      departmentFilter.addEventListener('change', filterRows);
 
-        [...tbody.rows].forEach((row) => {
-            const haystack = `${row.dataset.name} ${row.dataset.email}`.toLowerCase();
-            const ok = haystack.includes(q) && (d === 'all' || row.dataset.dept === d);
-
-            row.style.display = ok ? '' : 'none';
-            if (ok) visible++;
+      [facultyModal, removeModal].forEach(modal => {
+        modal.addEventListener('click', event => {
+          if (event.target === modal) closeModal(modal);
         });
+      });
 
-        document.getElementById('tableWrap').classList.toggle('hidden', visible === 0);
-        document.getElementById('empty').classList.toggle('hidden', visible !== 0);
-    }
-
-    search.oninput = filterRows;
-    deptFilter.onchange = filterRows;
-
-    [facultyModal, deleteModal].forEach((modal) => {
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) closeModal(modal);
-        });
-    });
-
-    document.addEventListener('keydown', (event) => {
+      document.addEventListener('keydown', event => {
         if (event.key === 'Escape') {
-            closeModal(facultyModal);
-            closeModal(deleteModal);
+          closeModal(facultyModal);
+          closeModal(removeModal);
         }
-    });
-</script>
-
-        </div>
-
-        <footer class="mt-4 pt-3 border-t border-[#42423F] text-[11px] text-zorba flex flex-col sm:flex-row justify-between items-center gap-1">
-            <span>© 2026 Admin Portal. All rights reserved.</span>
-            <span>System Version 2.4.0</span>
-        </footer>
-    </main>
-</div>
-
-<script>
-    function toggleMobileMenu() {
-        const menu = document.getElementById('sidebar-menu');
-        menu.classList.toggle('hidden');
-    }
-</script>
+      });
+    </script>
+  </div>
 </body>
 </html>
