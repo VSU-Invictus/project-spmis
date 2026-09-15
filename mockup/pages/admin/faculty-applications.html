@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -36,130 +36,22 @@
       overflow: hidden;
     }
 
-    .nav-bar {
+    /* Reusable Sidebar Component Frame */
+    .sidebar-frame {
       position: absolute;
       left: 0;
       top: 0;
-      width: 238px;
+      width: 260px;
       height: 100%;
-      background: #21201E;
-      border-right: 1px solid #141413;
-      padding-top: 20px;
-    }
-
-    .brand-header {
-      padding: 0 24px;
-      margin-bottom: 24px;
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 24px;
-      color: #fff;
-    }
-
-    .nav-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding: 0 12px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      border-radius: 10px;
-      color: #929292;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-
-    .nav-item:hover {
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-    }
-
-    .nav-item.active {
-      background: #FAF9F5;
-      color: #B4552D;
-    }
-
-    .nav-item.active .nav-icon path,
-    .nav-item.active .nav-icon rect,
-    .nav-item.active .nav-icon circle {
-      stroke: #B4552D;
-    }
-
-    .nav-icon {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    .account-divider {
-      position: absolute;
-      left: 11px;
-      bottom: 76px;
-      width: 216px;
-      height: 1px;
-      background: #D97757;
-    }
-
-    .faculty-account {
-      position: absolute;
-      left: 12px;
-      bottom: 12px;
-      width: 214px;
-      height: 54px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 12px 0 7px;
-      background: #3A3832;
-      border-radius: 12px;
-    }
-
-    .avatar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      background: #FBE7DE;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 18px;
-      color: #B84E32;
-    }
-
-    .account-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .account-name {
-      font-size: 13px;
-      line-height: 16px;
-      color: #fff;
-      font-weight: 500;
-    }
-
-    .account-role {
-      font-size: 11px;
-      line-height: 13px;
-      color: #929292;
-      font-weight: 400;
+      border: none;
+      z-index: 50;
     }
 
     .section-container {
       position: absolute;
-      left: 238px;
+      left: 260px;
       top: 0;
-      width: calc(100% - 238px);
+      width: calc(100% - 260px);
       height: calc(100% - 4px);
       padding: 14px 0 0 0;
       display: flex;
@@ -509,29 +401,8 @@
 </head>
 <body>
   <div class="app-canvas">
-    <nav class="nav-bar">
-      <div class="brand-header">Admin Portal</div>
-      <ul class="nav-list">
-        <li><a href="dashboard.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Dashboard</a></li>
-        <li><a href="faculty-applications.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Faculty Applications</a></li>
-        <li><a href="student-applications.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Student Applications</a></li>
-        <li><a href="program-applications.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Program Applications</a></li>
-        <li><a href="department-applications.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Department Application</a></li>
-        <li><a href="students.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Students</a></li>
-        <li><a href="departments.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Departments</a></li>
-        <li><a href="programs.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Programs</a></li>
-        <li><a href="faculty.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Faculty</a></li>
-        <li><a href="audit-log.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Audit Log</a></li>
-      </ul>
-      <div class="account-divider"></div>
-      <div class="faculty-account">
-        <div class="avatar">A</div>
-        <div class="account-text">
-          <div class="account-name">Admin User</div>
-          <div class="account-role">System Admin</div>
-        </div>
-      </div>
-    </nav>
+    <!-- Admin Sidebar Component -->
+    <iframe src="../../components/navigation/sidebar-admin.html" class="sidebar-frame" title="Admin Sidebar"></iframe>
 
     <main class="section-container">
       <header class="header-container">
