@@ -957,7 +957,7 @@
   <body data-page="applications">
     <a href="#main" class="skip">Skip to content</a>
     <div class="app">
-      <aside class="sidebar" data-faculty-sidebar>
+      <aside class="sidebar" data-faculty-sidebar data-component="sidebar-faculty">
         <a class="brand" href="dashboard.html">Faculty Portal</a>
         <nav class="nav" aria-label="Faculty navigation">
           <a href="dashboard.html"
@@ -1932,7 +1932,7 @@
           "../../components/navigation/sidebar-faculty.html",
           document.baseURI,
         );
-        const host = document.querySelector("[data-faculty-sidebar]");
+        const host = document.querySelector('[data-component="sidebar-faculty"]');
         if (!host) return;
 
         function markCurrent() {
