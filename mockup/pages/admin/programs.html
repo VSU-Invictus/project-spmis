@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal - Programs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: #30302E;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #fff;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-canvas {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #30302E;
+      border: 1px solid #D97251;
+      overflow: hidden;
+    }
+
+    .sidebar-frame {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 260px;
+      height: 100%;
+      border: none;
+      z-index: 50;
+    }
+
+    .section-container {
+      position: absolute;
+      left: 260px;
+      top: 0;
+      width: calc(100% - 260px);
+      height: calc(100% - 4px);
+      padding: 14px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .header-container {
+      display: flex;
+      align-items: flex-start;
+      width: calc(100% - 10px);
+      margin-left: 10px;
+    }
+
+    .heading-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 322px;
+      height: 60px;
+    }
+
+    .heading-title {
+      font-size: 30px;
+      line-height: 36px;
+      font-weight: 700;
+      letter-spacing: -0.75px;
+      color: #fff;
+    }
+
+    .controls-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: calc(100% - 10px);
+      min-height: 52px;
+      margin-left: 10px;
+      padding-top: 14px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 280px;
+      height: 38px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 38px;
+      padding: 8px 16px 8px 40px;
+      background: #fff;
+      border: 1px solid #E4DED5;
+      border-radius: 12px;
+      font-size: 14px;
+      color: #2D2A27;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: #8A837A;
+    }
+
+    .search-input:focus,
+    .dropdown-select:focus {
+      border-color: #D97251;
+      box-shadow: 0 0 0 1px #D97251;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 11px;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .dropdown-container {
+      position: relative;
+      height: 38px;
+      flex: 0 0 auto;
+    }
+
+    .dropdown-container.status { width: 145px; }
+    .dropdown-container.department { width: 190px; }
+    .dropdown-container.audit { width: 128px; }
+
+    .dropdown-select {
+      width: 100%;
+      height: 38px;
+      padding: 0 30px 0 14px;
+      background: #fff;
+      border: 1px solid #E4DED5;
+      border-radius: 12px;
+      color: #2D2A27;
+      font-size: 12px;
+      font-weight: 500;
+      appearance: none;
+      outline: none;
+    }
+
+    .dropdown-chevron {
+      position: absolute;
+      right: 11px;
+      top: 12px;
+      width: 14px;
+      height: 14px;
+      pointer-events: none;
+    }
+
+    .add-button {
+      height: 38px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #D97251;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background .15s ease, transform .15s ease;
+    }
+
+    .add-button:hover {
+      background: #C45F3E;
+      transform: translateY(-1px);
+    }
+
+    .table-margin-container {
+      padding: 10px 0 0;
+      width: calc(100% - 10px);
+      margin-left: 10px;
+      flex: 0 0 auto;
+    }
+
+    .table-container {
+      width: 100%;
+      background: #FFFDFA;
+      border: 1px solid #EDE7DC;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      table-layout: fixed;
+    }
+
+    thead {
+      background: #EDE3D0;
+    }
+
+    th {
+      height: 44px;
+      padding: 0 14px;
+      color: #544D45;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    td {
+      height: 49px;
+      padding: 0 14px;
+      color: #3A3632;
+      font-size: 12px;
+      border-top: 1px solid #F0EAE0;
+      vertical-align: middle;
+    }
+
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      height: 23px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .badge-approved {
+      background: #F3EBD9;
+      color: #715C32;
+    }
+
+    .badge-faculty {
+      background: #E8F0FE;
+      color: #1A73E8;
+    }
+
+    .badge-admin {
+      background: #F3EBD9;
+      color: #715C32;
+    }
+
+    .action-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      height: 30px;
+      min-width: 72px;
+      padding: 0 14px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .pill-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .edit-btn {
+      border: 1px solid #D8D0C4;
+      background: #fff;
+      color: #2D2A27;
+    }
+
+    .remove-btn {
+      border: 0;
+      background: #F05A5F;
+      color: #fff;
+    }
+
+    .bottom-bar-container {
+      width: calc(100% - 10px);
+      margin-left: 10px;
+      padding-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .pagination-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pagination {
+      border: 1px solid #D8D0C4;
+      background: #fff;
+      color: #2D2A27;
+    }
+
+    .page-text {
+      color: #D1CBC2;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .empty-state {
+      display: none;
+      width: 100%;
+      height: 145px;
+      align-items: center;
+      justify-content: center;
+      color: #716A60;
+      font-size: 12px;
+      background: #FFFDFA;
+    }
+
+    /* Modal interaction matches the recorded prototype:
+       background dims, centered modal, then success toast after close. */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,.58);
+      backdrop-filter: blur(1px);
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      animation: overlayIn .16s ease-out;
+    }
+
+    .modal-card {
+      position: relative;
+      width: min(390px, 100%);
+      min-height: 425px;
+      padding: 22px 48px 28px;
+      background: #484B4A;
+      border: 1px solid #D97251;
+      border-radius: 12px;
+      box-shadow: 0 22px 55px rgba(0,0,0,.4);
+      animation: modalIn .18s ease-out;
+    }
+
+    .modal-card.compact {
+      min-height: 258px;
+      width: min(390px, 100%);
+      padding: 20px 42px 24px;
+    }
+
+    .modal-card.faculty {
+      min-height: 535px;
+      width: min(440px, 100%);
+    }
+
+    .modal-title {
+      color: #fff;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      color: #1E1D1B;
+      font-size: 26px;
+      line-height: 26px;
+    }
+
+    .modal-form {
+      min-height: 345px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-card.compact .modal-form {
+      min-height: 190px;
+    }
+
+    .modal-card.faculty .modal-form {
+      min-height: 455px;
+    }
+
+    .modal-form label {
+      margin: 48px 0 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .modal-card.compact .modal-form label {
+      margin-top: 16px;
+    }
+
+    .modal-card.faculty .modal-form label {
+      margin: 14px 0 7px;
+    }
+
+    .modal-card.faculty .modal-form label:first-of-type {
+      margin-top: 30px;
+    }
+
+    .modal-form input,
+    .modal-form select,
+    .modal-form textarea {
+      width: 100%;
+      border: 0;
+      border-radius: 7px;
+      background: #FFFDFA;
+      color: #28261F;
+      outline: none;
+      font-size: 11px;
+    }
+
+    .modal-form input,
+    .modal-form select {
+      height: 36px;
+      padding: 0 10px;
+    }
+
+    .modal-form textarea {
+      min-height: 120px;
+      padding: 10px;
+      resize: none;
+    }
+
+    .modal-form input:focus,
+    .modal-form select:focus,
+    .modal-form textarea:focus {
+      box-shadow: 0 0 0 2px #D97251;
+    }
+
+    .modal-submit {
+      width: 100%;
+      height: 38px;
+      margin-top: auto;
+      border: 0;
+      border-radius: 7px;
+      background: #30302E;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .toast {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 120;
+      display: none;
+      min-width: 210px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      background: #D97251;
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .toast.show {
+      display: block;
+      animation: toastIn .2s ease-out;
+    }
+
+    .masked-review {
+      width: 128px;
+      height: 12px;
+      margin: 0 auto;
+      border-radius: 2px;
+      background: #625D55;
+    }
+
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(8px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .app-canvas {
+        min-width: 880px;
+        min-height: 640px;
+        overflow: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-canvas">
+    <iframe
+      src="../../components/navigation/sidebar-admin.html"
+      id="sidebar-frame"
+      class="sidebar-frame"
+      title="Admin Sidebar">
+    </iframe>
+
+    <main class="section-container">
+      <div class="header-container">
+        <div class="heading-wrapper">
+          <h1 class="heading-title">Programs</h1>
+        </div>
+      </div>
+
+      <div class="controls-container">
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="none">
+  <circle cx="7" cy="7" r="4.5" stroke="#6C655D" stroke-width="1.3"/>
+  <path d="M10.5 10.5L14 14" stroke="#6C655D" stroke-width="1.3" stroke-linecap="round"/>
+</svg>
+          <input id="searchInput" class="search-input" type="search" placeholder="Search by program name...">
+        </div>
+
+        <div class="dropdown-container status">
+          <select id="statusFilter" class="dropdown-select">
+            <option value="all">Status: All</option>
+            <option value="approved">Approved</option>
+          </select>
+          <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+  <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+        </div>
+
+        <button id="addButton" type="button" class="add-button">+ Add Program</button>
+      </div>
+
+      <div class="table-margin-container">
+        <div class="table-container">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 62%;">Program</th>
+                  <th class="text-center" style="width: 18%;">Status</th>
+                  <th class="text-right" style="width: 20%;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+            <tr data-name="bachelor of science in computer science" data-status="approved">
+              <td>Bachelor of Science in Computer Science</td>
+              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="bachelor of science in computer engineering" data-status="approved">
+              <td>Bachelor of Science in Computer Engineering</td>
+              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="bachelor of science in medical technology" data-status="approved">
+              <td>Bachelor of Science in Medical Technology</td>
+              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="bachelor of science in information systems" data-status="approved">
+              <td>Bachelor of Science in Information Systems</td>
+              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="bachelor of science in applied mathematics" data-status="approved">
+              <td>Bachelor of Science in Applied Mathematics</td>
+              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="emptyState" class="empty-state">No programs found.</div>
+        </div>
+      </div>
+
+      <div class="bottom-bar-container">
+        <div class="pagination-wrapper">
+          <button class="pill-btn pagination" type="button">Previous</button>
+          <span class="page-text">Page 1 of 3</span>
+          <button class="pill-btn pagination" type="button">Next</button>
+        </div>
+      </div>
+    </main>
+
+    <div id="entityModal" class="modal-overlay">
+      <section class="modal-card">
+        <button id="closeEntity" class="modal-close" type="button" aria-label="Close">×</button>
+        <h2 id="entityModalTitle" class="modal-title">Create Program</h2>
+
+        <form id="entityForm" class="modal-form">
+          <label for="entityName">Program Name</label>
+          <input id="entityName" type="text" placeholder="Bachelor of Science in..." required>
+          <button type="submit" class="modal-submit">Submit</button>
+        </form>
+      </section>
+    </div>
+
+    <div id="removeModal" class="modal-overlay">
+      <section class="modal-card compact">
+        <button id="closeRemove" class="modal-close" type="button" aria-label="Close">×</button>
+        <h2 class="modal-title">Remove Program</h2>
+
+        <form id="removeForm" class="modal-form">
+          <label for="removeReason">Reason:</label>
+          <textarea id="removeReason" placeholder="Type here..." required></textarea>
+          <button type="submit" class="modal-submit">Submit</button>
+        </form>
+      </section>
+    </div>
+
+    <div id="toast" class="toast">Program Created Successfully</div>
+
+
+    <script>
+      function setSidebarActive(fileName) {
+        const frame = document.getElementById('sidebar-frame');
+        if (!frame) return;
+
+        frame.addEventListener('load', () => {
+          try {
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            const links = doc.querySelectorAll('#sidebar-nav a');
+
+            links.forEach(link => {
+              link.classList.remove('nav-btn-active', 'font-bold', 'shadow-sm');
+              link.classList.add('nav-btn-inactive', 'font-semibold');
+
+              const svg = link.querySelector('svg');
+              if (svg) svg.setAttribute('stroke', 'currentColor');
+
+              if ((link.getAttribute('href') || '').endsWith(fileName)) {
+                link.classList.remove('nav-btn-inactive', 'font-semibold');
+                link.classList.add('nav-btn-active', 'font-bold', 'shadow-sm');
+                if (svg) svg.setAttribute('stroke', '#A35233');
+              }
+            });
+          } catch (_) {}
+        });
+      }
+
+    <script>
+      setSidebarActive('programs.html');
+
+      const tableBody = document.getElementById('tableBody');
+      const searchInput = document.getElementById('searchInput');
+      const statusFilter = document.getElementById('statusFilter');
+      const emptyState = document.getElementById('emptyState');
+      const entityModal = document.getElementById('entityModal');
+      const removeModal = document.getElementById('removeModal');
+      const entityForm = document.getElementById('entityForm');
+      const removeForm = document.getElementById('removeForm');
+      const entityName = document.getElementById('entityName');
+      const removeReason = document.getElementById('removeReason');
+      const entityModalTitle = document.getElementById('entityModalTitle');
+      const toast = document.getElementById('toast');
+
+      let mode = 'create';
+      let selectedRow = null;
+
+      function openModal(modal) {
+        modal.classList.add('show');
+      }
+
+      function closeModal(modal) {
+        modal.classList.remove('show');
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        window.setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+
+      function filterRows() {
+        const query = searchInput.value.trim().toLowerCase();
+        const status = statusFilter.value;
+        let visibleCount = 0;
+
+        [...tableBody.rows].forEach(row => {
+          const visible =
+            row.dataset.name.includes(query) &&
+            (status === 'all' || row.dataset.status === status);
+
+          row.style.display = visible ? '' : 'none';
+          if (visible) visibleCount++;
+        });
+
+        emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
+      }
+
+      document.getElementById('addButton').addEventListener('click', () => {
+        mode = 'create';
+        selectedRow = null;
+        entityModalTitle.textContent = 'Create Program';
+        entityName.value = '';
+        openModal(entityModal);
+      });
+
+      tableBody.addEventListener('click', event => {
+        const row = event.target.closest('tr');
+        if (!row) return;
+
+        if (event.target.classList.contains('edit-btn')) {
+          mode = 'edit';
+          selectedRow = row;
+          entityModalTitle.textContent = 'Edit Program';
+          entityName.value = row.children[0].textContent.trim();
+          openModal(entityModal);
+        }
+
+        if (event.target.classList.contains('remove-btn')) {
+          selectedRow = row;
+          removeReason.value = '';
+          openModal(removeModal);
+        }
+      });
+
+      entityForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const value = entityName.value.trim();
+        if (!value) return;
+
+        if (mode === 'edit' && selectedRow) {
+          selectedRow.children[0].textContent = value;
+          selectedRow.dataset.name = value.toLowerCase();
+          closeModal(entityModal);
+          window.setTimeout(() => showToast('Program Updated Successfully'), 120);
+        } else {
+          const row = document.createElement('tr');
+          row.dataset.name = value.toLowerCase();
+          row.dataset.status = 'approved';
+          row.innerHTML = `
+            <td>${value}</td>
+            <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
+            <td class="text-right">
+              <div class="action-group">
+                <button class="pill-btn edit-btn" type="button">Edit</button>
+                <button class="pill-btn remove-btn" type="button">Remove</button>
+              </div>
+            </td>`;
+          tableBody.prepend(row);
+          closeModal(entityModal);
+          window.setTimeout(() => showToast('Program Created Successfully'), 120);
+        }
+
+        filterRows();
+      });
+
+      removeForm.addEventListener('submit', event => {
+        event.preventDefault();
+        if (!selectedRow || !removeReason.value.trim()) return;
+
+        selectedRow.remove();
+        selectedRow = null;
+        closeModal(removeModal);
+        window.setTimeout(() => showToast('Program Removed Successfully'), 120);
+        filterRows();
+      });
+
+      document.getElementById('closeEntity').addEventListener('click', () => closeModal(entityModal));
+      document.getElementById('closeRemove').addEventListener('click', () => closeModal(removeModal));
+      searchInput.addEventListener('input', filterRows);
+      statusFilter.addEventListener('change', filterRows);
+
+      [entityModal, removeModal].forEach(modal => {
+        modal.addEventListener('click', event => {
+          if (event.target === modal) closeModal(modal);
+        });
+      });
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          closeModal(entityModal);
+          closeModal(removeModal);
+        }
+      });
+    </script>
+
+  </div>
+
+</body>
+</html>
