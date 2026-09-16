@@ -957,7 +957,7 @@
   <body data-page="departments">
     <a href="#main" class="skip">Skip to content</a>
     <div class="app">
-      <aside class="sidebar" data-faculty-sidebar>
+      <aside class="sidebar" data-faculty-sidebar data-component="sidebar-faculty">
         <a class="brand" href="dashboard.html">Faculty Portal</a>
         <nav class="nav" aria-label="Faculty navigation">
           <a href="dashboard.html"
@@ -1678,14 +1678,14 @@
             p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
           );
           $("#entity-list").innerHTML = filtered.length
-            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button class="secondary" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
+            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th><th>Action</th></tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td><td><button class="secondary" data-propose-edit="${esc(p)}">Apply to edit</button></td></tr>`).join("")}</tbody></table></div>`
             : '<p class="empty">No matching entries. Try another name.</p>';
         }
         $("#entity-search").oninput = render;
         function open(name = "") {
           original = name;
           $("#proposal-title").textContent = name
-            ? "Apply to edit program"
+            ? `Apply to edit ${isProgram ? "program" : "department"}`
             : `Propose a ${isProgram ? "program" : "department"}`;
           $("#entity-name").value = name;
           $("#entity-name").setCustomValidity("");
