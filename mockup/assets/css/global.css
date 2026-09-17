@@ -99,6 +99,53 @@ body {
     overflow-y: auto;
 }
 
+/* Faculty layout scroll containment */
+body:has(.app) {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    height: calc(100vh - 40px);
+}
+
+.app > .sidebar {
+    height: 100%;
+}
+
+.app > main,
+main {
+    height: 100%;
+    overflow-y: auto;
+    min-width: 0;
+}
+
+@media (max-width: 700px) {
+    body:has(.app) {
+        padding: 0;
+    }
+
+    .app {
+        border-radius: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .app > .sidebar {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        flex-shrink: 0;
+    }
+
+    .app > main,
+    main {
+        flex: 1;
+        min-height: 0;
+    }
+}
+
 /* --- 5. COMPONENTS --- */
 .btn {
     display: inline-flex;
