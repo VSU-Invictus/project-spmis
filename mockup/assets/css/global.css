@@ -99,6 +99,53 @@ body {
     overflow-y: auto;
 }
 
+/* Faculty layout scroll containment */
+body:has(.app) {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    height: calc(100vh - 40px);
+}
+
+.app > .sidebar {
+    height: 100%;
+}
+
+.app > main,
+main {
+    height: 100%;
+    overflow-y: auto;
+    min-width: 0;
+}
+
+@media (max-width: 700px) {
+    body:has(.app) {
+        padding: 0;
+    }
+
+    .app {
+        border-radius: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .app > .sidebar {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        flex-shrink: 0;
+    }
+
+    .app > main,
+    main {
+        flex: 1;
+        min-height: 0;
+    }
+}
+
 /* --- 5. COMPONENTS --- */
 .btn {
     display: inline-flex;
@@ -149,4 +196,150 @@ body {
 .input-field:focus {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+}
+
+/* Faculty sidebar toggle shared by every faculty page. */
+body .app > .sidebar {
+    position: relative;
+    overflow: hidden;
+    transition: width 0.28s ease, padding 0.28s ease;
+}
+
+body .app > .sidebar .sidebar-toggle {
+    position: absolute;
+    top: 70px;
+    right: 18px;
+    z-index: 1;
+    width: 34px;
+    height: 34px;
+    padding: 7px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    color: var(--foreground);
+}
+
+body .app > .sidebar .sidebar-toggle svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.28s ease;
+}
+
+@media (min-width: 701px) {
+    body .app > .sidebar {
+        width: 250px;
+        padding-inline: 18px;
+    }
+
+    body .app > .sidebar .brand {
+        position: relative;
+        display: block;
+        width: calc(100% - 20px);
+        overflow: hidden;
+        white-space: nowrap;
+        transition: color 0.18s ease;
+    }
+
+    body .app > .sidebar .brand::before {
+        content: "FP";
+        position: absolute;
+        left: 0;
+        color: var(--foreground);
+        font-size: 16px;
+        opacity: 0;
+        transition: opacity 0.18s ease;
+    }
+
+    body .app > .sidebar .nav span {
+        display: inline-block;
+        max-width: 160px;
+        overflow: hidden;
+        opacity: 1;
+        white-space: nowrap;
+        transition: max-width 0.28s ease, opacity 0.18s ease;
+    }
+
+    body .app > .sidebar .profile-link {
+        overflow: hidden;
+        white-space: nowrap;
+        transition: padding 0.28s ease;
+    }
+
+    body .app > .sidebar .profile-link strong,
+    body .app > .sidebar .profile-link small {
+        opacity: 1;
+        transition: opacity 0.18s ease 0.08s;
+    }
+
+    body .app > .sidebar .profile-link::before {
+        transition: left 0.28s ease, top 0.28s ease;
+    }
+
+    body .app > .sidebar.sidebar-collapsed {
+        width: 76px;
+        padding-inline: 12px;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .sidebar-toggle svg {
+        transform: rotate(180deg);
+    }
+
+    body .app > .sidebar.sidebar-collapsed .brand {
+        color: transparent;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .brand::before {
+        opacity: 1;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .nav a {
+        justify-content: center;
+        padding-inline: 10px;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .nav span,
+    body .app > .sidebar.sidebar-collapsed .profile-link strong,
+    body .app > .sidebar.sidebar-collapsed .profile-link small {
+        opacity: 0;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .nav span {
+        max-width: 0;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .profile-link {
+        min-height: 52px;
+        padding: 0;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .profile-link::before {
+        left: 12px;
+        top: 12px;
+    }
+}
+
+@media (min-width: 701px) and (max-width: 1000px) {
+    body .app > .sidebar:not(.sidebar-collapsed) {
+        width: 195px;
+    }
+}
+
+@media (max-width: 700px) {
+    body .app > .sidebar .sidebar-toggle {
+        top: 14px;
+        right: 16px;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .nav,
+    body .app > .sidebar.sidebar-collapsed .profile-link {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body .app > .sidebar,
+    body .app > .sidebar * {
+        transition: none;
+    }
 }

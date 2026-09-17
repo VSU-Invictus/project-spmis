@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Student details · SPMIS Faculty</title>
     <link rel="stylesheet" href="../../assets/css/global.css" />
+    <script src="../../assets/js/faculty-sidebar.js" defer></script>
     <style>
         /* Faculty layout and components. Shared colors come from assets/css/global.css. */
         html.dark {
@@ -22,6 +23,8 @@
             color: var(--foreground);
             font: 14px/1.6 var(--font-sans);
             padding: 20px;
+            height: 100vh;
+            overflow: hidden;
         }
 
         a {
@@ -76,7 +79,7 @@
 
         .app {
             max-width: 1440px;
-            min-height: calc(100vh - 40px);
+            height: calc(100vh - 40px);
             margin: auto;
             display: flex;
             border: 1px solid var(--border);
@@ -93,6 +96,8 @@
             padding: 28px 18px;
             display: flex;
             flex-direction: column;
+            height: 100%;
+            overflow-y: auto;
         }
 
         .brand {
@@ -138,6 +143,8 @@
             min-width: 0;
             flex: 1;
             padding: 38px;
+            height: 100%;
+            overflow-y: auto;
         }
 
         .eyebrow {
@@ -545,12 +552,16 @@
 
             .app {
                 border-radius: 0;
-                display: block;
-                min-height: 100vh;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
             }
 
             .sidebar {
                 width: 100%;
+                height: auto;
+                overflow: visible;
+                flex-shrink: 0;
                 border-right: 0;
                 border-bottom: 1px solid var(--border);
                 padding: 18px;
@@ -574,6 +585,8 @@
             }
 
             main {
+                flex: 1;
+                min-height: 0;
                 padding: 22px 16px;
             }
 
