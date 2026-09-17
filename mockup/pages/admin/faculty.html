@@ -103,8 +103,7 @@
 
     .search-wrapper {
       position: relative;
-      flex: 1 1 auto;
-      min-width: 280px;
+      width: 500px;
       height: 38px;
     }
 
@@ -562,20 +561,22 @@
           <input id="searchInput" class="search-input" type="search" placeholder="Search by faculty name or email...">
         </div>
 
-        <div class="dropdown-container department">
-          <select id="departmentFilter" class="dropdown-select">
-            <option value="all">Department: All</option>
-            <option>Department of Computer Science</option>
-            <option>Department of Information Technology</option>
-            <option>Department of Applied Mathematics</option>
-            <option>Department of Biological Sciences</option>
-          </select>
-          <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+          <div class="dropdown-container department">
+            <select id="departmentFilter" class="dropdown-select">
+              <option value="all">Department: All</option>
+              <option>Department of Computer Science</option>
+              <option>Department of Information Technology</option>
+              <option>Department of Applied Mathematics</option>
+              <option>Department of Biological Sciences</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
   <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-        </div>
+          </div>
 
-        <button id="addButton" type="button" class="add-button">+ Add Faculty</button>
+          <button id="addButton" type="button" class="add-button">+ Add Faculty</button>
+        </div>
       </div>
 
       <div class="table-margin-container">

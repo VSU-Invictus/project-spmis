@@ -91,30 +91,37 @@
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      padding: 10px 24px;
+      padding: 0 18px;
       gap: 8px;
-      height: 44px;
+      height: 38px;
+      flex-shrink: 0;
+      white-space: nowrap;
       background: #d17653;
-      border-radius: 8px;
+      border-radius: 12px;
       border: 1px solid #e08e72;
       color: #fff;
-      font-size: 15px;
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
     }
 
     .controls-container {
       display: flex;
+      flex-wrap: wrap;
+      flex-shrink: 0;
       align-items: center;
       gap: 12px;
-      width: calc(100% - 10px);
-      height: 52px;
+      width: calc(100% - 24px);
+      min-height: 52px;
       margin-left: 10px;
       padding-top: 14px;
     }
 
     .search-wrapper {
       position: relative;
-      width: 500px;
+      flex: 1 1 280px;
+      max-width: 500px;
+      min-width: 0;
       height: 38px;
     }
 
@@ -152,10 +159,17 @@
       height: 38px;
     }
 
+    .controls-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
     .dropdown-container.program {
       width: 160px;
-      margin-left: auto;
-      margin-right: 14px;
+      flex-shrink: 0;
     }
 
     .dropdown-select {
@@ -368,12 +382,6 @@
         <div class="heading-wrapper">
           <h2 class="heading-title">Student Roster</h2>
         </div>
-        <button class="btn-add">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7 1.16663V12.8333M1.16666 6.99996H12.8333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Add Student
-        </button>
       </header>
 
       <div class="controls-container">
@@ -385,15 +393,23 @@
           <input type="text" class="search-input" placeholder="Search by student id or name...">
         </div>
 
-        <div class="dropdown-container program">
-          <select class="dropdown-select">
-            <option>Program: All</option>
-            <option>BS in Computer Science</option>
-            <option>BS in Computer Engineering</option>
-          </select>
-          <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
-            <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+        <div class="controls-actions">
+          <div class="dropdown-container program">
+            <select class="dropdown-select">
+              <option>Program: All</option>
+              <option>BS in Computer Science</option>
+              <option>BS in Computer Engineering</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <button class="btn-add">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 1.16663V12.8333M1.16666 6.99996H12.8333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Add Student
+          </button>
         </div>
       </div>
 
