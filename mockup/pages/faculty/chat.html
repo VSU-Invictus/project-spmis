@@ -378,6 +378,11 @@
         min-height: 260px;
         max-height: 520px;
         overflow: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .chat-log::-webkit-scrollbar {
+        display: none;
       }
       .message {
         padding: 16px 20px;
@@ -1127,6 +1132,7 @@
               role="log"
               aria-label="Conversation"
               aria-live="polite"
+              tabindex="0"
             >
               <div class="message">
                 <strong>AI assistant</strong>What would you like to explore? Try
