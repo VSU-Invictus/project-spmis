@@ -1879,6 +1879,11 @@
             );
           }, 800);
         }
+        $("#chat-prompt").onkeydown = (e) => {
+          if (e.key !== "Enter" || e.shiftKey || e.isComposing) return;
+          e.preventDefault();
+          if (!e.repeat) $("#chat-form").requestSubmit($("#send"));
+        };
         $("#chat-form").onsubmit = (e) => {
           e.preventDefault();
           if (busy) return;
