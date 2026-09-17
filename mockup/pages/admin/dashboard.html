@@ -102,6 +102,10 @@
             color: #C25B3E;
             transform: translateX(2px);
         }
+    button, input, select, textarea {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 500;
+    }
     </style>
 </head>
 <body class="flex justify-center items-center min-h-screen p-0">
@@ -227,7 +231,7 @@
                             <div class="overflow-x-auto custom-scrollbar h-full">
                                 <table class="w-full text-left border-collapse min-w-[560px] h-full">
                                     <thead>
-                                        <tr class="bg-aths-special text-fuscous-gray text-[10px] font-bold h-[36px]">
+                                        <tr class="bg-aths-special text-fuscous-gray text-[14px] font-bold h-[36px]">
                                             <th class="py-2 px-3 font-bold">Type</th>
                                             <th class="py-2 px-3 font-bold">Applicant / Title</th>
                                             <th class="py-2 px-3 font-bold">Department / Context</th>
@@ -235,11 +239,11 @@
                                             <th class="py-2 px-3 font-bold text-right">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-xs">
+                                    <tbody class="text-[14px] font-medium">
                                         <!-- Row 1 -->
                                         <tr class="h-[41px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
                                             <td class="py-2.5 px-4">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-old-lace text-crail text-[10px] font-semibold leading-4">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-old-lace text-crail text-[12px] font-medium leading-4">
                                                     Faculty
                                                 </span>
                                             </td>
@@ -247,7 +251,7 @@
                                             <td class="py-2.5 px-4 text-soya-bean">Computer Science</td>
                                             <td class="py-2.5 px-4 text-soya-bean">2026-09-10</td>
                                             <td class="py-2.5 px-4 text-right">
-                                                <button onclick="handleReview('Dr. Eleanor Vance')" class="action-link text-red-damask font-semibold text-xs inline-flex items-center justify-end gap-1">
+                                                <button onclick="handleReview('Dr. Eleanor Vance')" class="action-link text-red-damask font-medium text-xs inline-flex items-center justify-end gap-1">
                                                     Review <span class="text-sm">→</span>
                                                 </button>
                                             </td>
@@ -256,7 +260,7 @@
                                         <!-- Row 2 -->
                                         <tr class="h-[42px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
                                             <td class="py-2.5 px-4">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-parchment text-shingle-fawn text-[10px] font-semibold leading-4">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-parchment text-shingle-fawn text-[12px] font-medium leading-4">
                                                     Student
                                                 </span>
                                             </td>
@@ -264,7 +268,7 @@
                                             <td class="py-2.5 px-4 text-soya-bean">BS Computer Science</td>
                                             <td class="py-2.5 px-4 text-soya-bean">2026-09-10</td>
                                             <td class="py-2.5 px-4 text-right">
-                                                <button onclick="handleReview('Radz Ponce Moreno')" class="action-link text-red-damask font-semibold text-xs inline-flex items-center justify-end gap-1">
+                                                <button onclick="handleReview('Radz Ponce Moreno')" class="action-link text-red-damask font-medium text-xs inline-flex items-center justify-end gap-1">
                                                     Review <span class="text-sm">→</span>
                                                 </button>
                                             </td>
@@ -273,7 +277,7 @@
                                         <!-- Row 3 -->
                                         <tr class="h-[42px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
                                             <td class="py-2.5 px-4">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-zumthor text-[#1A73E8] text-[10px] font-semibold leading-4">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-zumthor text-[#1A73E8] text-[12px] font-medium leading-4">
                                                     Program
                                                 </span>
                                             </td>
@@ -281,7 +285,7 @@
                                             <td class="py-2.5 px-4 text-soya-bean">New Addition</td>
                                             <td class="py-2.5 px-4 text-soya-bean">2026-09-09</td>
                                             <td class="py-2.5 px-4 text-right">
-                                                <button onclick="handleReview('BS Data Science')" class="action-link text-red-damask font-semibold text-xs inline-flex items-center justify-end gap-1">
+                                                <button onclick="handleReview('BS Data Science')" class="action-link text-red-damask font-medium text-xs inline-flex items-center justify-end gap-1">
                                                     Review <span class="text-sm">→</span>
                                                 </button>
                                             </td>
@@ -290,7 +294,7 @@
                                         <!-- Row 4 -->
                                         <tr class="h-[41px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
                                             <td class="py-2.5 px-4">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-old-lace text-crail text-[10px] font-semibold leading-4">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-old-lace text-crail text-[12px] font-medium leading-4">
                                                     Faculty
                                                 </span>
                                             </td>
@@ -298,7 +302,7 @@
                                             <td class="py-2.5 px-4 text-soya-bean">Applied Mathematics</td>
                                             <td class="py-2.5 px-4 text-soya-bean">2026-09-08</td>
                                             <td class="py-2.5 px-4 text-right">
-                                                <button onclick="handleReview('Dr. Sophia Al-Mansoor')" class="action-link text-red-damask font-semibold text-xs inline-flex items-center justify-end gap-1">
+                                                <button onclick="handleReview('Dr. Sophia Al-Mansoor')" class="action-link text-red-damask font-medium text-xs inline-flex items-center justify-end gap-1">
                                                     Review <span class="text-sm">→</span>
                                                 </button>
                                             </td>
