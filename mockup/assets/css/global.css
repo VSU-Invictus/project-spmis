@@ -151,17 +151,36 @@ body {
     outline-offset: 2px;
 }
 
-/* Collapse on pointer devices; keyboard focus expands it too. */
-@media (hover: hover) and (min-width: 701px) {
-    body .app > .sidebar {
-        width: 76px;
-        padding-inline: 12px;
-        overflow: hidden;
-        transition: width 0.28s ease, padding 0.28s ease;
-    }
+/* Faculty sidebar toggle shared by every faculty page. */
+body .app > .sidebar {
+    position: relative;
+    overflow: hidden;
+    transition: width 0.28s ease, padding 0.28s ease;
+}
 
-    body .app > .sidebar:hover,
-    body .app > .sidebar:focus-within {
+body .app > .sidebar .sidebar-toggle {
+    position: absolute;
+    top: 70px;
+    right: 18px;
+    z-index: 1;
+    width: 34px;
+    height: 34px;
+    padding: 7px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    color: var(--foreground);
+}
+
+body .app > .sidebar .sidebar-toggle svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.28s ease;
+}
+
+@media (min-width: 701px) {
+    body .app > .sidebar {
         width: 250px;
         padding-inline: 18px;
     }
@@ -210,44 +229,64 @@ body {
         transition: left 0.28s ease, top 0.28s ease;
     }
 
-    body .app > .sidebar:not(:hover):not(:focus-within) .brand {
+    body .app > .sidebar.sidebar-collapsed {
+        width: 76px;
+        padding-inline: 12px;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .sidebar-toggle svg {
+        transform: rotate(180deg);
+    }
+
+    body .app > .sidebar.sidebar-collapsed .brand {
         color: transparent;
     }
 
-    body .app > .sidebar:not(:hover):not(:focus-within) .brand::before {
+    body .app > .sidebar.sidebar-collapsed .brand::before {
         opacity: 1;
     }
 
-    body .app > .sidebar:not(:hover):not(:focus-within) .nav a {
+    body .app > .sidebar.sidebar-collapsed .nav a {
         justify-content: center;
         padding-inline: 10px;
     }
 
-    body .app > .sidebar:not(:hover):not(:focus-within) .nav span,
-    body .app > .sidebar:not(:hover):not(:focus-within) .profile-link strong,
-    body .app > .sidebar:not(:hover):not(:focus-within) .profile-link small {
+    body .app > .sidebar.sidebar-collapsed .nav span,
+    body .app > .sidebar.sidebar-collapsed .profile-link strong,
+    body .app > .sidebar.sidebar-collapsed .profile-link small {
         opacity: 0;
     }
 
-    body .app > .sidebar:not(:hover):not(:focus-within) .nav span {
+    body .app > .sidebar.sidebar-collapsed .nav span {
         max-width: 0;
     }
 
-    body .app > .sidebar:not(:hover):not(:focus-within) .profile-link {
+    body .app > .sidebar.sidebar-collapsed .profile-link {
         min-height: 52px;
         padding: 0;
     }
 
-    body .app > .sidebar:not(:hover):not(:focus-within) .profile-link::before {
+    body .app > .sidebar.sidebar-collapsed .profile-link::before {
         left: 12px;
         top: 12px;
     }
 }
 
-@media (hover: hover) and (min-width: 701px) and (max-width: 1000px) {
-    body .app > .sidebar:hover,
-    body .app > .sidebar:focus-within {
+@media (min-width: 701px) and (max-width: 1000px) {
+    body .app > .sidebar:not(.sidebar-collapsed) {
         width: 195px;
+    }
+}
+
+@media (max-width: 700px) {
+    body .app > .sidebar .sidebar-toggle {
+        top: 14px;
+        right: 16px;
+    }
+
+    body .app > .sidebar.sidebar-collapsed .nav,
+    body .app > .sidebar.sidebar-collapsed .profile-link {
+        display: none;
     }
 }
 
