@@ -103,8 +103,7 @@
 
     .search-wrapper {
       position: relative;
-      flex: 1 1 auto;
-      min-width: 280px;
+      width: 500px;
       height: 38px;
     }
 
@@ -562,38 +561,40 @@
           <input id="searchInput" class="search-input" type="search" placeholder="Search audit logs...">
         </div>
 
-        <div class="dropdown-container audit">
-          <select id="userFilter" class="dropdown-select">
-            <option value="all">User: All</option>
-            <option value="Admin">Admin</option>
-          </select>
-          <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+          <div class="dropdown-container audit">
+            <select id="userFilter" class="dropdown-select">
+              <option value="all">User: All</option>
+              <option value="Admin">Admin</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
   <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-        </div>
+          </div>
 
-        <div class="dropdown-container audit">
-          <select id="dateFilter" class="dropdown-select">
-            <option value="all">Date: All</option>
-            <option value="Sep 10">Sep 10</option>
-            <option value="Sep 09">Sep 09</option>
-            <option value="Sep 08">Sep 08</option>
-          </select>
-          <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+          <div class="dropdown-container audit">
+            <select id="dateFilter" class="dropdown-select">
+              <option value="all">Date: All</option>
+              <option value="Sep 10">Sep 10</option>
+              <option value="Sep 09">Sep 09</option>
+              <option value="Sep 08">Sep 08</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
   <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-        </div>
+          </div>
 
-        <div class="dropdown-container audit">
-          <select id="actionFilter" class="dropdown-select">
-            <option value="all">Action: All</option>
-            <option value="Created">Created</option>
-            <option value="Updated">Updated</option>
-            <option value="Removed">Removed</option>
-          </select>
-          <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+          <div class="dropdown-container audit">
+            <select id="actionFilter" class="dropdown-select">
+              <option value="all">Action: All</option>
+              <option value="Created">Created</option>
+              <option value="Updated">Updated</option>
+              <option value="Removed">Removed</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
   <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
+          </div>
         </div>
       </div>
 
