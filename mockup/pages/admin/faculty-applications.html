@@ -97,8 +97,7 @@
 
     .search-wrapper {
       position: relative;
-      flex: 1 1 auto;
-      min-width: 280px;
+      width: 500px;
       height: 38px;
     }
 
@@ -457,25 +456,27 @@
           <input type="text" class="search-input" placeholder="Search by faculty name or keyword...">
         </div>
 
-        <div class="dropdown-container type">
-          <select class="dropdown-select">
-            <option>Type: All</option>
-            <option>Faculty</option>
-            <option>Admin</option>
-          </select>
-          <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
-            <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+          <div class="dropdown-container type">
+            <select class="dropdown-select">
+              <option>Type: All</option>
+              <option>Faculty</option>
+              <option>Admin</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
 
-        <div class="dropdown-container sort">
-          <select class="dropdown-select">
-            <option>Oldest</option>
-            <option>Newest</option>
-          </select>
-          <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
-            <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <div class="dropdown-container sort">
+            <select class="dropdown-select">
+              <option>Oldest</option>
+              <option>Newest</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
         </div>
       </div>
 
