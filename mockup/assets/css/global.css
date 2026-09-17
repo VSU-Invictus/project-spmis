@@ -232,6 +232,88 @@ body .app > .sidebar .brand {
     text-align: center;
 }
 
+body .app > .sidebar .profile-area {
+    position: relative;
+    margin-top: auto;
+}
+
+body .app > .sidebar .profile-area .profile-link {
+    width: 100%;
+    margin-top: 0;
+    padding-right: 12px;
+}
+
+body .app > .sidebar .profile-area .profile-link strong,
+body .app > .sidebar .profile-area .profile-link small {
+    display: block;
+    min-width: 0;
+}
+
+body .app > .sidebar .profile-area .profile-link strong {
+    padding-right: 44px;
+    white-space: nowrap;
+}
+
+body .app > .sidebar .profile-area .profile-link small {
+    white-space: normal;
+}
+
+body .app > .sidebar .logout-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    padding: 7px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--sidebar-foreground);
+}
+
+body .app > .sidebar .logout-button svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+body .app > .sidebar .logout-button:hover {
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
+}
+
+html.sidebar-collapsed body .app > .sidebar .logout-button,
+body .app > .sidebar.sidebar-collapsed .logout-button {
+    display: none;
+}
+
+dialog.logout-dialog {
+    width: min(420px, calc(100% - 32px));
+    margin: auto;
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    color: var(--foreground);
+}
+
+dialog.logout-dialog::backdrop {
+    background: #000a;
+}
+
+dialog.logout-dialog h2 {
+    margin: 0 0 8px;
+}
+
+dialog.logout-dialog p {
+    margin: 0 0 22px;
+    color: var(--sidebar-foreground);
+}
+
+dialog.logout-dialog .actions {
+    justify-content: flex-end;
+}
+
 body .app > .sidebar .sidebar-toggle svg {
     display: block;
     width: 18px;
@@ -341,6 +423,7 @@ body .app > .sidebar .sidebar-toggle svg {
         left: 12px;
         top: 12px;
     }
+
 }
 
 @media (min-width: 701px) and (max-width: 1000px) {
