@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Navigate parent window when used in an iframe -->
     <base target="_parent">
-    
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -21,49 +22,70 @@
             background-color: #141413;
         }
 
-        .bg-sidebar { background-color: #21201E; }
-        .border-sidebar-right { border-color: #181716; }
-        
+        .bg-sidebar {
+            background-color: #21201E;
+        }
+
+        .border-sidebar-right {
+            border-color: #181716;
+        }
+
         /* Active Navigation Item State */
         .nav-btn-active {
             background-color: #FAF8F5;
             color: #A35233;
         }
-        
+
         /* Inactive Navigation Item State */
         .nav-btn-inactive {
             background-color: transparent;
             color: #98938D;
         }
+
         .nav-btn-inactive:hover {
             background-color: rgba(255, 255, 255, 0.05);
             color: #FFFFFF;
         }
 
         /* Bottom Account Profile Card Styling */
-        .bg-account-card { background-color: #2B2A27; }
-        .bg-avatar { background-color: #F7E2D6; }
-        .text-avatar { color: #A35233; }
-        .border-divider { border-color: #8C4328; }
+        .bg-account-card {
+            background-color: #2B2A27;
+        }
+
+        .bg-avatar {
+            background-color: #F7E2D6;
+        }
+
+        .text-avatar {
+            color: #A35233;
+        }
+
+        .border-divider {
+            border-color: #8C4328;
+        }
 
         /* Dark Theme Scrollbar for Sidebar Navigation */
         .dark-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
+
         .dark-scrollbar::-webkit-scrollbar-track {
             background: #21201E;
         }
+
         .dark-scrollbar::-webkit-scrollbar-thumb {
             background: #3E3D39;
             border-radius: 4px;
         }
     </style>
 </head>
+
 <body class="bg-[#141413] min-h-screen">
 
     <!-- ========================= STANDALONE NAVIGATION SIDEBAR ========================= -->
-    <aside id="sidebar-menu" class="fixed top-0 left-0 bottom-0 w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50">
-        
+    <aside id="sidebar-menu"
+        class="fixed top-0 left-0 bottom-0 w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50">
+
         <div class="flex flex-col gap-1">
             <!-- Brand Title Header -->
             <div class="h-[48px] flex items-center px-2 pt-1 mb-2">
@@ -72,113 +94,133 @@
 
             <!-- Navigation Links Stream -->
             <nav class="flex flex-col gap-[3px]" id="sidebar-nav">
-                
+
                 <!-- 1. Dashboard -->
-                <a href="../../pages/admin/dashboard.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/dashboard.html" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Dashboard</span>
                 </a>
 
                 <!-- 2. Faculty Applications -->
-                <a href="../../pages/admin/faculty-applications.html" onclick="setActiveNav(this)" class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#A35233" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/faculty-applications.html" onclick="setActiveNav(this)"
+                    class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="#A35233"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Faculty Applications</span>
                 </a>
 
                 <!-- 3. Student Applications -->
-                <a href="../../pages/admin/student-applications.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/student-applications.html" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Student Applications</span>
                 </a>
 
                 <!-- 4. Program Applications -->
-                <a href="../../pages/admin/program-applications.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/program-applications.html" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Program Applications</span>
                 </a>
 
                 <!-- 5. Department Application (Wrapped text matching reference) -->
-                <a href="../../pages/admin/department-applications.html" onclick="setActiveNav(this)" class="nav-btn-inactive py-2 px-3.5 rounded-2xl flex items-start gap-[12px] text-[13px] font-semibold transition-all leading-tight">
-                    <svg class="w-[18px] h-[18px] shrink-0 mt-0.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/department-applications.html" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive py-2 px-3.5 rounded-2xl flex items-start gap-[12px] text-[13px] font-semibold transition-all leading-tight">
+                    <svg class="w-[18px] h-[18px] shrink-0 mt-0.5" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Department<br>Application</span>
                 </a>
 
                 <!-- 6. Students -->
-                <a href="../../pages/admin/students.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/students.html" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Students</span>
                 </a>
 
                 <!-- 7. Departments -->
-                <a href="../../pages/admin/departments.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/departments.html" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Departments</span>
                 </a>
 
                 <!-- 8. Programs -->
-                <a href="../../pages/admin/programs.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/programs.html" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Programs</span>
                 </a>
 
                 <!-- 9. Faculty -->
-                <a href="../../pages/admin/faculty.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/faculty.html" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Faculty</span>
                 </a>
 
                 <!-- 10. Audit Log -->
-                <a href="../../pages/admin/audit-log.html" onclick="setActiveNav(this)" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/>
-                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
+                <a href="../../pages/admin/audit-log.html" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                        <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
                     </svg>
                     <span>Audit Log</span>
                 </a>
@@ -206,11 +248,11 @@
                 </div>
 
                 <!-- Logout Button -->
-                <a href="../../pages/auth/signin.html" class="text-[#929292] hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10" aria-label="Log out" title="Log out" onclick="return confirm('Are you sure you want to log out?');">
+                <button type="button" class="text-[#929292] hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10" aria-label="Log out" title="Log out" onclick="handleLogout(event)">
                     <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                        <path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/>
+                        <path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
                     </svg>
-                </a>
+                </button>
             </div>
         </div>
 
@@ -250,6 +292,82 @@
         } catch (e) {
             // Fallback for security / cross-origin
         }
+
+        // Custom Logout Dialog logic
+        function handleLogout(event) {
+            event.preventDefault();
+            try {
+                const parentDoc = window.parent.document;
+                let dialog = parentDoc.getElementById('admin-logout-dialog');
+                
+                if (!dialog) {
+                    dialog = parentDoc.createElement('dialog');
+                    dialog.id = 'admin-logout-dialog';
+                    dialog.style.cssText = 'width: min(420px, calc(100% - 32px)); margin: auto; padding: 26px; border: 1px solid #D97251; border-radius: 15px; background: #30302E; color: #FFF; font-family: "Inter", sans-serif;';
+                    
+                    let style = parentDoc.getElementById('admin-logout-style');
+                    if (!style) {
+                        style = parentDoc.createElement('style');
+                        style.id = 'admin-logout-style';
+                        style.textContent = 'dialog#admin-logout-dialog::backdrop { background: rgba(0, 0, 0, 0.6); }';
+                        parentDoc.head.appendChild(style);
+                    }
+                    
+                    const form = parentDoc.createElement('form');
+                    form.method = 'dialog';
+                    
+                    const h2 = parentDoc.createElement('h2');
+                    h2.textContent = 'Log out?';
+                    h2.style.cssText = 'margin: 0 0 8px; font-size: 20px; font-weight: bold;';
+                    
+                    const p = parentDoc.createElement('p');
+                    p.textContent = 'Are you sure you want to end your admin session?';
+                    p.style.cssText = 'margin: 0 0 22px; color: #9C948B; font-size: 14px; line-height: 1.5;';
+                    
+                    const actions = parentDoc.createElement('div');
+                    actions.style.cssText = 'display: flex; justify-content: flex-end; gap: 12px;';
+                    
+                    const btnCancel = parentDoc.createElement('button');
+                    btnCancel.type = 'submit';
+                    btnCancel.value = 'cancel';
+                    btnCancel.textContent = 'Cancel';
+                    btnCancel.style.cssText = 'padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; background: transparent; color: #FFF; border: 1px solid #6C655D; transition: background 0.2s;';
+                    btnCancel.onmouseover = () => btnCancel.style.background = 'rgba(255,255,255,0.1)';
+                    btnCancel.onmouseout = () => btnCancel.style.background = 'transparent';
+                    
+                    const btnConfirm = parentDoc.createElement('button');
+                    btnConfirm.type = 'submit';
+                    btnConfirm.value = 'confirm';
+                    btnConfirm.textContent = 'Log out';
+                    btnConfirm.style.cssText = 'padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; background: #D97251; color: #FFF; border: none; transition: filter 0.2s;';
+                    btnConfirm.onmouseover = () => btnConfirm.style.filter = 'brightness(1.1)';
+                    btnConfirm.onmouseout = () => btnConfirm.style.filter = 'none';
+                    
+                    actions.appendChild(btnCancel);
+                    actions.appendChild(btnConfirm);
+                    
+                    form.appendChild(h2);
+                    form.appendChild(p);
+                    form.appendChild(actions);
+                    dialog.appendChild(form);
+                    
+                    dialog.addEventListener('close', () => {
+                        if (dialog.returnValue === 'confirm') {
+                            window.parent.location.href = '../../pages/auth/signin.html';
+                        }
+                    });
+                    
+                    parentDoc.body.appendChild(dialog);
+                }
+                
+                dialog.showModal();
+            } catch (e) {
+                if (confirm('Are you sure you want to end your admin session?')) {
+                    window.parent.location.href = '../../pages/auth/signin.html';
+                }
+            }
+        }
     </script>
 </body>
+
 </html>
