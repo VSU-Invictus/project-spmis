@@ -445,10 +445,160 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       font-weight: 500;
     }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 120;
+      display: none;
+      min-width: 210px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      background: #D97251;
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .toast.show {
+      display: block;
+      animation: toastIn .2s ease-out;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-container {
+      background: #444746;
+      border: 1px solid #D97251;
+      border-radius: 15px;
+      padding: 24px 32px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: transparent;
+      border: 1px solid #000;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-title {
+      font-family: 'Intel One Mono', 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 28px;
+      color: #FFFFFF;
+      text-align: center;
+      margin: 0 0 24px;
+    }
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .modal-form label {
+      font-family: 'Intel One Mono', 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 21px;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .modal-form textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 10px;
+      background: #FFFFFF;
+      border: 1px solid #E4DED5;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: #141413;
+      outline: none;
+      resize: none;
+    }
+    .modal-form textarea:focus {
+      box-shadow: 0 0 0 2px #D97251;
+    }
+    .modal-submit {
+      width: 224px;
+      height: 39px;
+      margin: 24px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #343434;
+      border: 1px solid #3D3D3A;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+    .modal-submit:hover {
+      background: #2a2a2a;
+    }
   </style>
 </head>
 <body>
   <div class="app-canvas">
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Notification</div>
+
+    <!-- Reject Modal -->
+    <div class="modal-overlay" id="rejectModal">
+      <div class="modal-container">
+        <button class="modal-close" id="closeReject">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M1 13L13 1M1 1L13 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h3 class="modal-title">Reject Application</h3>
+        <form class="modal-form" id="rejectForm">
+          <div class="modal-select-wrapper" style="margin-bottom: 8px;">
+            <label>Application:</label>
+            <select id="rejectAppSelect" style="width: 100%; height: 40px; background: #FFFFFF; border: 1px solid #E4DED5; border-radius: 12px; font-family: 'Inter'; font-size: 14px; padding: 0 10px; outline: none;"></select>
+          </div>
+          <div>
+            <label>Reason for rejection:</label>
+            <textarea placeholder="Enter reason here..." id="rejectReason"></textarea>
+          </div>
+          <button type="submit" class="modal-submit">Confirm Rejection</button>
+        </form>
+      </div>
+    </div>
+    
     <!-- Admin Sidebar Component -->
     <iframe src="../../components/navigation/sidebar-admin.html" class="sidebar-frame" title="Admin Sidebar"></iframe>
 
@@ -640,6 +790,123 @@
           }
         });
       });
+
+      // Toast and Modal Logic
+      const toast = document.getElementById('toast');
+      function showToast(message) {
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+
+      const rejectModal = document.getElementById('rejectModal');
+      const rejectForm = document.getElementById('rejectForm');
+      const closeReject = document.getElementById('closeReject');
+
+      function openModal(modal) { if (modal) modal.classList.add('active'); }
+      function closeModal(modal) { if (modal) modal.classList.remove('active'); }
+
+      if (closeReject) closeReject.addEventListener('click', () => closeModal(rejectModal));
+      if (rejectModal) {
+        rejectModal.addEventListener('click', e => {
+          if (e.target === rejectModal) closeModal(rejectModal);
+        });
+      }
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeModal(rejectModal);
+      });
+
+      let rejectReasons = {};
+      let currentAppId = null;
+
+      const rejectAppSelect = document.getElementById('rejectAppSelect');
+      const rejectReason = document.getElementById('rejectReason');
+
+      if (rejectAppSelect && rejectReason) {
+        rejectAppSelect.addEventListener('change', (e) => {
+          if (currentAppId) {
+            rejectReasons[currentAppId] = rejectReason.value;
+          }
+          currentAppId = e.target.value;
+          rejectReason.value = rejectReasons[currentAppId] || '';
+        });
+      }
+
+      if (rejectForm) {
+        rejectForm.addEventListener('submit', e => {
+          e.preventDefault();
+          if (currentAppId) {
+            rejectReasons[currentAppId] = rejectReason.value;
+          }
+
+          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
+          let allFilled = true;
+          checked.forEach((cb) => {
+            const id = cb.dataset.appId;
+            if (!rejectReasons[id] || rejectReasons[id].trim() === '') {
+              allFilled = false;
+            }
+          });
+
+          if (!allFilled) {
+            showToast('Please provide a reason for all selected applications');
+            return;
+          }
+
+          closeModal(rejectModal);
+          window.setTimeout(() => showToast('Applications Rejected Successfully'), 120);
+        });
+      }
+
+      const acceptBtn = document.querySelector('.pill-btn.accept');
+      const rejectBtn = document.querySelector('.pill-btn.reject');
+
+      if (acceptBtn) {
+        acceptBtn.addEventListener('click', () => {
+          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
+          if (checked.length > 0) {
+            showToast('Application Accepted Successfully');
+          } else {
+            showToast('Please select at least one application');
+          }
+        });
+      }
+
+      if (rejectBtn) {
+        rejectBtn.addEventListener('click', () => {
+          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
+          if (checked.length > 0) {
+            rejectReasons = {};
+            if (rejectAppSelect) rejectAppSelect.innerHTML = '';
+            
+            checked.forEach((cb, index) => {
+              const row = cb.closest('.table-row');
+              const nameEl = row.querySelector('.col-name');
+              const name = nameEl ? nameEl.textContent.trim() : 'Application ' + (index + 1);
+              const id = 'app_' + index;
+              cb.dataset.appId = id;
+              
+              if (rejectAppSelect) {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = name;
+                rejectAppSelect.appendChild(option);
+              }
+            });
+
+            if (rejectAppSelect) {
+              currentAppId = rejectAppSelect.value;
+            }
+            if (rejectReason) {
+              rejectReason.value = '';
+            }
+            openModal(rejectModal);
+          } else {
+            showToast('Please select at least one application');
+          }
+        });
+      }
     </script>
   </div>
 </body>
