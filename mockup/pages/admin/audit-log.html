@@ -91,6 +91,13 @@
       color: #fff;
     }
 
+    .heading-subtitle {
+      margin-top: -10px;
+      color: #B7B0A8;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
     .controls-container {
       display: flex;
       align-items: center;
@@ -222,7 +229,7 @@
 
     th {
       min-height: 44px;
-      padding: 12px 14px;
+      padding: 12px 20px;
       color: #544D45;
       font-size: 14px;
       font-weight: 700;
@@ -231,7 +238,7 @@
 
     td {
       min-height: 49px;
-      padding: 12px 14px;
+      padding: 12px 20px;
       color: #3A3632;
       font-size: 14px;
       font-weight: 500;
@@ -495,14 +502,6 @@
       animation: toastIn .2s ease-out;
     }
 
-    .masked-review {
-      width: 128px;
-      height: 12px;
-      margin: 0 auto;
-      border-radius: 2px;
-      background: #625D55;
-    }
-
     @keyframes overlayIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -565,6 +564,7 @@
             <select id="userFilter" class="dropdown-select">
               <option value="all">User: All</option>
               <option value="Admin">Admin</option>
+              <option value="Faculty">Faculty</option>
             </select>
             <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
   <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
@@ -589,6 +589,8 @@
               <option value="Created">Created</option>
               <option value="Updated">Updated</option>
               <option value="Removed">Removed</option>
+              <option value="Hidden">Hidden</option>
+              <option value="Deleted">Deleted</option>
             </select>
             <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
   <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
@@ -603,48 +605,48 @@
             <table style="min-width: 840px;">
               <thead>
                 <tr>
-                  <th style="width: 21%;">Date &amp; Time</th>
-                  <th class="text-center" style="width: 15%;">User</th>
-                  <th class="text-center" style="width: 16%;">Action</th>
-                  <th class="text-center" style="width: 18%;">Target</th>
-                  <th class="text-center" style="width: 30%;">Review Content</th>
+                  <th style="width: 22%;">Date &amp; Time</th>
+                  <th class="text-center" style="width: 18%;">Performed By</th>
+                  <th class="text-center" style="width: 15%;">Action</th>
+                  <th class="text-center" style="width: 17%;">Entity</th>
+                  <th class="text-center" style="width: 28%;">Target</th>
                 </tr>
               </thead>
               <tbody id="tableBody">
-            <tr data-search="sep 10, 10:42 am admin created faculty" data-user="Admin" data-date="Sep 10" data-action="Created">
+            <tr data-search="sep 10, 10:42 am admin user created faculty dr. eleanor vance" data-user="Admin" data-date="Sep 10" data-action="Created">
               <td>Sep 10, 10:42 AM</td>
-              <td class="text-center">Admin</td>
+              <td class="text-center">Admin User</td>
               <td class="text-center">Created</td>
               <td class="text-center"><span class="badge-pill badge-approved">Faculty</span></td>
-              <td class="text-center"><div class="masked-review" title="Review content masked"></div></td>
+              <td class="text-center">Dr. Eleanor Vance</td>
             </tr>
-            <tr data-search="sep 10, 09:18 am admin updated department" data-user="Admin" data-date="Sep 10" data-action="Updated">
+            <tr data-search="sep 10, 09:18 am admin user updated department computer science" data-user="Admin" data-date="Sep 10" data-action="Updated">
               <td>Sep 10, 09:18 AM</td>
-              <td class="text-center">Admin</td>
+              <td class="text-center">Admin User</td>
               <td class="text-center">Updated</td>
               <td class="text-center"><span class="badge-pill badge-approved">Department</span></td>
-              <td class="text-center"><div class="masked-review" title="Review content masked"></div></td>
+              <td class="text-center">Computer Science</td>
             </tr>
-            <tr data-search="sep 09, 04:35 pm admin removed program" data-user="Admin" data-date="Sep 09" data-action="Removed">
+            <tr data-search="sep 09, 04:35 pm admin user removed program bs information systems" data-user="Admin" data-date="Sep 09" data-action="Removed">
               <td>Sep 09, 04:35 PM</td>
-              <td class="text-center">Admin</td>
+              <td class="text-center">Admin User</td>
               <td class="text-center">Removed</td>
               <td class="text-center"><span class="badge-pill badge-approved">Program</span></td>
-              <td class="text-center"><div class="masked-review" title="Review content masked"></div></td>
+              <td class="text-center">BS Information Systems</td>
             </tr>
-            <tr data-search="sep 09, 02:11 pm admin created faculty" data-user="Admin" data-date="Sep 09" data-action="Created">
+            <tr data-search="sep 09, 02:11 pm dr. eleanor vance hid review review 104" data-user="Faculty" data-date="Sep 09" data-action="Hidden">
               <td>Sep 09, 02:11 PM</td>
-              <td class="text-center">Admin</td>
-              <td class="text-center">Created</td>
-              <td class="text-center"><span class="badge-pill badge-approved">Faculty</span></td>
-              <td class="text-center"><div class="masked-review" title="Review content masked"></div></td>
+              <td class="text-center">Dr. Eleanor Vance</td>
+              <td class="text-center">Hidden</td>
+              <td class="text-center"><span class="badge-pill badge-approved">Review</span></td>
+              <td class="text-center">Review #104</td>
             </tr>
-            <tr data-search="sep 08, 11:26 am admin updated faculty" data-user="Admin" data-date="Sep 08" data-action="Updated">
+            <tr data-search="sep 08, 11:26 am dr. eleanor vance deleted review review 103" data-user="Faculty" data-date="Sep 08" data-action="Deleted">
               <td>Sep 08, 11:26 AM</td>
-              <td class="text-center">Admin</td>
-              <td class="text-center">Updated</td>
-              <td class="text-center"><span class="badge-pill badge-approved">Faculty</span></td>
-              <td class="text-center"><div class="masked-review" title="Review content masked"></div></td>
+              <td class="text-center">Dr. Eleanor Vance</td>
+              <td class="text-center">Deleted</td>
+              <td class="text-center"><span class="badge-pill badge-approved">Review</span></td>
+              <td class="text-center">Review #103</td>
             </tr>
               </tbody>
             </table>
