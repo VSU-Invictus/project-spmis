@@ -288,6 +288,16 @@
       width: 100%;
       min-height: 49px;
       border-top: 1px solid #F2ECE1;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .table-row:hover {
+      background-color: rgba(217, 114, 81, 0.05);
+    }
+
+    .table-row.checked {
+      background-color: rgba(217, 114, 81, 0.15);
     }
 
     .td-cell {
@@ -575,13 +585,41 @@
       if (selectAllBtn) {
         selectAllBtn.addEventListener('click', () => {
           const allChecked = rowCheckboxes.length > 0 && Array.from(rowCheckboxes).every(cb => cb.checked);
-          rowCheckboxes.forEach(cb => cb.checked = !allChecked);
+          rowCheckboxes.forEach(cb => {
+            cb.checked = !allChecked;
+            const row = cb.closest('.table-row');
+            if (row) {
+              if (cb.checked) row.classList.add('checked');
+              else row.classList.remove('checked');
+            }
+          });
           updateSelectAllBtn();
         });
       }
 
       rowCheckboxes.forEach(cb => {
-        cb.addEventListener('change', updateSelectAllBtn);
+        cb.addEventListener('change', (e) => {
+          const row = e.target.closest('.table-row');
+          if (row) {
+            if (e.target.checked) row.classList.add('checked');
+            else row.classList.remove('checked');
+          }
+          updateSelectAllBtn();
+        });
+      });
+
+      const tableRows = document.querySelectorAll('.table-body .table-row');
+      tableRows.forEach(row => {
+        row.addEventListener('click', (e) => {
+          if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'button') {
+            return;
+          }
+          const cb = row.querySelector('.custom-checkbox');
+          if (cb) {
+            cb.checked = !cb.checked;
+            cb.dispatchEvent(new Event('change'));
+          }
+        });
       });
     </script>
   </div>
