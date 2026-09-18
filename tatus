@@ -1,0 +1,48 @@
+[33m1c0c611[m[33m ([m[1;31morigin/dev[m[33m, [m[1;32mmockup-public/auth-footernavbar[m[33m)[m Merge pull request #30 from VSU-Invictus/mockup/admin-students
+[33m1ebaa72[m Merge pull request #29 from VSU-Invictus/mockup/program-applications
+[33m2f30338[m Merge pull request #28 from VSU-Invictus/mockup/department-applications
+[33m0791d6e[m feat: Add student.html  on admin page
+[33m577f7c7[m feat: Add program-applications on admin page
+[33m5e2066e[m fix: change programs to departments
+[33m531a603[m feat: Add department-applications on admin page
+[33m15e9619[m Merge pull request #27 from VSU-Invictus/mockup-public/auth-signup
+[33mf51d312[m Merge pull request #26 from VSU-Invictus/mockup-public/auth-footernavbar
+[33m58fa6d2[m Merge pull request #25 from VSU-Invictus/mockup-public/auth-pending-verification
+[33m674f8e9[m Merge pull request #23 from VSU-Invictus/mockup-admin-audit-log
+[33m312a43e[m feat: add signup page with Google auth simulation
+[33m06933fe[m Merge pull request #21 from VSU-Invictus/mockup-admin-faculty
+[33me31d5b5[m Merge pull request #20 from VSU-Invictus/mockup-admin-programs
+[33m42de9c4[m Merge pull request #19 from VSU-Invictus/mockup-admin-departments
+[33m78253a2[m feat(mockup): update admin audit log page
+[33m207b6c6[m Merge branch 'dev' into mockup-admin-audit-log
+[33m45e588f[m feat(mockup): update admin faculty page
+[33m7d7c1ad[m Merge branch 'dev' into mockup-admin-faculty
+[33m4be8f77[m feat(mockup): update admin programs page
+[33mc9e8702[m Merge branch 'dev' into mockup-admin-programs
+[33ma54b45e[m feat(mockup): update admin departments page
+[33mee4656a[m Merge branch 'dev' into mockup-admin-departments
+[33m916e388[m Merge pull request #16 from VSU-Invictus/mockup-admin-dashboard
+[33mc73b963[m Merge pull request #17 from VSU-Invictus/mockup-student-application
+[33m346fed9[m Merge pull request #18 from VSU-Invictus/mockup-faculty-application
+[33m6970427[m feat: add pending verification screen after sign-up
+[33mc876801[m[33m ([m[1;31morigin/mockup-admin-dashboard[m[33m)[m feat:integrating global side-bar component to dashboard
+[33mce7f3f6[m[33m ([m[1;31morigin/mockup-student-application[m[33m)[m feat: integrating global side-bar component to student application
+[33m8948ddc[m[33m ([m[1;31morigin/mockup-faculty-application[m[33m)[m feat: integrating global side-bar component to faculty application
+[33mac1cb14[m feat: add side-bar global component for admin
+[33m5820c1f[m[33m ([m[1;31morigin/mockup-admin-audit-log[m[33m)[m feat: add admin audit log mockup
+[33mc8853a0[m[33m ([m[1;31morigin/mockup-admin-faculty[m[33m)[m feat: add admin faculty mockup
+[33m873f376[m[33m ([m[1;31morigin/mockup-admin-programs[m[33m)[m feat: add admin programs mockup
+[33m613b8d6[m[33m ([m[1;31morigin/mockup-admin-departments[m[33m)[m feat: add admin departments mockup
+[33m1224167[m feat: add working sidebar links
+[33m8e02676[m fix: align faculty applications table with student layout
+[33m8ed621c[m feat: create initial faculty application mockup
+[33m4b5d265[m feat: add working sidebar navigation links
+[33md77d914[m fix: improve student applications table layout
+[33m8f4e9c1[m Merge remote-tracking branch 'origin/mockup-admin-dashboard' into mockup-admin-dashboard
+[33md9b2735[m feat: connect dashboard navigation to admin pages
+[33m0f7999e[m feat: tune dashboard layout to fit desktop
+[33m2b9f075[m feat: tune to fit desktop layout
+[33m2494b0c[m feat: build admin  dashboard overview
+[33m0593e6a[m feat: connect dashboard navigation to admin pages
+[33mc33b083[m eat: tune dashboard layout to fit desktop
+[33m4292cd2[m feat: build admin dashboard overview

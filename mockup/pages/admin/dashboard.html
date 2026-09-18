@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - System Metrics & Approvals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1e1e1d;
+            color: #FFFFFF;
+            min-height: 100vh;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* Color Tokens from Figma Specification */
+        .bg-dashboard-outer { background-color: #30302E; }
+        .bg-sidebar { background-color: #21201E; }
+        .border-sidebar { border-color: #141413; }
+        .bg-account-card { background-color: #3A3832; }
+        .bg-avatar { background-color: #FBE7DE; }
+        .text-avatar { color: #B84E32; }
+        .border-divider { background-color: #D97757; }
+        .border-dashboard { border-color: #D97251; }
+        
+        /* Active & Inactive Nav Buttons */
+        .nav-btn-active {
+            background-color: #FAF9F5;
+            color: #B4552D;
+        }
+        .nav-btn-inactive {
+            background-color: transparent;
+            color: #FFFFFF;
+        }
+        .nav-btn-inactive:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom typography font for brand */
+        .font-intel-mono {
+            font-family: 'Intel One Mono', monospace;
+        }
+
+        /* Text Colors */
+        .text-zorba { color: #A0988E; }
+        .text-flint { color: #716A60; }
+        .text-cod-gray { color: #1A1918; }
+        .text-soya-bean { color: #5E574F; }
+        .text-fuscous-gray { color: #544D45; }
+        .text-crail { color: #C25B3E; }
+        .text-shingle-fawn { color: #715C32; }
+        .text-red-damask { color: #D97251; }
+        .text-role { color: #929292; }
+        
+        /* Background Colors */
+        .bg-romance { background-color: #FFFDFA; }
+        .bg-old-lace { background-color: #FCECE5; }
+        .bg-panache { background-color: #E8F5E9; }
+        .bg-zumthor { background-color: #E8F0FE; }
+        .bg-aths-special { background-color: #EDE3D0; }
+        .bg-parchment { background-color: #F3EBD9; }
+        
+        /* Borders */
+        .border-pearl-bush { border-color: #EDE7DC; }
+        .border-ecru-white { border-color: #F2ECE1; }
+
+        /* Custom Scrollbar for containers */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #EDE3D0;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #D97251;
+            border-radius: 4px;
+        }
+
+        /* Hover animation effects */
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-link {
+            transition: color 0.15s ease, transform 0.15s ease;
+        }
+        .action-link:hover {
+            color: #C25B3E;
+            transform: translateX(2px);
+        }
+    button, input, select, textarea {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 500;
+    }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen p-0">
+
+    <!-- Main Dashboard Container -->
+    <div class="bg-dashboard-outer border-dashboard border rounded-[10px] w-screen h-screen flex flex-col lg:flex-row shadow-2xl relative overflow-hidden">
+        
+        <!-- Mobile Sidebar Header Toggle -->
+        <div class="lg:hidden bg-sidebar p-4 border-b border-sidebar flex items-center justify-between">
+            <h1 class="font-intel-mono font-semibold text-lg text-white">Admin Portal</h1>
+            <button onclick="toggleMobileMenu()" class="p-2 text-white hover:bg-white/10 rounded-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Navigation Sidebar Component -->
+        <iframe src="../../components/navigation/sidebar-admin.html" id="sidebar-menu" class="hidden lg:block shrink-0 w-full lg:w-[260px] h-full border-none" title="Admin Sidebar"></iframe>
+
+        <!-- Right Main Content Panel Container -->
+        <main class="flex-1 p-3 sm:p-4 lg:p-5 flex flex-col justify-between overflow-hidden">
+            
+            <div>
+                <!-- Top Brand Header Bar -->
+                <div class="flex items-center justify-between border-b border-[#42423F] pb-3 mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-3 h-3 rounded-full bg-[#D97251]"></div>
+                        <span class="text-xs font-semibold tracking-wider text-zorba uppercase">Admin Portal / Overview</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs text-zorba">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#3d3d3a] border border-[#484844]">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            System Live
+                        </span>
+                        <span class="hidden sm:inline text-xs text-zorba">AY 2026-2027</span>
+                    </div>
+                </div>
+
+                <!-- Page Heading Section -->
+                <header class="mb-4">
+                    <h1 class="mt-2 mb-4 text-2xl sm:text-[26px] font-bold text-white tracking-tight leading-tight sm:leading-[38px]">
+                        Dashboard
+                    </h1>
+                    <p class="text-[12px] text-zorba leading-5 mt-1">
+                        System-wide metrics and real-time pending queue summaries.
+                    </p>
+                </header>
+
+                <!-- Top Stats Grid Row -->
+                <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-3">
+                    
+                    <!-- Card 1: Pending Faculty -->
+                    <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 flex flex-col justify-between h-[96px] shadow-sm card-hover">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Faculty</span>
+                            <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <span class="text-[26px] font-bold text-cod-gray leading-7">12</span>
+                            <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
+                                +4 this week
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Pending Students -->
+                    <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 flex flex-col justify-between h-[96px] shadow-sm card-hover">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Students</span>
+                            <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <span class="text-[26px] font-bold text-cod-gray leading-7">48</span>
+                            <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
+                                +18 today
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Active Faculty -->
+                    <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 flex flex-col justify-between h-[96px] shadow-sm card-hover">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Active Faculty</span>
+                            <span class="w-[9px] h-[9px] rounded-full bg-[#2E7D32] shrink-0"></span>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <span class="text-[26px] font-bold text-cod-gray leading-7">142</span>
+                            <span class="bg-panache px-2 py-0.5 rounded-full text-[10px] font-medium text-[#2E7D32] leading-4">
+                                Active
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Total Enrolled -->
+                    <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 flex flex-col justify-between h-[96px] shadow-sm card-hover">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Total Enrolled</span>
+                            <span class="w-[9px] h-[9px] rounded-full bg-[#1A73E8] shrink-0"></span>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <span class="text-[26px] font-bold text-cod-gray leading-7">2,850</span>
+                            <span class="bg-zumthor px-2 py-0.5 rounded-full text-[10px] font-medium text-[#1A73E8] leading-4">
+                                AY 2026-2027
+                            </span>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- Split View Content Section -->
+                <section class="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch">
+                    
+                    <!-- Pending Approval Queue Table (Spans 2 Columns) -->
+                    <div class="lg:col-span-2 flex flex-col gap-3 h-full">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-0 min-h-[24px]">
+                            <h2 class="text-[15px] font-bold text-white leading-6">Pending Approval Queue</h2>
+                            <span class="text-[10px] text-zorba leading-4">Requires System-Admin Action</span>
+                        </div>
+
+                        <!-- Approval Queue Table Container -->
+                        <div class="bg-romance border border-pearl-bush rounded-[12px] shadow-sm overflow-hidden flex-1">
+                            <div class="overflow-x-auto custom-scrollbar h-full">
+                                <table class="w-full text-left border-collapse min-w-[560px] h-full">
+                                    <thead>
+                                        <tr class="bg-aths-special text-fuscous-gray text-[14px] font-bold h-[36px]">
+                                            <th class="py-2 px-3 font-bold">Type</th>
+                                            <th class="py-2 px-3 font-bold">Applicant / Title</th>
+                                            <th class="py-2 px-3 font-bold">Department / Context</th>
+                                            <th class="py-2 px-3 font-bold">Submitted</th>
+                                            <th class="py-2 px-3 font-bold text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-[14px] font-medium">
+                                        <!-- Row 1 -->
+                                        <tr class="h-[41px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
+                                            <td class="py-2.5 px-4">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-old-lace text-crail text-[12px] font-medium leading-4">
+                                                    Faculty
+                                                </span>
+                                            </td>
+                                            <td class="py-2.5 px-4 font-medium text-cod-gray">Dr. Eleanor Vance</td>
+                                            <td class="py-2.5 px-4 text-soya-bean">Computer Science</td>
+                                            <td class="py-2.5 px-4 text-soya-bean">2026-09-10</td>
+                                            <td class="py-2.5 px-4 text-right">
+                                                <button onclick="handleReview('Dr. Eleanor Vance')" class="action-link text-red-damask font-medium text-xs inline-flex items-center justify-end gap-1">
+                                                    Review <span class="text-sm">→</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Row 2 -->
+                                        <tr class="h-[42px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
+                                            <td class="py-2.5 px-4">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-parchment text-shingle-fawn text-[12px] font-medium leading-4">
+                                                    Student
+                                                </span>
+                                            </td>
+                                            <td class="py-2.5 px-4 font-medium text-cod-gray">Radz Ponce Moreno</td>
+                                            <td class="py-2.5 px-4 text-soya-bean">BS Computer Science</td>
+                                            <td class="py-2.5 px-4 text-soya-bean">2026-09-10</td>
+                                            <td class="py-2.5 px-4 text-right">
+                                                <button onclick="handleReview('Radz Ponce Moreno')" class="action-link text-red-damask font-medium text-xs inline-flex items-center justify-end gap-1">
+                                                    Review <span class="text-sm">→</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Row 3 -->
+                                        <tr class="h-[42px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
+                                            <td class="py-2.5 px-4">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-zumthor text-[#1A73E8] text-[12px] font-medium leading-4">
+                                                    Program
+                                                </span>
+                                            </td>
+                                            <td class="py-2.5 px-4 font-medium text-cod-gray">BS Data Science</td>
+                                            <td class="py-2.5 px-4 text-soya-bean">New Addition</td>
+                                            <td class="py-2.5 px-4 text-soya-bean">2026-09-09</td>
+                                            <td class="py-2.5 px-4 text-right">
+                                                <button onclick="handleReview('BS Data Science')" class="action-link text-red-damask font-medium text-xs inline-flex items-center justify-end gap-1">
+                                                    Review <span class="text-sm">→</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Row 4 -->
+                                        <tr class="h-[41px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
+                                            <td class="py-2.5 px-4">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-old-lace text-crail text-[12px] font-medium leading-4">
+                                                    Faculty
+                                                </span>
+                                            </td>
+                                            <td class="py-2.5 px-4 font-medium text-cod-gray">Dr. Sophia Al-Mansoor</td>
+                                            <td class="py-2.5 px-4 text-soya-bean">Applied Mathematics</td>
+                                            <td class="py-2.5 px-4 text-soya-bean">2026-09-08</td>
+                                            <td class="py-2.5 px-4 text-right">
+                                                <button onclick="handleReview('Dr. Sophia Al-Mansoor')" class="action-link text-red-damask font-medium text-xs inline-flex items-center justify-end gap-1">
+                                                    Review <span class="text-sm">→</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Activity Log Sidebar Section -->
+                    <div class="flex flex-col gap-3 h-full">
+                        <div class="flex items-center justify-between min-h-[24px]">
+                            <h2 class="text-[15px] font-bold text-white leading-6">System Activity Log</h2>
+                            <span class="text-[10px] text-zorba leading-4">Recent Audits</span>
+                        </div>
+
+                        <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 shadow-sm flex flex-col justify-between flex-1 h-full min-h-[170px]">
+                            <div class="space-y-3 overflow-y-auto pr-1 custom-scrollbar flex-1">
+                                <div class="flex items-start justify-between text-xs pb-2 border-b border-ecru-white">
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold text-cod-gray">User Permissions Updated</span>
+                                        <span class="text-[11px] text-soya-bean">Admin updated role for Prof. Miller</span>
+                                    </div>
+                                    <span class="text-[10px] text-flint font-medium shrink-0">10m ago</span>
+                                </div>
+
+                                <div class="flex items-start justify-between text-xs pb-2 border-b border-ecru-white">
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold text-cod-gray">Batch Students Enrolled</span>
+                                        <span class="text-[11px] text-soya-bean">18 new BS CS student profiles</span>
+                                    </div>
+                                    <span class="text-[10px] text-flint font-medium shrink-0">1h ago</span>
+                                </div>
+
+                                <div class="flex items-start justify-between text-xs">
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold text-cod-gray">System Backup Completed</span>
+                                        <span class="text-[11px] text-soya-bean">Automated database backup #1049</span>
+                                    </div>
+                                    <span class="text-[10px] text-flint font-medium shrink-0">3h ago</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-2 border-t border-ecru-white flex justify-between items-center text-xs">
+                                <span class="text-soya-bean text-[11px]">Showing 3 of 128 logs</span>
+                                <a href="audit-log.html" class="text-red-damask font-semibold hover:underline inline-flex items-center gap-1">
+                                    View All Logs →
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+            </div>
+
+            <!-- Footer indicator -->
+            <footer class="mt-4 pt-3 border-t border-[#42423F] text-[11px] text-zorba flex flex-col sm:flex-row justify-between items-center gap-1">
+                <span>© 2026 Admin Portal. All rights reserved.</span>
+                <span>System Version 2.4.0</span>
+            </footer>
+
+        </main>
+
+        <!-- Action Toast Modal -->
+        <div id="toast-modal" class="fixed bottom-6 right-6 bg-[#1A1918] text-white px-4 py-3 rounded-xl shadow-xl border border-[#D97251] transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50">
+            <svg class="w-5 h-5 text-[#D97251]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 9 01-18 0 9 9 0118 0z"></path>
+            </svg>
+            <span id="toast-message" class="text-xs font-medium">Opening review workspace...</span>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('sidebar-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function handleReview(name) {
+            const toast = document.getElementById('toast-modal');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.textContent = `Opening review panel for: ${name}`;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

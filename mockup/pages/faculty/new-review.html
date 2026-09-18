@@ -1,0 +1,2019 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>New review · SPMIS Faculty</title>
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <script src="../../assets/js/faculty-sidebar.js"></script>
+    <style>
+      /* Faculty layout and components. Shared colors come from assets/css/global.css. */
+      html.dark {
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--sidebar);
+        color: var(--foreground);
+        font: 14px/1.6 var(--font-sans);
+        padding: 20px;
+        height: 100vh;
+        overflow: hidden;
+      }
+      a {
+        color: var(--primary);
+        text-underline-offset: 4px;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      button,
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: var(--primary);
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        padding: 10px 16px;
+        color: var(--primary-foreground);
+        font-weight: 650;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      button.secondary,
+      .button.secondary {
+        background: transparent;
+        border-color: var(--border);
+        color: var(--foreground);
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      button.danger {
+        background: var(--destructive);
+        color: var(--destructive-foreground);
+      }
+      :focus-visible {
+        outline: 3px solid var(--ring);
+        outline-offset: 3px;
+      }
+      .app {
+        max-width: 1440px;
+        height: calc(100vh - 40px);
+        margin: auto;
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        background: var(--background);
+      }
+      .sidebar {
+        width: 250px;
+        flex-shrink: 0;
+        background: var(--sidebar);
+        border-right: 1px solid var(--border);
+        padding: 28px 18px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow-y: auto;
+      }
+      .brand {
+        font-size: 20px;
+        letter-spacing: 0.5px;
+        font-weight: 750;
+        color: var(--foreground);
+        text-decoration: none;
+        margin: 0 10px 28px;
+      }
+      .nav {
+        display: grid;
+        gap: 5px;
+      }
+      .nav a {
+        color: var(--sidebar-foreground);
+        padding: 10px 14px;
+        text-decoration: none;
+        border-radius: var(--radius-md);
+      }
+      .nav a[aria-current="page"] {
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-weight: 650;
+      }
+      .profile-link {
+        margin-top: auto;
+        padding: 30px 10px 0;
+        color: var(--foreground);
+        text-decoration: none;
+      }
+      .profile-link small {
+        display: block;
+        color: var(--sidebar-foreground);
+      }
+      main {
+        min-width: 0;
+        flex: 1;
+        padding: 38px;
+        height: 100%;
+        overflow-y: auto;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 11px;
+        color: var(--primary);
+        font-weight: 700;
+      }
+      h1 {
+        font-size: 30px;
+        line-height: 1.25;
+        margin: 8px 0;
+      }
+      h2 {
+        font-size: 18px;
+        margin: 0 0 16px;
+      }
+      h3 {
+        font-size: 16px;
+        margin: 0;
+      }
+      p {
+        margin: 6px 0 18px;
+      }
+      .muted,
+      small {
+        color: var(--sidebar-foreground);
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 28px;
+      }
+      .header p {
+        color: var(--sidebar-foreground);
+        margin-bottom: 0;
+      }
+      .notice {
+        background: color-mix(in srgb, var(--primary) 10%, var(--card));
+        border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--border));
+        color: var(--foreground);
+        border-radius: var(--radius-md);
+        padding: 12px 16px;
+        margin-bottom: 24px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 22px;
+        margin-bottom: 20px;
+      }
+      .grid .card {
+        margin-bottom: 0;
+      }
+      .stat strong {
+        display: block;
+        font-size: 30px;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .between {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+      }
+      .quick-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .quick-links a {
+        display: block;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        text-decoration: none;
+        color: var(--foreground);
+      }
+      .quick-links small {
+        display: block;
+        margin-top: 4px;
+      }
+      .filters {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        font-weight: 550;
+        margin-bottom: 16px;
+      }
+      label small {
+        display: block;
+        font-weight: 400;
+        margin-top: 5px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid var(--input);
+        background: var(--sidebar);
+        color: var(--foreground);
+        border-radius: var(--radius-sm);
+        margin-top: 6px;
+      }
+      textarea {
+        min-height: 160px;
+        resize: vertical;
+      }
+      input[readonly] {
+        color: var(--sidebar-foreground);
+        background: var(--card);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        white-space: normal;
+      }
+      th {
+        text-align: left;
+        font-size: 11px;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--sidebar-foreground);
+        background: var(--sidebar);
+      }
+      td,
+      th {
+        padding: 15px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+      td small {
+        display: block;
+      }
+      .table-wrap {
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        margin-bottom: 18px;
+      }
+      .table-wrap table {
+        min-width: 620px;
+      }
+      .badge,
+      .tag {
+        display: inline-block;
+        border-radius: 6px;
+        padding: 3px 8px;
+        background: color-mix(in srgb, var(--primary) 14%, var(--card));
+        color: var(--primary);
+        font-size: 12px;
+      }
+      .badge.approved {
+        background: #253f33;
+        color: #afe3c0;
+      }
+      .badge.rejected {
+        background: #4b3032;
+        color: #ffc0c3;
+      }
+      .tag {
+        background: var(--border);
+        color: var(--foreground);
+        margin-right: 5px;
+      }
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .empty {
+        padding: 40px;
+        text-align: center;
+        color: var(--sidebar-foreground);
+      }
+      .skeleton {
+        height: 40px;
+        margin: 12px 0;
+        background: linear-gradient(
+          90deg,
+          var(--card),
+          var(--input),
+          var(--card)
+        );
+        background-size: 200% 100%;
+        border-radius: var(--radius-sm);
+        animation: loading 1.2s infinite;
+      }
+      @keyframes loading {
+        to {
+          background-position: -200% 0;
+        }
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .review {
+        border-left: 3px solid var(--primary);
+      }
+      .review-body {
+        white-space: pre-wrap;
+        margin: 18px 0;
+      }
+      .review.hidden-review {
+        border-left-color: var(--sidebar-foreground);
+      }
+      details {
+        border-top: 1px solid var(--border);
+        padding-top: 12px;
+        margin-top: 16px;
+      }
+      summary {
+        cursor: pointer;
+        color: var(--primary);
+      }
+      dl {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 8px;
+        margin: 0;
+      }
+      dt {
+        color: var(--sidebar-foreground);
+      }
+      dd {
+        margin: 0;
+      }
+      form.narrow {
+        max-width: none;
+      }
+      .chat-log {
+        min-height: 260px;
+        max-height: 520px;
+        overflow: auto;
+      }
+      .message {
+        padding: 16px 20px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        margin: 12px 0;
+        max-width: 90%;
+        white-space: pre-wrap;
+      }
+      .message.user {
+        margin-left: auto;
+        background: color-mix(in srgb, var(--primary) 12%, var(--card));
+      }
+      .message strong {
+        display: block;
+        color: var(--primary);
+        margin-bottom: 6px;
+      }
+      .chat-form {
+        margin-top: 20px;
+      }
+      .chat-form textarea {
+        min-height: 90px;
+      }
+      .status {
+        color: #bfe7c9;
+        margin: 12px 0;
+      }
+      .preview-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 18px 0;
+        color: var(--sidebar-foreground);
+      }
+      .preview-controls select {
+        width: auto;
+        margin: 0;
+      }
+      dialog {
+        width: min(620px, calc(100% - 32px));
+        background: var(--card);
+        color: var(--destructive-foreground);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 26px;
+      }
+      dialog::backdrop {
+        background: #000a;
+      }
+      .skip {
+        position: absolute;
+        left: 20px;
+        top: -80px;
+        background: #fff;
+        color: #000;
+        padding: 12px;
+        z-index: 10;
+      }
+      .skip:focus {
+        top: 10px;
+      }
+      @media (max-width: 1000px) {
+        main {
+          padding: 26px;
+        }
+        .sidebar {
+          width: 195px;
+        }
+        .filters {
+          grid-template-columns: 1fr 1fr;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 700px) {
+        body {
+          padding: 0;
+        }
+        .app {
+          border-radius: 0;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          height: auto;
+          overflow: visible;
+          flex-shrink: 0;
+          border-right: 0;
+          border-bottom: 1px solid var(--border);
+          padding: 18px;
+        }
+        .brand {
+          margin: 0 0 12px;
+        }
+        .nav {
+          display: flex;
+          overflow: auto;
+        }
+        .nav a {
+          white-space: nowrap;
+        }
+        .profile-link {
+          display: none;
+        }
+        main {
+          flex: 1;
+          min-height: 0;
+          padding: 22px 16px;
+        }
+        .header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        h1 {
+          font-size: 26px;
+        }
+        .stats {
+          gap: 8px;
+        }
+        .stat {
+          padding: 12px;
+        }
+        .stat strong {
+          font-size: 24px;
+        }
+        .filters,
+        .quick-links {
+          grid-template-columns: 1fr;
+        }
+        .grid {
+          gap: 16px;
+        }
+        dl {
+          grid-template-columns: 110px 1fr;
+        }
+        .preview-controls {
+          flex-wrap: wrap;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .skeleton {
+          animation: none;
+        }
+      }
+
+      /* Keep the original terracotta navigation and quiet, dark panels. */
+      .nav a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .nav a:hover:not([aria-current="page"]),
+      .quick-links a:hover {
+        background: color-mix(in srgb, var(--primary) 8%, var(--card));
+      }
+      button:hover,
+      .button:hover {
+        opacity: 0.9;
+      }
+      .stat strong,
+      .eyebrow,
+      th {
+        font-family: var(--font-mono);
+      }
+      .stat strong {
+        font-weight: 600;
+      }
+      .card {
+        box-shadow: var(--shadow-sm);
+      }
+      dialog {
+        margin: auto;
+        color: var(--foreground);
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--sidebar-foreground);
+        opacity: 0.75;
+      }
+
+      .nav-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+
+      /* White content panels with the original charcoal portal shell. */
+      .app {
+        background: #30302e;
+      }
+      .card,
+      .table-wrap,
+      dialog {
+        --foreground: #28261b;
+        --card: #fffdfa;
+        --card-foreground: #28261b;
+        --sidebar-foreground: #81786c;
+        --border: #eee7db;
+        --input: #ded5c7;
+        --sidebar: #f7f3eb;
+        color: #28261b;
+        background: #fffdfa;
+        border-color: #e4ded4;
+        border-radius: 12px;
+      }
+      .card h2,
+      .card h3,
+      .card strong {
+        color: #22211f;
+      }
+      .card small,
+      .card .muted,
+      dialog .muted {
+        color: #81786c;
+      }
+      input,
+      select,
+      textarea {
+        background: #fffdfa;
+        color: #39362f;
+        border: 1px solid #d6d1c8;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: #8b8378;
+        opacity: 1;
+      }
+      input[readonly] {
+        color: #70695f;
+        background: #f4f0e8;
+      }
+      .card input,
+      .card select,
+      .card textarea,
+      dialog input,
+      dialog textarea {
+        background: #f8f5ef;
+      }
+      button.secondary,
+      .button.secondary {
+        background: #fffdfa;
+        color: #38352f;
+        border: 1px solid #ded7ca;
+      }
+      button,
+      .button {
+        border-radius: 10px;
+      }
+      .nav a[aria-current="page"] {
+        color: #fff;
+      }
+      .profile-link {
+        display: block;
+        padding: 12px 12px 12px 48px;
+        border: 1px solid #49433a;
+        border-radius: 10px;
+        position: relative;
+        margin-top: auto;
+      }
+      .profile-link::before {
+        content: "●";
+        position: absolute;
+        left: 12px;
+        top: 16px;
+        width: 26px;
+        height: 26px;
+        background: #fbe7de;
+        color: #d97757;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 26px;
+      }
+      .sidebar {
+        gap: 24px;
+      }
+      .table-wrap {
+        box-shadow: none;
+      }
+      th {
+        background: #eee4ce;
+        color: #5d564b;
+        font-family: var(--font-sans);
+        font-size: 12px;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+      td {
+        font-size: 13px;
+        color: #635b51;
+        padding: 18px 16px;
+        border-color: #efe9df;
+      }
+      td:first-child {
+        color: #292720;
+        font-weight: 550;
+      }
+      td a {
+        color: #c65d3e;
+        text-decoration: none;
+      }
+      td small {
+        color: #8b8175;
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      tbody tr:hover {
+        background: #fcf8f1;
+      }
+      .table-wrap button.secondary {
+        border: 0;
+        padding: 4px 0;
+        color: #c65d3e;
+        background: transparent;
+        font-size: 13px;
+      }
+      .badge {
+        background: #fbece5;
+        color: #c75d3e;
+        border-radius: 20px;
+        white-space: nowrap;
+      }
+      .badge.approved {
+        background: #e8f4e7;
+        color: #227231;
+      }
+      .badge.rejected {
+        background: #fce8e7;
+        color: #aa2929;
+      }
+      .tag {
+        background: #f2e9d4;
+        color: #755e35;
+        border-radius: 20px;
+        font-size: 11px;
+        margin-bottom: 3px;
+      }
+      .pagination {
+        justify-content: flex-end;
+        font-size: 12px;
+        color: #b8afa2;
+        gap: 12px;
+      }
+      .pagination button {
+        padding: 6px 14px;
+        border-radius: 20px;
+      }
+      .pagination label {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin: 0 auto 0 0;
+        font-weight: 400;
+      }
+      .pagination select {
+        width: auto;
+        margin: 0;
+        padding: 5px 9px;
+      }
+      .filters {
+        grid-template-columns: minmax(155px, 2fr) 130px repeat(
+            2,
+            minmax(85px, 1fr)
+          ) auto;
+        align-items: end;
+        gap: 10px;
+      }
+      .filters label {
+        margin: 0;
+      }
+      .filters input,
+      .filters select {
+        margin: 0;
+        height: 42px;
+        font-size: 12px;
+        padding: 8px;
+      }
+      .filters button {
+        height: 42px;
+        white-space: nowrap;
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .stat {
+        padding: 20px;
+      }
+      .stat strong {
+        margin: 6px 0;
+      }
+      .dashboard-panels {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .dashboard-panels .card {
+        margin: 0;
+      }
+      .dashboard-panels .between {
+        align-items: baseline;
+      }
+      .dashboard-panels .between a {
+        font-size: 12px;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .quick-links a {
+        background: #f3ead7;
+        color: #292720;
+        padding: 16px;
+        border: 0;
+      }
+      .quick-links small {
+        font-size: 12px;
+      }
+      .pending-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 0;
+        border-bottom: 1px solid #efe8de;
+      }
+      .pending-item:last-child {
+        border-bottom: 0;
+      }
+      .pending-item small {
+        display: block;
+      }
+      .pending-item strong {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .chat-prompts {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin: 24px 0;
+      }
+      .chat-prompts button {
+        display: block;
+        text-align: left;
+        padding: 18px;
+        background: #fffdfa;
+        color: #292720;
+        font-size: 13px;
+        font-weight: 550;
+        border: 1px solid #e4ded4;
+      }
+      .chat-prompts small {
+        display: block;
+        color: #8a8074;
+        font-weight: 400;
+        margin-top: 6px;
+      }
+      .chat-columns {
+        display: grid;
+        grid-template-columns: minmax(0, 1.8fr) minmax(230px, 1fr);
+        gap: 20px;
+        align-items: start;
+      }
+      .chat-columns .card {
+        margin: 0;
+      }
+      .chat-log {
+        min-height: 240px;
+      }
+      .message {
+        background: #f5efe3;
+        border: 0;
+        color: #494238;
+        font-size: 13px;
+      }
+      .message.user {
+        background: #d97757;
+        color: white;
+      }
+      .message.user strong {
+        color: white;
+      }
+      .message strong {
+        color: #c65d3e;
+      }
+      .chat-form textarea {
+        min-height: 65px;
+      }
+      .chat-context .avatar {
+        width: 54px;
+        height: 54px;
+        margin: 20px auto 12px;
+        border-radius: 50%;
+        background: #fcece5;
+        color: #cf6b4a;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+      .chat-context h3,
+      .chat-context > p {
+        text-align: center;
+      }
+      .chat-context dl {
+        font-size: 12px;
+        grid-template-columns: 85px 1fr;
+        margin: 24px 0;
+      }
+      .chat-context .button {
+        width: 100%;
+        margin-top: 8px;
+      }
+      .chat-context dt {
+        color: #82786a;
+      }
+      @media (max-width: 850px) {
+        .filters {
+          grid-template-columns: 2fr 1fr 1fr;
+        }
+        .filters label:first-child {
+          grid-column: 1/-1;
+        }
+        .dashboard-panels {
+          grid-template-columns: 1fr;
+        }
+        .chat-prompts {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 700px) {
+        .stats {
+          grid-template-columns: 1fr 1fr;
+        }
+        .filters {
+          grid-template-columns: 1fr 1fr;
+        }
+        .filters button {
+          grid-column: 1/-1;
+        }
+        .chat-columns {
+          grid-template-columns: 1fr;
+        }
+        .profile-link {
+          display: block;
+          margin-top: 8px;
+          width: max-content;
+        }
+        .sidebar {
+          gap: 8px;
+        }
+        .pagination {
+          flex-wrap: wrap;
+        }
+        .chat-prompts {
+          gap: 10px;
+        }
+        .between {
+          flex-wrap: wrap;
+        }
+      }
+
+      body[data-page="students"] td:first-child {
+        white-space: nowrap;
+        font-weight: 400;
+      }
+    </style>
+  </head>
+  <body data-page="new-review">
+    <a href="#main" class="skip">Skip to content</a>
+    <div class="app">
+      <aside class="sidebar" data-faculty-sidebar data-component="sidebar-faculty">
+        <a class="brand" href="dashboard.html">Faculty Portal</a>
+        <nav class="nav" aria-label="Faculty navigation">
+          <a href="dashboard.html"
+            ><svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1.5" />
+              <rect x="14" y="3" width="7" height="7" rx="1.5" />
+              <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              <rect x="14" y="14" width="7" height="7" rx="1.5" /></svg
+            ><span>Dashboard</span></a
+          >
+          <a href="students.html" aria-current="page"
+            ><svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="9" cy="8" r="3" />
+              <path
+                d="M3 21v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M21 21v-2a6 6 0 0 0-4-5.65"
+              /></svg
+            ><span>Students</span></a
+          >
+          <a href="chat.html"
+            ><svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-3 2V11.5a9.5 9.5 0 0 1 19 0Z"
+              />
+              <path
+                d="m12 6 1.3 3.7L17 11l-3.7 1.3L12 16l-1.3-3.7L7 11l3.7-1.3Z"
+              /></svg
+            ><span>Chats</span></a
+          >
+          <a href="programs.html"
+            ><svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="m2 9 10-5 10 5-10 5L2 9ZM6 11v6c4 3 8 3 12 0v-6M22 9v7"
+              /></svg
+            ><span>Programs</span></a
+          >
+          <a href="departments.html"
+            ><svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <rect x="5" y="3" width="14" height="18" rx="2" />
+              <path d="M9 7h1m4 0h1M9 11h1m4 0h1M10 21v-6h4v6M3 21h18" /></svg
+            ><span>Departments</span></a
+          >
+          <a href="applications.html"
+            ><svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"
+              />
+              <rect x="9" y="2" width="6" height="4" rx="1" />
+              <path d="m8 14 3 3 5-6" /></svg
+            ><span>Applications</span></a
+          >
+        </nav>
+        <a class="profile-link" href="profile.html">
+          <strong data-name>Alex Morgan</strong>
+          <small>Faculty member</small>
+        </a>
+      </aside>
+      <main id="main">
+        <a href="student-detail.html" data-student-link>← Back to student</a>
+        <div class="header">
+          <div>
+            <div class="eyebrow">Faculty workspace</div>
+            <h1>Write a review</h1>
+            <p>Share an assessment grounded in your work with this student.</p>
+          </div>
+        </div>
+        <form id="review-form" class="narrow card">
+          <section>
+            <h2 data-student-name>Sam Lee Parker</h2>
+            <p class="muted">
+              <span data-student-id>24-1-00001</span> ·
+              <span data-student-program>BS Computer Science</span>
+            </p>
+          </section>
+          <p>
+            Contributing as <strong data-name>Alex Morgan</strong>. Your
+            identity is always visible with your review.
+          </p>
+          <label for="review-text"
+            >Review text<textarea
+              id="review-text"
+              required
+              placeholder="Describe how you worked with this student and what you observed."
+            >
+            </textarea>
+          </label>
+          <label for="review-tags"
+            >Tags (optional)<input
+              id="review-tags"
+              placeholder="research teamwork communication"
+            />
+            <small
+              >Separate tags with spaces. Tags are saved in lowercase and do not
+              need approval.</small
+            >
+          </label>
+          <p class="muted">
+            A new review is active immediately. You can edit, hide, or delete
+            your own review from the student page.
+          </p>
+          <div class="actions">
+            <button type="submit">Publish sample review</button>
+            <a
+              class="button secondary"
+              href="student-detail.html"
+              data-student-link
+              >Cancel</a
+            >
+          </div>
+        </form>
+        <noscript>
+          <p class="notice">
+            Enable JavaScript to display sample lists and use the mock
+            interactions.
+          </p>
+        </noscript>
+      </main>
+    </div>
+    <script>
+      /* Local demonstration only. All records are fictional and stored for this tab. */
+      const $ = (s) => document.querySelector(s);
+      const esc = (value) =>
+        String(value ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      const seed = {
+        name: "Alex Morgan",
+        reviews: [
+          {
+            id: 1,
+            student: "24-1-00001",
+            owner: "self",
+            author: "Alex Morgan",
+            department: "Computer Science",
+            body: "Sam developed a clear research plan and supported the team during the robotics project.",
+            tags: ["research", "teamwork"],
+            status: "active",
+            date: "2026-09-03",
+            history: [
+              {
+                date: "2026-09-02",
+                body: "Sam developed a clear research plan.",
+                tags: ["research"],
+              },
+            ],
+          },
+          {
+            id: 2,
+            student: "24-1-00001",
+            owner: "other",
+            author: "Jamie Rivera",
+            department: "Engineering",
+            body: "Sam explained the prototype clearly and helped peers troubleshoot their designs.",
+            tags: ["communication", "robotics"],
+            status: "active",
+            date: "2026-09-04",
+            history: [],
+          },
+          {
+            id: 3,
+            student: "24-1-00001",
+            owner: "self",
+            author: "Alex Morgan",
+            department: "Computer Science",
+            body: "Earlier assessment withdrawn while I reconsider the project context.",
+            tags: ["research"],
+            status: "hidden",
+            date: "2026-08-20",
+            history: [],
+          },
+          {
+            id: 4,
+            student: "24-1-00002",
+            owner: "other",
+            author: "Jamie Rivera",
+            department: "Engineering",
+            body: "Taylor coordinated the robotics team and documented testing carefully.",
+            tags: ["robotics", "teamwork"],
+            status: "active",
+            date: "2026-09-05",
+            history: [],
+          },
+          {
+            id: 5,
+            student: "24-1-00003",
+            owner: "self",
+            author: "Alex Morgan",
+            department: "Computer Science",
+            body: "Jordan contributed thoughtful research notes and communicated findings clearly.",
+            tags: ["research", "communication"],
+            status: "active",
+            date: "2026-09-06",
+            history: [],
+          },
+          {
+            id: 6,
+            student: "24-1-00004",
+            owner: "other",
+            author: "Jamie Rivera",
+            department: "Engineering",
+            body: "Casey supported peers during the workshop.",
+            tags: ["teamwork"],
+            status: "active",
+            date: "2026-09-07",
+            history: [],
+          },
+        ],
+        applications: [
+          {
+            id: 1,
+            type: "Student registration",
+            name: "Robin Ellis",
+            date: "2026-09-02",
+            status: "pending",
+            reason: "",
+          },
+          {
+            id: 2,
+            type: "Program edit",
+            name: "BS Computer Science",
+            date: "2026-08-30",
+            status: "pending",
+            reason: "",
+          },
+          {
+            id: 3,
+            type: "Department proposal",
+            name: "Data Science",
+            date: "2026-08-27",
+            status: "pending",
+            reason: "",
+          },
+          {
+            id: 4,
+            type: "Program proposal",
+            name: "BS Information Systems",
+            date: "2026-08-21",
+            status: "approved",
+            reason: "",
+          },
+          {
+            id: 5,
+            type: "Department proposal",
+            name: "Computing Studies",
+            date: "2026-08-15",
+            status: "rejected",
+            reason:
+              "An equivalent approved department already exists. Use Computer Science.",
+          },
+        ],
+      };
+      let state;
+      try {
+        state =
+          JSON.parse(sessionStorage.getItem("faculty-demo-v1")) ||
+          structuredClone(seed);
+      } catch {
+        state = structuredClone(seed);
+      }
+      function save() {
+        try {
+          sessionStorage.setItem("faculty-demo-v1", JSON.stringify(state));
+        } catch {}
+      }
+      const students = [
+        {
+          id: "24-1-00001",
+          first: "Sam",
+          middle: "Lee",
+          last: "Parker",
+          program: "BS Computer Science",
+        },
+        {
+          id: "24-1-00002",
+          first: "Taylor",
+          middle: "",
+          last: "Reed",
+          program: "BS Computer Engineering",
+        },
+        {
+          id: "24-1-00003",
+          first: "Jordan",
+          middle: "",
+          last: "Blake",
+          program: "BS Information Systems",
+        },
+        {
+          id: "24-1-00004",
+          first: "Casey",
+          middle: "",
+          last: "Lane",
+          program: "BS Computer Science",
+        },
+        {
+          id: "24-1-00005",
+          first: "Drew",
+          middle: "",
+          last: "Hayes",
+          program: "BS Information Systems",
+        },
+      ];
+      const programs = [
+        "BS Computer Science",
+        "BS Computer Engineering",
+        "BS Information Systems",
+      ];
+      const departments = ["Computer Science", "Engineering", "Mathematics"];
+      const full = (s) =>
+        `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
+      const badge = (s) =>
+        `<span class="badge ${esc(s)}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
+      document
+        .querySelectorAll("[data-name]")
+        .forEach((e) => (e.textContent = state.name));
+      const page = document.body.dataset.page;
+      function localDate() {
+        const d = new Date();
+        return [
+          d.getFullYear(),
+          String(d.getMonth() + 1).padStart(2, "0"),
+          String(d.getDate()).padStart(2, "0"),
+        ].join("-");
+      }
+      function appRows(items) {
+        return items
+          .map(
+            (a) =>
+              `<tr><td>${esc(a.type)}</td><td>${esc(a.name)}</td><td>${esc(a.date)}</td><td>${badge(a.status)}</td><td>${esc(a.reason || (a.status === "pending" ? "Awaiting admin review" : "Approved by admin"))}</td></tr>`,
+          )
+          .join("");
+      }
+      function appTable(items) {
+        return items.length
+          ? `<div class="table-wrap"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th>Status</th><th>Decision / reason</th></tr></thead><tbody>${appRows(items)}</tbody></table></div>`
+          : '<div class="empty">No applications match this view.</div>';
+      }
+      function addApplication(type, name, payload) {
+        state.applications.unshift({
+          id: Date.now(),
+          type,
+          name,
+          payload,
+          date: localDate(),
+          status: "pending",
+          reason: "",
+        });
+        save();
+      }
+      if (page === "dashboard") {
+        $("#student-count").textContent = students.length;
+        $("#review-count").textContent = state.reviews.filter(
+          (r) => r.owner === "self" && r.status !== "deleted",
+        ).length;
+        $("#pending-count").textContent = state.applications.filter(
+          (a) => a.status === "pending",
+        ).length;
+        $("#pending-applications").innerHTML = appTable(
+          state.applications.filter((a) => a.status === "pending"),
+        );
+      }
+      if (page === "students") {
+        let current = 1,
+          timer;
+        const size = 3;
+        function render() {
+          const mode = $("#roster-state").value;
+          if (mode === "loading") {
+            $("#roster-results").innerHTML =
+              '<div role="status" aria-label="Loading students"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>';
+            $("#page-label").textContent = "Loading students…";
+            $("#previous").disabled = $("#next").disabled = true;
+            return;
+          }
+          const search = $("#search").value.trim().toLowerCase(),
+            dept = $("#department").value,
+            tag = $("#tag").value,
+            owner = $("#owner").value;
+          const matches =
+            mode === "empty"
+              ? []
+              : students.filter((s) => {
+                  const reviews = state.reviews.filter(
+                    (r) => r.student === s.id && r.status === "active",
+                  );
+                  if (
+                    !dept &&
+                    !tag &&
+                    !owner &&
+                    (!search ||
+                      full(s).toLowerCase().includes(search) ||
+                      s.id.toLowerCase().includes(search))
+                  )
+                    return true;
+                  return reviews.some(
+                    (r) =>
+                      (!dept || r.department === dept) &&
+                      (!tag || r.tags.includes(tag)) &&
+                      (!owner || r.owner === owner) &&
+                      (!search ||
+                        r.body.toLowerCase().includes(search) ||
+                        full(s).toLowerCase().includes(search) ||
+                        s.id.toLowerCase().includes(search)),
+                  );
+                });
+          const total = Math.max(1, Math.ceil(matches.length / size));
+          current = Math.min(current, total);
+          $("#roster-results").innerHTML = matches.length
+            ? `<div class="table-wrap"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th>Action</th></tr></thead><tbody>${matches
+                .slice((current - 1) * size, current * size)
+                .map(
+                  (s) =>
+                    `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="tag">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review</a></td></tr>`,
+                )
+                .join("")}</tbody></table></div>`
+            : '<div class="card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
+          $("#page-label").textContent = matches.length
+            ? `Page ${current} of ${total} · ${matches.length} students`
+            : "0 students";
+          $("#previous").disabled = current === 1;
+          $("#next").disabled = current === total;
+          if ($("#empty-clear")) $("#empty-clear").onclick = clear;
+        }
+        function clear() {
+          document
+            .querySelectorAll(".filters input,.filters select")
+            .forEach((e) => (e.value = ""));
+          $("#roster-state").value = "ready";
+          current = 1;
+          render();
+        }
+        $("#clear-filters").onclick = clear;
+        document
+          .querySelectorAll(".filters input,.filters select")
+          .forEach((e) =>
+            e.addEventListener("input", () => {
+              clearTimeout(timer);
+              current = 1;
+              $("#roster-results").innerHTML =
+                '<div role="status" aria-label="Loading students"><div class="skeleton"></div><div class="skeleton"></div></div>';
+              timer = setTimeout(render, 300);
+            }),
+          );
+        $("#roster-state").onchange = () => {
+          clearTimeout(timer);
+          current = 1;
+          render();
+        };
+        $("#previous").onclick = () => {
+          current--;
+          render();
+        };
+        $("#next").onclick = () => {
+          current++;
+          render();
+        };
+        const tags = [
+          ...new Set(
+            state.reviews
+              .filter((r) => r.status === "active")
+              .flatMap((r) => r.tags),
+          ),
+        ];
+        $("#tag").innerHTML =
+          '<option value="">All tags</option>' +
+          tags.map((t) => `<option>${esc(t)}</option>`).join("");
+        render();
+      }
+      const selected =
+        students.find(
+          (s) => s.id === new URLSearchParams(location.search).get("id"),
+        ) || (!location.search ? students[0] : null);
+      if (page === "student-detail" || page === "new-review") {
+        if (!selected) {
+          $("main").innerHTML =
+            '<h1>Student not found</h1><p>This sample student record is unavailable.</p><a class="button" href="students.html">Back to students</a>';
+        } else {
+          document
+            .querySelectorAll("[data-student-name]")
+            .forEach((e) => (e.textContent = full(selected)));
+          document
+            .querySelectorAll("[data-student-id]")
+            .forEach((e) => (e.textContent = selected.id));
+          document
+            .querySelectorAll("[data-student-program]")
+            .forEach((e) => (e.textContent = selected.program));
+          document
+            .querySelectorAll("[data-student-link]")
+            .forEach((e) => (e.href = "student-detail.html?id=" + selected.id));
+          if (page === "new-review")
+            $("#review-form").onsubmit = (e) => {
+              e.preventDefault();
+              const body = $("#review-text").value.trim();
+              if (!body) {
+                $("#review-text").setCustomValidity(
+                  "Enter a review before saving.",
+                );
+                $("#review-text").reportValidity();
+                return;
+              }
+              state.reviews.unshift({
+                id: Date.now(),
+                student: selected.id,
+                owner: "self",
+                author: state.name,
+                department: "Computer Science",
+                body,
+                tags: normalizeTags($("#review-tags").value),
+                status: "active",
+                date: localDate(),
+                history: [],
+              });
+              save();
+              location.href = "student-detail.html?id=" + selected.id;
+            };
+          if (page === "new-review")
+            $("#review-text").oninput = () =>
+              $("#review-text").setCustomValidity("");
+          if (page === "student-detail") {
+            $("#new-review-link").href = "new-review.html?id=" + selected.id;
+            function renderReviews() {
+              const visible = state.reviews.filter(
+                (r) =>
+                  r.student === selected.id &&
+                  (r.status === "active" ||
+                    (r.status === "hidden" && r.owner === "self")),
+              );
+              $("#reviews").innerHTML =
+                visible
+                  .map(
+                    (r) =>
+                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="badge">Hidden · Only you</span>' : '<span class="badge approved">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                  )
+                  .join("") ||
+                '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
+            }
+            let editing, deleting;
+            $("#reviews").onclick = (e) => {
+              const b = e.target.closest("button");
+              if (!b) return;
+              if (b.dataset.toggle) {
+                const r = state.reviews.find(
+                  (r) =>
+                    r.id === Number(b.dataset.toggle) && r.owner === "self",
+                );
+                if (r) {
+                  r.status = r.status === "active" ? "hidden" : "active";
+                  save();
+                  renderReviews();
+                }
+              }
+              if (b.dataset.edit) {
+                editing = state.reviews.find(
+                  (r) => r.id === Number(b.dataset.edit) && r.owner === "self",
+                );
+                if (editing) {
+                  $("#edit-body").value = editing.body;
+                  $("#edit-tags").value = editing.tags.join(" ");
+                  $("#edit-dialog").showModal();
+                }
+              }
+              if (b.dataset.delete) {
+                deleting = Number(b.dataset.delete);
+                $("#delete-dialog").showModal();
+              }
+            };
+            $("#edit-form").onsubmit = (e) => {
+              e.preventDefault();
+              if (!$("#edit-body").value.trim()) {
+                $("#edit-body").setCustomValidity("Enter review text.");
+                $("#edit-body").reportValidity();
+                return;
+              }
+              editing.history.unshift({
+                date: editing.date,
+                body: editing.body,
+                tags: [...editing.tags],
+              });
+              editing.body = $("#edit-body").value.trim();
+              editing.tags = normalizeTags($("#edit-tags").value);
+              editing.date = localDate();
+              save();
+              $("#edit-dialog").close();
+              renderReviews();
+            };
+            $("#edit-body").oninput = () =>
+              $("#edit-body").setCustomValidity("");
+            $("#confirm-delete").onclick = () => {
+              const r = state.reviews.find(
+                (r) => r.id === deleting && r.owner === "self",
+              );
+              if (r) r.status = "deleted";
+              save();
+              $("#delete-dialog").close();
+              renderReviews();
+            };
+            renderReviews();
+          }
+        }
+      }
+      function normalizeTags(value) {
+        return [
+          ...new Set(value.trim().toLowerCase().split(/\s+/).filter(Boolean)),
+        ];
+      }
+      if (page === "register-student") {
+        $("#program").innerHTML = programs
+          .map((p) => `<option>${p}</option>`)
+          .join("");
+        $("#registration-form").onsubmit = (e) => {
+          e.preventDefault();
+          const fields = ["student-id", "first-name", "last-name"];
+          if (fields.some((id) => !$("#" + id).value.trim())) {
+            $("#registration-status").textContent =
+              "Enter the required student ID, first name, and last name.";
+            return;
+          }
+          const id = $("#student-id").value.trim();
+          if (
+            students.some((s) => s.id.toLowerCase() === id.toLowerCase()) ||
+            state.applications.some(
+              (a) =>
+                a.type === "Student registration" &&
+                a.status === "pending" &&
+                a.payload?.id?.toLowerCase() === id.toLowerCase(),
+            )
+          ) {
+            $("#registration-status").textContent =
+              "This student ID already exists or has a pending registration.";
+            return;
+          }
+          const payload = {
+            id,
+            first: $("#first-name").value.trim(),
+            middle: $("#middle-name").value.trim(),
+            last: $("#last-name").value.trim(),
+            program: $("#program").value,
+          };
+          addApplication("Student registration", full(payload), payload);
+          $("#registration-form").hidden = true;
+          $("#registration-success").hidden = false;
+        };
+      }
+      if (page === "applications") {
+        const render = () => {
+          $("#application-list").innerHTML = appTable(
+            state.applications.filter(
+              (a) =>
+                (!$("#application-status").value ||
+                  a.status === $("#application-status").value) &&
+                `${a.name} ${a.type}`
+                  .toLowerCase()
+                  .includes($("#application-search").value.toLowerCase()),
+            ),
+          );
+        };
+        $("#application-status").onchange = render;
+        $("#application-search").oninput = render;
+        render();
+      }
+      if (page === "programs" || page === "departments") {
+        const isProgram = page === "programs",
+          list = isProgram ? programs : departments;
+        let original = "";
+        function render() {
+          const filtered = list.filter((p) =>
+            p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
+          );
+          $("#entity-list").innerHTML = filtered.length
+            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button class="secondary" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
+            : '<p class="empty">No matching entries. Try another name.</p>';
+        }
+        $("#entity-search").oninput = render;
+        function open(name = "") {
+          original = name;
+          $("#proposal-title").textContent = name
+            ? "Apply to edit program"
+            : `Propose a ${isProgram ? "program" : "department"}`;
+          $("#entity-name").value = name;
+          $("#entity-name").setCustomValidity("");
+          $("#proposal-dialog").showModal();
+        }
+        $("#add-entity").onclick = () => open();
+        $("#entity-list").onclick = (e) => {
+          const b = e.target.closest("[data-propose-edit]");
+          if (b) open(b.dataset.proposeEdit);
+        };
+        $("#proposal-form").onsubmit = (e) => {
+          e.preventDefault();
+          const name = $("#entity-name").value.trim();
+          if (
+            !name ||
+            name === original ||
+            list.some(
+              (p) => p.toLowerCase() === name.toLowerCase() && p !== original,
+            )
+          ) {
+            $("#entity-name").setCustomValidity(
+              "Enter a new, distinct name for this proposal.",
+            );
+            $("#entity-name").reportValidity();
+            return;
+          }
+          addApplication(
+            isProgram
+              ? original
+                ? "Program edit"
+                : "Program proposal"
+              : "Department proposal",
+            original ? `${original} → ${name}` : name,
+            { original, name },
+          );
+          $("#proposal-dialog").close();
+          $("#proposal-status").textContent =
+            "Application submitted. The approved list stays unchanged until an admin approves your proposal.";
+        };
+        $("#entity-name").oninput = () =>
+          $("#entity-name").setCustomValidity("");
+        render();
+      }
+      if (page === "profile") {
+        $("#full-name").value = state.name;
+        $("#profile-form").onsubmit = (e) => {
+          e.preventDefault();
+          if (!$("#full-name").value.trim()) {
+            $("#full-name").setCustomValidity("Enter your name.");
+            $("#full-name").reportValidity();
+            return;
+          }
+          state.name = $("#full-name").value.trim();
+          save();
+          document
+            .querySelectorAll("[data-name]")
+            .forEach((e) => (e.textContent = state.name));
+          $("#profile-status").textContent =
+            "Profile saved for this demo session.";
+        };
+        $("#full-name").oninput = () => $("#full-name").setCustomValidity("");
+      }
+      if (page === "chat") {
+        let busy = false,
+          lastPrompt = "";
+        function message(role, body) {
+          const item = document.createElement("div");
+          item.className = "message " + (role === "You" ? "user" : "");
+          const title = document.createElement("strong");
+          title.textContent = role;
+          item.append(title, document.createTextNode(body));
+          $("#chat-log").append(item);
+          $("#chat-log").scrollTop = $("#chat-log").scrollHeight;
+        }
+        function generate() {
+          busy = true;
+          $("#send").disabled = true;
+          $("#retry-panel").hidden = true;
+          $("#generating").hidden = false;
+          setTimeout(() => {
+            busy = false;
+            $("#send").disabled = false;
+            $("#generating").hidden = true;
+            if ($("#chat-mode").value === "limited") {
+              $("#retry-panel").hidden = false;
+              return;
+            }
+            const active = state.reviews.filter((r) => r.status === "active");
+            const terms = lastPrompt
+              .toLowerCase()
+              .split(/\W+/)
+              .filter((w) => w.length > 3);
+            const relevant = active.filter((r) =>
+              terms.some((t) =>
+                (r.body + " " + r.tags.join(" ")).toLowerCase().includes(t),
+              ),
+            );
+            const sample = (relevant.length ? relevant : active).slice(0, 3);
+            message(
+              "AI assistant · Sample response",
+              sample.length
+                ? "For this mockup, here are active review excerpts" +
+                    (relevant.length
+                      ? " matching words in your question"
+                      : "; no direct keyword match was found") +
+                    ":\n\n" +
+                    sample
+                      .map(
+                        (r) =>
+                          `${full(students.find((s) => s.id === r.student))} — ${r.body}\nContributor: ${r.owner === "self" ? state.name : r.author}`,
+                      )
+                      .join("\n\n") +
+                    "\n\nThese are attributed faculty opinions. Open the student record to review the full context."
+                : "There are no active reviews available to reference.",
+            );
+          }, 800);
+        }
+        $("#chat-form").onsubmit = (e) => {
+          e.preventDefault();
+          if (busy) return;
+          const prompt = $("#chat-prompt").value.trim();
+          if (!prompt) return;
+          lastPrompt = prompt;
+          message("You", prompt);
+          $("#chat-prompt").value = "";
+          generate();
+        };
+        $("#retry").onclick = () => {
+          if (!busy) generate();
+        };
+      }
+      document
+        .querySelectorAll("[data-close]")
+        .forEach((b) => (b.onclick = () => b.closest("dialog").close()));
+
+      // Presentation controls remain local to this self-contained mockup.
+      function paginateTable(containerId) {
+        const host = document.getElementById(containerId);
+        if (!host) return;
+        const controls = document.createElement("div");
+        controls.className = "pagination";
+        controls.innerHTML =
+          '<label>Rows per page<select aria-label="Rows per page"><option>2</option><option selected>5</option><option>10</option><option>25</option></select></label><button class="secondary" type="button">Previous</button><span role="status"></span><button class="secondary" type="button">Next</button>';
+        host.after(controls);
+        let current = 1;
+        const size = controls.querySelector("select"),
+          buttons = controls.querySelectorAll("button"),
+          info = controls.querySelector("[role=status]");
+        function update() {
+          const rows = [...host.querySelectorAll("tbody tr")],
+            limit = Number(size.value),
+            pages = Math.max(1, Math.ceil(rows.length / limit));
+          current = Math.min(current, pages);
+          rows.forEach(
+            (row, i) =>
+              (row.hidden = i < (current - 1) * limit || i >= current * limit),
+          );
+          info.textContent =
+            "Page " +
+            current +
+            " of " +
+            pages +
+            " · " +
+            rows.length +
+            " entries";
+          buttons[0].disabled = current === 1;
+          buttons[1].disabled = current === pages;
+        }
+        buttons[0].onclick = () => {
+          current--;
+          update();
+        };
+        buttons[1].onclick = () => {
+          current++;
+          update();
+        };
+        size.onchange = () => {
+          current = 1;
+          update();
+        };
+        new MutationObserver(() => {
+          current = 1;
+          update();
+        }).observe(host, { childList: true });
+        update();
+      }
+      if (page === "applications") paginateTable("application-list");
+      if (page === "programs" || page === "departments")
+        paginateTable("entity-list");
+      if (page === "dashboard") {
+        const quick = document.querySelector(".quick-links").closest("section"),
+          pending = document
+            .getElementById("pending-applications")
+            .closest("section");
+        const panels = document.createElement("div");
+        panels.className = "dashboard-panels";
+        quick.before(panels);
+        pending.classList.add("card");
+        panels.append(quick, pending);
+        const stat = document.createElement("div");
+        stat.className = "card stat";
+        stat.innerHTML =
+          '<span class="muted">Programs</span><strong>' +
+          programs.length +
+          "</strong><small>Approved programs</small>";
+        document.querySelector(".stats").append(stat);
+        document.getElementById("pending-applications").innerHTML =
+          state.applications
+            .filter((a) => a.status === "pending")
+            .slice(0, 3)
+            .map(
+              (a) =>
+                '<div class="pending-item"><div><strong>' +
+                esc(a.type) +
+                " · " +
+                esc(a.name) +
+                "</strong><small>Submitted " +
+                esc(a.date) +
+                "</small></div>" +
+                badge(a.status) +
+                "</div>",
+            )
+            .join("") || "<p>No pending applications.</p>";
+      }
+      if (page === "chat") {
+        document.querySelectorAll("[data-prompt]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              document.getElementById("chat-prompt").value = b.dataset.prompt;
+              document.getElementById("chat-prompt").focus();
+            }),
+        );
+      }
+    </script>
+    <script>
+      /* The shared HTML is authoritative when served over HTTP. The inline sidebar
+   keeps navigation available when opening the mockup directly from disk. */
+      (() => {
+        const componentUrl = new URL(
+          "../../components/navigation/sidebar-faculty.html",
+          document.baseURI,
+        );
+        const host = document.querySelector("[data-faculty-sidebar]");
+        if (!host) return;
+
+        function markCurrent() {
+          const page = document.body.dataset.page;
+          const current = [
+            "student-detail",
+            "register-student",
+            "new-review",
+          ].includes(page)
+            ? "students"
+            : page;
+          host.querySelectorAll("a[href]").forEach((link) => {
+            const target = new URL(
+              link.getAttribute("href"),
+              location.href,
+            ).pathname
+              .split("/")
+              .pop();
+            if (
+              target === `${current}.html` &&
+              !link.classList.contains("brand")
+            ) {
+              link.setAttribute("aria-current", "page");
+            } else {
+              link.removeAttribute("aria-current");
+            }
+          });
+        }
+
+        markCurrent();
+        if (location.protocol === "file:") return;
+        fetch(componentUrl)
+          .then((response) => {
+            if (!response.ok)
+              throw new Error(`Sidebar request failed: ${response.status}`);
+            return response.text();
+          })
+          .then((html) => {
+            const template = document.createElement("template");
+            template.innerHTML = html;
+            const sidebar = template.content.querySelector("aside");
+            if (!sidebar)
+              throw new Error(
+                "Sidebar component is missing its aside element.",
+              );
+            const name = host.querySelector("[data-name]")?.textContent;
+            host.replaceChildren(...sidebar.childNodes);
+            if (name)
+              host.querySelectorAll("[data-name]").forEach((element) => {
+                element.textContent = name;
+              });
+            markCurrent();
+          })
+          .catch((error) => {
+            console.warn("Using the local faculty navigation fallback.", error);
+          });
+      })();
+    </script>
+  </body>
+</html>
