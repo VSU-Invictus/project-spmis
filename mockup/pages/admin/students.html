@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -25,6 +26,14 @@
 
     body {
       overflow: hidden;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
     }
 
     .app-canvas {
@@ -103,6 +112,12 @@
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
+      transition: background .15s ease, transform .15s ease;
+    }
+
+    .btn-add:hover {
+      background: #C45F3E;
+      transform: translateY(-1px);
     }
 
     .controls-container {
@@ -142,6 +157,12 @@
 
     .search-input::placeholder {
       color: #8A837A;
+    }
+
+    .search-input:focus,
+    .dropdown-select:focus {
+      border-color: #D97251;
+      box-shadow: 0 0 0 1px #D97251;
     }
 
     .search-icon {
@@ -305,6 +326,11 @@
       border-radius: 999px;
       font-size: 12px;
       cursor: pointer;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .pill-btn-sm:hover {
+      transform: translateY(-1px);
     }
 
     .pill-btn-sm.edit {
@@ -368,6 +394,238 @@
       font-weight: 400;
       line-height: 16px;
     }
+
+    .empty-state {
+      display: none;
+      width: 100%;
+      height: 145px;
+      align-items: center;
+      justify-content: center;
+      color: #716A60;
+      font-size: 12px;
+      background: #FFFDFA;
+    }
+
+    /* ── Modal Styles (Figma-matched) ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,.58);
+      backdrop-filter: blur(1px);
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      animation: overlayIn .16s ease-out;
+    }
+
+    .modal-card {
+      position: relative;
+      width: 365px;
+      background: #444746;
+      border: 1px solid #D97251;
+      border-radius: 15px;
+      box-shadow: 0 22px 55px rgba(0,0,0,.4);
+      animation: modalIn .18s ease-out;
+      padding: 17px 55px 28px;
+    }
+
+    .modal-card.compact {
+      width: 365px;
+      padding: 20px 42px 24px;
+    }
+
+    .modal-title {
+      font-family: 'Intel One Mono', monospace;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 28px;
+      text-align: center;
+      color: #FFFFFF;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 26px;
+      height: 28px;
+      border: 1px solid #000000;
+      background: transparent;
+      color: #fff;
+      font-size: 18px;
+      line-height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      background: rgba(255,255,255,.1);
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      margin-top: 14px;
+    }
+
+    .modal-form label {
+      font-family: 'Intel One Mono', monospace;
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 21px;
+      color: #FFFFFF;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    .modal-form label:first-of-type {
+      margin-top: 16px;
+    }
+
+    .modal-form input,
+    .modal-form select {
+      width: 100%;
+      height: 31px;
+      padding: 8px 16px;
+      background: #FFFFFF;
+      border: 1px solid #E4DED5;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+      color: #141413;
+      outline: none;
+      appearance: none;
+    }
+
+    .modal-form input::placeholder {
+      color: #8A837A;
+    }
+
+    .modal-form input:focus,
+    .modal-form select:focus {
+      box-shadow: 0 0 0 2px #D97251;
+    }
+
+    .modal-form textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 10px;
+      background: #FFFFFF;
+      border: 1px solid #E4DED5;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: #141413;
+      outline: none;
+      resize: none;
+    }
+
+    .modal-form textarea:focus {
+      box-shadow: 0 0 0 2px #D97251;
+    }
+
+    .modal-select-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .modal-select-wrapper select {
+      padding-right: 30px;
+    }
+
+    .modal-select-wrapper .modal-select-chevron {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      pointer-events: none;
+    }
+
+    .modal-submit {
+      width: 224px;
+      height: 39px;
+      margin: 24px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #343434;
+      border: 1px solid #3D3D3A;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .modal-submit:hover {
+      background: #2a2a2a;
+    }
+
+    .toast {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 120;
+      display: none;
+      min-width: 210px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      background: #D97251;
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .toast.show {
+      display: block;
+      animation: toastIn .2s ease-out;
+    }
+
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(8px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .app-canvas {
+        min-width: 880px;
+        min-height: 640px;
+        overflow: auto;
+      }
+    }
+
     button, input, select, textarea {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       font-weight: 500;
@@ -377,7 +635,7 @@
 <body>
   <div class="app-canvas">
     <!-- Admin Sidebar Component -->
-    <iframe src="../../components/navigation/sidebar-admin.html" class="sidebar-frame" title="Admin Sidebar"></iframe>
+    <iframe src="../../components/navigation/sidebar-admin.html" id="sidebar-frame" class="sidebar-frame" title="Admin Sidebar"></iframe>
 
     <main class="section-container">
       <header class="header-container">
@@ -392,21 +650,24 @@
             <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" stroke-width="1.33"/>
             <path d="M10.5 10.5L14 14" stroke="#8A837A" stroke-width="1.33" stroke-linecap="round"/>
           </svg>
-          <input type="text" class="search-input" placeholder="Search by student id or name...">
+          <input id="searchInput" type="text" class="search-input" placeholder="Search by student id or name...">
         </div>
 
         <div class="controls-actions">
           <div class="dropdown-container program">
-            <select class="dropdown-select">
-              <option>Program: All</option>
+            <select id="programFilter" class="dropdown-select">
+              <option value="all">Program: All</option>
               <option>BS in Computer Science</option>
               <option>BS in Computer Engineering</option>
+              <option>BS in Medical Technology</option>
+              <option>BS in Information System</option>
+              <option>BS In Applied Mathematics</option>
             </select>
             <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
               <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <button class="btn-add">
+          <button id="addButton" type="button" class="btn-add">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M7 1.16663V12.8333M1.16666 6.99996H12.8333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -426,78 +687,348 @@
             <div class="th-cell col-action"></div>
           </div>
 
-          <div class="table-body">
-            <div class="table-row">
+          <div id="tableBody" class="table-body">
+            <div class="table-row" data-id="27-1-12345" data-fname="dubai chu wee" data-mname="coo" data-lname="ki" data-program="BS in Computer Science">
               <div class="td-cell col-id">27-1-12345</div>
               <div class="td-cell col-fname">Dubai Chu Wee</div>
               <div class="td-cell col-mname">Coo</div>
               <div class="td-cell col-lname">Ki</div>
               <div class="td-cell col-program">BS in Computer Science</div>
               <div class="td-cell col-action">
-                <button class="pill-btn-sm edit">Edit</button>
-                <button class="pill-btn-sm remove">Remove</button>
+                <button class="pill-btn-sm edit" type="button">Edit</button>
+                <button class="pill-btn-sm remove" type="button">Remove</button>
               </div>
             </div>
 
-            <div class="table-row">
+            <div class="table-row" data-id="27-1-67676" data-fname="syx" data-mname="sev" data-lname="vyn" data-program="BS in Computer Engineering">
               <div class="td-cell col-id">27-1-67676</div>
               <div class="td-cell col-fname">Syx</div>
               <div class="td-cell col-mname">Sev</div>
               <div class="td-cell col-lname">Vyn</div>
               <div class="td-cell col-program">BS in Computer Engineering</div>
               <div class="td-cell col-action">
-                <button class="pill-btn-sm edit">Edit</button>
-                <button class="pill-btn-sm remove">Remove</button>
+                <button class="pill-btn-sm edit" type="button">Edit</button>
+                <button class="pill-btn-sm remove" type="button">Remove</button>
               </div>
             </div>
 
-            <div class="table-row">
+            <div class="table-row" data-id="27-1-76767" data-fname="ca" data-mname="is" data-lname="mille" data-program="BS in Medical Technology">
               <div class="td-cell col-id">27-1-76767</div>
               <div class="td-cell col-fname">Ca</div>
               <div class="td-cell col-mname">Is</div>
               <div class="td-cell col-lname">Mille</div>
               <div class="td-cell col-program">BS in Medical Technology</div>
               <div class="td-cell col-action">
-                <button class="pill-btn-sm edit">Edit</button>
-                <button class="pill-btn-sm remove">Remove</button>
+                <button class="pill-btn-sm edit" type="button">Edit</button>
+                <button class="pill-btn-sm remove" type="button">Remove</button>
               </div>
             </div>
 
-            <div class="table-row">
+            <div class="table-row" data-id="27-1-12870" data-fname="dag gan" data-mname="land" data-lname="silot" data-program="BS in Information System">
               <div class="td-cell col-id">27-1-12870</div>
               <div class="td-cell col-fname">Dag Gan</div>
               <div class="td-cell col-mname">Land</div>
               <div class="td-cell col-lname">Silot</div>
               <div class="td-cell col-program">BS in Information System</div>
               <div class="td-cell col-action">
-                <button class="pill-btn-sm edit">Edit</button>
-                <button class="pill-btn-sm remove">Remove</button>
+                <button class="pill-btn-sm edit" type="button">Edit</button>
+                <button class="pill-btn-sm remove" type="button">Remove</button>
               </div>
             </div>
 
-            <div class="table-row">
+            <div class="table-row" data-id="27-1-98917" data-fname="chat" data-mname="ge" data-lname="pity" data-program="BS In Applied Mathematics">
               <div class="td-cell col-id">27-1-98917</div>
               <div class="td-cell col-fname">Chat</div>
               <div class="td-cell col-mname">Ge</div>
               <div class="td-cell col-lname">Pity</div>
               <div class="td-cell col-program">BS In Applied Mathematics</div>
               <div class="td-cell col-action">
-                <button class="pill-btn-sm edit">Edit</button>
-                <button class="pill-btn-sm remove">Remove</button>
+                <button class="pill-btn-sm edit" type="button">Edit</button>
+                <button class="pill-btn-sm remove" type="button">Remove</button>
               </div>
             </div>
           </div>
+          <div id="emptyState" class="empty-state">No students found.</div>
         </div>
       </div>
 
       <div class="bottom-bar-container">
         <div class="pagination-wrapper">
-          <button class="pill-btn pagination">Previous</button>
+          <button class="pill-btn pagination" type="button">Previous</button>
           <span class="page-text">Page 1 of 3</span>
-          <button class="pill-btn pagination">Next</button>
+          <button class="pill-btn pagination" type="button">Next</button>
         </div>
       </div>
     </main>
+
+    <!-- Create / Edit Student Modal -->
+    <div id="studentModal" class="modal-overlay">
+      <section class="modal-card">
+        <button id="closeStudent" class="modal-close" type="button" aria-label="Close">✕</button>
+        <h2 id="studentModalTitle" class="modal-title">Create Student</h2>
+
+        <form id="studentForm" class="modal-form">
+          <label for="studentId">Student Id:</label>
+          <input id="studentId" type="text" placeholder="ex. 27-6-76767" required>
+
+          <label for="studentFname">First Name:</label>
+          <input id="studentFname" type="text" placeholder="ex. Chat" required>
+
+          <label for="studentMname">Middle Name:</label>
+          <input id="studentMname" type="text" placeholder="ex. Gee">
+
+          <label for="studentLname">Last Name:</label>
+          <input id="studentLname" type="text" placeholder="ex. Pity" required>
+
+          <label for="studentProgram">Program:</label>
+          <div class="modal-select-wrapper">
+            <select id="studentProgram">
+              <option value="" disabled selected>Program:</option>
+              <option>BS in Computer Science</option>
+              <option>BS in Computer Engineering</option>
+              <option>BS in Medical Technology</option>
+              <option>BS in Information System</option>
+              <option>BS In Applied Mathematics</option>
+            </select>
+            <svg class="modal-select-chevron" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <button type="submit" class="modal-submit">Submit</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- Remove Student Modal -->
+    <div id="removeModal" class="modal-overlay">
+      <section class="modal-card">
+        <button id="closeRemove" class="modal-close" type="button" aria-label="Close">✕</button>
+        <h2 class="modal-title">Remove Student</h2>
+
+        <div class="modal-form" style="align-items:center;">
+          <p style="color:#fff; font-family:'Intel One Mono',monospace; font-size:14px; text-align:center; margin-top:24px; line-height:1.5;">
+            Are you sure you want to remove this student? This action cannot be undone.
+          </p>
+          <div style="display:flex; gap:12px; margin-top:28px; width:100%; justify-content:center;">
+            <button id="cancelRemove" type="button" class="modal-submit" style="background:#555; border-color:#666;">Cancel</button>
+            <button id="confirmRemove" type="button" class="modal-submit" style="background:#f9464a; border-color:#f9464a;">Confirm</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast">Student Created Successfully</div>
   </div>
+
+  <script>
+    function setSidebarActive(fileName) {
+      const frame = document.getElementById('sidebar-frame');
+      if (!frame) return;
+
+      frame.addEventListener('load', () => {
+        try {
+          const doc = frame.contentDocument || frame.contentWindow.document;
+          const links = doc.querySelectorAll('#sidebar-nav a');
+
+          links.forEach(link => {
+            link.classList.remove('nav-btn-active', 'font-bold', 'shadow-sm');
+            link.classList.add('nav-btn-inactive', 'font-semibold');
+
+            const svg = link.querySelector('svg');
+            if (svg) svg.setAttribute('stroke', 'currentColor');
+
+            if ((link.getAttribute('href') || '').endsWith(fileName)) {
+              link.classList.remove('nav-btn-inactive', 'font-semibold');
+              link.classList.add('nav-btn-active', 'font-bold', 'shadow-sm');
+              if (svg) svg.setAttribute('stroke', '#A35233');
+            }
+          });
+        } catch (_) {}
+      });
+    }
+
+    setSidebarActive('students.html');
+
+    const tableBody = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchInput');
+    const programFilter = document.getElementById('programFilter');
+    const emptyState = document.getElementById('emptyState');
+    const studentModal = document.getElementById('studentModal');
+    const removeModal = document.getElementById('removeModal');
+    const studentForm = document.getElementById('studentForm');
+    const studentId = document.getElementById('studentId');
+    const studentFname = document.getElementById('studentFname');
+    const studentMname = document.getElementById('studentMname');
+    const studentLname = document.getElementById('studentLname');
+    const studentProgram = document.getElementById('studentProgram');
+    const studentModalTitle = document.getElementById('studentModalTitle');
+    const toast = document.getElementById('toast');
+
+    let mode = 'create';
+    let selectedRow = null;
+
+    function openModal(modal) {
+      modal.classList.add('show');
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove('show');
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function filterRows() {
+      const query = searchInput.value.trim().toLowerCase();
+      const program = programFilter.value;
+      let visibleCount = 0;
+
+      [...tableBody.children].forEach(row => {
+        if (!row.classList.contains('table-row')) return;
+        const matchesText =
+          (row.dataset.id || '').includes(query) ||
+          (row.dataset.fname || '').includes(query) ||
+          (row.dataset.mname || '').includes(query) ||
+          (row.dataset.lname || '').includes(query);
+
+        const matchesProgram =
+          program === 'all' || row.dataset.program === program;
+
+        const visible = matchesText && matchesProgram;
+        row.style.display = visible ? '' : 'none';
+        if (visible) visibleCount++;
+      });
+
+      emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
+    }
+
+    // Add Student button
+    document.getElementById('addButton').addEventListener('click', () => {
+      mode = 'create';
+      selectedRow = null;
+      studentModalTitle.textContent = 'Create Student';
+      studentId.value = '';
+      studentFname.value = '';
+      studentMname.value = '';
+      studentLname.value = '';
+      studentProgram.selectedIndex = 0;
+      openModal(studentModal);
+    });
+
+    // Edit / Remove via delegation
+    tableBody.addEventListener('click', event => {
+      const row = event.target.closest('.table-row');
+      if (!row) return;
+
+      if (event.target.classList.contains('edit')) {
+        mode = 'edit';
+        selectedRow = row;
+        studentModalTitle.textContent = 'Edit Student';
+        const cells = row.querySelectorAll('.td-cell');
+        studentId.value = cells[0].textContent.trim();
+        studentFname.value = cells[1].textContent.trim();
+        studentMname.value = cells[2].textContent.trim();
+        studentLname.value = cells[3].textContent.trim();
+        studentProgram.value = cells[4].textContent.trim();
+        openModal(studentModal);
+      }
+
+      if (event.target.classList.contains('remove')) {
+        selectedRow = row;
+        openModal(removeModal);
+      }
+    });
+
+    // Submit student form
+    studentForm.addEventListener('submit', event => {
+      event.preventDefault();
+
+      const id = studentId.value.trim();
+      const fname = studentFname.value.trim();
+      const mname = studentMname.value.trim();
+      const lname = studentLname.value.trim();
+      const program = studentProgram.value;
+
+      if (!id || !fname || !lname) return;
+
+      if (mode === 'edit' && selectedRow) {
+        const cells = selectedRow.querySelectorAll('.td-cell');
+        cells[0].textContent = id;
+        cells[1].textContent = fname;
+        cells[2].textContent = mname;
+        cells[3].textContent = lname;
+        cells[4].textContent = program;
+        selectedRow.dataset.id = id.toLowerCase();
+        selectedRow.dataset.fname = fname.toLowerCase();
+        selectedRow.dataset.mname = mname.toLowerCase();
+        selectedRow.dataset.lname = lname.toLowerCase();
+        selectedRow.dataset.program = program;
+        closeModal(studentModal);
+        window.setTimeout(() => showToast('Student Updated Successfully'), 120);
+      } else {
+        const row = document.createElement('div');
+        row.className = 'table-row';
+        row.dataset.id = id.toLowerCase();
+        row.dataset.fname = fname.toLowerCase();
+        row.dataset.mname = mname.toLowerCase();
+        row.dataset.lname = lname.toLowerCase();
+        row.dataset.program = program;
+        row.innerHTML = `
+          <div class="td-cell col-id">${id}</div>
+          <div class="td-cell col-fname">${fname}</div>
+          <div class="td-cell col-mname">${mname}</div>
+          <div class="td-cell col-lname">${lname}</div>
+          <div class="td-cell col-program">${program}</div>
+          <div class="td-cell col-action">
+            <button class="pill-btn-sm edit" type="button">Edit</button>
+            <button class="pill-btn-sm remove" type="button">Remove</button>
+          </div>`;
+        tableBody.prepend(row);
+        closeModal(studentModal);
+        window.setTimeout(() => showToast('Student Created Successfully'), 120);
+      }
+
+      filterRows();
+    });
+
+    // Confirm remove
+    document.getElementById('confirmRemove').addEventListener('click', () => {
+      if (!selectedRow) return;
+      selectedRow.remove();
+      selectedRow = null;
+      closeModal(removeModal);
+      window.setTimeout(() => showToast('Student Removed Successfully'), 120);
+      filterRows();
+    });
+
+    // Cancel remove
+    document.getElementById('cancelRemove').addEventListener('click', () => closeModal(removeModal));
+
+    // Close buttons
+    document.getElementById('closeStudent').addEventListener('click', () => closeModal(studentModal));
+    document.getElementById('closeRemove').addEventListener('click', () => closeModal(removeModal));
+    searchInput.addEventListener('input', filterRows);
+    programFilter.addEventListener('change', filterRows);
+
+    // Click outside modal to close
+    [studentModal, removeModal].forEach(modal => {
+      modal.addEventListener('click', event => {
+        if (event.target === modal) closeModal(modal);
+      });
+    });
+
+    // Escape key to close
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        closeModal(studentModal);
+        closeModal(removeModal);
+      }
+    });
+  </script>
 </body>
 </html>
+
