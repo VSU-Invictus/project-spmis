@@ -802,15 +802,19 @@
 
     <!-- Remove Student Modal -->
     <div id="removeModal" class="modal-overlay">
-      <section class="modal-card compact">
+      <section class="modal-card">
         <button id="closeRemove" class="modal-close" type="button" aria-label="Close">✕</button>
         <h2 class="modal-title">Remove Student</h2>
 
-        <form id="removeForm" class="modal-form">
-          <label for="removeReason">Reason:</label>
-          <textarea id="removeReason" placeholder="Type here..." required></textarea>
-          <button type="submit" class="modal-submit">Submit</button>
-        </form>
+        <div class="modal-form" style="align-items:center;">
+          <p style="color:#fff; font-family:'Intel One Mono',monospace; font-size:14px; text-align:center; margin-top:24px; line-height:1.5;">
+            Are you sure you want to remove this student? This action cannot be undone.
+          </p>
+          <div style="display:flex; gap:12px; margin-top:28px; width:100%; justify-content:center;">
+            <button id="cancelRemove" type="button" class="modal-submit" style="background:#555; border-color:#666;">Cancel</button>
+            <button id="confirmRemove" type="button" class="modal-submit" style="background:#f9464a; border-color:#f9464a;">Confirm</button>
+          </div>
+        </div>
       </section>
     </div>
 
@@ -853,13 +857,11 @@
     const studentModal = document.getElementById('studentModal');
     const removeModal = document.getElementById('removeModal');
     const studentForm = document.getElementById('studentForm');
-    const removeForm = document.getElementById('removeForm');
     const studentId = document.getElementById('studentId');
     const studentFname = document.getElementById('studentFname');
     const studentMname = document.getElementById('studentMname');
     const studentLname = document.getElementById('studentLname');
     const studentProgram = document.getElementById('studentProgram');
-    const removeReason = document.getElementById('removeReason');
     const studentModalTitle = document.getElementById('studentModalTitle');
     const toast = document.getElementById('toast');
 
@@ -937,7 +939,6 @@
 
       if (event.target.classList.contains('remove')) {
         selectedRow = row;
-        removeReason.value = '';
         openModal(removeModal);
       }
     });
@@ -994,17 +995,18 @@
       filterRows();
     });
 
-    // Submit remove form
-    removeForm.addEventListener('submit', event => {
-      event.preventDefault();
-      if (!selectedRow || !removeReason.value.trim()) return;
-
+    // Confirm remove
+    document.getElementById('confirmRemove').addEventListener('click', () => {
+      if (!selectedRow) return;
       selectedRow.remove();
       selectedRow = null;
       closeModal(removeModal);
       window.setTimeout(() => showToast('Student Removed Successfully'), 120);
       filterRows();
     });
+
+    // Cancel remove
+    document.getElementById('cancelRemove').addEventListener('click', () => closeModal(removeModal));
 
     // Close buttons
     document.getElementById('closeStudent').addEventListener('click', () => closeModal(studentModal));
