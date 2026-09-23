@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Portal - Audit Log</title>
+  <link rel="stylesheet" href="../../assets/css/global.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -118,16 +120,16 @@
       width: 100%;
       height: 38px;
       padding: 8px 16px 8px 40px;
-      background: #fff;
-      border: 1px solid #E4DED5;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
       border-radius: 12px;
       font-size: 14px;
-      color: #2D2A27;
+      color: var(--foreground, #FFFFFF);
       outline: none;
     }
 
     .search-input::placeholder {
-      color: #8A837A;
+      color: var(--muted-foreground, #A0988E);
     }
 
     .search-input:focus,
@@ -160,10 +162,10 @@
       width: 100%;
       height: 38px;
       padding: 0 30px 0 14px;
-      background: #fff;
-      border: 1px solid #E4DED5;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
       border-radius: 12px;
-      color: #2D2A27;
+      color: var(--foreground, #FFFFFF);
       font-size: 12px;
       appearance: none;
       outline: none;
@@ -204,8 +206,8 @@
 
     .table-container {
       width: 100%;
-      background: #FFFDFA;
-      border: 1px solid #EDE7DC;
+      background: var(--ui-surface, #2B2A27);
+      border: 1px solid var(--ui-surface-border, #3E3D39);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 1px 2px rgba(0,0,0,.05);
@@ -224,13 +226,13 @@
     }
 
     thead {
-      background: #EDE3D0;
+      background: var(--ui-surface-muted, #21201E);
     }
 
     th {
       min-height: 44px;
       padding: 12px 20px;
-      color: #544D45;
+      color: var(--ui-surface-text, #FFFFFF);
       font-size: 14px;
       font-weight: 700;
       text-align: left;
@@ -239,10 +241,10 @@
     td {
       min-height: 49px;
       padding: 12px 20px;
-      color: #3A3632;
+      color: var(--ui-surface-text, #FFFFFF);
       font-size: 14px;
       font-weight: 500;
-      border-top: 1px solid #F0EAE0;
+      border-top: 1px solid var(--ui-surface-border, #383734);
       vertical-align: middle;
     }
 
@@ -261,20 +263,11 @@
       font-weight: 500;
     }
 
-    .badge-approved {
-      background: #F3EBD9;
-      color: #715C32;
-    }
+    .badge-approved { background: rgba(46, 125, 50, 0.18); border: 1px solid rgba(46, 125, 50, 0.35); color: #81c784; }
 
-    .badge-faculty {
-      background: #E8F0FE;
-      color: #1A73E8;
-    }
+    .badge-faculty { background: rgba(26, 115, 232, 0.18); border: 1px solid rgba(26, 115, 232, 0.35); color: #8ab4f8; }
 
-    .badge-admin {
-      background: #F3EBD9;
-      color: #715C32;
-    }
+    .badge-admin { background: rgba(217, 114, 81, 0.18); border: 1px solid rgba(217, 114, 81, 0.35); color: #ffab91; }
 
     .action-group {
       display: flex;
@@ -296,9 +289,9 @@
     }
 
     .edit-btn {
-      border: 1px solid #D8D0C4;
-      background: #fff;
-      color: #2D2A27;
+      border: 1px solid var(--ui-surface-border, #3E3D39);
+      background: var(--ui-surface-muted, #21201E);
+      color: var(--ui-surface-text, #FFFFFF);
     }
 
     .remove-btn {
@@ -323,9 +316,9 @@
     }
 
     .pagination {
-      border: 1px solid #D8D0C4;
-      background: #fff;
-      color: #2D2A27;
+      border: 1px solid var(--ui-surface-border, #3E3D39);
+      background: var(--ui-surface-muted, #21201E);
+      color: var(--ui-surface-text, #FFFFFF);
     }
 
     .page-text {
@@ -340,9 +333,9 @@
       height: 145px;
       align-items: center;
       justify-content: center;
-      color: #716A60;
+      color: var(--ui-surface-muted-text, #A0988E);
       font-size: 12px;
-      background: #FFFDFA;
+      background: var(--ui-surface, #2B2A27);
     }
 
     /* Modal interaction matches the recorded prototype:
@@ -402,7 +395,7 @@
       height: 28px;
       border: 0;
       background: transparent;
-      color: #1E1D1B;
+      color: #FFFFFF;
       font-size: 26px;
       line-height: 26px;
     }
@@ -446,8 +439,8 @@
       width: 100%;
       border: 0;
       border-radius: 7px;
-      background: #FFFDFA;
-      color: #28261F;
+      background: var(--muted, #21201E); border: 1px solid var(--input, #43362B);
+      color: var(--foreground, #FFFFFF);
       outline: none;
       font-size: 11px;
     }

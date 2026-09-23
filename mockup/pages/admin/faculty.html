@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
   <title>Admin Portal - Faculty</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -112,16 +114,16 @@
       width: 100%;
       height: 38px;
       padding: 8px 16px 8px 40px;
-      background: #fff;
-      border: 1px solid #E4DED5;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
       border-radius: 12px;
       font-size: 14px;
-      color: #2D2A27;
+      color: var(--foreground, #FFFFFF);
       outline: none;
     }
 
     .search-input::placeholder {
-      color: #8A837A;
+      color: var(--muted-foreground, #A0988E);
     }
 
     .search-input:focus,
@@ -154,10 +156,10 @@
       width: 100%;
       height: 38px;
       padding: 0 30px 0 14px;
-      background: #fff;
-      border: 1px solid #E4DED5;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
       border-radius: 12px;
-      color: #2D2A27;
+      color: var(--foreground, #FFFFFF);
       font-size: 12px;
       appearance: none;
       outline: none;
@@ -198,8 +200,8 @@
 
     .table-container {
       width: 100%;
-      background: #FFFDFA;
-      border: 1px solid #EDE7DC;
+      background: var(--ui-surface, #2B2A27);
+      border: 1px solid var(--ui-surface-border, #383734);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 1px 2px rgba(0,0,0,.05);
@@ -215,16 +217,17 @@
       border-collapse: collapse;
       min-width: 720px;
       table-layout: fixed;
+      background: var(--ui-surface, #2B2A27);
     }
 
     thead {
-      background: #EDE3D0;
+      background: var(--ui-surface-muted, #21201E);
     }
 
     th {
       min-height: 44px;
       padding: 12px 14px;
-      color: #544D45;
+      color: var(--ui-surface-text, #FFFFFF);
       font-size: 14px;
       font-weight: 700;
       text-align: left;
@@ -233,11 +236,15 @@
     td {
       min-height: 49px;
       padding: 12px 14px;
-      color: #3A3632;
+      color: var(--ui-surface-text, #FFFFFF);
       font-size: 14px;
       font-weight: 500;
-      border-top: 1px solid #F0EAE0;
+      border-top: 1px solid var(--ui-surface-border, #383734);
       vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: color-mix(in srgb, var(--primary) 8%, var(--ui-surface, #2B2A27));
     }
 
     .text-center { text-align: center; }
@@ -290,9 +297,13 @@
     }
 
     .edit-btn {
-      border: 1px solid #D8D0C4;
-      background: #fff;
-      color: #2D2A27;
+      border: 1px solid var(--border, #383734);
+      background: var(--secondary, #21201E);
+      color: var(--foreground, #FFFFFF);
+    }
+
+    .edit-btn:hover {
+      background: var(--accent, #33322E);
     }
 
     .remove-btn {
@@ -317,9 +328,13 @@
     }
 
     .pagination {
-      border: 1px solid #D8D0C4;
-      background: #fff;
-      color: #2D2A27;
+      border: 1px solid var(--border, #383734);
+      background: var(--secondary, #21201E);
+      color: var(--foreground, #FFFFFF);
+    }
+
+    .pagination:hover {
+      background: var(--accent, #33322E);
     }
 
     .page-text {
@@ -334,9 +349,9 @@
       height: 145px;
       align-items: center;
       justify-content: center;
-      color: #716A60;
+      color: var(--ui-surface-muted-text, #A0988E);
       font-size: 12px;
-      background: #FFFDFA;
+      background: var(--ui-surface, #2B2A27);
     }
 
     /* Modal interaction matches the recorded prototype:
@@ -452,14 +467,14 @@
       width: 100%;
       height: 31px;
       padding: 8px 16px;
-      background: #FFFFFF;
-      border: 1px solid #E4DED5;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
       border-radius: 12px;
       font-family: 'Inter', sans-serif;
       font-weight: 400;
       font-size: 14px;
       line-height: 17px;
-      color: #141413;
+      color: var(--foreground, #FFFFFF);
       outline: none;
       appearance: none;
     }
@@ -468,19 +483,19 @@
       width: 100%;
       min-height: 120px;
       padding: 10px;
-      background: #FFFFFF;
-      border: 1px solid #E4DED5;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
       border-radius: 12px;
       font-family: 'Inter', sans-serif;
       font-weight: 400;
       font-size: 14px;
-      color: #141413;
+      color: var(--foreground, #FFFFFF);
       outline: none;
       resize: none;
     }
 
     .modal-form input::placeholder {
-      color: #8A837A;
+      color: var(--muted-foreground, #A0988E);
     }
 
     .modal-form input:focus,
