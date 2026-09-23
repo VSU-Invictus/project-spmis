@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Students · SPMIS Faculty</title>
     <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
     <script src="../../assets/js/faculty-sidebar.js"></script>
     <style>
         /* Faculty layout and components. Shared colors come from assets/css/global.css. */
@@ -18,14 +19,16 @@
         }
 
         body {
-            margin: 0;
-            background: var(--sidebar);
-            color: var(--foreground);
-            font: 14px/1.6 var(--font-sans);
-            padding: 20px;
-            height: 100vh;
-            overflow: hidden;
-        }
+      margin: 0;
+      background: var(--background);
+      color: var(--foreground);
+      font: 14px/1.6 var(--font-sans);
+      padding: 0;
+      height: 100vh;
+      min-height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
 
         a {
             color: var(--primary);
@@ -78,15 +81,17 @@
         }
 
         .app {
-            max-width: 1440px;
-            height: calc(100vh - 40px);
-            margin: auto;
-            display: flex;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            background: var(--background);
-        }
+      width: 100vw;
+      max-width: 100vw;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      border: 1px solid #D97251;
+      box-sizing: border-box;
+      border-radius: 0;
+      overflow: hidden;
+      background: var(--background);
+    }
 
         .sidebar {
             width: 250px;
@@ -142,9 +147,13 @@
         main {
             min-width: 0;
             flex: 1;
-            padding: 38px;
+            padding: 16px 24px;
             height: 100%;
-            overflow-y: auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
         }
 
         .eyebrow {
@@ -514,14 +523,14 @@
         }
 
         .skip {
-            position: absolute;
-            left: 20px;
-            top: -80px;
-            background: #fff;
-            color: #000;
-            padding: 12px;
-            z-index: 10;
-        }
+        position: absolute;
+        left: 20px;
+        top: -80px;
+        background: var(--primary, #D97251);
+        color: var(--primary-foreground, #FFFFFF);
+        padding: 12px;
+        z-index: 10;
+      }
 
         .skip:focus {
             top: 10px;
@@ -683,72 +692,64 @@
             flex-shrink: 0;
         }
 
-        /* White content panels with the original charcoal portal shell. */
+        /* Charcoal portal shell and dark Claude+ panels. */
         .app {
-            background: #30302e;
+            background: var(--background);
         }
 
         .card,
-        .table-wrap,
-        dialog {
-            --foreground: #28261b;
-            --card: #fffdfa;
-            --card-foreground: #28261b;
-            --sidebar-foreground: #81786c;
-            --border: #eee7db;
-            --input: #ded5c7;
-            --sidebar: #f7f3eb;
-            color: #28261b;
-            background: #fffdfa;
-            border-color: #e4ded4;
-            border-radius: 12px;
-        }
+    .table-wrap,
+    dialog {
+      color: var(--ui-surface-text);
+      background: var(--ui-surface);
+      border: 1px solid var(--ui-surface-border);
+      border-radius: 12px;
+    }
 
         .card h2,
         .card h3,
         .card strong {
-            color: #22211f;
+            color: var(--ui-surface-text);
         }
 
         .card small,
         .card .muted,
         dialog .muted {
-            color: #81786c;
+            color: var(--ui-surface-muted-text);
         }
 
         input,
-        select,
-        textarea {
-            background: #fffdfa;
-            color: #39362f;
-            border: 1px solid #d6d1c8;
-        }
+    select,
+    textarea {
+      background: var(--muted);
+      color: var(--foreground);
+      border: 1px solid var(--input);
+    }
 
         input::placeholder,
         textarea::placeholder {
-            color: #8b8378;
-            opacity: 1;
+            color: var(--muted-foreground); opacity: 1;
         }
 
         input[readonly] {
-            color: #70695f;
-            background: #f4f0e8;
-        }
+      color: var(--muted-foreground);
+      background: var(--card);
+    }
 
         .card input,
-        .card select,
-        .card textarea,
-        dialog input,
-        dialog textarea {
-            background: #f8f5ef;
-        }
+    .card select,
+    .card textarea,
+    dialog input,
+    dialog textarea {
+      background: var(--muted);
+    }
 
         button.secondary,
-        .button.secondary {
-            background: #fffdfa;
-            color: #38352f;
-            border: 1px solid #ded7ca;
-        }
+    .button.secondary {
+      background: var(--ui-surface-muted);
+      color: var(--ui-surface-text);
+      border: 1px solid var(--ui-surface-border);
+    }
 
         button,
         .button {
@@ -762,7 +763,7 @@
         .profile-link {
             display: block;
             padding: 12px 12px 12px 48px;
-            border: 1px solid #49433a;
+            border: 1px solid var(--border);
             border-radius: 10px;
             position: relative;
             margin-top: auto;
@@ -775,8 +776,7 @@
             top: 16px;
             width: 26px;
             height: 26px;
-            background: #fbe7de;
-            color: #d97757;
+            background: var(--ui-surface-muted); border: 1px solid var(--ui-surface-border); color: var(--primary);
             border-radius: 50%;
             text-align: center;
             line-height: 26px;
@@ -791,80 +791,81 @@
         }
 
         th {
-            background: #eee4ce;
-            color: #5d564b;
-            font-family: var(--font-sans);
-            font-size: 12px;
-            letter-spacing: 0;
-            text-transform: none;
-        }
+      background: var(--ui-surface-muted);
+      color: var(--ui-surface-text);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: none;
+    }
 
         td {
-            font-size: 13px;
-            color: #635b51;
-            padding: 18px 16px;
-            border-color: #efe9df;
-        }
+      font-size: 13px;
+      color: var(--ui-surface-text);
+      padding: 18px 16px;
+      border-color: var(--ui-surface-border);
+    }
 
         td:first-child {
-            color: #292720;
-            font-weight: 550;
-        }
+      color: var(--ui-surface-text);
+      font-weight: 550;
+    }
 
         td a {
-            color: #c65d3e;
+            color: var(--primary);
             text-decoration: none;
         }
 
         td small {
-            color: #8b8175;
-        }
+      color: var(--ui-surface-muted-text);
+    }
 
         tbody tr:last-child td {
             border-bottom: 0;
         }
 
         tbody tr:hover {
-            background: #fcf8f1;
+            background: color-mix(in srgb, var(--primary) 8%, var(--ui-surface));
         }
 
         .table-wrap button.secondary {
             border: 0;
             padding: 4px 0;
-            color: #c65d3e;
+            color: var(--primary);
             background: transparent;
             font-size: 13px;
         }
 
         .badge {
-            background: #fbece5;
-            color: #c75d3e;
-            border-radius: 20px;
-            white-space: nowrap;
-        }
+      background: color-mix(in srgb, var(--primary) 14%, var(--card));
+      color: var(--primary);
+      border-radius: 20px;
+      white-space: nowrap;
+    }
 
         .badge.approved {
-            background: #e8f4e7;
-            color: #227231;
-        }
+      background: #1e3324;
+      color: #81c784;
+    }
 
         .badge.rejected {
-            background: #fce8e7;
-            color: #aa2929;
-        }
+      background: #3a2022;
+      color: #fca5a5;
+    }
 
         .tag {
-            background: #f2e9d4;
-            color: #755e35;
-            border-radius: 20px;
-            font-size: 11px;
-            margin-bottom: 3px;
-        }
+      background: var(--ui-surface-muted);
+      color: var(--ui-surface-text);
+      border: 1px solid var(--ui-surface-border);
+      border-radius: 20px;
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
 
         .pagination {
             justify-content: flex-end;
             font-size: 12px;
-            color: #b8afa2;
+            color: var(--ui-surface-muted-text);
             gap: 12px;
         }
 
@@ -958,11 +959,11 @@
         }
 
         .quick-links a {
-            background: #f3ead7;
-            color: #292720;
-            padding: 16px;
-            border: 0;
-        }
+      background: var(--ui-surface-muted);
+      color: var(--ui-surface-text);
+      border: 1px solid var(--ui-surface-border);
+      padding: 16px;
+    }
 
         .quick-links small {
             font-size: 12px;
@@ -974,7 +975,7 @@
             align-items: center;
             gap: 10px;
             padding: 15px 0;
-            border-bottom: 1px solid #efe8de;
+            border-bottom: 1px solid var(--ui-surface-border);
         }
 
         .pending-item:last-child {
@@ -998,19 +999,16 @@
         }
 
         .chat-prompts button {
-            display: block;
-            text-align: left;
-            padding: 18px;
-            background: #fffdfa;
-            color: #292720;
-            font-size: 13px;
-            font-weight: 550;
-            border: 1px solid #e4ded4;
-        }
+      background: var(--ui-surface-muted);
+      color: var(--ui-surface-text);
+      font-size: 13px;
+      font-weight: 550;
+      border: 1px solid var(--ui-surface-border);
+    }
 
         .chat-prompts small {
             display: block;
-            color: #8a8074;
+            color: var(--ui-surface-muted-text);
             font-weight: 400;
             margin-top: 6px;
         }
@@ -1031,23 +1029,23 @@
         }
 
         .message {
-            background: #f5efe3;
-            border: 0;
-            color: #494238;
-            font-size: 13px;
-        }
+      background: var(--ui-surface-muted);
+      border: 1px solid var(--ui-surface-border);
+      color: var(--ui-surface-text);
+      font-size: 13px;
+    }
 
         .message.user {
-            background: #d97757;
-            color: white;
-        }
+      background: color-mix(in srgb, var(--primary) 18%, var(--card));
+      color: var(--primary-foreground);
+    }
 
         .message.user strong {
             color: white;
         }
 
         .message strong {
-            color: #c65d3e;
+            color: var(--primary);
         }
 
         .chat-form textarea {
@@ -1055,16 +1053,17 @@
         }
 
         .chat-context .avatar {
-            width: 54px;
-            height: 54px;
-            margin: 20px auto 12px;
-            border-radius: 50%;
-            background: #fcece5;
-            color: #cf6b4a;
-            display: grid;
-            place-items: center;
-            font-weight: 700;
-        }
+      width: 54px;
+      height: 54px;
+      margin: 20px auto 12px;
+      border-radius: 50%;
+      background: var(--ui-surface-muted);
+      border: 1px solid var(--ui-surface-border);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
 
         .chat-context h3,
         .chat-context>p {
@@ -1083,7 +1082,7 @@
         }
 
         .chat-context dt {
-            color: #82786a;
+            color: var(--ui-surface-muted-text);
         }
 
         @media (max-width: 850px) {
@@ -1154,57 +1153,89 @@
 <body data-page="students">
     <a href="#main" class="skip">Skip to content</a>
     <div class="app">
-        <aside class="sidebar" data-faculty-sidebar data-component="sidebar-faculty">
-            <a class="brand" href="dashboard.html">Faculty Portal</a>
-            <nav class="nav" aria-label="Faculty navigation">
-                <a href="dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-                        focusable="false">
-                        <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                        <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                        <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                        <rect x="14" y="14" width="7" height="7" rx="1.5" />
-                    </svg><span>Dashboard</span></a>
-                <a href="students.html" aria-current="page"><svg class="nav-icon" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"
-                        aria-hidden="true" focusable="false">
-                        <circle cx="9" cy="8" r="3" />
-                        <path d="M3 21v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M21 21v-2a6 6 0 0 0-4-5.65" />
-                    </svg><span>Students</span></a>
-                <a href="chat.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-                        focusable="false">
-                        <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-3 2V11.5a9.5 9.5 0 0 1 19 0Z" />
-                        <path d="m12 6 1.3 3.7L17 11l-3.7 1.3L12 16l-1.3-3.7L7 11l3.7-1.3Z" />
-                    </svg><span>Chats</span></a>
-                <a href="programs.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-                        focusable="false">
-                        <path d="m2 9 10-5 10 5-10 5L2 9ZM6 11v6c4 3 8 3 12 0v-6M22 9v7" />
-                    </svg><span>Programs</span></a>
-                <a href="departments.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-                        focusable="false">
-                        <rect x="5" y="3" width="14" height="18" rx="2" />
-                        <path d="M9 7h1m4 0h1M9 11h1m4 0h1M10 21v-6h4v6M3 21h18" />
-                    </svg><span>Departments</span></a>
-                <a href="applications.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-                        focusable="false">
-                        <path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3" />
-                        <rect x="9" y="2" width="6" height="4" rx="1" />
-                        <path d="m8 14 3 3 5-6" />
-                    </svg><span>Applications</span></a>
-            </nav>
-            <a class="profile-link" href="profile.html">
-                <strong data-name>Alex Morgan</strong>
-                <small>Faculty member</small>
-            </a>
-        </aside>
+            <aside class="sidebar" id="sidebar-menu" data-component="sidebar-faculty">
+      <div class="flex flex-col gap-1">
+        <div class="brand-header">
+          <h1 class="brand-title">Faculty Portal</h1>
+        </div>
+        <nav class="nav" id="sidebar-nav" aria-label="Faculty navigation">
+        <a href="dashboard.html" class="nav-btn-inactive">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" /><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" /><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" /><rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="students.html" class="nav-btn-active" aria-current="page">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Students</span>
+        </a>
+        <a href="chat.html" class="nav-btn-inactive">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-3 2V11.5a9.5 9.5 0 0 1 19 0Z"></path><path d="m12 6 1.3 3.7L17 11l-3.7 1.3L12 16l-1.3-3.7L7 11l3.7-1.3Z"></path>
+          </svg>
+          <span>Chats</span>
+        </a>
+        <a href="programs.html" class="nav-btn-inactive">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span>Programs</span>
+        </a>
+        <a href="departments.html" class="nav-btn-inactive">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><polygon points="12 2 3 10 21 10"></polygon><line x1="7" y1="21" x2="7" y2="10"></line><line x1="12" y1="21" x2="12" y2="10"></line><line x1="17" y1="21" x2="17" y2="10"></line>
+          </svg>
+          <span>Departments</span>
+        </a>
+        <a href="applications.html" class="nav-btn-inactive">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14h6"></path><path d="M9 18h6"></path><path d="M9 10h.01"></path>
+          </svg>
+          <span>Applications</span>
+        </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-account-card">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="sidebar-avatar">
+              <span>A</span>
+            </div>
+            <div class="sidebar-account-details">
+              <span class="sidebar-account-name" data-name>Alex Morgan</span>
+              <span class="sidebar-account-role">Faculty member</span>
+            </div>
+          </div>
+          <button type="button" class="sidebar-logout-btn logout-btn" aria-label="Log out" title="Log out">
+            <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </aside>
         <main id="main">
+      <!-- Top Brand Header Bar -->
+      <div class="top-header-bar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 10px; height: 10px; border-radius: 50%; background: #D97251;"></div>
+          <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #A0988E;">FACULTY PORTAL / STUDENTS</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; color: #A0988E;">
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+            System Live
+          </span>
+          <span style="font-size: 11px; color: #A0988E;">AY 2026-2027</span>
+        </div>
+      </div>
             <div class="header">
                 <div>
-                    <div class="eyebrow">Faculty workspace</div>
+
                     <h1>Students</h1>
                     <p>Browse students and search the text of active reviews.</p>
                 </div>
@@ -1241,7 +1272,12 @@
                     interactions.
                 </p>
             </noscript>
-        </main>
+              <!-- Workspace Footer -->
+      <footer class="workspace-footer">
+        <span>© 2026 Faculty Portal. All rights reserved.</span>
+        <span>System Version 2.4.0</span>
+      </footer>
+    </main>
     </div>
     <script>
         /* Local demonstration only. All records are fictional and stored for this tab. */
