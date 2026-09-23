@@ -5,62 +5,91 @@
 /* --- 1. FONTS --- */
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
 
-/* --- 2. VARIABLES (From shadcn/ui) --- */
+/* --- 2. VARIABLES (Claude+ theme from tweakcn) --- */
 :root {
-    --background: #faf9f5;
-    --foreground: #3d3929;
-    --card: #f5f4ef;
-    --card-foreground: #141413;
-    --popover: #ffffff;
-    --popover-foreground: #28261b;
-    --primary: #c96442;
-    --primary-foreground: #ffffff;
-    --secondary: #e9e6dc;
-    --secondary-foreground: #535146;
-    --muted: #ede9de;
-    --muted-foreground: #6e6d68;
-    --accent: #e9e6dc;
-    --accent-foreground: #28261b;
-    --destructive: #141413;
-    --destructive-foreground: #ffffff;
-    --border: #dad9d4;
-    --input: #b4b2a7;
-    --ring: #c96442;
-    --sidebar: #f5f4ee;
-    --sidebar-foreground: #3d3d3a;
-    --sidebar-primary: #c96442;
-    --sidebar-primary-foreground: #fbfbfb;
-    --sidebar-accent: #e9e6dc;
-    --sidebar-accent-foreground: #343434;
-    --sidebar-border: #ebebeb;
-    --sidebar-ring: #b5b5b5;
+    --background: oklch(0.9818 0.0054 95.0986);
+    --foreground: oklch(0.3438 0.0269 95.7226);
+    --card: oklch(0.9665 0.0067 97.3521);
+    --card-foreground: oklch(0.1908 0.0020 106.5859);
+    --popover: oklch(1.0000 0 0);
+    --popover-foreground: oklch(0.2671 0.0196 98.9390);
+    --primary: oklch(0.6171 0.1375 39.0427);
+    --primary-foreground: oklch(1.0000 0 0);
+    --secondary: oklch(0.9245 0.0138 92.9892);
+    --secondary-foreground: oklch(0.4334 0.0177 98.6048);
+    --muted: oklch(0.9341 0.0153 90.2390);
+    --muted-foreground: oklch(0.5341 0.0078 97.4503);
+    --accent: oklch(0.9245 0.0138 92.9892);
+    --accent-foreground: oklch(0.2671 0.0196 98.9390);
+    --destructive: oklch(0.1908 0.0020 106.5859);
+    --destructive-foreground: oklch(1.0000 0 0);
+    --border: oklch(0.8847 0.0069 97.3627);
+    --input: oklch(0.7621 0.0156 98.3528);
+    --ring: oklch(0.6171 0.1375 39.0427);
+    --sidebar: oklch(0.9663 0.0080 98.8792);
+    --sidebar-foreground: oklch(0.3590 0.0051 106.6524);
+    --sidebar-primary: oklch(0.6171 0.1375 39.0427);
+    --sidebar-primary-foreground: oklch(0.9881 0 0);
+    --sidebar-accent: oklch(0.9245 0.0138 92.9892);
+    --sidebar-accent-foreground: oklch(0.3250 0 0);
+    --sidebar-border: oklch(0.9401 0 0);
+    --sidebar-ring: oklch(0.7731 0 0);
 
     --font-sans: 'Outfit', sans-serif;
-    --font-mono: 'Geist Mono', monospace;
-
+    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
     --radius: 1rem;
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
-
     --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
     --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+
+    /* Semantic surface aliases: adapt dynamically to active theme */
+    --ui-surface: var(--card);
+    --ui-surface-muted: var(--muted);
+    --ui-surface-text: var(--foreground);
+    --ui-surface-muted-text: var(--muted-foreground);
+    --ui-surface-border: var(--border);
 }
 
 .dark {
-    --background: #262624;
-    --foreground: #f1f1ef;
-    --card: #2c2c2b;
-    --card-foreground: #faf9f5;
-    --primary: #d97757;
-    --primary-foreground: #141413;
-    --destructive: #ef4444;
-    --border: #3e3e38;
-    --input: #52514a;
-    --ring: #d97757;
-    --sidebar: #1f1e1d;
-    --sidebar-foreground: #c3c0b6;
-    --sidebar-border: #ebebeb;
+    --background: oklch(0.2679 0.0036 106.6427);
+    --foreground: oklch(0.9576 0.0027 106.4494);
+    --card: oklch(0.2928 0.0018 106.5092);
+    --card-foreground: oklch(0.9818 0.0054 95.0986);
+    --popover: oklch(0.3085 0.0035 106.6039);
+    --popover-foreground: oklch(0.9211 0.0040 106.4781);
+    --primary: oklch(0.6724 0.1308 38.7559);
+    --primary-foreground: oklch(0.1908 0.0020 106.5859);
+    --secondary: oklch(0.2213 0.0038 106.7070);
+    --secondary-foreground: oklch(0.9818 0.0054 95.0986);
+    --muted: oklch(0.2213 0.0038 106.7070);
+    --muted-foreground: oklch(0.7713 0.0169 99.0657);
+    --accent: oklch(0.2130 0.0078 95.4245);
+    --accent-foreground: oklch(0.9663 0.0080 98.8792);
+    --destructive: oklch(0.6368 0.2078 25.3313);
+    --destructive-foreground: oklch(1.0000 0 0);
+    --border: oklch(0.3618 0.0101 106.8928);
+    --input: oklch(0.4336 0.0113 100.2195);
+    --ring: oklch(0.6724 0.1308 38.7559);
+    --sidebar: oklch(0.2357 0.0024 67.7077);
+    --sidebar-foreground: oklch(0.8074 0.0142 93.0137);
+    --sidebar-primary: oklch(0.6724 0.1308 38.7559);
+    --sidebar-primary-foreground: oklch(0.9881 0 0);
+    --sidebar-accent: oklch(0.1680 0.0020 106.6177);
+    --sidebar-accent-foreground: oklch(0.8074 0.0142 93.0137);
+    --sidebar-border: oklch(0.3618 0.0101 106.8928);
+    --sidebar-ring: oklch(0.7731 0 0);
+
+    /* Semantic surface aliases: adapt dynamically to active theme */
+    --ui-surface: var(--card);
+    --ui-surface-muted: var(--muted);
+    --ui-surface-text: var(--foreground);
+    --ui-surface-muted-text: var(--muted-foreground);
+    --ui-surface-border: var(--border);
 }
 
 /* --- 3. BASE STYLES (Replacing @layer base) --- */
@@ -205,27 +234,10 @@ body .app > .sidebar {
     transition: width 0.28s ease, padding 0.28s ease;
 }
 
-body .app > .sidebar:not(.sidebar-ready),
-body .app > .sidebar:not(.sidebar-ready) * {
-    transition: none !important;
-}
-
-body .app > .sidebar .sidebar-toggle {
-    position: static;
-    align-self: flex-end;
+/* Non-collapsible sidebar standard (Admin & Faculty) */
+body .app > .sidebar {
+    width: 260px;
     flex-shrink: 0;
-    width: 34px;
-    height: 34px;
-    padding: 7px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--card);
-    color: var(--foreground);
-}
-
-html.sidebar-collapsed body .app > .sidebar .sidebar-toggle,
-body .app > .sidebar.sidebar-collapsed .sidebar-toggle {
-    align-self: center;
 }
 
 body .app > .sidebar .brand {
@@ -282,11 +294,6 @@ body .app > .sidebar .logout-button:hover {
     color: var(--primary);
 }
 
-html.sidebar-collapsed body .app > .sidebar .logout-button,
-body .app > .sidebar.sidebar-collapsed .logout-button {
-    display: none;
-}
-
 dialog.logout-dialog {
     width: min(420px, calc(100% - 32px));
     margin: auto;
@@ -314,12 +321,6 @@ dialog.logout-dialog .actions {
     justify-content: flex-end;
 }
 
-body .app > .sidebar .sidebar-toggle svg {
-    display: block;
-    width: 18px;
-    height: 18px;
-    transition: transform 0.28s ease;
-}
 
 @media (min-width: 701px) {
     body .app > .sidebar {
@@ -372,74 +373,10 @@ body .app > .sidebar .sidebar-toggle svg {
         transition: left 0.28s ease, top 0.28s ease;
     }
 
-    html.sidebar-collapsed body .app > .sidebar,
-    body .app > .sidebar.sidebar-collapsed {
-        width: 76px;
-        padding-inline: 12px;
-    }
 
-    body .app > .sidebar.sidebar-collapsed .sidebar-toggle svg {
-        transform: rotate(180deg);
-    }
-
-    html.sidebar-collapsed body .app > .sidebar .brand,
-    body .app > .sidebar.sidebar-collapsed .brand {
-        color: transparent;
-    }
-
-    html.sidebar-collapsed body .app > .sidebar .brand::before,
-    body .app > .sidebar.sidebar-collapsed .brand::before {
-        opacity: 1;
-    }
-
-    html.sidebar-collapsed body .app > .sidebar .nav a,
-    body .app > .sidebar.sidebar-collapsed .nav a {
-        justify-content: center;
-        padding-inline: 10px;
-    }
-
-    html.sidebar-collapsed body .app > .sidebar .nav span,
-    html.sidebar-collapsed body .app > .sidebar .profile-link strong,
-    html.sidebar-collapsed body .app > .sidebar .profile-link small,
-    body .app > .sidebar.sidebar-collapsed .nav span,
-    body .app > .sidebar.sidebar-collapsed .profile-link strong,
-    body .app > .sidebar.sidebar-collapsed .profile-link small {
-        opacity: 0;
-    }
-
-    html.sidebar-collapsed body .app > .sidebar .nav span,
-    body .app > .sidebar.sidebar-collapsed .nav span {
-        max-width: 0;
-    }
-
-    html.sidebar-collapsed body .app > .sidebar .profile-link,
-    body .app > .sidebar.sidebar-collapsed .profile-link {
-        min-height: 52px;
-        padding: 0;
-    }
-
-    html.sidebar-collapsed body .app > .sidebar .profile-link::before,
-    body .app > .sidebar.sidebar-collapsed .profile-link::before {
-        left: 12px;
-        top: 12px;
-    }
 
 }
 
-@media (min-width: 701px) and (max-width: 1000px) {
-    html:not(.sidebar-collapsed) body .app > .sidebar:not(.sidebar-collapsed) {
-        width: 195px;
-    }
-}
-
-@media (max-width: 700px) {
-    html.sidebar-collapsed body .app > .sidebar .nav,
-    html.sidebar-collapsed body .app > .sidebar .profile-link,
-    body .app > .sidebar.sidebar-collapsed .nav,
-    body .app > .sidebar.sidebar-collapsed .profile-link {
-        display: none;
-    }
-}
 
 @media (prefers-reduced-motion: reduce) {
     body .app > .sidebar,
