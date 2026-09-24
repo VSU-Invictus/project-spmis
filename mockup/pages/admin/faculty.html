@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+  <title>Admin Portal - Faculty</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: #30302E;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #fff;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-canvas {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #30302E;
+      border: 1px solid #D97251;
+      overflow: hidden;
+    }
+
+    .sidebar-frame {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 260px;
+      height: 100%;
+      border: none;
+      z-index: 50;
+    }
+
+    .section-container {
+      position: absolute;
+      left: 260px;
+      top: 0;
+      width: calc(100% - 260px);
+      height: calc(100% - 4px);
+      padding: 14px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .header-container {
+      display: flex;
+      align-items: flex-start;
+      width: calc(100% - 10px);
+      margin-left: 10px;
+    }
+
+    .heading-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 322px;
+      min-height: 60px;
+      height: auto;
+    }
+
+    .heading-title {
+      margin: 8px 0 16px;
+      font-size: 30px;
+      line-height: 36px;
+      font-weight: 700;
+      letter-spacing: -0.75px;
+      color: #fff;
+    }
+
+    .controls-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: calc(100% - 24px);
+      min-height: 52px;
+      margin-left: 10px;
+      padding-top: 14px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 500px;
+      height: 38px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 38px;
+      padding: 8px 16px 8px 40px;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--foreground, #FFFFFF);
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: var(--muted-foreground, #A0988E);
+    }
+
+    .search-input:focus,
+    .dropdown-select:focus {
+      border-color: #D97251;
+      box-shadow: 0 0 0 1px #D97251;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 11px;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .dropdown-container {
+      position: relative;
+      height: 38px;
+      flex: 0 0 auto;
+    }
+
+    .dropdown-container.status { width: 145px; }
+    .dropdown-container.department { width: 190px; }
+    .dropdown-container.audit { width: 128px; }
+
+    .dropdown-select {
+      width: 100%;
+      height: 38px;
+      padding: 0 30px 0 14px;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
+      border-radius: 12px;
+      color: var(--foreground, #FFFFFF);
+      font-size: 12px;
+      appearance: none;
+      outline: none;
+    }
+
+    .dropdown-chevron {
+      position: absolute;
+      right: 11px;
+      top: 12px;
+      width: 14px;
+      height: 14px;
+      pointer-events: none;
+    }
+
+    .add-button {
+      height: 38px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #D97251;
+      color: #fff;
+      font-size: 12px;
+      white-space: nowrap;
+      transition: background .15s ease, transform .15s ease;
+    }
+
+    .add-button:hover {
+      background: #C45F3E;
+      transform: translateY(-1px);
+    }
+
+    .table-margin-container {
+      padding: 10px 0 0;
+      width: calc(100% - 24px);
+      margin-left: 10px;
+      flex: 0 0 auto;
+    }
+
+    .table-container {
+      width: 100%;
+      background: var(--ui-surface, #2B2A27);
+      border: 1px solid var(--ui-surface-border, #383734);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      table-layout: fixed;
+      background: var(--ui-surface, #2B2A27);
+    }
+
+    thead {
+      background: var(--ui-surface-muted, #21201E);
+    }
+
+    th {
+      min-height: 44px;
+      padding: 12px 14px;
+      color: var(--ui-surface-text, #FFFFFF);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    td {
+      min-height: 49px;
+      padding: 12px 14px;
+      color: var(--ui-surface-text, #FFFFFF);
+      font-size: 14px;
+      font-weight: 500;
+      border-top: 1px solid var(--ui-surface-border, #383734);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: color-mix(in srgb, var(--primary) 8%, var(--ui-surface, #2B2A27));
+    }
+
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      height: 23px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-approved {
+      background: #F3EBD9;
+      color: #715C32;
+    }
+
+    .badge-faculty {
+      background: #E8F0FE;
+      color: #1A73E8;
+    }
+
+    .badge-admin {
+      background: #F3EBD9;
+      color: #715C32;
+    }
+
+    .action-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      height: 30px;
+      min-width: 72px;
+      padding: 0 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .pill-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .edit-btn {
+      border: 1px solid var(--border, #383734);
+      background: var(--secondary, #21201E);
+      color: var(--foreground, #FFFFFF);
+    }
+
+    .edit-btn:hover {
+      background: var(--accent, #33322E);
+    }
+
+    .remove-btn {
+      border: 0;
+      background: #F05A5F;
+      color: #fff;
+    }
+
+    .bottom-bar-container {
+      width: calc(100% - 24px);
+      margin-left: 10px;
+      padding-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .pagination-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pagination {
+      border: 1px solid var(--border, #383734);
+      background: var(--secondary, #21201E);
+      color: var(--foreground, #FFFFFF);
+    }
+
+    .pagination:hover {
+      background: var(--accent, #33322E);
+    }
+
+    .page-text {
+      color: #D1CBC2;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .empty-state {
+      display: none;
+      width: 100%;
+      height: 145px;
+      align-items: center;
+      justify-content: center;
+      color: var(--ui-surface-muted-text, #A0988E);
+      font-size: 12px;
+      background: var(--ui-surface, #2B2A27);
+    }
+
+    /* Modal interaction matches the recorded prototype:
+       background dims, centered modal, then success toast after close. */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,.58);
+      backdrop-filter: blur(1px);
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      animation: overlayIn .16s ease-out;
+    }
+
+    .modal-card {
+      position: relative;
+      width: 365px;
+      background: #444746;
+      border: 1px solid #D97251;
+      border-radius: 15px;
+      box-shadow: 0 22px 55px rgba(0,0,0,.4);
+      animation: modalIn .18s ease-out;
+      padding: 17px 55px 28px;
+    }
+
+    .modal-card.compact {
+      width: 365px;
+      padding: 20px 42px 24px;
+    }
+
+    .modal-card.faculty {
+      width: 365px;
+      padding: 17px 55px 28px;
+    }
+
+    .modal-title {
+      font-family: 'Intel One Mono', monospace;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 28px;
+      text-align: center;
+      color: #FFFFFF;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 26px;
+      height: 28px;
+      border: 1px solid #000000;
+      background: transparent;
+      color: #fff;
+      font-size: 18px;
+      line-height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      background: rgba(255,255,255,.1);
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      margin-top: 14px;
+    }
+
+    .modal-card.compact .modal-form {
+      margin-top: 14px;
+    }
+
+    .modal-card.faculty .modal-form {
+      margin-top: 14px;
+    }
+
+    .modal-form label {
+      font-family: 'Intel One Mono', monospace;
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 21px;
+      color: #FFFFFF;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    .modal-card.compact .modal-form label {
+      margin-top: 12px;
+    }
+
+    .modal-card.faculty .modal-form label {
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    .modal-card.faculty .modal-form label:first-of-type {
+      margin-top: 16px;
+    }
+
+    .modal-form input,
+    .modal-form select {
+      width: 100%;
+      height: 31px;
+      padding: 8px 16px;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+      color: var(--foreground, #FFFFFF);
+      outline: none;
+      appearance: none;
+    }
+
+    .modal-form textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 10px;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--foreground, #FFFFFF);
+      outline: none;
+      resize: none;
+    }
+
+    .modal-form input::placeholder {
+      color: var(--muted-foreground, #A0988E);
+    }
+
+    .modal-form input:focus,
+    .modal-form select:focus,
+    .modal-form textarea:focus {
+      box-shadow: 0 0 0 2px #D97251;
+    }
+
+    .modal-submit {
+      width: 224px;
+      height: 39px;
+      margin: 24px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #343434;
+      border: 1px solid #3D3D3A;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .modal-submit:hover {
+      background: #2a2a2a;
+    }
+
+    .toast {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 120;
+      display: none;
+      min-width: 210px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      background: #D97251;
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .toast.show {
+      display: block;
+      animation: toastIn .2s ease-out;
+    }
+
+    .masked-review {
+      width: 128px;
+      height: 12px;
+      margin: 0 auto;
+      border-radius: 2px;
+      background: #625D55;
+    }
+
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(8px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .app-canvas {
+        min-width: 880px;
+        min-height: 640px;
+        overflow: auto;
+      }
+    }
+    button, input, select, textarea {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-canvas">
+    <iframe
+      src="../../components/navigation/sidebar-admin.html"
+      id="sidebar-frame"
+      class="sidebar-frame"
+      title="Admin Sidebar">
+    </iframe>
+
+    <main class="section-container">
+      <div class="header-container">
+        <div class="heading-wrapper">
+          <h1 class="heading-title">Faculty</h1>
+        </div>
+      </div>
+
+      <div class="controls-container">
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="none">
+  <circle cx="7" cy="7" r="4.5" stroke="#6C655D" stroke-width="1.3"/>
+  <path d="M10.5 10.5L14 14" stroke="#6C655D" stroke-width="1.3" stroke-linecap="round"/>
+</svg>
+          <input id="searchInput" class="search-input" type="search" placeholder="Search by faculty name or email...">
+        </div>
+
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+          <div class="dropdown-container department">
+            <select id="departmentFilter" class="dropdown-select">
+              <option value="all">Department: All</option>
+              <option>Department of Computer Science</option>
+              <option>Department of Information Technology</option>
+              <option>Department of Applied Mathematics</option>
+              <option>Department of Biological Sciences</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+  <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+          </div>
+
+          <button id="addButton" type="button" class="add-button">+ Add Faculty</button>
+        </div>
+      </div>
+
+      <div class="table-margin-container">
+        <div class="table-container">
+          <div class="table-scroll">
+            <table style="min-width: 960px;">
+              <thead>
+                <tr>
+                  <th style="width: 21%;">Name</th>
+                  <th style="width: 22%;">Email Address</th>
+                  <th style="width: 29%;">Department</th>
+                  <th class="text-center" style="width: 10%;">Role</th>
+                  <th class="text-right" style="width: 18%;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+            <tr data-name="dr. eleanor vance" data-email="e.vance@university.edu" data-department="Department of Computer Science" data-role="faculty">
+              <td>Dr. Eleanor Vance</td>
+              <td>e.vance@university.edu</td>
+              <td>Department of Computer Science</td>
+              <td class="text-center"><span class="badge-pill badge-faculty">faculty</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="prof. marcus brody" data-email="m.brody@university.edu" data-department="Department of Information Technology" data-role="admin">
+              <td>Prof. Marcus Brody</td>
+              <td>m.brody@university.edu</td>
+              <td>Department of Information Technology</td>
+              <td class="text-center"><span class="badge-pill badge-admin">admin</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="dr. sophia al-mansoor" data-email="s.almansoor@university.edu" data-department="Department of Applied Mathematics" data-role="faculty">
+              <td>Dr. Sophia Al-Mansoor</td>
+              <td>s.almansoor@university.edu</td>
+              <td>Department of Applied Mathematics</td>
+              <td class="text-center"><span class="badge-pill badge-faculty">faculty</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+            <tr data-name="prof. arthur pendelton" data-email="a.pendelton@university.edu" data-department="Department of Biological Sciences" data-role="faculty">
+              <td>Prof. Arthur Pendelton</td>
+              <td>a.pendelton@university.edu</td>
+              <td>Department of Biological Sciences</td>
+              <td class="text-center"><span class="badge-pill badge-faculty">faculty</span></td>
+              <td class="text-right">
+                <div class="action-group">
+                  <button class="pill-btn edit-btn" type="button">Edit</button>
+                  <button class="pill-btn remove-btn" type="button">Remove</button>
+                </div>
+              </td>
+            </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="emptyState" class="empty-state">No faculty found.</div>
+        </div>
+      </div>
+
+      <div class="bottom-bar-container">
+        <div class="pagination-wrapper">
+          <button class="pill-btn pagination" type="button">Previous</button>
+          <span class="page-text">Page 1 of 3</span>
+          <button class="pill-btn pagination" type="button">Next</button>
+        </div>
+      </div>
+    </main>
+
+    <div id="facultyModal" class="modal-overlay">
+      <section class="modal-card faculty">
+        <button id="closeFaculty" class="modal-close" type="button" aria-label="Close">✕</button>
+        <h2 id="facultyModalTitle" class="modal-title">Add Faculty</h2>
+
+        <form id="facultyForm" class="modal-form">
+          <label for="facultyName">Name</label>
+          <input id="facultyName" type="text" required>
+
+          <label for="facultyEmail">Email Address</label>
+          <input id="facultyEmail" type="email" required>
+
+          <label for="facultyDepartment">Department</label>
+          <select id="facultyDepartment">
+            <option>Department of Computer Science</option>
+            <option>Department of Information Technology</option>
+            <option>Department of Applied Mathematics</option>
+            <option>Department of Biological Sciences</option>
+          </select>
+
+          <label for="facultyRole">Role</label>
+          <select id="facultyRole">
+            <option value="faculty">faculty</option>
+            <option value="admin">admin</option>
+          </select>
+
+          <button type="submit" class="modal-submit">Submit</button>
+        </form>
+      </section>
+    </div>
+
+    <div id="removeModal" class="modal-overlay">
+      <section class="modal-card">
+        <button id="closeRemove" class="modal-close" type="button" aria-label="Close">✕</button>
+        <h2 class="modal-title">Remove Faculty</h2>
+
+        <div class="modal-form" style="align-items:center;">
+          <p style="color:#fff; font-family:'Intel One Mono',monospace; font-size:14px; text-align:center; margin-top:24px; line-height:1.5;">
+            Are you sure you want to remove this faculty member? This action cannot be undone.
+          </p>
+          <div style="display:flex; gap:12px; margin-top:28px; width:100%; justify-content:center;">
+            <button id="cancelRemove" type="button" class="modal-submit" style="background:#555; border-color:#666;">Cancel</button>
+            <button id="confirmRemove" type="button" class="modal-submit" style="background:#f9464a; border-color:#f9464a;">Confirm</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast">Faculty Added Successfully</div>
+
+
+    <script>
+      function setSidebarActive(fileName) {
+        const frame = document.getElementById('sidebar-frame');
+        if (!frame) return;
+
+        frame.addEventListener('load', () => {
+          try {
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            const links = doc.querySelectorAll('#sidebar-nav a');
+
+            links.forEach(link => {
+              link.classList.remove('nav-btn-active', 'font-bold', 'shadow-sm');
+              link.classList.add('nav-btn-inactive', 'font-semibold');
+
+              const svg = link.querySelector('svg');
+              if (svg) svg.setAttribute('stroke', 'currentColor');
+
+              if ((link.getAttribute('href') || '').endsWith(fileName)) {
+                link.classList.remove('nav-btn-inactive', 'font-semibold');
+                link.classList.add('nav-btn-active', 'font-bold', 'shadow-sm');
+                if (svg) svg.setAttribute('stroke', '#A35233');
+              }
+            });
+          } catch (_) {}
+        });
+      }
+    </script>
+    <script>
+      setSidebarActive('faculty.html');
+
+      const tableBody = document.getElementById('tableBody');
+      const searchInput = document.getElementById('searchInput');
+      const departmentFilter = document.getElementById('departmentFilter');
+      const emptyState = document.getElementById('emptyState');
+      const facultyModal = document.getElementById('facultyModal');
+      const removeModal = document.getElementById('removeModal');
+      const facultyForm = document.getElementById('facultyForm');
+      const facultyName = document.getElementById('facultyName');
+      const facultyEmail = document.getElementById('facultyEmail');
+      const facultyDepartment = document.getElementById('facultyDepartment');
+      const facultyRole = document.getElementById('facultyRole');
+      const facultyModalTitle = document.getElementById('facultyModalTitle');
+      const toast = document.getElementById('toast');
+
+      let mode = 'create';
+      let selectedRow = null;
+
+      function openModal(modal) {
+        modal.classList.add('show');
+      }
+
+      function closeModal(modal) {
+        modal.classList.remove('show');
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        window.setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+
+      function roleBadge(role) {
+        const cls = role === 'admin' ? 'badge-admin' : 'badge-faculty';
+        return `<span class="badge-pill ${cls}">${role}</span>`;
+      }
+
+      function filterRows() {
+        const query = searchInput.value.trim().toLowerCase();
+        const department = departmentFilter.value;
+        let visibleCount = 0;
+
+        [...tableBody.rows].forEach(row => {
+          const matchesText =
+            row.dataset.name.includes(query) ||
+            row.dataset.email.includes(query);
+
+          const matchesDepartment =
+            department === 'all' || row.dataset.department === department;
+
+          const visible = matchesText && matchesDepartment;
+          row.style.display = visible ? '' : 'none';
+          if (visible) visibleCount++;
+        });
+
+        emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
+      }
+
+      document.getElementById('addButton').addEventListener('click', () => {
+        mode = 'create';
+        selectedRow = null;
+        facultyModalTitle.textContent = 'Add Faculty';
+        facultyName.value = '';
+        facultyEmail.value = '';
+        facultyDepartment.selectedIndex = 0;
+        facultyRole.value = 'faculty';
+        openModal(facultyModal);
+      });
+
+      tableBody.addEventListener('click', event => {
+        const row = event.target.closest('tr');
+        if (!row) return;
+
+        if (event.target.classList.contains('edit-btn')) {
+          mode = 'edit';
+          selectedRow = row;
+          facultyModalTitle.textContent = 'Edit Faculty';
+          facultyName.value = row.children[0].textContent.trim();
+          facultyEmail.value = row.children[1].textContent.trim();
+          facultyDepartment.value = row.dataset.department;
+          facultyRole.value = row.dataset.role;
+          openModal(facultyModal);
+        }
+
+        if (event.target.classList.contains('remove-btn')) {
+          selectedRow = row;
+          openModal(removeModal);
+        }
+      });
+
+      facultyForm.addEventListener('submit', event => {
+        event.preventDefault();
+
+        const name = facultyName.value.trim();
+        const email = facultyEmail.value.trim();
+        const department = facultyDepartment.value;
+        const role = facultyRole.value;
+
+        if (!name || !email) return;
+
+        if (mode === 'edit' && selectedRow) {
+          selectedRow.dataset.name = name.toLowerCase();
+          selectedRow.dataset.email = email.toLowerCase();
+          selectedRow.dataset.department = department;
+          selectedRow.dataset.role = role;
+
+          selectedRow.children[0].textContent = name;
+          selectedRow.children[1].textContent = email;
+          selectedRow.children[2].textContent = department;
+          selectedRow.children[3].innerHTML = roleBadge(role);
+
+          closeModal(facultyModal);
+          window.setTimeout(() => showToast('Faculty Updated Successfully'), 120);
+        } else {
+          const row = document.createElement('tr');
+          row.dataset.name = name.toLowerCase();
+          row.dataset.email = email.toLowerCase();
+          row.dataset.department = department;
+          row.dataset.role = role;
+
+          row.innerHTML = `
+            <td>${name}</td>
+            <td>${email}</td>
+            <td>${department}</td>
+            <td class="text-center">${roleBadge(role)}</td>
+            <td class="text-right">
+              <div class="action-group">
+                <button class="pill-btn edit-btn" type="button">Edit</button>
+                <button class="pill-btn remove-btn" type="button">Remove</button>
+              </div>
+            </td>`;
+
+          tableBody.prepend(row);
+          closeModal(facultyModal);
+          window.setTimeout(() => showToast('Faculty Added Successfully'), 120);
+        }
+
+        filterRows();
+      });
+
+      document.getElementById('confirmRemove').addEventListener('click', () => {
+        if (!selectedRow) return;
+        selectedRow.remove();
+        selectedRow = null;
+        closeModal(removeModal);
+        window.setTimeout(() => showToast('Faculty Removed Successfully'), 120);
+        filterRows();
+      });
+
+      document.getElementById('cancelRemove').addEventListener('click', () => closeModal(removeModal));
+
+      document.getElementById('closeFaculty').addEventListener('click', () => closeModal(facultyModal));
+      document.getElementById('closeRemove').addEventListener('click', () => closeModal(removeModal));
+      searchInput.addEventListener('input', filterRows);
+      departmentFilter.addEventListener('change', filterRows);
+
+      [facultyModal, removeModal].forEach(modal => {
+        modal.addEventListener('click', event => {
+          if (event.target === modal) closeModal(modal);
+        });
+      });
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          closeModal(facultyModal);
+          closeModal(removeModal);
+        }
+      });
+    </script>
+  </div>
+</body>
+</html>

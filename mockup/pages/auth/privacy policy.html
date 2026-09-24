@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <title>SPMIS - Privacy Policy</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Intel+One+Mono:wght@600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Reset and Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #30302E; /* Main dark background */
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            animation: page-enter 0.45s ease both;
+        }
+
+        body.page-leaving {
+            animation: page-leave 0.28s ease both;
+        }
+
+        @keyframes page-enter {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes page-leave {
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* Main Container to center content */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* --- Header Section (Title + Logo) --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-family: 'Intel One Mono', monospace;
+            font-weight: 600;
+            font-size: 56px;
+            line-height: 1.2;
+            color: #FFFFFF;
+            letter-spacing: -1px;
+        }
+
+        .logo-container {
+            height: 80px; /* Matches the visual height in Figma */
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .logo-container img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* --- Content Box --- */
+        .content-box {
+            background-color: #1A1A18; /* Darker box background */
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        /* Typography inside the box */
+        .policy-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #E0E0E0;
+        }
+
+        .policy-text p {
+            margin-bottom: 16px;
+        }
+
+        .policy-text strong {
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        .policy-text ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .policy-text li {
+            margin-bottom: 8px;
+        }
+
+        /* --- Footer Navigation --- */
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 30px;
+            font-size: 18px;
+            padding-bottom: 20px;
+        }
+
+        .footer-nav a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .footer-nav a:hover {
+            color: #FFFFFF;
+            transform: translateY(-2px);
+        }
+
+        /* Active state for Privacy Policy */
+        .footer-nav a.active {
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(217, 217, 217, 0.4);
+            border-radius: 50%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            h1 {
+                font-size: 40px;
+            }
+            .logo-container {
+                height: 60px;
+            }
+            .content-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>Privacy Policy</h1>
+            <div class="logo-container">
+                <!-- Corrected path based on your folder structure -->
+                <img src="../../assets/icons/SPMIS.png" alt="SPMIS Logo">
+            </div>
+        </header>
+
+        <!-- Main Content Box -->
+        <main class="content-box">
+            <div class="policy-text">
+                <p><strong>SPMIS Privacy Policy</strong></p>
+                
+                <p>This Privacy Policy explains how the Student Profiling Management Information System (SPMIS) collects, uses, protects, and handles information contributed by faculty and stored within the platform.</p>
+                
+                <p><strong>1. Information We Collect</strong></p>
+                <ul>
+                    <li><strong>Faculty Account & Profile Data:</strong> Directory information (e.g., name, university email, department) required for account authentication and administrator verification.</li>
+                    <li><strong>Faculty Review Data:</strong> Review-style observations, qualitative evaluations, performance tags, and direct feedback contributed by faculty members regarding students they have taught, coached, or advised.</li>
+                    <li><strong>Audit & Activity Logs:</strong> System action logs (such as timestamps of review creation, edits, hiding, or deletion) to maintain system integrity and accountability.</li>
+                </ul>
+
+                <p><strong>2. How Information Is Used</strong></p>
+                <ul>
+                    <li><strong>Institutional Decision-Making:</strong> To assist faculty in evaluating, recommending, and vetting candidates for academic tasks, competitions, leadership roles, and institutional opportunities.</li>
+                    <li><strong>AI-Assisted Research:</strong> To enable faculty to search and reason across visible review data using an integrated AI chatbot.</li>
+                    <li><strong>System Transparency:</strong> To maintain audit trails and edit histories visible to authorized users.</li>
+                </ul>
+
+                <p><strong>3. Data Privacy & Student Identity Safeguards</strong></p>
+                <ul>
+                    <li><strong>Internal De-Identification Boundary:</strong> Prior to sending any review text to external AI processing services, SPMIS automatically replaces all known student name variants with opaque placeholder identifiers.</li>
+                    <li><strong>External AI Safeguards:</strong> Original review text containing direct student names is never transmitted outside the system boundary.</li>
+                    <li><strong>Data Minimization Guidelines:</strong> Faculty contributors are expected to avoid including unnecessary third-party names, physical descriptions, or specific identifying details in free-text fields.</li>
+                    <li><strong>Non-Student Access:</strong> Students do not have accounts, login privileges, or direct access to SPMIS or its review corpus.</li>
+                </ul>
+
+                <p><strong>4. Contributor Ownership & Visibility Controls</strong></p>
+                <ul>
+                    <li><strong>Exclusive Control:</strong> Faculty retain complete ownership over their own reviews. You may edit, hide, unhide, or permanently delete your contributions at any time.</li>
+                    <li><strong>Hidden Content:</strong> Hiding a review renders it visible only to you. Hidden reviews are completely excluded from search results and the AI research index.</li>
+                    <li><strong>Deletion & Administrative Limits:</strong> Deleting a review permanently purges the content from the application interface. System Administrators cannot view, edit, or recover deleted content, nor can they alter another faculty member's reviews.</li>
+                </ul>
+
+                <p><strong>5. Data Retention & System Auditing</strong></p>
+                <ul>
+                    <li><strong>Edit History:</strong> Modifications to reviews preserve an edit history visible to users who hold permission to view the review.</li>
+                    <li><strong>Audit Trails:</strong> Administrative and mutation events (such as hide, unhide, or delete actions) are recorded for security and accountability without revealing protected or deleted review text.</li>
+                </ul>
+
+                <p><strong>6. Policy Updates & Contact</strong></p>
+                <p>System Administrators reserve the right to update this policy as institutional needs or safety safeguards evolve. For questions regarding account verification or privacy practices, please contact your university's SPMIS System Administrator.</p>
+            </div>
+        </main>
+
+        <!-- Footer Navigation -->
+        <div class="footer-nav">
+            <a href="about.html">About</a>
+            <span class="dot"></span>
+            <a href="terms.html">Terms</a>
+            <span class="dot"></span>
+            <a href="privacy%20policy.html" class="active">Privacy Policy</a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.footer-nav a').forEach(link => {
+            link.addEventListener('click', event => {
+                if (link.classList.contains('active') || event.ctrlKey || event.metaKey) return;
+                event.preventDefault();
+                document.body.classList.add('page-leaving');
+                setTimeout(() => { window.location.href = link.href; }, 280);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+/* =========================================
+   SPMIS GLOBAL MOCKUP CSS
+   ========================================= */
+
+/* --- 1. FONTS --- */
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
+
+/* --- 2. VARIABLES (Claude+ theme from tweakcn) --- */
+:root {
+    --background: oklch(0.9818 0.0054 95.0986);
+    --foreground: oklch(0.3438 0.0269 95.7226);
+    --card: oklch(0.9665 0.0067 97.3521);
+    --card-foreground: oklch(0.1908 0.0020 106.5859);
+    --popover: oklch(1.0000 0 0);
+    --popover-foreground: oklch(0.2671 0.0196 98.9390);
+    --primary: oklch(0.6171 0.1375 39.0427);
+    --primary-foreground: oklch(1.0000 0 0);
+    --secondary: oklch(0.9245 0.0138 92.9892);
+    --secondary-foreground: oklch(0.4334 0.0177 98.6048);
+    --muted: oklch(0.9341 0.0153 90.2390);
+    --muted-foreground: oklch(0.5341 0.0078 97.4503);
+    --accent: oklch(0.9245 0.0138 92.9892);
+    --accent-foreground: oklch(0.2671 0.0196 98.9390);
+    --destructive: oklch(0.1908 0.0020 106.5859);
+    --destructive-foreground: oklch(1.0000 0 0);
+    --border: oklch(0.8847 0.0069 97.3627);
+    --input: oklch(0.7621 0.0156 98.3528);
+    --ring: oklch(0.6171 0.1375 39.0427);
+    --sidebar: oklch(0.9663 0.0080 98.8792);
+    --sidebar-foreground: oklch(0.3590 0.0051 106.6524);
+    --sidebar-primary: oklch(0.6171 0.1375 39.0427);
+    --sidebar-primary-foreground: oklch(0.9881 0 0);
+    --sidebar-accent: oklch(0.9245 0.0138 92.9892);
+    --sidebar-accent-foreground: oklch(0.3250 0 0);
+    --sidebar-border: oklch(0.9401 0 0);
+    --sidebar-ring: oklch(0.7731 0 0);
+
+    --font-sans: 'Outfit', sans-serif;
+    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+    --radius: 1rem;
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+
+    /* Semantic surface aliases: adapt dynamically to active theme */
+    --ui-surface: var(--card);
+    --ui-surface-muted: var(--muted);
+    --ui-surface-text: var(--foreground);
+    --ui-surface-muted-text: var(--muted-foreground);
+    --ui-surface-border: var(--border);
+}
+
+.dark {
+    --background: oklch(0.2679 0.0036 106.6427);
+    --foreground: oklch(0.9576 0.0027 106.4494);
+    --card: oklch(0.2928 0.0018 106.5092);
+    --card-foreground: oklch(0.9818 0.0054 95.0986);
+    --popover: oklch(0.3085 0.0035 106.6039);
+    --popover-foreground: oklch(0.9211 0.0040 106.4781);
+    --primary: oklch(0.6724 0.1308 38.7559);
+    --primary-foreground: oklch(0.1908 0.0020 106.5859);
+    --secondary: oklch(0.2213 0.0038 106.7070);
+    --secondary-foreground: oklch(0.9818 0.0054 95.0986);
+    --muted: oklch(0.2213 0.0038 106.7070);
+    --muted-foreground: oklch(0.7713 0.0169 99.0657);
+    --accent: oklch(0.2130 0.0078 95.4245);
+    --accent-foreground: oklch(0.9663 0.0080 98.8792);
+    --destructive: oklch(0.6368 0.2078 25.3313);
+    --destructive-foreground: oklch(1.0000 0 0);
+    --border: oklch(0.3618 0.0101 106.8928);
+    --input: oklch(0.4336 0.0113 100.2195);
+    --ring: oklch(0.6724 0.1308 38.7559);
+    --sidebar: oklch(0.2357 0.0024 67.7077);
+    --sidebar-foreground: oklch(0.8074 0.0142 93.0137);
+    --sidebar-primary: oklch(0.6724 0.1308 38.7559);
+    --sidebar-primary-foreground: oklch(0.9881 0 0);
+    --sidebar-accent: oklch(0.1680 0.0020 106.6177);
+    --sidebar-accent-foreground: oklch(0.8074 0.0142 93.0137);
+    --sidebar-border: oklch(0.3618 0.0101 106.8928);
+    --sidebar-ring: oklch(0.7731 0 0);
+
+    /* Semantic surface aliases: adapt dynamically to active theme */
+    --ui-surface: var(--card);
+    --ui-surface-muted: var(--muted);
+    --ui-surface-text: var(--foreground);
+    --ui-surface-muted-text: var(--muted-foreground);
+    --ui-surface-border: var(--border);
+}
+
+/* --- 3. BASE STYLES (Replacing @layer base) --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-color: var(--border);
+}
+
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- 4. LAYOUT SKELETON --- */
+.app-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 100vh;
+}
+
+.app-sidebar {
+    background-color: var(--sidebar);
+    color: var(--sidebar-foreground);
+    border-right: 1px solid var(--sidebar-border);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-main {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* Faculty layout scroll containment */
+body:has(.app) {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    height: calc(100vh - 40px);
+}
+
+.app > .sidebar {
+    height: 100%;
+}
+
+.app > main,
+main {
+    height: 100%;
+    overflow-y: auto;
+    min-width: 0;
+}
+
+@media (max-width: 700px) {
+    body:has(.app) {
+        padding: 0;
+    }
+
+    .app {
+        border-radius: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .app > .sidebar {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        flex-shrink: 0;
+    }
+
+    .app > main,
+    main {
+        flex: 1;
+        min-height: 0;
+    }
+}
+
+/* --- 5. COMPONENTS --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.btn-destructive {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+}
+
+.card {
+    background-color: var(--card);
+    color: var(--card-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--input);
+    border-radius: var(--radius-sm);
+    background-color: transparent;
+    font-family: var(--font-sans);
+    color: var(--foreground);
+}
+
+.input-field:focus {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+/* Faculty sidebar toggle shared by every faculty page. */
+body .app > .sidebar {
+    position: relative;
+    overflow: hidden;
+    transition: width 0.28s ease, padding 0.28s ease;
+}
+
+/* Non-collapsible sidebar standard (Admin & Faculty) */
+body .app > .sidebar {
+    width: 260px;
+    flex-shrink: 0;
+}
+
+body .app > .sidebar .brand {
+    text-align: center;
+}
+
+body .app > .sidebar .profile-area {
+    position: relative;
+    margin-top: auto;
+}
+
+body .app > .sidebar .profile-area .profile-link {
+    width: 100%;
+    margin-top: 0;
+    padding-right: 12px;
+}
+
+body .app > .sidebar .profile-area .profile-link strong,
+body .app > .sidebar .profile-area .profile-link small {
+    display: block;
+    min-width: 0;
+}
+
+body .app > .sidebar .profile-area .profile-link strong {
+    padding-right: 44px;
+    white-space: nowrap;
+}
+
+body .app > .sidebar .profile-area .profile-link small {
+    white-space: normal;
+}
+
+body .app > .sidebar .logout-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    padding: 7px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--sidebar-foreground);
+}
+
+body .app > .sidebar .logout-button svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+body .app > .sidebar .logout-button:hover {
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
+}
+
+dialog.logout-dialog {
+    width: min(420px, calc(100% - 32px));
+    margin: auto;
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    color: var(--foreground);
+}
+
+dialog.logout-dialog::backdrop {
+    background: #000a;
+}
+
+dialog.logout-dialog h2 {
+    margin: 0 0 8px;
+}
+
+dialog.logout-dialog p {
+    margin: 0 0 22px;
+    color: var(--sidebar-foreground);
+}
+
+dialog.logout-dialog .actions {
+    justify-content: flex-end;
+}
+
+
+@media (min-width: 701px) {
+    body .app > .sidebar {
+        width: 250px;
+        padding-inline: 18px;
+    }
+
+    body .app > .sidebar .brand {
+        position: relative;
+        display: block;
+        width: calc(100% - 20px);
+        overflow: hidden;
+        white-space: nowrap;
+        transition: width 0.28s ease, color 0.28s ease;
+    }
+
+    body .app > .sidebar .brand::before {
+        content: "FP";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--foreground);
+        font-size: 16px;
+        opacity: 0;
+        transition: opacity 0.28s ease;
+    }
+
+    body .app > .sidebar .nav span {
+        display: inline-block;
+        max-width: 160px;
+        overflow: hidden;
+        opacity: 1;
+        white-space: nowrap;
+        transition: max-width 0.28s ease, opacity 0.18s ease;
+    }
+
+    body .app > .sidebar .profile-link {
+        overflow: hidden;
+        white-space: nowrap;
+        transition: padding 0.28s ease;
+    }
+
+    body .app > .sidebar .profile-link strong,
+    body .app > .sidebar .profile-link small {
+        opacity: 1;
+        transition: opacity 0.18s ease 0.08s;
+    }
+
+    body .app > .sidebar .profile-link::before {
+        transition: left 0.28s ease, top 0.28s ease;
+    }
+
+
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    body .app > .sidebar,
+    body .app > .sidebar * {
+        transition: none;
+    }
+}

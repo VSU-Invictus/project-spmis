@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+  <title>Admin Portal - Department Applications</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: #30302E;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #fff;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    .app-canvas {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #30302E;
+      border: 1px solid #D97251;
+      overflow: hidden;
+    }
+
+    /* Reusable Sidebar Component Frame */
+    .sidebar-frame {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 260px;
+      height: 100%;
+      border: none;
+      z-index: 50;
+    }
+
+    .section-container {
+      position: absolute;
+      left: 260px;
+      top: 0;
+      width: calc(100% - 260px);
+      height: calc(100% - 4px);
+      padding: 14px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      box-sizing: border-box;
+    }
+
+    .header-container {
+      display: flex;
+      align-items: flex-start;
+      width: calc(100% - 10px);
+      margin-left: 10px;
+    }
+
+    .heading-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 322px;
+      min-height: 60px;
+      height: auto;
+    }
+
+    .heading-title {
+      margin: 8px 0 16px;
+      font-size: 30px;
+      line-height: 36px;
+      font-weight: 700;
+      letter-spacing: -0.75px;
+      color: #fff;
+    }
+
+    .controls-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: calc(100% - 24px);
+      height: 52px;
+      margin-left: 10px;
+      padding-top: 14px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 500px;
+      height: 38px;
+    }
+
+    .search-input {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 38px;
+      padding: 8px 16px 8px 40px;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--foreground, #FFFFFF);
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: var(--muted-foreground, #A0988E);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 11px;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .dropdown-container {
+      position: relative;
+      height: 38px;
+    }
+
+    .dropdown-container.type {
+      width: 151px;
+    }
+
+    .dropdown-container.sort {
+      width: 123px;
+    }
+
+    .dropdown-select {
+      width: 100%;
+      height: 38px;
+      padding: 0 28px 0 14px;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
+      border-radius: 12px;
+      color: var(--foreground, #FFFFFF);
+      font-size: 12px;
+      appearance: none;
+      outline: none;
+    }
+
+    .dropdown-chevron {
+      position: absolute;
+      right: 10px;
+      top: 12px;
+      width: 14px;
+      height: 14px;
+      pointer-events: none;
+    }
+
+    .table-margin-container {
+      padding: 10px 0 0;
+      width: calc(100% - 24px);
+      margin-left: 10px;
+    }
+
+    .table-container {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0;
+      width: 100%;
+      max-width: none;
+      background: var(--ui-surface, #2B2A27);
+      border: 1px solid var(--ui-surface-border, #3E3D39);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      margin-left: 0;
+    }
+
+    .table-header-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: stretch;
+      width: 100%;
+      min-height: 43.5px;
+      background: var(--ui-surface-muted, #21201E);
+    }
+
+    .th-cell {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 13px 12px;
+      min-height: 43.5px;
+      min-width: 0;
+      color: var(--ui-surface-text, #FFFFFF);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 16px;
+      box-sizing: border-box;
+    }
+
+    .th-cell.checkbox-cell {
+      width: 54px;
+      height: 43.5px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .th-cell.checkbox-cell .custom-checkbox {
+      display: none;
+    }
+
+    .th-cell.col-program {
+      width: auto;
+      flex: 350 1 0;
+    }
+
+    .th-cell.col-proposed {
+      width: auto;
+      flex: 180 1 0;
+    }
+
+    .th-cell.col-type {
+      width: auto;
+      flex: 150 1 0;
+    }
+
+    .th-cell.col-date {
+      width: auto;
+      flex: 150 1 0;
+    }
+
+    .custom-checkbox {
+      position: relative;
+      box-sizing: border-box;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #D97251;
+      border-radius: 2px;
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: transparent;
+      cursor: pointer;
+      outline: none;
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0;
+      overflow: visible;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .custom-checkbox:hover {
+      border-color: #BF5E3E;
+    }
+
+    .custom-checkbox:checked {
+      background-color: #D97251;
+      border-color: #D97251;
+    }
+
+    .custom-checkbox:checked::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -1px;
+      width: 20px;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.5 10.5L7.5 15L17.5 3.5' stroke='%23000000' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 10.5L7.5 15L17.5 3.5' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      pointer-events: none;
+    }
+
+    .table-body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0;
+      width: 100%;
+    }
+
+    .table-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: stretch;
+      width: 100%;
+      min-height: 49px;
+      border-top: 1px solid var(--ui-surface-border, #383734);
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .table-row:hover {
+      background-color: rgba(217, 114, 81, 0.05);
+    }
+
+    .table-row.checked {
+      background-color: rgba(217, 114, 81, 0.15);
+    }
+
+    .td-cell {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 16px 12px 17px;
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 16px;
+      box-sizing: border-box;
+    }
+
+    .td-cell.checkbox-cell {
+      width: 54px;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+      height: 49px;
+      display: flex;
+    }
+
+    .td-cell.col-program {
+      width: auto;
+      flex: 350 1 0;
+      font-weight: 500;
+      color: var(--ui-surface-muted-text, #D1CBC2);
+    }
+
+    .td-cell.col-proposed {
+      width: auto;
+      flex: 180 1 0;
+      font-weight: 500;
+      color: var(--ui-surface-muted-text, #D1CBC2);
+    }
+
+    .td-cell.col-type {
+      width: auto;
+      flex: 150 1 0;
+      padding: 14.5px 12px;
+    }
+
+    .td-cell.col-date {
+      width: auto;
+      flex: 150 1 0;
+      font-weight: 500;
+      color: var(--ui-surface-muted-text, #D1CBC2);
+    }
+
+    .badge-pill {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 16px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .type-edit {
+      background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      width: 86px;
+      height: 20px;
+    }
+
+    .type-addition {
+      background: rgba(217, 114, 81, 0.15); border: 1px solid rgba(217, 114, 81, 0.35);
+      color: #f6ad55;
+      width: 74px;
+      height: 20px;
+    }
+
+    .bottom-bar-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 10px 0 0;
+      gap: 12px;
+      width: calc(100% - 24px);
+      max-width: none;
+      height: auto;
+      margin-top: 0;
+      margin-left: 10px;
+    }
+
+    .action-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-right: auto;
+    }
+
+    .pagination-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pill-btn {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 30px;
+      padding: 7px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--ui-surface-border, #3E3D39);
+      background: var(--ui-surface-muted, #21201E);
+      color: var(--ui-surface-text, #FFFFFF);
+      font-size: 12px;
+      line-height: 16px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .pill-btn.pagination {
+      padding: 6px 16px;
+    }
+
+    .pill-btn.accept {
+      background: #2c7e39;
+      border-color: #2c7e39;
+      color: #fff;
+    }
+
+    .pill-btn.reject {
+      background: #f9464a;
+      border-color: #f9464a;
+      color: #fff;
+    }
+
+    .page-text {
+      color: #a39d96;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+    }
+    button, input, select, textarea {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 500;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 120;
+      display: none;
+      min-width: 210px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      background: #D97251;
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .toast.show {
+      display: block;
+      animation: toastIn .2s ease-out;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-container {
+      background: #444746;
+      border: 1px solid #D97251;
+      border-radius: 15px;
+      padding: 24px 32px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: transparent;
+      border: 1px solid #000;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-title {
+      font-family: 'Intel One Mono', 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 28px;
+      color: #FFFFFF;
+      text-align: center;
+      margin: 0 0 24px;
+    }
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .modal-form label {
+      font-family: 'Intel One Mono', 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 21px;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .modal-form textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 10px;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--foreground, #FFFFFF);
+      outline: none;
+      resize: none;
+    }
+    .modal-form textarea:focus {
+      box-shadow: 0 0 0 2px #D97251;
+    }
+    .modal-submit {
+      width: 224px;
+      height: 39px;
+      margin: 24px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #343434;
+      border: 1px solid #3D3D3A;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+    .modal-submit:hover {
+      background: #2a2a2a;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-canvas">
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Notification</div>
+
+    <!-- Reject Modal -->
+    <div class="modal-overlay" id="rejectModal">
+      <div class="modal-container">
+        <button class="modal-close" id="closeReject">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M1 13L13 1M1 1L13 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h3 class="modal-title">Reject Application</h3>
+        <form class="modal-form" id="rejectForm">
+          <div class="modal-select-wrapper" style="margin-bottom: 8px;">
+            <label>Application:</label>
+            <select id="rejectAppSelect" style="width: 100%; height: 40px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 12px; font-family: 'Inter'; font-size: 14px; color: var(--foreground, #FFFFFF); padding: 0 10px; outline: none;"></select>
+          </div>
+          <div>
+            <label>Reason for rejection:</label>
+            <textarea placeholder="Enter reason here..." id="rejectReason"></textarea>
+          </div>
+          <button type="submit" class="modal-submit">Confirm Rejection</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Admin Sidebar Component -->
+    <iframe src="../../components/navigation/sidebar-admin.html" class="sidebar-frame" title="Admin Sidebar"></iframe>
+
+    <main class="section-container">
+      <header class="header-container">
+        <div class="heading-wrapper">
+          <h2 class="heading-title">Department Proposals</h2>
+        </div>
+      </header>
+
+      <div class="controls-container">
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" stroke-width="1.33" />
+            <path d="M10.5 10.5L14 14" stroke="#8A837A" stroke-width="1.33" stroke-linecap="round" />
+          </svg>
+          <input type="text" class="search-input" placeholder="Search by department proposals...">
+        </div>
+
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+          <div class="dropdown-container type">
+            <select class="dropdown-select">
+              <option>Type: All</option>
+              <option>Addition</option>
+              <option>Edit Existing</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+
+          <div class="dropdown-container sort">
+            <select class="dropdown-select">
+              <option>Oldest</option>
+              <option>Newest</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-margin-container">
+        <div class="table-container">
+          <div class="table-header-row">
+            <div class="th-cell checkbox-cell"></div>
+            <div class="th-cell col-program">Program</div>
+            <div class="th-cell col-proposed">Proposed by</div>
+            <div class="th-cell col-type">Request Type</div>
+            <div class="th-cell col-date">Submission Date</div>
+          </div>
+
+          <div class="table-body">
+            <div class="table-row">
+              <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+              <div class="td-cell col-program">Department in Computer Science</div>
+              <div class="td-cell col-proposed">John Doe</div>
+              <div class="td-cell col-type"><span class="badge-pill type-edit">Edit Existing</span></div>
+              <div class="td-cell col-date">2026-09-10</div>
+            </div>
+
+            <div class="table-row">
+              <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+              <div class="td-cell col-program">Department in Computer Engineering</div>
+              <div class="td-cell col-proposed">John Doe</div>
+              <div class="td-cell col-type"><span class="badge-pill type-addition">Addition</span></div>
+              <div class="td-cell col-date">2026-09-10</div>
+            </div>
+
+            <div class="table-row">
+              <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+              <div class="td-cell col-program">Department In Medical Technology</div>
+              <div class="td-cell col-proposed">John Doe</div>
+              <div class="td-cell col-type"><span class="badge-pill type-addition">Addition</span></div>
+              <div class="td-cell col-date">2026-09-10</div>
+            </div>
+
+            <div class="table-row">
+              <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+              <div class="td-cell col-program">Department in Information System</div>
+              <div class="td-cell col-proposed">John Doe</div>
+              <div class="td-cell col-type"><span class="badge-pill type-addition">Addition</span></div>
+              <div class="td-cell col-date">2026-09-10</div>
+            </div>
+
+            <div class="table-row">
+              <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+              <div class="td-cell col-program">Department in Applied Mathematics</div>
+              <div class="td-cell col-proposed">John Doe</div>
+              <div class="td-cell col-type"><span class="badge-pill type-addition">Addition</span></div>
+              <div class="td-cell col-date">2026-09-10</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-bar-container">
+        <div class="action-btn-group">
+          <button class="pill-btn select-all">Select All</button>
+          <button class="pill-btn accept">Accept</button>
+          <button class="pill-btn reject">Reject</button>
+        </div>
+
+        <div class="pagination-wrapper">
+          <button class="pill-btn pagination">Previous</button>
+          <span class="page-text">Page 1 of 3</span>
+          <button class="pill-btn pagination">Next</button>
+        </div>
+      </div>
+    </main>
+    <script>
+      function setSidebarActive(fileName) {
+        const frame = document.getElementById('sidebar-frame');
+        if (!frame) return;
+
+        frame.addEventListener('load', () => {
+          try {
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            const links = doc.querySelectorAll('#sidebar-nav a');
+
+            links.forEach(link => {
+              link.classList.remove('nav-btn-active', 'font-bold', 'shadow-sm');
+              link.classList.add('nav-btn-inactive', 'font-semibold');
+
+              const svg = link.querySelector('svg');
+              if (svg) svg.setAttribute('stroke', 'currentColor');
+
+              if ((link.getAttribute('href') || '').endsWith(fileName)) {
+                link.classList.remove('nav-btn-inactive', 'font-semibold');
+                link.classList.add('nav-btn-active', 'font-bold', 'shadow-sm');
+                if (svg) svg.setAttribute('stroke', '#A35233');
+              }
+            });
+          } catch (_) {}
+        });
+      }
+
+      setSidebarActive('department-applications.html');
+
+      const selectAllBtn = document.querySelector('.select-all');
+      const rowCheckboxes = document.querySelectorAll('.table-body .custom-checkbox');
+
+      function updateSelectAllBtn() {
+        const allChecked = rowCheckboxes.length > 0 && Array.from(rowCheckboxes).every(cb => cb.checked);
+        if (selectAllBtn) {
+          selectAllBtn.textContent = allChecked ? 'Deselect All' : 'Select All';
+        }
+      }
+
+      if (selectAllBtn) {
+        selectAllBtn.addEventListener('click', () => {
+          const allChecked = rowCheckboxes.length > 0 && Array.from(rowCheckboxes).every(cb => cb.checked);
+          rowCheckboxes.forEach(cb => {
+            cb.checked = !allChecked;
+            const row = cb.closest('.table-row');
+            if (row) {
+              if (cb.checked) row.classList.add('checked');
+              else row.classList.remove('checked');
+            }
+          });
+          updateSelectAllBtn();
+        });
+      }
+
+      rowCheckboxes.forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const row = e.target.closest('.table-row');
+          if (row) {
+            if (e.target.checked) row.classList.add('checked');
+            else row.classList.remove('checked');
+          }
+          updateSelectAllBtn();
+        });
+      });
+
+      const tableRows = document.querySelectorAll('.table-body .table-row');
+      tableRows.forEach(row => {
+        row.addEventListener('click', (e) => {
+          if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'button') {
+            return;
+          }
+          const cb = row.querySelector('.custom-checkbox');
+          if (cb) {
+            cb.checked = !cb.checked;
+            cb.dispatchEvent(new Event('change'));
+          }
+        });
+      });
+
+      // Toast and Modal Logic
+      const toast = document.getElementById('toast');
+      function showToast(message) {
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+
+      const rejectModal = document.getElementById('rejectModal');
+      const rejectForm = document.getElementById('rejectForm');
+      const closeReject = document.getElementById('closeReject');
+
+      function openModal(modal) { if (modal) modal.classList.add('active'); }
+      function closeModal(modal) { if (modal) modal.classList.remove('active'); }
+
+      if (closeReject) closeReject.addEventListener('click', () => closeModal(rejectModal));
+      if (rejectModal) {
+        rejectModal.addEventListener('click', e => {
+          if (e.target === rejectModal) closeModal(rejectModal);
+        });
+      }
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeModal(rejectModal);
+      });
+
+      let rejectReasons = {};
+      let currentAppId = null;
+
+      const rejectAppSelect = document.getElementById('rejectAppSelect');
+      const rejectReason = document.getElementById('rejectReason');
+
+      if (rejectAppSelect && rejectReason) {
+        rejectAppSelect.addEventListener('change', (e) => {
+          if (currentAppId) {
+            rejectReasons[currentAppId] = rejectReason.value;
+          }
+          currentAppId = e.target.value;
+          rejectReason.value = rejectReasons[currentAppId] || '';
+        });
+      }
+
+      if (rejectForm) {
+        rejectForm.addEventListener('submit', e => {
+          e.preventDefault();
+          if (currentAppId) {
+            rejectReasons[currentAppId] = rejectReason.value;
+          }
+
+          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
+          let allFilled = true;
+          checked.forEach((cb) => {
+            const id = cb.dataset.appId;
+            if (!rejectReasons[id] || rejectReasons[id].trim() === '') {
+              allFilled = false;
+            }
+          });
+
+          if (!allFilled) {
+            showToast('Please provide a reason for all selected applications');
+            return;
+          }
+
+          closeModal(rejectModal);
+          window.setTimeout(() => showToast('Applications Rejected Successfully'), 120);
+        });
+      }
+
+      const acceptBtn = document.querySelector('.pill-btn.accept');
+      const rejectBtn = document.querySelector('.pill-btn.reject');
+
+      if (acceptBtn) {
+        acceptBtn.addEventListener('click', () => {
+          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
+          if (checked.length > 0) {
+            showToast('Application Accepted Successfully');
+          } else {
+            showToast('Please select at least one application');
+          }
+        });
+      }
+
+      if (rejectBtn) {
+        rejectBtn.addEventListener('click', () => {
+          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
+          if (checked.length > 0) {
+            rejectReasons = {};
+            if (rejectAppSelect) rejectAppSelect.innerHTML = '';
+            
+            checked.forEach((cb, index) => {
+              const row = cb.closest('.table-row');
+              const nameEl = row.querySelector('.col-name') || row.querySelector('.col-program');
+              const name = nameEl ? nameEl.textContent.trim() : 'Application ' + (index + 1);
+              const id = 'app_' + index;
+              cb.dataset.appId = id;
+              
+              if (rejectAppSelect) {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = name;
+                rejectAppSelect.appendChild(option);
+              }
+            });
+
+            if (rejectAppSelect) {
+              currentAppId = rejectAppSelect.value;
+            }
+            if (rejectReason) {
+              rejectReason.value = '';
+            }
+            openModal(rejectModal);
+          } else {
+            showToast('Please select at least one application');
+          }
+        });
+      }
+    </script>
+  </div>
+</body>
+</html>

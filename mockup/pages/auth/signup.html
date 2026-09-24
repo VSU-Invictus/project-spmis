@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <title>SPMIS - Sign Up</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 2rem 1.25rem 5.5rem;
+            display: grid;
+            place-items: center;
+            background: var(--background);
+            color: var(--foreground);
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .login-wrapper {
+            width: min(100%, 390px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-header { margin-bottom: 1.5rem; }
+        .logo-icon { width: auto; height: 75px; object-fit: contain; }
+
+        .login-card {
+            width: 100%;
+            padding: 2.25rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 1.125rem; /* 18px */
+            background: var(--card);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.38);
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            line-height: 1.25;
+            font-weight: 700;
+            color: var(--card-foreground);
+            font-family: var(--font-sans);
+            text-align: center;
+        }
+
+        .login-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 42px;
+            padding: 0.5rem 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font: 400 0.875rem/1.5 var(--font-sans);
+            background: var(--muted);
+            color: var(--foreground);
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .input-field::placeholder { color: var(--muted-foreground); }
+        .input-field:focus {
+            border-color: var(--ring);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 25%, transparent);
+        }
+
+        .btn {
+            width: 100%;
+            border: 0;
+            border-radius: 10px;
+            font: 600 0.9375rem/1 var(--font-sans);
+            cursor: pointer;
+            transition: filter .15s ease, transform .15s ease;
+        }
+
+        .btn:hover { filter: brightness(1.08); }
+        .btn:active { transform: translateY(1px); }
+
+        .btn-success {
+            height: 44px;
+            margin-top: 0.5rem;
+            padding: 0.65rem;
+            background: var(--primary);
+            color: var(--primary-foreground); /* #141413 dark charcoal text from screenshot */
+        }
+
+        .btn-google {
+            height: 42px;
+            padding: 0.65rem;
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            color: var(--foreground);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .btn-google:hover {
+            background: var(--accent);
+            border-color: var(--input);
+        }
+
+        .btn-google svg { flex: 0 0 16px; width: 16px; height: 16px; }
+
+        .divider {
+            width: 100%;
+            margin: 1.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted-foreground);
+            font-size: 0.75rem;
+            font-family: var(--font-sans);
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-top: 1px solid var(--border);
+        }
+
+        .signup-prompt {
+            margin-top: 1.5rem;
+            color: var(--muted-foreground);
+            font-size: 0.8125rem;
+            font-family: var(--font-sans);
+        }
+        .signup-prompt a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .signup-prompt a:hover { text-decoration: underline; }
+
+        .footer-links {
+            position: fixed;
+            bottom: 2.5rem;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            color: var(--muted-foreground, #888);
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+        }
+        .footer-links a { color: inherit; text-decoration: none; }
+        .footer-links a:hover { color: var(--foreground); }
+        .footer-links a + a::before { content: '•'; margin: 0 8px; color: var(--muted-foreground, #888); }
+
+        .hidden { display: none !important; }
+        .google-overlay { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 1.25rem; background: rgba(0,0,0,.6); backdrop-filter: blur(2px); }
+        .google-modal { position: relative; width: min(100%, 448px); padding: 36px 40px; border-radius: 12px; background: var(--popover, #21201E); color: var(--popover-foreground, #FAF9F5); border: 1px solid var(--border, #383734); box-shadow: 0 12px 32px rgba(0,0,0,.45); font-family: var(--font-sans); text-align: center; }
+        .google-close { position: absolute; top: 12px; right: 16px; border: 0; background: transparent; color: var(--muted-foreground, #A19E95); font-size: 24px; cursor: pointer; line-height: 1; }
+        .google-close:hover { color: var(--foreground, #FAF9F5); }
+        .google-title { margin: 4px 0 10px; font-size: 22px; font-weight: 600; color: var(--popover-foreground, #FAF9F5); }
+        .google-subtitle { margin-bottom: 28px; font-size: 14px; color: var(--muted-foreground, #A19E95); }
+        .google-account-btn { width: 100%; display: flex; align-items: center; margin: 8px 0; padding: 12px 16px; border: 1px solid var(--border, #383734); border-radius: 8px; background: var(--card, #262624); color: var(--card-foreground, #FAF9F5); cursor: pointer; text-align: left; transition: background .15s ease, border-color .15s ease; }
+        .google-account-btn:hover { background: var(--accent, #33322E); border-color: var(--border, #45433E); }
+        .google-avatar { width: 32px; height: 32px; display: grid; place-items: center; margin-right: 12px; border-radius: 50%; background: #1a73e8; color: #fff; font-size: 14px; font-weight: 500; flex-shrink: 0; }
+        .google-acc-info { display: flex; flex-direction: column; }
+        .google-acc-name { color: var(--foreground, #FAF9F5); font-size: 14px; font-weight: 500; }
+        .google-acc-email { color: var(--muted-foreground, #A19E95); font-size: 12px; }
+        .google-footer { margin-top: 28px; color: var(--muted-foreground, #A19E95); font-size: 12px; line-height: 1.5; text-align: left; }
+        .google-footer a { color: var(--primary, #D97251); text-decoration: none; }
+        .google-footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 500px) {
+            body { padding-inline: 1rem; }
+            .login-card { padding: 2rem 1.5rem; }
+            .footer-links { bottom: 1.25rem; gap: 10px; font-size: 0.85rem; }
+            .footer-links a + a::before { margin-right: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="logo-header">
+            <img src="../../assets/icons/SPMIS.png" alt="SPMIS Logo" class="logo-icon">
+        </div>
+
+        <div class="login-card">
+            <h2>Sign Up</h2>
+            
+            <form id="signup-form" class="login-form">
+                <input type="email" class="input-field" placeholder="Email" required />
+                <input type="password" class="input-field" placeholder="Password" required />
+                <input type="password" class="input-field" placeholder="Confirm Password" required />
+                <button type="submit" class="btn btn-success">Sign Up</button>
+            </form>
+
+            <div class="divider"><span>or</span></div>
+
+            <button type="button" id="trigger-google-btn" class="btn btn-google">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                Continue with Google
+            </button>
+
+            <p class="signup-prompt">
+                Already have an Account? <a href="signin.html">Sign In</a>
+            </p>
+        </div>
+    </div>
+
+    <footer class="footer-links">
+        <a href="about.html">About</a> &bull; 
+        <a href="terms.html">Terms</a> &bull; 
+        <a href="privacy%20policy.html">Privacy Policy</a>
+    </footer>
+
+    <div id="google-overlay" class="google-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="google-title">
+        <div class="google-modal">
+            <button id="close-google" class="google-close" aria-label="Close">&times;</button>
+            <h2 id="google-title" class="google-title">Sign in with Google</h2>
+            <p class="google-subtitle">Choose an account to continue to <b>SPMIS</b></p>
+            <button class="google-account-btn mock-login-action"><span class="google-avatar">F</span><span class="google-acc-info"><span class="google-acc-name">Faculty Member</span><span class="google-acc-email">faculty@university.edu</span></span></button>
+            <button class="google-account-btn mock-login-action"><span class="google-avatar" style="background:#0f9d58">A</span><span class="google-acc-info"><span class="google-acc-name">Admin User</span><span class="google-acc-email">admin.spmis@university.edu</span></span></button>
+            <p class="google-footer">To continue, Google will share your name, email address, and profile picture with SPMIS. Review SPMIS's <a href="privacy%20policy.html">privacy policy</a> and <a href="terms.html">terms of service</a>.</p>
+        </div>
+    </div>
+
+    <script>
+        const btnTriggerGoogle = document.getElementById('trigger-google-btn');
+        const googleOverlay = document.getElementById('google-overlay');
+        const btnCloseGoogle = document.getElementById('close-google');
+        const mockAccounts = document.querySelectorAll('.mock-login-action');
+
+        btnTriggerGoogle.addEventListener('click', () => {
+            googleOverlay.classList.remove('hidden');
+        });
+
+        btnCloseGoogle.addEventListener('click', () => {
+            googleOverlay.classList.add('hidden');
+        });
+
+        googleOverlay.addEventListener('click', (e) => {
+            if (e.target === googleOverlay) {
+                googleOverlay.classList.add('hidden');
+            }
+        });
+
+        mockAccounts.forEach(account => {
+            account.addEventListener('click', () => {
+                window.location.href = 'pending-verification.html';
+            });
+        });
+
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            window.location.href = 'pending-verification.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <title>SPMIS - Terms and Conditions</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Intel+One+Mono:wght@600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Reset and Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #30302E; /* Main dark background */
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            animation: page-enter 0.45s ease both;
+        }
+
+        body.page-leaving {
+            animation: page-leave 0.28s ease both;
+        }
+
+        @keyframes page-enter {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes page-leave {
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* Main Container to center content */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* --- Header Section (Title + Logo) --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-family: 'Intel One Mono', monospace;
+            font-weight: 600;
+            font-size: 56px;
+            line-height: 1.2;
+            color: #FFFFFF;
+            letter-spacing: -1px;
+        }
+
+        .logo-container {
+            height: 80px; /* Matches the visual height in Figma */
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .logo-container img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* --- Content Box --- */
+        .content-box {
+            background-color: #1A1A18; /* Darker box background */
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        /* Typography inside the box */
+        .policy-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #E0E0E0;
+        }
+
+        .policy-text p {
+            margin-bottom: 16px;
+        }
+
+        .policy-text strong {
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        /* --- Footer Navigation --- */
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 30px;
+            font-size: 18px;
+            padding-bottom: 20px;
+        }
+
+        .footer-nav a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .footer-nav a:hover {
+            color: #FFFFFF;
+            transform: translateY(-2px);
+        }
+
+        /* Active state for Terms */
+        .footer-nav a.active {
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(217, 217, 217, 0.4);
+            border-radius: 50%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            h1 {
+                font-size: 40px;
+            }
+            .logo-container {
+                height: 60px;
+            }
+            .content-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>Terms and Conditions</h1>
+            <div class="logo-container">
+                <!-- Corrected path based on your folder structure -->
+                <img src="../../assets/icons/SPMIS.png" alt="SPMIS Logo">
+            </div>
+        </header>
+
+        <!-- Main Content Box -->
+        <main class="content-box">
+            <div class="policy-text">
+                <p><strong>SPMIS TERMS & CONDITIONS</strong></p>
+                
+                <p>Please read the following terms carefully. You must accept these terms before your SPMIS account can be activated.</p>
+                
+                <p><strong>1. PURPOSE OF SPMIS</strong></p>
+                <p>The Student Profiling Management Information System (SPMIS) is a university-wide system that allows faculty members to contribute review-style information about students they have taught, advised, coached, or otherwise worked with. The information in SPMIS is intended to support faculty in making decisions outside the system, including student selection, recommendation, and vetting for activities, competitions, events, tasks, and similar opportunities. SPMIS does not manage activities or opportunities themselves and is not a student-facing system.</p>
+                
+                <p><strong>2. APPROPRIATE USE</strong></p>
+                <p>SPMIS is intended for legitimate academic and institutional purposes. You agree to use information available through SPMIS responsibly and only for appropriate purposes. You must not use information in the system for unlawful, harmful, unauthorized, or otherwise inappropriate activities. You are responsible for exercising appropriate judgment when viewing, contributing, or using information obtained through SPMIS.</p>
+                
+                <p><strong>3. REVIEW CONTRIBUTIONS</strong></p>
+                <p>Reviews in SPMIS represent the contributor's opinions and experiences based on their relationship with the student. Reviews are not verified factual records. A review may contain free-text observations and optional tags. Contributors should provide information that is relevant to their direct experience with the student. Contributor identity is always visible. SPMIS does not provide anonymous reviews.</p>
+                
+                <p><strong>4. REVIEW VISIBILITY AND CONTROL</strong></p>
+                <p>A faculty member retains exclusive control over the reviews they create. You may edit, hide, unhide, or delete your own reviews. Hiding a review is reversible. A hidden review is visible only to its owner and is excluded from student search results and AI-assisted research for other users. Deleting a review is irreversible within the SPMIS application. Deleted review content is no longer visible through the application, including to the review owner and System Administrators. System Administrators cannot modify, hide, unhide, or delete another faculty member's review content.</p>
+                
+                <p><strong>5. STUDENT PRIVACY</strong></p>
+                <p>Do not include unnecessary identifying information about students or third parties in review text. SPMIS applies a de-identification process to review text before information is sent to its external AI provider. However, this process is a technical safeguard and is not a guarantee that every possible identifying detail can be removed. Contributors should therefore avoid unnecessary names, nicknames, physical descriptions, identifying circumstances, or other information that could unnecessarily identify a student or third party.</p>
+                
+                <p><strong>6. AI DE-IDENTIFICATION NOTICE</strong></p>
+                <p>SPMIS includes an AI chatbot that can reason across the visible review corpus to assist faculty with research. Before review text is sent to the external AI provider, known student name variants are replaced with an opaque placeholder identifier. The original review text is not sent directly to the external AI provider. Only de-identified review text is used for AI retrieval and generation. Hidden and deleted reviews are excluded from the AI index and are not used by the chatbot. The de-identification process is performed within SPMIS before information crosses the system boundary.</p>
+                
+                <p><strong>7. AI-ASSISTED RESEARCH</strong></p>
+                <p>The AI chatbot may be used to ask questions across visible faculty reviews, including questions that cannot easily be answered using structured filters. AI-generated responses are provided as an aid to faculty research and decision-making. Faculty members remain responsible for how information from SPMIS is interpreted and used. The AI chatbot does not grant access to information that the requesting faculty member is otherwise not authorized to view.</p>
+                
+                <p><strong>8. TRANSPARENCY AND ACCOUNTABILITY</strong></p>
+                <p>SPMIS maintains an audit trail of mutating system actions, including actions involving reviews and applications. Review edit history is retained and is visible to users who can view the corresponding review. Audit information does not expose protected review content. Hide, unhide, and delete events are recorded without exposing the underlying review text.</p>
+                
+                <p><strong>9. ACCESS AND ACCOUNT RESPONSIBILITY</strong></p>
+                <p>Faculty accounts are subject to System Administrator verification before feature access is granted. You are responsible for using your account appropriately and for the information you contribute to SPMIS. Students do not have accounts or access to SPMIS.</p>
+                
+                <p><strong>10. ACCEPTANCE</strong></p>
+                <p>By accepting these Terms & Conditions, you acknowledge that you have read and understood the terms above and agree to use SPMIS in accordance with them.</p>
+            </div>
+        </main>
+
+        <!-- Footer Navigation -->
+        <div class="footer-nav">
+            <a href="about.html">About</a>
+            <span class="dot"></span>
+            <a href="terms.html" class="active">Terms</a>
+            <span class="dot"></span>
+            <a href="privacy%20policy.html">Privacy Policy</a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.footer-nav a').forEach(link => {
+            link.addEventListener('click', event => {
+                if (link.classList.contains('active') || event.ctrlKey || event.metaKey) return;
+                event.preventDefault();
+                document.body.classList.add('page-leaving');
+                setTimeout(() => { window.location.href = link.href; }, 280);
+            });
+        });
+    </script>
+</body>
+</html>
