@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
   <title>Admin Portal - Department Applications</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -110,16 +112,16 @@
       width: 100%;
       height: 38px;
       padding: 8px 16px 8px 40px;
-      background: #fff;
-      border: 1px solid #E4DED5;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
       border-radius: 12px;
       font-size: 14px;
-      color: #2D2A27;
+      color: var(--foreground, #FFFFFF);
       outline: none;
     }
 
     .search-input::placeholder {
-      color: #8A837A;
+      color: var(--muted-foreground, #A0988E);
     }
 
     .search-icon {
@@ -149,10 +151,10 @@
       width: 100%;
       height: 38px;
       padding: 0 28px 0 14px;
-      background: #fff;
-      border: 1px solid #E4DED5;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
       border-radius: 12px;
-      color: #2D2A27;
+      color: var(--foreground, #FFFFFF);
       font-size: 12px;
       appearance: none;
       outline: none;
@@ -181,8 +183,8 @@
       padding: 0;
       width: 100%;
       max-width: none;
-      background: #fffdfb;
-      border: 1px solid #EDE7DC;
+      background: var(--ui-surface, #2B2A27);
+      border: 1px solid var(--ui-surface-border, #3E3D39);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -196,7 +198,7 @@
       align-items: stretch;
       width: 100%;
       min-height: 43.5px;
-      background: #EDE3D0;
+      background: var(--ui-surface-muted, #21201E);
     }
 
     .th-cell {
@@ -207,7 +209,7 @@
       padding: 13px 12px;
       min-height: 43.5px;
       min-width: 0;
-      color: #544D45;
+      color: var(--ui-surface-text, #FFFFFF);
       font-size: 14px;
       font-weight: 700;
       line-height: 16px;
@@ -304,7 +306,7 @@
       align-items: stretch;
       width: 100%;
       min-height: 49px;
-      border-top: 1px solid #F2ECE1;
+      border-top: 1px solid var(--ui-surface-border, #383734);
       cursor: pointer;
       transition: background-color 0.15s ease;
     }
@@ -343,14 +345,14 @@
       width: auto;
       flex: 350 1 0;
       font-weight: 500;
-      color: #5E574F;
+      color: var(--ui-surface-muted-text, #D1CBC2);
     }
 
     .td-cell.col-proposed {
       width: auto;
       flex: 180 1 0;
       font-weight: 500;
-      color: #5E574F;
+      color: var(--ui-surface-muted-text, #D1CBC2);
     }
 
     .td-cell.col-type {
@@ -363,7 +365,7 @@
       width: auto;
       flex: 150 1 0;
       font-weight: 500;
-      color: #5E574F;
+      color: var(--ui-surface-muted-text, #D1CBC2);
     }
 
     .badge-pill {
@@ -382,15 +384,15 @@
     }
 
     .type-edit {
-      background: #fae6e6;
-      color: #c95151;
+      background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
       width: 86px;
       height: 20px;
     }
 
     .type-addition {
-      background: #f5f0df;
-      color: #947e4b;
+      background: rgba(217, 114, 81, 0.15); border: 1px solid rgba(217, 114, 81, 0.35);
+      color: #f6ad55;
       width: 74px;
       height: 20px;
     }
@@ -432,9 +434,9 @@
       height: 30px;
       padding: 7px 20px;
       border-radius: 999px;
-      border: 1px solid #d6cfc4;
-      background: #fff;
-      color: #2a2724;
+      border: 1px solid var(--ui-surface-border, #3E3D39);
+      background: var(--ui-surface-muted, #21201E);
+      color: var(--ui-surface-text, #FFFFFF);
       font-size: 12px;
       line-height: 16px;
       cursor: pointer;
@@ -556,13 +558,13 @@
       width: 100%;
       min-height: 120px;
       padding: 10px;
-      background: #FFFFFF;
-      border: 1px solid #E4DED5;
+      background: var(--muted, #21201E);
+      border: 1px solid var(--input, #43362B);
       border-radius: 12px;
       font-family: 'Inter', sans-serif;
       font-weight: 400;
       font-size: 14px;
-      color: #141413;
+      color: var(--foreground, #FFFFFF);
       outline: none;
       resize: none;
     }
@@ -611,7 +613,7 @@
         <form class="modal-form" id="rejectForm">
           <div class="modal-select-wrapper" style="margin-bottom: 8px;">
             <label>Application:</label>
-            <select id="rejectAppSelect" style="width: 100%; height: 40px; background: #FFFFFF; border: 1px solid #E4DED5; border-radius: 12px; font-family: 'Inter'; font-size: 14px; padding: 0 10px; outline: none;"></select>
+            <select id="rejectAppSelect" style="width: 100%; height: 40px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 12px; font-family: 'Inter'; font-size: 14px; color: var(--foreground, #FFFFFF); padding: 0 10px; outline: none;"></select>
           </div>
           <div>
             <label>Reason for rejection:</label>

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - System Metrics & Approvals</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,26 +53,26 @@
 
         /* Text Colors */
         .text-zorba { color: #A0988E; }
-        .text-flint { color: #716A60; }
-        .text-cod-gray { color: #1A1918; }
-        .text-soya-bean { color: #5E574F; }
-        .text-fuscous-gray { color: #544D45; }
-        .text-crail { color: #C25B3E; }
-        .text-shingle-fawn { color: #715C32; }
+        .text-flint { color: #A0988E; }
+        .text-cod-gray { color: #FAF9F5; }
+        .text-soya-bean { color: #A0988E; }
+        .text-fuscous-gray { color: #FAF9F5; }
+        .text-crail { color: #D97757; }
+        .text-shingle-fawn { color: #D5B97B; }
         .text-red-damask { color: #D97251; }
         .text-role { color: #929292; }
         
         /* Background Colors */
-        .bg-romance { background-color: #FFFDFA; }
-        .bg-old-lace { background-color: #FCECE5; }
-        .bg-panache { background-color: #E8F5E9; }
-        .bg-zumthor { background-color: #E8F0FE; }
-        .bg-aths-special { background-color: #EDE3D0; }
-        .bg-parchment { background-color: #F3EBD9; }
+        .bg-romance { background-color: #2B2A27; }
+        .bg-old-lace { background-color: #362923; }
+        .bg-panache { background-color: #1e3324; }
+        .bg-zumthor { background-color: #1e2838; }
+        .bg-aths-special { background-color: #21201E; }
+        .bg-parchment { background-color: #322F26; }
         
         /* Borders */
-        .border-pearl-bush { border-color: #EDE7DC; }
-        .border-ecru-white { border-color: #F2ECE1; }
+        .border-pearl-bush { border-color: #3E3D39; }
+        .border-ecru-white { border-color: #383734; }
 
         /* Custom Scrollbar for containers */
         .custom-scrollbar::-webkit-scrollbar {
@@ -78,7 +80,7 @@
             width: 6px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: #EDE3D0;
+            background: #21201E;
             border-radius: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -159,7 +161,7 @@
                 <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-3">
                     
                     <!-- Card 1: Pending Faculty -->
-                    <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 flex flex-col justify-between h-[96px] shadow-sm card-hover">
+                    <div class="ui-card ui-card--interactive p-3 flex flex-col justify-between h-[96px]">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Faculty</span>
                             <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
@@ -173,7 +175,7 @@
                     </div>
 
                     <!-- Card 2: Pending Students -->
-                    <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 flex flex-col justify-between h-[96px] shadow-sm card-hover">
+                    <div class="ui-card ui-card--interactive p-3 flex flex-col justify-between h-[96px]">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Students</span>
                             <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
@@ -187,7 +189,7 @@
                     </div>
 
                     <!-- Card 3: Active Faculty -->
-                    <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 flex flex-col justify-between h-[96px] shadow-sm card-hover">
+                    <div class="ui-card ui-card--interactive p-3 flex flex-col justify-between h-[96px]">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Active Faculty</span>
                             <span class="w-[9px] h-[9px] rounded-full bg-[#2E7D32] shrink-0"></span>
@@ -201,7 +203,7 @@
                     </div>
 
                     <!-- Card 4: Total Enrolled -->
-                    <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 flex flex-col justify-between h-[96px] shadow-sm card-hover">
+                    <div class="ui-card ui-card--interactive p-3 flex flex-col justify-between h-[96px]">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Total Enrolled</span>
                             <span class="w-[9px] h-[9px] rounded-full bg-[#1A73E8] shrink-0"></span>
@@ -227,7 +229,7 @@
                         </div>
 
                         <!-- Approval Queue Table Container -->
-                        <div class="bg-romance border border-pearl-bush rounded-[12px] shadow-sm overflow-hidden flex-1">
+                        <div class="ui-card overflow-hidden flex-1">
                             <div class="overflow-x-auto custom-scrollbar h-full">
                                 <table class="w-full text-left border-collapse min-w-[560px] h-full">
                                     <thead>
@@ -241,7 +243,7 @@
                                     </thead>
                                     <tbody class="text-[14px] font-medium">
                                         <!-- Row 1 -->
-                                        <tr class="h-[41px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
+                                        <tr class="h-[41px] hover:bg-[#383734] transition-colors border-t border-ecru-white">
                                             <td class="py-2.5 px-4">
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-old-lace text-crail text-[12px] font-medium leading-4">
                                                     Faculty
@@ -258,7 +260,7 @@
                                         </tr>
 
                                         <!-- Row 2 -->
-                                        <tr class="h-[42px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
+                                        <tr class="h-[42px] hover:bg-[#383734] transition-colors border-t border-ecru-white">
                                             <td class="py-2.5 px-4">
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-parchment text-shingle-fawn text-[12px] font-medium leading-4">
                                                     Student
@@ -275,7 +277,7 @@
                                         </tr>
 
                                         <!-- Row 3 -->
-                                        <tr class="h-[42px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
+                                        <tr class="h-[42px] hover:bg-[#383734] transition-colors border-t border-ecru-white">
                                             <td class="py-2.5 px-4">
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-zumthor text-[#1A73E8] text-[12px] font-medium leading-4">
                                                     Program
@@ -292,7 +294,7 @@
                                         </tr>
 
                                         <!-- Row 4 -->
-                                        <tr class="h-[41px] hover:bg-[#FAF6EE] transition-colors border-t border-ecru-white">
+                                        <tr class="h-[41px] hover:bg-[#383734] transition-colors border-t border-ecru-white">
                                             <td class="py-2.5 px-4">
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-old-lace text-crail text-[12px] font-medium leading-4">
                                                     Faculty
@@ -320,7 +322,7 @@
                             <span class="text-[10px] text-zorba leading-4">Recent Audits</span>
                         </div>
 
-                        <div class="bg-romance border border-pearl-bush rounded-[12px] p-3 shadow-sm flex flex-col justify-between flex-1 h-full min-h-[170px]">
+                        <div class="ui-card p-3 flex flex-col justify-between flex-1 h-full min-h-[170px]">
                             <div class="space-y-3 overflow-y-auto pr-1 custom-scrollbar flex-1">
                                 <div class="flex items-start justify-between text-xs pb-2 border-b border-ecru-white">
                                     <div class="flex flex-col">

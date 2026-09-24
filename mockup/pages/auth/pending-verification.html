@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
     <title>SPMIS - Pending Verification</title>
     <style>
         /* =========================================
@@ -13,63 +15,7 @@
         /* --- 1. FONTS --- */
         @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
 
-        /* --- 2. VARIABLES (From shadcn/ui) --- */
-        :root {
-            --background: #faf9f5;
-            --foreground: #3d3929;
-            --card: #f5f4ef;
-            --card-foreground: #141413;
-            --popover: #ffffff;
-            --popover-foreground: #28261b;
-            --primary: #c96442;
-            --primary-foreground: #ffffff;
-            --secondary: #e9e6dc;
-            --secondary-foreground: #535146;
-            --muted: #ede9de;
-            --muted-foreground: #6e6d68;
-            --accent: #e9e6dc;
-            --accent-foreground: #28261b;
-            --destructive: #141413;
-            --destructive-foreground: #ffffff;
-            --border: #dad9d4;
-            --input: #b4b2a7;
-            --ring: #c96442;
-            --sidebar: #f5f4ee;
-            --sidebar-foreground: #3d3d3a;
-            --sidebar-primary: #c96442;
-            --sidebar-primary-foreground: #fbfbfb;
-            --sidebar-accent: #e9e6dc;
-            --sidebar-accent-foreground: #343434;
-            --sidebar-border: #ebebeb;
-            --sidebar-ring: #b5b5b5;
-
-            --font-sans: 'Outfit', sans-serif;
-            --font-mono: 'Geist Mono', monospace;
-
-            --radius: 1rem;
-            --radius-sm: calc(var(--radius) - 4px);
-            --radius-md: calc(var(--radius) - 2px);
-            --radius-lg: var(--radius);
-
-            --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
-            --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
-        }
-
-        .dark {
-            --background: #262624;
-            --foreground: #f1f1ef;
-            --card: #2c2c2b;
-            --card-foreground: #faf9f5;
-            --primary: #d97757;
-            --primary-foreground: #141413;
-            --destructive: #ef4444;
-            --border: #3e3e38;
-            --input: #52514a;
-            --ring: #d97757;
-            --sidebar: #1f1e1d;
-            --sidebar-foreground: #c3c0b6;
-            --sidebar-border: #ebebeb;
-        }
+        /* Tokens inherited from global.css */
 
         /* --- 3. BASE STYLES --- */
         * {
@@ -164,8 +110,8 @@
 
         /* Button override */
         .btn-primary {
-            background-color: #cc6644;
-            color: #ffffff;
+            background-color: var(--primary, #d97757);
+            color: var(--primary-foreground, #ffffff);
             padding: 0.75rem 2rem;
             border-radius: 6px;
             font-weight: 600;
@@ -173,7 +119,7 @@
         }
 
         .btn-primary:hover {
-            background-color: #d97757;
+            background-color: color-mix(in srgb, var(--primary, #d97757) 88%, #ffffff);
         }
 
         /* Footer pinned to bottom */
@@ -224,7 +170,7 @@
     <div class="footer-links">
         <a href="about.html">About</a> &bull;
         <a href="terms.html">Terms</a> &bull;
-        <a href="privacy.html">Privacy Policy</a>
+        <a href="privacy%20policy.html">Privacy Policy</a>
     </div>
 
 </body>

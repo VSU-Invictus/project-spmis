@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude+ Design System — Living Style Guide</title>
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <style>
+    /* Living Style Guide Showcase Layout */
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+      font-family: var(--font-sans, 'Outfit', sans-serif);
+      margin: 0;
+      padding: 0;
+      line-height: 1.5;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .ui-styleguide {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    /* Style Guide Top Header */
+    .ui-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.875rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .ui-top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .ui-top-bar-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .ui-top-bar-breadcrumb {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    .ui-top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Interactive Theme Switcher Button */
+    .ui-theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.875rem;
+      border-radius: 9999px;
+      background: var(--muted);
+      border: 1px solid var(--border);
+      color: var(--foreground);
+      font: 600 0.8125rem/1 var(--font-sans);
+      cursor: pointer;
+      transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+    }
+
+    .ui-theme-toggle:hover {
+      border-color: var(--primary);
+      background: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .ui-top-bar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      background: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 0.6875rem;
+      color: var(--muted-foreground);
+    }
+
+    .ui-top-bar-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+    }
+
+    .ui-header {
+      margin-bottom: 3rem;
+    }
+
+    .ui-header-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--foreground);
+      margin: 0 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .ui-header-subtitle {
+      font-size: 1rem;
+      color: var(--muted-foreground);
+      margin: 0;
+      max-width: 760px;
+    }
+
+    /* Showcase Sections */
+    .ui-section {
+      margin-bottom: 3.5rem;
+    }
+
+    .ui-section-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .ui-section-title {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 0;
+    }
+
+    .ui-section-desc {
+      font-size: 0.8125rem;
+      color: var(--muted-foreground);
+      margin: 0;
+    }
+
+    /* CSS Grid Layout Utilities */
+    .ui-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .ui-grid-cols-1 {
+      grid-template-columns: 1fr;
+    }
+
+    .ui-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ui-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ui-grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @media (max-width: 960px) {
+      .ui-grid-cols-3,
+      .ui-grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ui-grid-cols-2,
+      .ui-grid-cols-3,
+      .ui-grid-cols-4 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Color Palette Swatches */
+    .ui-color-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .ui-color-swatch {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm, 6px);
+      flex-shrink: 0;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .ui-color-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      min-width: 0;
+    }
+
+    .ui-color-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--foreground);
+    }
+
+    .ui-color-var {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.75rem;
+      color: var(--primary);
+    }
+
+    .ui-color-role {
+      font-size: 0.6875rem;
+      color: var(--muted-foreground);
+    }
+
+    /* Typography Showcase */
+    .ui-typography-sample {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .ui-heading-1 {
+      font-size: 1.875rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--foreground);
+      margin: 0;
+      line-height: 1.25;
+    }
+
+    .ui-heading-2 {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .ui-heading-3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--foreground);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .ui-text {
+      font-size: 0.875rem;
+      color: var(--foreground);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .ui-text-muted {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .ui-text-caption {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin: 0;
+    }
+
+    .ui-text-mono {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.8125rem;
+      color: var(--foreground);
+    }
+
+    /* Button Showcase Layout */
+    .ui-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .ui-btn-row {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .ui-btn-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted-foreground);
+    }
+
+    .ui-icon {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Form Controls Showcase */
+    .ui-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .ui-form-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    .ui-checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--foreground);
+      cursor: pointer;
+    }
+
+    /* Footer */
+    .ui-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      margin-top: 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ui-styleguide">
+
+    <!-- Top Workspace Header Bar with Theme Switcher -->
+    <header class="ui-top-bar">
+      <div class="ui-top-bar-left">
+        <div class="ui-top-bar-dot"></div>
+        <span class="ui-top-bar-breadcrumb">SPMIS DESIGN SYSTEM / LIVING STYLE GUIDE</span>
+      </div>
+      <div class="ui-top-bar-right">
+        <!-- Live Theme Toggle Switch -->
+        <button type="button" id="theme-toggle-btn" class="ui-theme-toggle" aria-label="Toggle theme">
+          <span id="theme-icon">🌙</span>
+          <span id="theme-label">Dark Mode</span>
+        </button>
+        <div class="ui-top-bar-badge">
+          <span class="ui-top-bar-pulse"></span>
+          <span>Claude+ Standard</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Title & Overview -->
+    <div class="ui-header">
+      <h1 class="ui-header-title">Claude+ Living Style Guide</h1>
+      <p class="ui-header-subtitle">
+        Interactive visualization and component reference for the raw HTML/CSS Claude+ design system.
+        Supports both <strong>Light Mode</strong> (warm paper canvas) and <strong>Dark Mode</strong> (charcoal canvas)
+        with unified <code>.ui-*</code> class architecture.
+      </p>
+    </div>
+
+    <!-- 1. Color Palette Section -->
+    <section class="ui-section" id="color-palette">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Color Palette (OKLCH Dynamic Tokens)</h2>
+        <span class="ui-section-desc">Tokens adapt automatically when toggling between Light and Dark mode</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-4">
+        <!-- Primary Accent -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--primary);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Primary Accent</span>
+            <span class="ui-color-var">var(--primary)</span>
+            <span class="ui-color-role">Terracotta Action (#D97251)</span>
+          </div>
+        </div>
+
+        <!-- App Background -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--background); border: 1px solid var(--border);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">App Background</span>
+            <span class="ui-color-var">var(--background)</span>
+            <span class="ui-color-role">Paper (Light) / Charcoal (Dark)</span>
+          </div>
+        </div>
+
+        <!-- Card Surface -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--card); border: 1px solid var(--border);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Card Surface</span>
+            <span class="ui-color-var">var(--card)</span>
+            <span class="ui-color-role">Container Surface</span>
+          </div>
+        </div>
+
+        <!-- Border / Dividers -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--border);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Border &amp; Dividers</span>
+            <span class="ui-color-var">var(--border)</span>
+            <span class="ui-color-role">Subtle Framing</span>
+          </div>
+        </div>
+
+        <!-- Muted Surface -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--muted); border: 1px solid var(--border);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Muted Surface</span>
+            <span class="ui-color-var">var(--muted)</span>
+            <span class="ui-color-role">Inputs &amp; Recessed Areas</span>
+          </div>
+        </div>
+
+        <!-- Primary Foreground Text -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--foreground);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Foreground Text</span>
+            <span class="ui-color-var">var(--foreground)</span>
+            <span class="ui-color-role">High Contrast Content</span>
+          </div>
+        </div>
+
+        <!-- Muted Foreground Text -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--muted-foreground);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Muted Foreground</span>
+            <span class="ui-color-var">var(--muted-foreground)</span>
+            <span class="ui-color-role">Secondary Labels</span>
+          </div>
+        </div>
+
+        <!-- Destructive Action -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--destructive);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Destructive</span>
+            <span class="ui-color-var">var(--destructive)</span>
+            <span class="ui-color-role">Alerts &amp; Delete (#DC2626)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Typography Section -->
+    <section class="ui-section" id="typography">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Typography</h2>
+        <span class="ui-section-desc">Outfit font family with Geist Mono for codes and tabular metrics</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-2">
+        <div class="ui-typography-sample">
+          <span class="ui-btn-label">Headings Scale</span>
+          <div>
+            <h1 class="ui-heading-1">Primary Heading 1 (Display Title)</h1>
+            <p class="ui-text-caption">30px · Font-weight 800 · Letter-spacing -0.025em · <code>var(--foreground)</code></p>
+          </div>
+          <div>
+            <h2 class="ui-heading-2">Secondary Heading 2 (Section Title)</h2>
+            <p class="ui-text-caption">22px · Font-weight 700 · Letter-spacing -0.02em · <code>var(--foreground)</code></p>
+          </div>
+          <div>
+            <h3 class="ui-heading-3">Tertiary Heading 3 (Card &amp; Panel Header)</h3>
+            <p class="ui-text-caption">18px · Font-weight 600 · <code>var(--card-foreground)</code></p>
+          </div>
+        </div>
+
+        <div class="ui-typography-sample">
+          <span class="ui-btn-label">Paragraph &amp; Muted Hierarchy</span>
+          <div>
+            <h3 class="ui-heading-3">Primary Paragraph Text</h3>
+            <p class="ui-text">
+              SPMIS provides a unified academic progress management portal with warm surfaces and clear hierarchy.
+              Primary text is styled with <code>var(--foreground)</code> to maintain optimal readability and comfortable contrast.
+            </p>
+          </div>
+          <div>
+            <h3 class="ui-heading-3">Muted Descriptive Text</h3>
+            <p class="ui-text-muted">
+              Secondary details, audit timestamps, and status explanations utilize <code>var(--muted-foreground)</code>
+              to establish quiet visual depth without distracting from critical operational data.
+            </p>
+          </div>
+          <div>
+            <h3 class="ui-heading-3">Monospace Data Text</h3>
+            <p class="ui-text-mono">
+              Student ID: 24-1-00001 · Roster Count: 2,850 · Status: VERIFIED_OK
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Status Badges & Chips Section -->
+    <section class="ui-section" id="badges">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Status Badges &amp; Chips</h2>
+        <span class="ui-section-desc">Semantic pill tags for table statuses, application reviews, and records</span>
+      </div>
+      <div class="ui-btn-row">
+        <div class="ui-btn-group">
+          <span class="ui-badge ui-badge--success">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Approved / Active
+          </span>
+          <span class="ui-badge ui-badge--warning">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            Pending Review
+          </span>
+          <span class="ui-badge ui-badge--destructive">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            Rejected / Deficient
+          </span>
+          <span class="ui-badge ui-badge--info">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            In Progress
+          </span>
+          <span class="ui-badge ui-badge--neutral">
+            Archived / Draft
+          </span>
+        </div>
+        <p class="ui-text-caption">
+          Badges utilize subtle tinted backgrounds (<code>color-mix</code>) with sharp readable foreground text matching their semantic severity.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Buttons Section -->
+    <section class="ui-section" id="buttons">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Buttons &amp; Actions</h2>
+        <span class="ui-section-desc">Interactive button primitives conforming to the <code>.ui-btn</code> specification</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-2">
+        <!-- Standard Button Variants -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Standard .ui-btn Variants</span>
+          <div class="ui-btn-group">
+            <button type="button" class="ui-btn">
+              Primary Action
+            </button>
+            <button type="button" class="ui-btn ui-btn-secondary">
+              Secondary Action
+            </button>
+            <button type="button" class="ui-btn ui-btn-outline">
+              Outline Action
+            </button>
+            <button type="button" class="ui-btn ui-btn-destructive">
+              Destructive
+            </button>
+          </div>
+          <p class="ui-text-caption">
+            Primary uses terracotta <code>var(--primary)</code>. Secondary and outline utilize <code>var(--secondary)</code> and <code>var(--border)</code>.
+          </p>
+        </div>
+
+        <!-- Button States & Icons -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Button States &amp; Icons</span>
+          <div class="ui-btn-group">
+            <button type="button" class="ui-btn">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>With Leading Icon</span>
+            </button>
+            <button type="button" class="ui-btn ui-btn-secondary">
+              <span>Next</span>
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+            <button type="button" class="ui-btn" disabled>
+              Disabled Action
+            </button>
+          </div>
+          <p class="ui-text-caption">
+            Disabled state enforces reduced opacity and <code>cursor: not-allowed</code>. Focus rings use <code>var(--ring)</code> with 2px offset.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Form Controls Section -->
+    <section class="ui-section" id="form-controls">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Form Controls</h2>
+        <span class="ui-section-desc">Unified input fields, select dropdowns, textareas, and labels using <code>.ui-input</code></span>
+      </div>
+      <div class="ui-grid ui-grid-cols-3">
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="sample-text">Student Name</label>
+          <input type="text" id="sample-text" class="ui-input" placeholder="e.g. Alex Morgan" />
+        </div>
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="sample-select">Program Department</label>
+          <select id="sample-select" class="ui-input">
+            <option value="cs">BS Computer Science</option>
+            <option value="is">BS Information Systems</option>
+            <option value="it">BS Information Technology</option>
+          </select>
+        </div>
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="sample-search">Search Records</label>
+          <input type="search" id="sample-search" class="ui-input" placeholder="Search roster or IDs..." />
+        </div>
+        <div class="ui-form-group" style="grid-column: 1 / -1;">
+          <label class="ui-form-label" for="sample-notes">Review Assessment Notes</label>
+          <textarea id="sample-notes" class="ui-input" style="min-height: 80px;" placeholder="Provide detailed evaluation feedback..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Cards Section -->
+    <section class="ui-section" id="cards">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Cards</h2>
+        <span class="ui-section-desc">Container primitives: standard card, compact KPI metric card, and interactive link card</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-3">
+        <!-- 1. Standard .ui-card with header and body -->
+        <div class="ui-card">
+          <div class="ui-card-header">
+            <h3 class="ui-card-title">Standard Card</h3>
+            <p class="ui-card-description">Default <code>.ui-card</code> container for details and panels.</p>
+          </div>
+          <div class="ui-card-content">
+            <p class="ui-text">
+              This card serves as the standard container for panels, detail views, and forms.
+              It uses <code>var(--card)</code> surface with a subtle <code>var(--border)</code> outline and <code>var(--radius-lg)</code> corners.
+            </p>
+          </div>
+          <div class="ui-card-footer">
+            <span class="ui-text-muted">Updated 10m ago</span>
+          </div>
+        </div>
+
+        <!-- 2. Compact .ui-card-sm for KPI metrics -->
+        <div class="ui-card ui-card-sm metric-card">
+          <div class="ui-card-header" style="margin-bottom: 0.5rem;">
+            <p class="metric-card-label">KPI Metric Card (.ui-card-sm)</p>
+          </div>
+          <div class="metric-card-row">
+            <strong class="metric-card-value">2,850</strong>
+            <span class="metric-card-trend">↗ +12.5%</span>
+          </div>
+          <p class="metric-card-status">AY 2026-2027</p>
+          <p class="ui-card-description">Compact metric summary for dashboard statistics.</p>
+        </div>
+
+        <!-- 3. Interactive .ui-card-interactive wrapping an <a> tag -->
+        <div class="ui-card-interactive">
+          <a href="#interactive-target" class="ui-card" style="text-decoration: none; display: flex; flex-direction: column; height: 100%; color: inherit; box-sizing: border-box;">
+            <div class="ui-card-header">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="ui-card-title">Interactive Card Link</h3>
+                <span class="metric-card-trend">Link →</span>
+              </div>
+              <p class="ui-card-description"><code>.ui-card-interactive</code> wrapping an anchor element.</p>
+            </div>
+            <div class="ui-card-content">
+              <p class="ui-text">
+                Hover over this card to view the smooth interactive transition effect.
+                Supports keyboard focus indicators and terracotta primary border highlighting.
+              </p>
+            </div>
+            <div class="ui-card-footer">
+              <span class="ui-text-muted" style="color: var(--primary);">Explore workspace →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Data Tables & Pagination Section -->
+    <section class="ui-section" id="data-tables">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Data Tables &amp; Pagination</h2>
+        <span class="ui-section-desc">Responsive table wrappers with subtle row hovers, status pills, and pagination bars</span>
+      </div>
+      <div class="ui-table-wrap">
+        <table class="ui-table">
+          <thead>
+            <tr>
+              <th style="width: 40px;"><input type="checkbox" aria-label="Select all rows"></th>
+              <th>Student</th>
+              <th>Student ID</th>
+              <th>Program</th>
+              <th>Year Level</th>
+              <th>Status</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">SM</div>
+                  <div>
+                    <strong style="display: block; font-size: 0.875rem;">Sam Lee Parker</strong>
+                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">sam.parker@vsu.edu.ph</span>
+                  </div>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00001</code></td>
+              <td>BS Computer Science</td>
+              <td>3rd Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td style="text-align: right;">
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">EB</div>
+                  <div>
+                    <strong style="display: block; font-size: 0.875rem;">Elena Bautista</strong>
+                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">elena.b@vsu.edu.ph</span>
+                  </div>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00042</code></td>
+              <td>BS Information Systems</td>
+              <td>2nd Year</td>
+              <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+              <td style="text-align: right;">
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">Review</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">RC</div>
+                  <div>
+                    <strong style="display: block; font-size: 0.875rem;">Rafael Cruz</strong>
+                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">r.cruz@vsu.edu.ph</span>
+                  </div>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00109</code></td>
+              <td>BS Information Technology</td>
+              <td>4th Year</td>
+              <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+              <td style="text-align: right;">
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Table Pagination Footer -->
+        <div class="ui-table-pagination">
+          <span>Showing <strong>1 to 3</strong> of <strong>48</strong> students</span>
+          <div class="ui-table-pagination-nav">
+            <button type="button" class="ui-table-page-btn" disabled>←</button>
+            <button type="button" class="ui-table-page-btn active">1</button>
+            <button type="button" class="ui-table-page-btn">2</button>
+            <button type="button" class="ui-table-page-btn">3</button>
+            <button type="button" class="ui-table-page-btn">→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Chats & AI Assistant Section -->
+    <section class="ui-section" id="chats">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Chats &amp; AI Assistant</h2>
+        <span class="ui-section-desc">Prompt chips, message bubbles, query textarea, and student quick-file context card</span>
+      </div>
+
+      <!-- Quick Prompt Chips -->
+      <div class="ui-chat-prompts" style="margin-bottom: 1.5rem;">
+        <button type="button" class="ui-chat-prompt-btn">
+          <span>Research experience</span>
+          <small>Explore faculty assessments →</small>
+        </button>
+        <button type="button" class="ui-chat-prompt-btn">
+          <span>Teamwork &amp; Leadership</span>
+          <small>Ask across student records →</small>
+        </button>
+        <button type="button" class="ui-chat-prompt-btn">
+          <span>Communication Skills</span>
+          <small>Find relevant review excerpts →</small>
+        </button>
+        <button type="button" class="ui-chat-prompt-btn">
+          <span>Capstone Project Review</span>
+          <small>Verify graduation prerequisites →</small>
+        </button>
+      </div>
+
+      <!-- Two-Column Chat Workspace -->
+      <div class="ui-chat-columns">
+        <!-- Left: Chat Thread Card -->
+        <div class="ui-card" style="padding: 1.25rem;">
+          <div class="ui-card-header" style="margin-bottom: 1rem;">
+            <h3 class="ui-card-title">Ask across student reviews</h3>
+            <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
+          </div>
+
+          <!-- Chat Messages Log -->
+          <div class="ui-chat-log">
+            <!-- AI Assistant Bubble -->
+            <div class="ui-chat-msg ui-chat-msg--ai">
+              <div class="ui-chat-msg-header">
+                <span class="ui-chat-msg-sender">AI Assistant</span>
+                <span class="ui-chat-msg-time">10:42 AM</span>
+              </div>
+              <div>
+                What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.
+              </div>
+            </div>
+
+            <!-- User Bubble -->
+            <div class="ui-chat-msg ui-chat-msg--user">
+              <div class="ui-chat-msg-header">
+                <span class="ui-chat-msg-sender">Prof. Morgan</span>
+                <span class="ui-chat-msg-time">10:43 AM</span>
+              </div>
+              <div>
+                Which students in BS Computer Science demonstrate outstanding research contributions?
+              </div>
+            </div>
+
+            <!-- AI Response Bubble -->
+            <div class="ui-chat-msg ui-chat-msg--ai">
+              <div class="ui-chat-msg-header">
+                <span class="ui-chat-msg-sender">AI Assistant</span>
+                <span class="ui-chat-msg-time">10:43 AM</span>
+              </div>
+              <div>
+                Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Input Area -->
+          <div class="ui-chat-input-box">
+            <textarea class="ui-chat-textarea" placeholder="Type a question across student reviews..."></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="ui-text-caption">Press Enter to send, Shift+Enter for new line</span>
+              <button type="button" class="ui-btn">
+                <span>Send query</span>
+                <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Student Quick File Context Card -->
+        <div class="ui-chat-context-card">
+          <div class="ui-chat-context-avatar">SP</div>
+          <h3 class="ui-heading-3" style="margin: 0;">Sam Lee Parker</h3>
+          <p class="ui-text-muted" style="font-size: 0.8125rem; margin-top: 0.25rem;">ID: 24-1-00001</p>
+
+          <div class="ui-chat-context-meta">
+            <span class="ui-chat-context-dt">Program</span>
+            <span class="ui-chat-context-dd">BS Computer Science</span>
+            <span class="ui-chat-context-dt">Year Level</span>
+            <span class="ui-chat-context-dd">3rd Year</span>
+            <span class="ui-chat-context-dt">Status</span>
+            <span class="ui-chat-context-dd"><span class="ui-badge ui-badge--success">Good Standing</span></span>
+            <span class="ui-chat-context-dt">Tags</span>
+            <span class="ui-chat-context-dd">
+              <span class="ui-badge ui-badge--neutral">Research</span>
+              <span class="ui-badge ui-badge--neutral">Algorithms</span>
+            </span>
+          </div>
+
+          <p class="ui-text-caption" style="margin-bottom: 1.25rem;">
+            Referenced record. Review conversations can synthesize evaluations across all enrolled students.
+          </p>
+
+          <button type="button" class="ui-btn ui-btn-outline" style="width: 100%;">
+            View Full Profile →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Authentication & Sign Up Section -->
+    <section class="ui-section" id="auth-cards">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Authentication &amp; Account Cards</h2>
+        <span class="ui-section-desc">Unified Box, Color, and Text contract for Sign In and Sign Up portals</span>
+      </div>
+
+      <div class="ui-auth-wrapper">
+        <div class="ui-auth-card">
+          <div class="ui-auth-header">
+            <h2 class="ui-auth-title">Welcome to SPMIS</h2>
+            <p class="ui-auth-description">Sign in to your academic progress workspace</p>
+          </div>
+
+          <!-- Social Button -->
+          <button type="button" class="auth-social-btn">
+            <svg viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+
+          <!-- Divider -->
+          <div class="ui-auth-divider">
+            <span>or continue with email</span>
+          </div>
+
+          <!-- Form -->
+          <form class="ui-auth-form" onsubmit="event.preventDefault();">
+            <div class="ui-auth-field">
+              <label class="ui-auth-field-label" for="auth-email">Academic Email</label>
+              <input type="email" id="auth-email" class="ui-input" placeholder="faculty@vsu.edu.ph" required />
+            </div>
+
+            <div class="ui-auth-field">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="ui-auth-field-label" for="auth-pwd">Password</label>
+                <a href="#forgot" style="font-size: 0.75rem; color: var(--primary); text-decoration: none;">Forgot password?</a>
+              </div>
+              <input type="password" id="auth-pwd" class="ui-input" placeholder="••••••••••••" required />
+            </div>
+
+            <label class="ui-checkbox-label" style="margin-top: 0.25rem;">
+              <input type="checkbox" checked style="accent-color: var(--primary);" />
+              <span style="font-size: 0.8125rem;">Keep me signed in on this device</span>
+            </label>
+
+            <button type="submit" class="ui-auth-btn-submit">
+              Sign In to Account
+            </button>
+          </form>
+
+          <div class="ui-auth-footer">
+            <span>Don't have an account? </span>
+            <a href="#register">Register for SPMIS</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Style Guide Footer -->
+    <footer class="ui-footer">
+      <span>© 2026 SPMIS Project · Claude+ Living Style Guide</span>
+      <span>Living Reference in <code>mockup/pages/design-system.html</code> · Architecture in <code>docs/DESIGN_SYSTEM.md</code></span>
+    </footer>
+
+  </div>
+
+  <script>
+    // Live Light / Dark Mode Toggle Functionality
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeLabel = document.getElementById('theme-label');
+    const htmlEl = document.documentElement;
+
+    function updateThemeUI() {
+      const isDark = htmlEl.classList.contains('dark');
+      themeIcon.textContent = isDark ? '🌙' : '☀️';
+      themeLabel.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      htmlEl.classList.toggle('dark');
+      updateThemeUI();
+    });
+
+    updateThemeUI();
+  </script>
+</body>
+
+</html>
