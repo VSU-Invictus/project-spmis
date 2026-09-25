@@ -24,11 +24,16 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
     height: 100vh !important;
     max-height: 100vh !important;
     margin: 0 !important;
-    border: 1px solid #D97251 !important;
+    border: none !important;
     box-sizing: border-box !important;
     border-radius: 0 !important;
     display: flex !important;
     overflow: hidden !important;
+}
+
+/* Remove orange border specifically for faculty pages */
+body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
+    border: none !important;
 }
 
 :is(main, .app-main, [class*="main-content"], [class*="workspace"], .section-container) {
@@ -248,9 +253,12 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
 }
 
 .workspace-footer {
+    flex: none !important;
+    height: auto !important;
+    flex-shrink: 0;
     margin-top: auto;
-    padding-top: 1rem;
-    border-top: 1px solid #383734;
+    padding-top: 0.75rem;
+    border-top: 1px solid #42423F;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -258,6 +266,8 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
     color: #A0988E;
     width: 100%;
 }
+
+
 
 :is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog) {
     background: var(--ui-surface) !important;
@@ -375,9 +385,7 @@ table input[type="checkbox"] {
     color: var(--muted-foreground) !important;
 }
 
-button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
-    border-color: var(--primary);
-}
+
 
 .ui-card {
     background: var(--card);
@@ -516,7 +524,11 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
     background: color-mix(in srgb, var(--primary) 88%, var(--foreground));
 }
 
-.ui-btn:focus-visible,
+.ui-btn:focus-visible {
+    outline: 2px solid var(--border);
+    outline-offset: 2px;
+}
+
 .ui-input:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
@@ -916,7 +928,7 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 
 .ui-table-page-btn:hover:not(:disabled) {
     background: var(--accent);
-    border-color: var(--primary);
+    border-color: var(--border);
     color: var(--foreground);
 }
 
@@ -926,9 +938,9 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 }
 
 .ui-table-page-btn.active {
-    background: var(--primary);
-    color: var(--primary-foreground);
-    border-color: var(--primary);
+    background: var(--accent);
+    color: var(--foreground);
+    border-color: var(--border);
     font-weight: 700;
 }
 
@@ -978,8 +990,8 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 }
 
 .ui-chat-prompt-btn:hover {
-    border-color: var(--primary);
-    background: color-mix(in srgb, var(--primary) 8%, var(--muted));
+    border-color: var(--border);
+    background: var(--muted);
     transform: translateY(-1px);
 }
 
@@ -1039,14 +1051,14 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
     background: var(--muted);
     color: var(--foreground);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--primary);
+    border-left: 3px solid var(--border);
 }
 
 .ui-chat-msg--user {
     align-self: flex-end;
-    background: color-mix(in srgb, var(--primary) 15%, var(--card));
+    background: var(--accent);
     color: var(--foreground);
-    border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+    border: 1px solid var(--border);
 }
 
 .ui-chat-msg--user .ui-chat-msg-sender {
@@ -1251,3 +1263,5 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 .ui-auth-footer a:hover {
     text-decoration: underline;
 }
+
+.ui-icon { width: 1rem; height: 1rem; flex-shrink: 0; }
