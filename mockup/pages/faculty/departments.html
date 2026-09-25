@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Departments · SPMIS Faculty</title>
-    <link rel="stylesheet" href="../../assets/css/global.css" />
-    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/global.css?v=4" />
+    <link rel="stylesheet" href="../../assets/css/components.css?v=4" />
     <script src="../../assets/js/faculty-sidebar.js"></script>
     <style>
       /* Faculty layout and components. Shared colors come from assets/css/global.css. */
-      html.dark {
+    html.dark {
         color-scheme: dark;
       }
       * {
@@ -65,17 +65,13 @@
         background: var(--destructive);
         color: var(--destructive-foreground);
       }
-      :focus-visible {
-        outline: 3px solid var(--ring);
-        outline-offset: 3px;
-      }
       .app {
       width: 100vw;
       max-width: 100vw;
       height: 100vh;
       margin: 0;
       display: flex;
-      border: 1px solid #D97251;
+      
       box-sizing: border-box;
       border-radius: 0;
       overflow: hidden;
@@ -133,7 +129,6 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         box-sizing: border-box;
       }
       .eyebrow {
@@ -1055,7 +1050,7 @@
             <h1>Departments</h1>
             <p>Browse approved departments or apply to add one.</p>
           </div>
-          <button id="add-entity">+ Propose department</button>
+          <button class="ui-btn" id="add-entity">+ Propose department</button>
         </div>
         <p class="muted">
           New departments require admin approval. Your own department is locked
@@ -1968,3 +1963,6 @@
     </script>
   </body>
 </html>
+
+
+

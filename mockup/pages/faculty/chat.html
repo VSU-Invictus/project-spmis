@@ -1,11 +1,11 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Chats · SPMIS Faculty</title>
-    <link rel="stylesheet" href="../../assets/css/global.css" />
-    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <title>Chats Â· SPMIS Faculty</title>
+    <link rel="stylesheet" href="../../assets/css/global.css?v=4" />
+    <link rel="stylesheet" href="../../assets/css/components.css?v=4" />
     <script src="../../assets/js/faculty-sidebar.js"></script>
     <style>
       /* Faculty layout and components. Shared colors come from assets/css/global.css. */
@@ -65,17 +65,13 @@
         background: var(--destructive);
         color: var(--destructive-foreground);
       }
-      :focus-visible {
-        outline: 3px solid var(--ring);
-        outline-offset: 3px;
-      }
       .app {
       width: 100vw;
       max-width: 100vw;
       height: 100vh;
       margin: 0;
       display: flex;
-      border: 1px solid #D97251;
+      
       box-sizing: border-box;
       border-radius: 0;
       overflow: hidden;
@@ -126,16 +122,15 @@
         color: var(--sidebar-foreground);
       }
       main {
-        min-width: 0;
-        flex: 1;
-        padding: 16px 24px;
-        height: 100%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        box-sizing: border-box;
-      }
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 32px 48px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
       .eyebrow {
         text-transform: uppercase;
         letter-spacing: 2px;
@@ -655,7 +650,7 @@
         margin-top: auto;
       }
       .profile-link::before {
-        content: "●";
+        content: "â—";
         position: absolute;
         left: 12px;
         top: 16px;
@@ -1079,22 +1074,22 @@
             type="button"
             data-prompt="Which students have research experience?"
           >
-            Research experience<small>Explore faculty assessments →</small>
+            Research experience<small>Explore faculty assessments â†’</small>
           </button>
           <button type="button" data-prompt="Which students show teamwork?">
-            Teamwork<small>Ask across student records →</small>
+            Teamwork<small>Ask across student records â†’</small>
           </button>
           <button
             type="button"
             data-prompt="Find reviews mentioning communication."
           >
-            Communication<small>Find relevant review excerpts →</small>
+            Communication<small>Find relevant review excerpts â†’</small>
           </button>
           <button
             type="button"
             data-prompt="Which students have robotics experience?"
           >
-            Robotics<small>Explore project experience →</small>
+            Robotics<small>Explore project experience â†’</small>
           </button>
         </div>
         <div class="chat-columns">
@@ -1110,10 +1105,10 @@
             >
               <div class="message">
                 <strong>AI assistant</strong>What would you like to explore? Try
-                “Which students have research or teamwork experience?”
+                â€œWhich students have research or teamwork experience?â€
               </div>
             </div>
-            <p id="generating" role="status" hidden>Generating a response…</p>
+            <p id="generating" role="status" hidden>Generating a responseâ€¦</p>
             <div id="retry-panel" class="notice" role="alert" hidden>
               <p>
                 The provider is temporarily rate-limited. Your question is
@@ -1130,7 +1125,7 @@
                 >Your question<textarea
                   id="chat-prompt"
                   required
-                  placeholder="Find students whose reviews mention teamwork…"
+                  placeholder="Find students whose reviews mention teamworkâ€¦"
                 >
                 </textarea>
               </label>
@@ -1176,7 +1171,7 @@
         </noscript>
             <!-- Workspace Footer -->
       <footer class="workspace-footer">
-        <span>© 2026 Faculty Portal. All rights reserved.</span>
+        <span>Â© 2026 Faculty Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
     </main>
@@ -1440,7 +1435,7 @@
           if (mode === "loading") {
             $("#roster-results").innerHTML =
               '<div role="status" aria-label="Loading students"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>';
-            $("#page-label").textContent = "Loading students…";
+            $("#page-label").textContent = "Loading studentsâ€¦";
             $("#previous").disabled = $("#next").disabled = true;
             return;
           }
@@ -1487,7 +1482,7 @@
                 .join("")}</tbody></table></div>`
             : '<div class="card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
           $("#page-label").textContent = matches.length
-            ? `Page ${current} of ${total} · ${matches.length} students`
+            ? `Page ${current} of ${total} Â· ${matches.length} students`
             : "0 students";
           $("#previous").disabled = current === 1;
           $("#next").disabled = current === total;
@@ -1601,7 +1596,7 @@
                 visible
                   .map(
                     (r) =>
-                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="badge">Hidden · Only you</span>' : '<span class="badge approved">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "Â· You" : ""}</h3><small>${esc(r.department)} Â· ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="badge">Hidden Â· Only you</span>' : '<span class="badge approved">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version Â· ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                   )
                   .join("") ||
                 '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
@@ -1779,7 +1774,7 @@
                 ? "Program edit"
                 : "Program proposal"
               : "Department proposal",
-            original ? `${original} → ${name}` : name,
+            original ? `${original} â†’ ${name}` : name,
             { original, name },
           );
           $("#proposal-dialog").close();
@@ -1846,7 +1841,7 @@
             );
             const sample = (relevant.length ? relevant : active).slice(0, 3);
             message(
-              "AI assistant · Sample response",
+              "AI assistant Â· Sample response",
               sample.length
                 ? "For this mockup, here are active review excerpts" +
                     (relevant.length
@@ -1856,7 +1851,7 @@
                     sample
                       .map(
                         (r) =>
-                          `${full(students.find((s) => s.id === r.student))} — ${r.body}\nContributor: ${r.owner === "self" ? state.name : r.author}`,
+                          `${full(students.find((s) => s.id === r.student))} â€” ${r.body}\nContributor: ${r.owner === "self" ? state.name : r.author}`,
                       )
                       .join("\n\n") +
                     "\n\nThese are attributed faculty opinions. Open the student record to review the full context."
@@ -1914,7 +1909,7 @@
             current +
             " of " +
             pages +
-            " · " +
+            " Â· " +
             rows.length +
             " entries";
           buttons[0].disabled = current === 1;
@@ -1966,7 +1961,7 @@
               (a) =>
                 '<div class="pending-item"><div><strong>' +
                 esc(a.type) +
-                " · " +
+                " Â· " +
                 esc(a.name) +
                 "</strong><small>Submitted " +
                 esc(a.date) +
