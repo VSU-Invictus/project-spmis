@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
@@ -1814,12 +1814,12 @@
 
         function generate() {
           busy = true;
-          $(#send).disabled = true;
-          $(#generating).hidden = false;
+          $("#send").disabled = true;
+          $("#generating").hidden = false;
           setTimeout(() => {
             busy = false;
-            $(#send).disabled = false;
-            $(#generating).hidden = true;
+            $("#send").disabled = false;
+            $("#generating").hidden = true;
             const active = state.reviews.filter((r) => r.status === "active");
             const terms = lastPrompt
               .toLowerCase()
