@@ -32,7 +32,7 @@ This section describes the *actual current state* of the repository.
 ## 5. Target Architecture & Design (Post-M1)
 This section describes the *target state* that new code should build toward.
 * **Target Stack:** React 19 + Vite, TypeScript, Tailwind, shadcn/ui, Supabase, TanStack Query.
-* **Target Modals:** Route-backed modals, with no nested modals (e.g., rejection reasons captured inline via row expansion). *Note: This is a binding design directive mandated by the instructor; it will be formally reflected in `README.md` once the Milestone 1 documentation updates are merged.*
+* **Target Modals:** Route-backed modals, with no nested modals (e.g., rejection reasons captured inline via row expansion). *Note: This is a binding design directive mandated by the instructor; it is now reflected in `README.md` §9 (Modals & Dialogs).*
 * **API Boundary:** Contract-first via `contract/openapi.yaml` (OpenAPI 3.1). No ad-hoc PostgREST queries that bypass this schema.
 * **Styling Targets:** Claude+ theme. All styling relies on CSS custom properties (OKLCH tokens). No ad-hoc hex colors or inline styles.
 
@@ -41,4 +41,4 @@ AI agents must be aware of these existing technical debts and actively migrate t
 * **Legacy Hex & Inline Styles:** Existing files (e.g., `faculty-applications.html`, `chat.html`, and `design-system.html`) heavily violate the "no hex" rule with inline `<style>` blocks and attributes. **New/refactored markup must use `.ui-*` classes and tokens. Existing mockups are legacy and are being migrated incrementally.**
 * **Typography:** `DESIGN_SYSTEM.md` specifies **Outfit** for UI text and **Geist Mono** for code. However, files like `faculty-applications.html` currently load **Inter**. Flag any Inter usage as legacy to be migrated.
 * **Dual Class System:** `global.css` ships legacy classes (`.btn`, `.card`, `.input-field`) alongside semantic aliases, while `components.css` retrofits legacy classes using `:is()` and heavy `!important`. Migrate legacy classes toward the `.ui-*` standard rather than introducing a third pattern.
-* **Corrupted `.gitignore`:** The root `.gitignore` currently contains only the string `tatus` (a typo) and therefore ignores nothing. Flag this; do not rely on it to exclude build artifacts.
+* **`.gitignore` Coverage:** The stray `tatus` dump was removed from the repo root and `tatus` is now an intentional ignore entry. The file still lacks standard entries (`node_modules/`, `.env*`, build output) — add them as the project grows rather than relying on the current minimal list.
