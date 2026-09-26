@@ -257,7 +257,7 @@ Note what is *absent*: there is no `lib/ai/` in `src/`. De-identification, embed
 - SPMIS maintains its own, independent student roster; no external roster or registrar system feeds StudentProfile.
 
 ### Reviews
-- A Review has: the subject student, the authoring (owner) faculty member, a constrained rich-text body (bold, italic, lists, line breaks. No raw HTML, links, media or images), optional attachments, and optional tags.
+- A Review has: the subject student, the authoring (owner) faculty member, a constrained rich-text body (bold, italic, lists, and line breaks; no raw HTML, links, media, or images), optional attachments, and optional tags.
 - A faculty member may author unlimited reviews about the same student over time, and may **edit**, **hide/unhide**, or **delete** any review they own — no one else, including System Administrators, has any of these powers over another faculty member's review content.
 - **Edit history** is retained and is visible to **every** user who can view the review (not gated to owner or admin) — a first-class transparency feature, not an audit-only artifact.
 - **Contributor identity is always visible.** There is no anonymization anywhere in this system — full attribution is a core trust/integrity value.
@@ -316,6 +316,7 @@ A System Administrator can use both mining features but cannot author reviews (n
 | ReviewRevision | Append-only version/diff history for a Review, visible to all who can see the review |
 | ReviewTag | Normalized, lowercased, whitespace-tokenized tag linked to a Review |
 | ReviewEmbedding | De-identified vector representation of a Review's active text, used for AI retrieval; removed the instant its Review is hidden or deleted |
+| ReviewAttachment | File attached to a Review, stored in a Supabase Storage bucket; excluded from AI retrieval; follows the parent Review's lifecycle |
 | ApprovalQueueItem | Generic pending-application record: faculty account, student registration, program proposal, department proposal |
 | AuditLogEntry | Immutable event log; content masked per the same visibility rules as the live UI |
 
@@ -387,6 +388,16 @@ This is a lightweight starting point for migration authoring, not final DDL — 
 | `embedding` | vector (pgvector) | |
 | `generated_at` | timestamptz, not null | |
 
+**ReviewAttachment**
+| Field | Type | Notes |
+|---|---|---|
+| `id` | uuid, PK | |
+| `review_id` | uuid, FK → Review, not null | |
+| `storage_path` | text, not null | object key in the attachments Storage bucket; never exposed in the audit log |
+| `mime_type` | text, not null | constrained to an allowed file-type set |
+| `size_bytes` | integer, not null | capped at a fixed maximum |
+| `created_at` | timestamptz, not null | |
+
 **ApprovalQueueItem**
 | Field | Type | Notes |
 |---|---|---|
@@ -420,6 +431,7 @@ This is a lightweight starting point for migration authoring, not final DDL — 
 | Review | has | ReviewRevision | 1 : many |
 | Review | tagged with | ReviewTag | many : many |
 | Review | has | ReviewEmbedding | 1 : 0 or 1 (present only while active) |
+| Review | has | ReviewAttachment | 1 : many |
 | FacultyProfile | submits | ApprovalQueueItem | 1 : many |
 | Any auditable entity | generates | AuditLogEntry | 1 : many |
 
@@ -533,7 +545,7 @@ The AI features (embedding indexing + chatbot generation) call an external third
 - No automated profanity or content moderation filter in v1: consistent with the system's design principle that no one, including admins, has override power over review content — enforcement relies on faculty self-governance, the Terms & Conditions, and the audit trail, not technical filtering.
 
 ### Tag Handling
-Free-form. Tag input suggests existing tags and shows the normalized form as chips. Suggestion only — the set is never closed. On save, whitespace-tokenized, lowercased, and stored as normalized tag rows.w.
+Free-form. Tag input suggests existing tags and shows the normalized form as chips. Suggestion only — the set is never closed. On save, whitespace-tokenized, lowercased, and stored as normalized tag rows.
 
 ### Approval Workflow & Notifications
 A single ApprovalQueueItem shape covers all four application types. Admin queue views support search plus checkbox-based bulk approve/reject. The submitting faculty member is notified of the outcome either way, with a reason on rejection, via the in-app mechanism described above.
@@ -569,7 +581,7 @@ Supabase CLI migrations: `YYYYMMDDHHMMSS_description.sql`, one logical change pe
 No modal opens on top of another modal. A flow that would need a second dialog is captured inline in the first. Route-backed modals: deep-link opens the page with the modal open; dismissing returns to the parent without a reload; focus trapped, Escape dismisses, focus restored on close.
 
 ### AI Review Summary
-De-identification runs on extracted text; markup never reaches the AI or the embeddings. The AI summary renders between the student info block and the review list. The embeddings are deleted the moment a review is hidden, so a summary built from embeddings excludes hidden reviews automatically. However, a summary shown to the owner may include their hidden reviews, and that same summary must never be served to anyone else. Deleted content: never, for anyone.
+The AI summary is built from the de-identified text, like the chatbot. De-identification runs on extracted text; markup never reaches the AI or the embeddings. The AI summary renders between the student info block and the review list. The embeddings are deleted the moment a review is hidden, so a summary built from embeddings excludes hidden reviews automatically. However, a summary shown to the owner may include their hidden reviews, and that same summary must never be served to anyone else. Deleted content: never, for anyone.
 
 ### Review Attachments
 Review attachments skip the Edge Function de-identification entirely. They are excluded from AI retrieval, and the summary and chatbot are blind to them. Attachments follow the review's lifecycle: hidden means unreachable by non-owners; deleted means unreachable by everyone. Storage objects don't inherit row-level policies, so this needs writing explicitly. Audit logs track metadata only (no filenames, no contents).
@@ -625,6 +637,7 @@ Review attachments skip the Edge Function de-identification entirely. They are e
 28. **Contract-first backend boundary** — there is no application server; Supabase is the backend, and the frontend/backend interface is `contract/openapi.yaml` (OpenAPI 3.1), documented with Redoc. The frontend may only call operations declared there, and calls through a client generated from it. The auto-generated PostgREST spec is treated as a drift-detection input, never as the contract itself — see §3 and §9.
 29. **Server-side logic placement** — review authoring and the AI chatbot are Supabase Edge Function operations, not table writes, because de-identification must precede any text leaving the system and `GEMINI_API_KEY` cannot exist in a client bundle. `Review.body_text` is not writable through PostgREST by any role, so the de-identification step cannot be bypassed — see §9.
 30. **Faculty dashboard composition and the notification consequence:** The dashboard is a recent-reviews feed of active reviews only; application status notifications are handled via persistent app shell indicators.
+31. **Review attachments** — attachments are stored in a Supabase Storage bucket, skip the Edge Function de-identification entirely, and are excluded from AI retrieval (the summary and chatbot are blind to them). They follow the parent Review's lifecycle: hidden means unreachable by non-owners, deleted means unreachable by everyone. Storage objects don't inherit row-level policies, so access is enforced explicitly. Audit logs record attachment metadata only (no filenames, no contents) — see §6, §7, §9.
 
 ## 13. Project Management & Contributing
 
