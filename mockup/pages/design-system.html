@@ -565,6 +565,12 @@
             Archived / Draft
           </span>
         </div>
+        <div class="ui-btn-group" style="margin-top: 1rem;">
+          <span class="ui-badge ui-badge--purple">Research</span>
+          <span class="ui-badge ui-badge--cyan">Algorithms</span>
+          <span class="ui-badge ui-badge--amber">Leadership</span>
+          <span class="ui-badge ui-badge--rose">Robotics</span>
+        </div>
         <p class="ui-text-caption">
           Badges utilize subtle tinted backgrounds (<code>color-mix</code>) with sharp readable foreground text matching their semantic severity.
         </p>
@@ -854,59 +860,78 @@
       <!-- Two-Column Chat Workspace -->
       <div class="ui-chat-columns">
         <!-- Left: Chat Thread Card -->
-        <div class="ui-card" style="padding: 1.25rem;">
-          <div class="ui-card-header" style="margin-bottom: 1rem;">
+        <div class="ui-card" style="padding: 1.25rem; display: flex; flex-direction: column; max-height: 600px;">
+            <div class="ui-card-header" style="margin-bottom: 1rem; flex-shrink: 0;">
             <h3 class="ui-card-title">Ask across student reviews</h3>
             <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
           </div>
-
-          <!-- Chat Messages Log -->
-          <div class="ui-chat-log">
-            <!-- AI Assistant Bubble -->
+            <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;"><!-- Chat Messages Log -->
+          <div class="ui-chat-log hide-scrollbar" style="display: flex; flex-direction: column; gap: 1.5rem; flex: 1; overflow-y: auto; min-height: 0;">
+            <!-- Sam Message -->
             <div class="ui-chat-msg ui-chat-msg--ai">
-              <div class="ui-chat-msg-header">
-                <span class="ui-chat-msg-sender">AI Assistant</span>
-                <span class="ui-chat-msg-time">10:42 AM</span>
-              </div>
-              <div>
-                What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.
+              <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
+              <div class="ui-chat-msg-content">
+                <div class="ui-chat-msg-header">
+                  <span class="ui-chat-msg-sender">Sam Lee Parker</span>
+                  <span class="ui-chat-msg-time">10:00 AM</span>
+                </div>
+                <div class="ui-chat-bubble ui-chat-bubble--ai">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vulputate eros ullamcorper neque rutrum, ac gravida leo tempor.
+                </div>
               </div>
             </div>
 
-            <!-- User Bubble -->
+            <!-- User Message -->
             <div class="ui-chat-msg ui-chat-msg--user">
-              <div class="ui-chat-msg-header">
-                <span class="ui-chat-msg-sender">Prof. Morgan</span>
-                <span class="ui-chat-msg-time">10:43 AM</span>
-              </div>
-              <div>
-                Which students in BS Computer Science demonstrate outstanding research contributions?
+              <div class="ui-chat-msg-content">
+                <div class="ui-chat-msg-header">
+                  <span class="ui-chat-msg-sender">You</span>
+                  <span class="ui-chat-msg-time">10:02 AM</span>
+                </div>
+                <div class="ui-chat-bubble ui-chat-bubble--user">
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </div>
               </div>
             </div>
 
-            <!-- AI Response Bubble -->
-            <div class="ui-chat-msg ui-chat-msg--ai">
-              <div class="ui-chat-msg-header">
-                <span class="ui-chat-msg-sender">AI Assistant</span>
-                <span class="ui-chat-msg-time">10:43 AM</span>
+            <!-- Sam Typing -->
+            <div class="ui-chat-msg ui-chat-msg--ai" style="animation: fadeIn 0.3s ease;">
+              <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
+              <div class="ui-chat-msg-content" style="justify-content: center; flex-grow: 0;">
+                <div class="ui-chat-bubble ui-chat-bubble--ai" style="padding: 0.75rem 1rem;">
+                  <div class="ui-chat-typing-dots">
+                    <div class="ui-chat-typing-dot"></div>
+                    <div class="ui-chat-typing-dot"></div>
+                    <div class="ui-chat-typing-dot"></div>
+                  </div>
+                </div>
               </div>
-              <div>
-                Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.
+            </div>
+
+            <!-- User Typing -->
+            <div class="ui-chat-msg ui-chat-msg--user" style="animation: fadeIn 0.3s ease;">
+              <div class="ui-chat-msg-content" style="justify-content: center; flex-grow: 0;">
+                <div class="ui-chat-bubble ui-chat-bubble--user" style="padding: 0.75rem 1rem;">
+                  <div class="ui-chat-typing-dots">
+                    <div class="ui-chat-typing-dot" style="background-color: rgba(0,0,0,0.4);"></div>
+                    <div class="ui-chat-typing-dot" style="background-color: rgba(0,0,0,0.4);"></div>
+                    <div class="ui-chat-typing-dot" style="background-color: rgba(0,0,0,0.4);"></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Chat Input Area -->
-          <div class="ui-chat-input-box">
-            <textarea class="ui-chat-textarea" placeholder="Type a question across student reviews..."></textarea>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span class="ui-text-caption">Press Enter to send, Shift+Enter for new line</span>
-              <button type="button" class="ui-btn">
-                <span>Send query</span>
-                <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          <div class="ui-chat-input-wrapper" style="flex-shrink: 0;">
+            <form id="chat-form" style="width: 100%; display: flex;">
+              <input type="text" class="ui-chat-input-pill" id="chat-prompt" required autocomplete="off" placeholder="Type your message..." />
+              <button type="submit" class="ui-chat-send-circle" id="send" aria-label="Send">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
               </button>
-            </div>
+            </form>
           </div>
+            </div>
         </div>
 
         <!-- Right: Student Quick File Context Card -->
@@ -924,8 +949,8 @@
             <span class="ui-chat-context-dd"><span class="ui-badge ui-badge--success">Good Standing</span></span>
             <span class="ui-chat-context-dt">Tags</span>
             <span class="ui-chat-context-dd">
-              <span class="ui-badge ui-badge--neutral">Research</span>
-              <span class="ui-badge ui-badge--neutral">Algorithms</span>
+              <span class="ui-badge ui-badge--purple">Research</span>
+              <span class="ui-badge ui-badge--cyan">Algorithms</span>
             </span>
           </div>
 
@@ -1014,7 +1039,7 @@
       <div style="position: relative; background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end;">
         <div style="padding: 1rem 1.5rem; color: var(--muted-foreground); font-size: 0.8125rem; text-align: center;">↑ Page content sits above the footer</div>
         <footer class="workspace-footer" style="flex: none !important; height: auto !important; padding: 0.75rem 1.5rem;">
-          <span>© 2026 Faculty Portal. All rights reserved.</span>
+          <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
           <span>System Version 2.4.0</span>
         </footer>
       </div>
@@ -1027,7 +1052,7 @@
     &lt;!-- Page content --&gt;
   &lt;/div&gt;
   &lt;footer class="workspace-footer"&gt;
-    &lt;span&gt;© 2026 Portal. All rights reserved.&lt;/span&gt;
+    &lt;span&gt;&copy; 2026 Portal. All rights reserved.&lt;/span&gt;
     &lt;span&gt;System Version 2.4.0&lt;/span&gt;
   &lt;/footer&gt;
 &lt;/main&gt;</pre>
@@ -1040,7 +1065,7 @@
 
     <!-- Style Guide Footer -->
     <footer class="ui-footer">
-      <span>© 2026 SPMIS Project · Claude+ Living Style Guide</span>
+      <span>&copy; 2026 SPMIS Project · Claude+ Living Style Guide</span>
       <span>Living Reference in <code>mockup/pages/design-system.html</code> · Architecture in <code>docs/DESIGN_SYSTEM.md</code></span>
     </footer>
 

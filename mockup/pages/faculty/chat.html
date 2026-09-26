@@ -1049,6 +1049,7 @@
           <span style="font-size: 11px; color: #A0988E;">AY 2026-2027</span>
         </div>
       </div>
+        <div style="flex: 1; min-height: 0; overflow-y: auto; padding-right: 8px; margin-right: -8px;">
         <div class="header">
           <div>
 
@@ -1078,34 +1079,73 @@
           </button>
         </div>
                 <div class="ui-chat-columns">
-          <div class="ui-card" style="padding: 1.25rem;">
-            <div class="ui-card-header" style="margin-bottom: 1rem;">
+          <div class="ui-card" style="padding: 1.25rem; display: flex; flex-direction: column; max-height: calc(100vh - 12rem);">
+            <div class="ui-card-header" style="margin-bottom: 1rem; flex-shrink: 0;">
               <h3 class="ui-card-title">Ask across student reviews</h3>
               <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
             </div>
-            <div class="ui-chat-container">
-              <div class="ui-chat-log" id="chat-log" role="log" aria-label="Conversation" aria-live="polite" tabindex="0">
-                <div class="ui-chat-msg ui-chat-msg--ai">
-                  <div class="ui-chat-msg-header">
-                    <span class="ui-chat-msg-sender">AI Assistant</span>
-                    <span class="ui-chat-msg-time" id="initial-time">10:42 AM</span>
-                    <script>document.getElementById('initial-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });</script>
-                  </div>
-                  <div style="white-space: pre-wrap;">What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.</div>
+            <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                        <div id="chat-log" class="ui-chat-log hide-scrollbar" style="display: flex; flex-direction: column; gap: 1.5rem; flex: 1; overflow-y: auto; min-height: 0;">
+            <!-- Sam Message -->
+            <div class="ui-chat-msg ui-chat-msg--ai">
+              <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
+              <div class="ui-chat-msg-content">
+                <div class="ui-chat-msg-header">
+                  <span class="ui-chat-msg-sender">Sam Lee Parker</span>
+                  <span class="ui-chat-msg-time">10:00 AM</span>
+                </div>
+                <div class="ui-chat-bubble ui-chat-bubble--ai">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vulputate eros ullamcorper neque rutrum, ac gravida leo tempor.
                 </div>
               </div>
-              <p id="generating" role="status" hidden>Generating a response...</p>
-              <div class="ui-chat-input-box">
-                <form id="chat-form">
-                  <label for="chat-prompt" class="sr-only">Your question</label>
-                  <textarea class="ui-chat-textarea" id="chat-prompt" required placeholder="Type a question across student reviews..."></textarea>
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem;">
-                    <span class="ui-text-caption">Press Enter to send, Shift+Enter for new line</span>
-                    <button type="submit" class="ui-btn" id="send">
-                      <span>Send query</span>
-                      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    </button>
+            </div>
+
+            <!-- User Message -->
+            <div class="ui-chat-msg ui-chat-msg--user">
+              <div class="ui-chat-msg-content">
+                <div class="ui-chat-msg-header">
+                  <span class="ui-chat-msg-sender">You</span>
+                  <span class="ui-chat-msg-time">10:02 AM</span>
+                </div>
+                <div class="ui-chat-bubble ui-chat-bubble--user">
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </div>
+              </div>
+            </div>
+
+            <!-- Sam Typing -->
+            <div class="ui-chat-msg ui-chat-msg--ai" style="animation: fadeIn 0.3s ease;">
+              <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
+              <div class="ui-chat-msg-content" style="justify-content: center; flex-grow: 0;">
+                <div class="ui-chat-bubble ui-chat-bubble--ai" style="padding: 0.75rem 1rem;">
+                  <div class="ui-chat-typing-dots">
+                    <div class="ui-chat-typing-dot"></div>
+                    <div class="ui-chat-typing-dot"></div>
+                    <div class="ui-chat-typing-dot"></div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- User Typing -->
+            <div class="ui-chat-msg ui-chat-msg--user" style="animation: fadeIn 0.3s ease;">
+              <div class="ui-chat-msg-content" style="justify-content: center; flex-grow: 0;">
+                <div class="ui-chat-bubble ui-chat-bubble--user" style="padding: 0.75rem 1rem;">
+                  <div class="ui-chat-typing-dots">
+                    <div class="ui-chat-typing-dot" style="background-color: rgba(0,0,0,0.4);"></div>
+                    <div class="ui-chat-typing-dot" style="background-color: rgba(0,0,0,0.4);"></div>
+                    <div class="ui-chat-typing-dot" style="background-color: rgba(0,0,0,0.4);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+              <div class="ui-chat-input-wrapper" style="flex-shrink: 0;">
+                <form id="chat-form" style="width: 100%; display: flex;">
+                  <input type="text" class="ui-chat-input-pill" id="chat-prompt" required autocomplete="off" placeholder="Type your message..." />
+                  <button type="submit" class="ui-chat-send-circle" id="send" aria-label="Send">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                  </button>
                 </form>
               </div>
             </div>
@@ -1124,8 +1164,8 @@
               <span class="ui-chat-context-dd"><span class="ui-badge ui-badge--success">Good Standing</span></span>
               <span class="ui-chat-context-dt">Tags</span>
               <span class="ui-chat-context-dd">
-                <span class="ui-badge ui-badge--neutral">Research</span>
-                <span class="ui-badge ui-badge--neutral">Algorithms</span>
+                <span class="ui-badge ui-badge--purple">Research</span>
+                <span class="ui-badge ui-badge--cyan">Algorithms</span>
               </span>
             </div>
   
@@ -1148,9 +1188,11 @@
             interactions.
           </p>
         </noscript>
-            <!-- Workspace Footer -->
+            
+      </div>
+      <!-- Workspace Footer -->
       <footer class="workspace-footer">
-        <span>Â© 2026 Faculty Portal. All rights reserved.</span>
+        <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
     </main>
@@ -1789,13 +1831,23 @@
         function message(role, body) {
           const item = document.createElement("div");
           item.className = "ui-chat-msg " + (role === "You" ? "ui-chat-msg--user" : "ui-chat-msg--ai");
+
+          if (role !== "You") {
+              const avatar = document.createElement("div");
+              avatar.className = "ui-chat-avatar ui-chat-avatar--text";
+              avatar.textContent = "SP";
+              item.appendChild(avatar);
+          }
           
+          const msgContent = document.createElement("div");
+          msgContent.className = "ui-chat-msg-content";
+
           const header = document.createElement("div");
           header.className = "ui-chat-msg-header";
           
           const title = document.createElement("span");
           title.className = "ui-chat-msg-sender";
-          title.textContent = role === "You" ? "Prof. Morgan" : role;
+          title.textContent = role === "You" ? "You" : role;
           
           const time = document.createElement("span");
           time.className = "ui-chat-msg-time";
@@ -1803,11 +1855,14 @@
           
           header.append(title, time);
           
-          const content = document.createElement("div");
-          content.style.whiteSpace = "pre-wrap";
-          content.innerHTML = body.replace(/\n/g, '<br>');
+          const bubble = document.createElement("div");
+          bubble.className = "ui-chat-bubble " + (role === "You" ? "ui-chat-bubble--user" : "ui-chat-bubble--ai");
+          bubble.style.whiteSpace = "pre-wrap";
+          bubble.innerHTML = body.replace(/\n/g, '<br>');
           
-          item.append(header, content);
+          msgContent.append(header, bubble);
+          item.appendChild(msgContent);
+          
           document.getElementById("chat-log").append(item);
           document.getElementById("chat-log").scrollTop = document.getElementById("chat-log").scrollHeight;
         }
