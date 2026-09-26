@@ -229,7 +229,9 @@ supabase/
   seed.sql             # local/dev seed data
 .github/
   workflows/           # CI pipelines
-  ISSUE_TEMPLATE/       # bug report / test-case issue templates
+  ISSUE_TEMPLATE/      # bug report / test-case issue templates
+docs/
+  change log/          # Changelog tracking (CHANGELOG.md)
 ```
 
 Note what is *absent*: there is no `lib/ai/` in `src/`. De-identification, embedding, retrieval, and prompt assembly live exclusively in `supabase/functions/`, because none of them may run on a machine the user controls.
@@ -255,7 +257,7 @@ Note what is *absent*: there is no `lib/ai/` in `src/`. De-identification, embed
 - SPMIS maintains its own, independent student roster; no external roster or registrar system feeds StudentProfile.
 
 ### Reviews
-- A Review has: the subject student, the authoring (owner) faculty member, free-text body, and optional tags.
+- A Review has: the subject student, the authoring (owner) faculty member, a constrained rich-text body (bold, italic, lists, line breaks. No raw HTML, links, media or images), optional attachments, and optional tags.
 - A faculty member may author unlimited reviews about the same student over time, and may **edit**, **hide/unhide**, or **delete** any review they own — no one else, including System Administrators, has any of these powers over another faculty member's review content.
 - **Edit history** is retained and is visible to **every** user who can view the review (not gated to owner or admin) — a first-class transparency feature, not an audit-only artifact.
 - **Contributor identity is always visible.** There is no anonymization anywhere in this system — full attribution is a core trust/integrity value.
@@ -282,8 +284,7 @@ Two independent, complementary access paths — both respect the hide/delete exc
 A System Administrator can use both mining features but cannot author reviews (not a faculty member).
 
 ### Tags
-- Free-form. On save, whitespace-tokenized, lowercased, and stored as normalized tag rows.
-- No approval workflow — unlike Program/Department, any tag a faculty member types becomes immediately usable.
+- Free-form. Tag input suggests existing tags and shows the normalized form as chips. Suggestion only — the set is never closed. On save, whitespace-tokenized, lowercased, and stored as normalized tag rows.
 
 ### Approval Workflow
 - One generic pending→approved/rejected shape covers four application types: faculty account, student registration, program proposal (new-program submissions **and** edit-requests to an existing program, distinguished within the type's `payload` — see §7), department proposal.
@@ -429,18 +430,18 @@ This is a lightweight starting point for migration authoring, not final DDL — 
 |---|---|
 | `/login` | "Sign in with Google" (any account) |
 | `/pending-verification` | Shown to a self-registered faculty member awaiting admin approval |
-| `/terms` | Required Terms & Conditions (privacy, appropriate use, AI de-identification notice — must accept before activation) |
+| `/terms` | Required Terms & Conditions. Reachable from /pending-verification and every login and sign-up entry point, presented at the point of acceptance. |
 | `/docs` | Redoc view of `contract/openapi.yaml`; open in development, authenticated-only in deployed environments |
 
 ### Faculty Portal
 | Route | Features |
 |---|---|
-| `/faculty/dashboard` | Quick links, status of own pending applications |
+| `/faculty/dashboard` | Quick links + a recent-reviews feed of active reviews only, filtered in the database rather than the client. Hidden reviews never appear, including for their owner. Own application status is not here. |
 | `/faculty/students` | Search/browse students; structured filters (department of owner, tag, owner, substring); paginated results; empty state when no matches, loading skeleton while fetching |
-| `/faculty/students/:id` | Student basic info + all visible reviews (active + own hidden), edit history shown inline |
+| `/faculty/students/:id` | Student basic info + AI summary of visible reviews renders between the student info block and the review list + all visible reviews (active + own hidden), edit history shown inline |
 | `/faculty/students/:id/new-review` | Compose a review (free text + tags) |
-| `/faculty/students/register` | Apply to register a new student (pending, physically verified by admin) |
-| `/faculty/chat` | Open, cross-student AI chatbot; shows a loading state during generation and a graceful retry prompt if the provider is rate-limited |
+| `/faculty/students/register` | Presented as a modal over /faculty/students; route stays addressable; §9 modal rules apply. |
+| `/faculty/chat` | Labelled AI Chat Assistant in nav and on the page. Open, cross-student AI chatbot; shows a loading state during generation and a graceful retry prompt if the provider is rate-limited |
 | `/faculty/programs` | View program list; apply to add/edit |
 | `/faculty/departments` | View department list; apply to add |
 | `/faculty/applications` | Status of own pending applications |
@@ -449,15 +450,13 @@ This is a lightweight starting point for migration authoring, not final DDL — 
 ### Admin Portal
 | Route | Features |
 |---|---|
-| `/admin/dashboard` | System-wide stats, pending-queue counts |
-| `/admin/faculty-applications` | Search + bulk approve/reject faculty registrations; paginated |
-| `/admin/student-applications` | Search + bulk approve/reject faculty-submitted student registrations; paginated |
-| `/admin/program-applications` | Search + bulk approve/reject program proposals; paginated |
-| `/admin/department-applications` | Search + bulk approve/reject department proposals; paginated |
+| `/admin/dashboard` | Gets a pending card per application type, showing queue depth and linking into that queue. |
 | `/admin/students` | Direct-add/manage students |
 | `/admin/departments`, `/admin/programs` | Direct CRUD on managed lists |
 | `/admin/faculty` | Manage faculty accounts; override any self-declared field including email/department |
-| `/admin/audit-log` | Read-only, metadata-level audit trail (content masked per hide/delete rules); paginated |
+| `/admin/audit-log` | Stays labelled Audit Log and is not an application queue. Read-only, metadata-level audit trail (content masked per hide/delete rules); paginated |
+
+*Note: The four queues are not navigation items. Each is reached from a button at the rightmost end of the filter row on its parent page and opens as a modal; routes unchanged and still addressable.*
 
 ## 9. Design Details
 
@@ -521,7 +520,7 @@ The AI features (embedding indexing + chatbot generation) call an external third
 7. **Planned upgrade path**: this layer is the interim safeguard for running on a free-tier model. A later version is expected to migrate the AI features to a paid tier (which carries a contractual no-training-on-input commitment); at that point the token-substitution layer may be kept as defense-in-depth rather than a strict requirement. That migration, and any relaxation, is deferred to a future planning pass.
 
 ### Notification Delivery Mechanism
-- **v1: in-app only.** Application outcome notifications (approve/reject, with reason on rejection) surface via `/faculty/applications` status and dashboard indicators. No outbound email is sent.
+- **v1: in-app only.** Application-status notifications move to a persistent indicator in the app shell, announced with role="status". No outbound email is sent.
 - Outbound email (e.g., via a transactional provider or Supabase's built-in email) is a documented future enhancement, deferred until a provider is selected — see [Assumption 23](#11-assumptions--decisions-log).
 
 ### Rate Limiting & Abuse Prevention
@@ -529,21 +528,21 @@ The AI features (embedding indexing + chatbot generation) call an external third
 - **Mutation endpoints** (review create/edit, tag add, applications): no custom per-user throttle planned for v1 beyond standard platform-level protections (Supabase's own API gateway limits); abuse is expected to surface through the audit trail and be handled per the Terms & Conditions process rather than technical blocking.
 
 ### Input Validation & Content Safety
-- Review body text is always rendered as plain text — React escapes interpolated strings by default, and `dangerouslySetInnerHTML` is banned for review content by lint rule. Markdown is not interpreted in v1. This removes stored-XSS as an attack surface for user-authored review content.
+- Review body supports a constrained rich-text subset: bold, italic, lists, line breaks. No raw HTML, links, media or images. De-identification runs on extracted text; markup never reaches the AI or the embeddings. This removes stored-XSS as an attack surface for user-authored review content.
 - Review body length and tag length are capped in the contract's request schemas, mirrored by Zod on the form and re-checked inside the Edge Function — exact limits are an implementation detail, not fixed here. The client-side check is a UX affordance; the function's check is the enforcement.
 - No automated profanity or content moderation filter in v1: consistent with the system's design principle that no one, including admins, has override power over review content — enforcement relies on faculty self-governance, the Terms & Conditions, and the audit trail, not technical filtering.
 
 ### Tag Handling
-Free-form; on save, split on whitespace, lowercased, stored as normalized ReviewTag rows (duplicates within one review collapsed). No approval workflow.
+Free-form. Tag input suggests existing tags and shows the normalized form as chips. Suggestion only — the set is never closed. On save, whitespace-tokenized, lowercased, and stored as normalized tag rows.w.
 
 ### Approval Workflow & Notifications
 A single ApprovalQueueItem shape covers all four application types. Admin queue views support search plus checkbox-based bulk approve/reject. The submitting faculty member is notified of the outcome either way, with a reason on rejection, via the in-app mechanism described above.
 
 ### Component & Styling Conventions
-Tailwind CSS utilities with shadcn/ui as the component base — chosen for rapid, accessible, consistently-themed UI development without hand-rolling a design system for a pilot-scale academic tool.
+A written design standard lives at docs/DESIGN_SYSTEM.md — tokens, type scale, spacing, colour roles for both themes, component inventory. Screens are built from that inventory; duplicated markup doesn't satisfy it.
 
 ### Responsive Design & Accessibility
-Mobile-first breakpoints; target WCAG 2.1 AA (semantic HTML, keyboard-navigable forms/modals, sufficient color contrast, accessible labels on all form inputs) — set as SPMIS's own baseline given faculty are expected to use the system across both desktop and mobile devices.
+Mobile-first breakpoints apply to the admin portal too; wide tables degrade rather than overflow below 768px. Target WCAG 2.1 AA. Affordances are carried by a control with an accessible name, never by colour, weight or position alone. The active navigation item must be correct on every page and marked with aria-current="page".
 
 ### State Management
 Three tiers, kept deliberately separate:
@@ -565,6 +564,15 @@ The generated client normalizes every failure into the contract's single `Error`
 
 ### Migration & Naming Conventions
 Supabase CLI migrations: `YYYYMMDDHHMMSS_description.sql`, one logical change per file, snake_case identifiers throughout.
+
+### Modals & Dialogs
+No modal opens on top of another modal. A flow that would need a second dialog is captured inline in the first. Route-backed modals: deep-link opens the page with the modal open; dismissing returns to the parent without a reload; focus trapped, Escape dismisses, focus restored on close.
+
+### AI Review Summary
+De-identification runs on extracted text; markup never reaches the AI or the embeddings. The AI summary renders between the student info block and the review list. The embeddings are deleted the moment a review is hidden, so a summary built from embeddings excludes hidden reviews automatically. However, a summary shown to the owner may include their hidden reviews, and that same summary must never be served to anyone else. Deleted content: never, for anyone.
+
+### Review Attachments
+Review attachments skip the Edge Function de-identification entirely. They are excluded from AI retrieval, and the summary and chatbot are blind to them. Attachments follow the review's lifecycle: hidden means unreachable by non-owners; deleted means unreachable by everyone. Storage objects don't inherit row-level policies, so this needs writing explicitly. Audit logs track metadata only (no filenames, no contents).
 
 ## 10. Non-Functional Requirements
 - Designed for the stated initial scale: ~1,000 faculty across ~100 departments (3–20 faculty per department); student population assumed in the thousands, consistent with a typical mid-size university (assumption).
@@ -616,12 +624,15 @@ Supabase CLI migrations: `YYYYMMDDHHMMSS_description.sql`, one logical change pe
 27. **Embedding freshness on edit** — editing an `active` review recomputes its `ReviewEmbedding` in place (not just `deidentifiedText`) so AI retrieval never serves stale content; editing a `hidden` review updates `deidentifiedText` only, since hidden reviews carry no embedding — see §6, §9.
 28. **Contract-first backend boundary** — there is no application server; Supabase is the backend, and the frontend/backend interface is `contract/openapi.yaml` (OpenAPI 3.1), documented with Redoc. The frontend may only call operations declared there, and calls through a client generated from it. The auto-generated PostgREST spec is treated as a drift-detection input, never as the contract itself — see §3 and §9.
 29. **Server-side logic placement** — review authoring and the AI chatbot are Supabase Edge Function operations, not table writes, because de-identification must precede any text leaving the system and `GEMINI_API_KEY` cannot exist in a client bundle. `Review.body_text` is not writable through PostgREST by any role, so the de-identification step cannot be bypassed — see §9.
+30. **Faculty dashboard composition and the notification consequence:** The dashboard is a recent-reviews feed of active reviews only; application status notifications are handled via persistent app shell indicators.
 
 ## 13. Project Management & Contributing
 
 This system is built by a cross-functional project team. Everything below assumes developers, QA engineers, product/project management, and other delivery members sharing one repository, and the conventions exist to keep the team from blocking itself.
 
 All project management lives on GitHub: Issues, Milestones, Projects (board), Pull Requests, and reviews. There is no external PM tool.
+
+**Rule §13:** Precedence of project manager decisions. Project manager decisions outrank the specification. We don't overrule the managers with the document.
 
 ### Team Structure & Parallel Work
 
