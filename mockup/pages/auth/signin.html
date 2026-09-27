@@ -313,7 +313,7 @@
             letter-spacing: -0.03em;
             margin: 0 0 0.625rem;
             color: var(--card-foreground);
-            text-align: left;
+            text-align: center;
             line-height: 1.1;
         }
 
@@ -322,7 +322,7 @@
             color: var(--muted-foreground);
             margin: 0 0 2rem;
             line-height: 1.55;
-            text-align: left;
+            text-align: center;
         }
 
         /* ---------- Sign-up prompt INSIDE the auth card ---------- */
@@ -654,7 +654,8 @@
 
         body.page-exit {
             opacity: 0;
-            transition: opacity .3s ease;
+            transform: translateY(-10px) scale(.99);
+            transition: opacity .3s ease, transform .3s ease;
             pointer-events: none;
         }
 
@@ -795,7 +796,7 @@
 
                             <form class="ui-auth-form" id="signin-form" novalidate>
                                 <div class="ui-auth-field" data-field="email">
-                                    <label class="ui-auth-field-label" for="auth-email">Academic Email</label>
+                                    <label class="ui-auth-field-label" for="auth-email">Email</label>
                                     <div class="ui-input-wrap">
                                         <input type="email" id="auth-email" class="ui-input" placeholder="faculty@vsu.edu.ph" required />
                                         <div class="ui-field-popup" role="alert" aria-live="polite">
@@ -834,7 +835,7 @@
 
                 <!-- Sign-up prompt INSIDE the card, centered at the bottom -->
                 <div class="auth-card-signup">
-                    <a href="#register">
+                    <a href="signup.html">
                         New here? Sign Up <span class="arrow">→</span>
                     </a>
                 </div>
