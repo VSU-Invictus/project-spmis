@@ -1524,16 +1524,16 @@ table input[type="checkbox"] {
 
 /* User Message */
 .ui-chat-msg--user .ui-chat-msg-content {
-    background: var(--primary); 
-    border: none;
+    background: color-mix(in srgb, var(--primary) 15%, var(--card));
+    border: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
     margin-left: 4rem; /* indented from left */
 }
 .ui-chat-msg--user .ui-chat-msg-sender {
-    color: #ffffff;
+    color: var(--foreground);
     font-weight: 600;
 }
 .ui-chat-msg--user .ui-chat-bubble {
-    color: #ffffff !important;
+    color: var(--foreground) !important;
 }
 
 .ui-chat-msg-header {
@@ -1616,8 +1616,6 @@ table input[type="checkbox"] {
     padding-bottom: 1rem;
     margin-bottom: 0;
 }
-
-.ui-chat-msg--user .ui-chat-msg-time { color: rgba(255,255,255,0.8); }
 
 /* Custom thin scrollbar for chat log */
 .ui-chat-log.custom-scrollbar::-webkit-scrollbar {
