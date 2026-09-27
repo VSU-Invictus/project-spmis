@@ -45,11 +45,11 @@ Three roles are supported:
 | Role | Name | GitHub Username |
 |---|---|---|
 | Team Leader | Bandibas, Norman John N. | `@eNJay143` |
-| Frontend Lead | Arañez, Carl Roy F. | `@carlroyaranez` |
-| Frontend Dev | Asis, Monarch Renante G. | `@mrAsis1` |
+| Frontend Lead, UI/UX | Arañez, Carl Roy F. | `@carlroyaranez` |
+| Frontend Dev, UI/UX | Asis, Monarch Renante G. | `@mrAsis1` |
 | Frontend Dev | Paloma, Nexus Francisco | `@NexusfPaloma` |
 | Frontend Dev | Vega, Geryme M. | `@gerymeee` |
-| Backend Lead | Moreno, Radz Ponce A. | `@donot4tmee` |
+| Backend Lead, UI/UX | Moreno, Radz Ponce A. | `@donot4tmee` |
 | Backend Dev | Magadan, Evan Kasimir Y. | `@EvanMagadan` |
 | QA Lead | Bantaculo, Reese Tortillas | `@reeseBan` |
 | QA Member | Caduyac, Liza Mae G. | `@Zaming` |
