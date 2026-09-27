@@ -49,8 +49,8 @@ The Project Secretary discussed the notes and UI feedback from the previous pres
 
 | Action Item | Responsible Member(s) | Status |
 | :--- | :--- | :--- |
-| Build universal component system based on Claude+ | Frontend Team | Ongoing |
-| Clean up HTML mockups based on presentation notes | Frontend Team | Pending |
+| Build universal component system based on Claude+ | UI/UX Team | Ongoing |
+| Clean up HTML mockups based on presentation notes | Frontend and Backend Teams | Pending |
 | Add change logs to docs/ | Geryme M. Vega (Secretary) | Pending |
 
 *Note: "Pending" status indicates that a task cannot be started until subsequent prerequisite steps are completed.*
