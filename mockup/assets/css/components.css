@@ -1511,7 +1511,7 @@ table input[type="checkbox"] {
 
 /* AI Message */
 .ui-chat-msg--ai .ui-chat-msg-content {
-    background: #1e1e1e;
+    background: var(--background);
     border: 1px solid var(--border);
     border-left: 3px solid var(--primary);
     border-top-left-radius: 6px;
@@ -1563,7 +1563,7 @@ table input[type="checkbox"] {
 /* Input Box Styling */
 .ui-chat-textarea {
     width: 100%;
-    background: #1e1e1e; /* Darker background */
+    background: var(--background); /* Darker background */
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 1rem 1.25rem;
@@ -1600,7 +1600,7 @@ table input[type="checkbox"] {
 
 /* Context Card overrides to match screenshot */
 .ui-chat-context-card {
-    background: #1e1e1e;
+    background: var(--background);
     border-color: var(--border);
 }
 .ui-chat-context-avatar {

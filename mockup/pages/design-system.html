@@ -388,10 +388,7 @@
         html:not(.dark) .brand-features {
             color: var(--muted-foreground) !important;
         }
-        html:not(.dark) .brand-logo img {
-            filter: invert(1) hue-rotate(180deg) brightness(0.2) drop-shadow(0 0 12px rgba(0,0,0,0.02)) !important;
-        }
-        html:not(.dark) .brand-footer {
+html:not(.dark) .brand-footer {
             color: var(--muted-foreground) !important;
         }
 
@@ -1756,10 +1753,7 @@
         html:not(.dark) .brand-features {
             color: var(--muted-foreground) !important;
         }
-        html:not(.dark) .brand-logo img {
-            filter: invert(1) hue-rotate(180deg) brightness(0.2) drop-shadow(0 0 12px rgba(0,0,0,0.02)) !important;
-        }
-        html:not(.dark) .brand-footer {
+html:not(.dark) .brand-footer {
             color: var(--muted-foreground) !important;
         }
 
@@ -1780,7 +1774,8 @@
             <!-- LEFT: brand card with the SPMIS logo here -->
             <aside class="brand-card">
                 <a href="#" class="brand-logo" aria-label="SPMIS">
-                    <img src="../assets/icons/SPMIS.png" alt="SPMIS" />
+                    <img class="logo-dark-only" src="../assets/icons/SPMIS.png" alt="SPMIS" />
+<img class="logo-light-only" src="../assets/icons/SPMIS_LM.png" alt="SPMIS" />
                 </a>
 
                 <div class="brand-hero">
