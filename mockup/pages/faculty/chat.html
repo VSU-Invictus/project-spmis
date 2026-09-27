@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Chats Â· SPMIS Faculty</title>
+    <title>Chats &middot; SPMIS Faculty</title>
     <link rel="stylesheet" href="../../assets/css/global.css?v=4" />
     <link rel="stylesheet" href="../../assets/css/components.css?v=4" />
     <script src="../../assets/js/faculty-sidebar.js"></script>
@@ -1502,7 +1502,7 @@
                 .join("")}</tbody></table></div>`
             : '<div class="card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
           $("#page-label").textContent = matches.length
-            ? `Page ${current} of ${total} Â· ${matches.length} students`
+            ? `Page ${current} of ${total} &middot; ${matches.length} students`
             : "0 students";
           $("#previous").disabled = current === 1;
           $("#next").disabled = current === total;
@@ -1616,7 +1616,7 @@
                 visible
                   .map(
                     (r) =>
-                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "Â· You" : ""}</h3><small>${esc(r.department)} Â· ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="badge">Hidden Â· Only you</span>' : '<span class="badge approved">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version Â· ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "&middot; You" : ""}</h3><small>${esc(r.department)} &middot; ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="badge">Hidden &middot; Only you</span>' : '<span class="badge approved">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version &middot; ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                   )
                   .join("") ||
                 '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
@@ -1794,7 +1794,7 @@
                 ? "Program edit"
                 : "Program proposal"
               : "Department proposal",
-            original ? `${original} â†’ ${name}` : name,
+            original ? `${original} &rarr; ${name}` : name,
             { original, name },
           );
           $("#proposal-dialog").close();
@@ -1896,7 +1896,7 @@
                     sample
                       .map(
                         (r) =>
-                          `${full(students.find((s) => s.id === r.student))} â€” ${r.body}\nContributor: ${r.owner === "self" ? state.name : r.author}`,
+                          `${full(students.find((s) => s.id === r.student))} &mdash; ${r.body}\nContributor: ${r.owner === "self" ? state.name : r.author}`,
                       )
                       .join("\n\n") +
                     "\n\nThese are attributed faculty opinions. Open the student record to review the full context."
@@ -1954,7 +1954,7 @@
             current +
             " of " +
             pages +
-            " Â· " +
+            " &middot; " +
             rows.length +
             " entries";
           buttons[0].disabled = current === 1;
@@ -2006,7 +2006,7 @@
               (a) =>
                 '<div class="pending-item"><div><strong>' +
                 esc(a.type) +
-                " Â· " +
+                " &middot; " +
                 esc(a.name) +
                 "</strong><small>Submitted " +
                 esc(a.date) +

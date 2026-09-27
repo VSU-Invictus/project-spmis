@@ -379,7 +379,7 @@
       <div class="ui-top-bar-right">
         <!-- Live Theme Toggle Switch -->
         <button type="button" id="theme-toggle-btn" class="ui-theme-toggle" aria-label="Toggle theme">
-          <span id="theme-icon">ðŸŒ™</span>
+          <span id="theme-icon">&#127769;</span>
           <span id="theme-label">Dark Mode</span>
         </button>
         <div class="ui-top-bar-badge">
@@ -712,7 +712,7 @@
           </div>
           <div class="metric-card-row">
             <strong class="metric-card-value">2,850</strong>
-            <span class="metric-card-trend">â†— +12.5%</span>
+            <span class="metric-card-trend">&#8599; +12.5%</span>
           </div>
           <p class="metric-card-status">AY 2026-2027</p>
           <p class="ui-card-description">Compact metric summary for dashboard statistics.</p>
@@ -724,7 +724,7 @@
             <div class="ui-card-header">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h3 class="ui-card-title">Interactive Card Link</h3>
-                <span class="metric-card-trend">Link â†’</span>
+                <span class="metric-card-trend">Link &rarr;</span>
               </div>
               <p class="ui-card-description"><code>.ui-card-interactive</code> wrapping an anchor element.</p>
             </div>
@@ -735,7 +735,7 @@
               </p>
             </div>
             <div class="ui-card-footer">
-              <span class="ui-text-muted" style="color: var(--primary);">Explore workspace â†’</span>
+              <span class="ui-text-muted" style="color: var(--primary);">Explore workspace &rarr;</span>
             </div>
           </a>
         </div>
@@ -829,7 +829,7 @@
             <button type="button" class="ui-table-page-btn active">1</button>
             <button type="button" class="ui-table-page-btn">2</button>
             <button type="button" class="ui-table-page-btn">3</button>
-            <button type="button" class="ui-table-page-btn">â†’</button>
+            <button type="button" class="ui-table-page-btn">&rarr;</button>
           </div>
         </div>
       </div>
@@ -846,19 +846,19 @@
       <div class="ui-chat-prompts" style="margin-bottom: 1.5rem;">
         <button type="button" class="ui-chat-prompt-btn">
           <span>Research experience</span>
-          <small>Explore faculty assessments â†’</small>
+          <small>Explore faculty assessments &rarr;</small>
         </button>
         <button type="button" class="ui-chat-prompt-btn">
           <span>Teamwork &amp; Leadership</span>
-          <small>Ask across student records â†’</small>
+          <small>Ask across student records &rarr;</small>
         </button>
         <button type="button" class="ui-chat-prompt-btn">
           <span>Communication Skills</span>
-          <small>Find relevant review excerpts â†’</small>
+          <small>Find relevant review excerpts &rarr;</small>
         </button>
         <button type="button" class="ui-chat-prompt-btn">
           <span>Capstone Project Review</span>
-          <small>Verify graduation prerequisites â†’</small>
+          <small>Verify graduation prerequisites &rarr;</small>
         </button>
       </div>
 
@@ -964,7 +964,7 @@
           </p>
 
           <button type="button" class="ui-btn ui-btn-outline" style="width: 100%;">
-            View Full Profile â†’
+            View Full Profile &rarr;
           </button>
         </div>
       </div>
@@ -1079,8 +1079,8 @@
             overflow: hidden;
             border-radius: 24px;
             border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--border));
-            background:
-                radial-gradient(ellipse 90% 70% at 20% 15%,
+            background-color: #141311;
+            background: radial-gradient(ellipse 90% 70% at 20% 15%,
                     color-mix(in srgb, var(--primary) 26%, transparent) 0%, transparent 60%),
                 radial-gradient(ellipse 80% 70% at 80% 100%,
                     color-mix(in srgb, var(--primary) 16%, transparent) 0%, transparent 60%),
@@ -1146,6 +1146,7 @@
             line-height: 1.05;
             letter-spacing: -0.03em;
             margin: 0 0 0.875rem;
+            color: #faf9f5 !important;
             color: #faf9f5;
         }
 
@@ -1720,13 +1721,13 @@
                         <span class="accent">student journey.</span>
                     </h1>
                     <p class="brand-hero-sub">
-                        From enrollment to graduation — review, approve, and manage academic records in one calm, focused workspace.
+                        From enrollment to graduation &mdash; review, approve, and manage academic records in one calm, focused workspace.
                     </p>
 
                     <ul class="brand-features">
-                        <li><span class="dot">✓</span> Centralized student profiles</li>
-                        <li><span class="dot">✓</span> Faculty review &amp; approvals</li>
-                        <li><span class="dot">✓</span> Real-time progress tracking</li>
+                        <li><span class="dot">&check;</span> Centralized student profiles</li>
+                        <li><span class="dot">&check;</span> Faculty review &amp; approvals</li>
+                        <li><span class="dot">&check;</span> Real-time progress tracking</li>
                     </ul>
                 </div>
 
@@ -1872,7 +1873,7 @@
 
     function updateThemeUI() {
       const isDark = htmlEl.classList.contains('dark');
-      themeIcon.textContent = isDark ? 'ðŸŒ™' : 'â˜€ï¸';
+      themeIcon.innerHTML = isDark ? '&#127769;' : '&#9728;&#65039;';
       themeLabel.textContent = isDark ? 'Dark Mode' : 'Light Mode';
     }
 
