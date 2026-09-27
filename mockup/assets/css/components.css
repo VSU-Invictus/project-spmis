@@ -846,9 +846,9 @@ table input[type="checkbox"] {
 
 .ui-badge--neutral,
 .ui-badge-neutral {
-    background: var(--muted);
+    background: color-mix(in srgb, var(--foreground) 8%, var(--card));
     color: var(--muted-foreground);
-    border-color: var(--border);
+    border-color: color-mix(in srgb, var(--foreground) 20%, transparent);
 }
 
 /* ==========================================================================

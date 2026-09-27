@@ -182,12 +182,34 @@ Load `global.css` before `components.css`. All components follow the unified `.u
 ### 3. Status Badges & Chips
 
 ```html
-<span class="ui-badge ui-badge--success">Approved</span>
-<span class="ui-badge ui-badge--warning">Pending Review</span>
-<span class="ui-badge ui-badge--destructive">Rejected</span>
-<span class="ui-badge ui-badge--info">In Progress</span>
-<span class="ui-badge ui-badge--neutral">Draft</span>
-```
+<div class="ui-btn-group">
+<span class="ui-badge ui-badge--success">
+  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  Approved / Active
+</span>
+<span class="ui-badge ui-badge--warning">
+  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+  Pending Review
+</span>
+<span class="ui-badge ui-badge--destructive">
+  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  Rejected / Deficient
+</span>
+<span class="ui-badge ui-badge--info">
+  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+  In Progress
+</span>
+<span class="ui-badge ui-badge--neutral">
+  Archived / Draft
+</span>
+</div>
+<div class="ui-btn-group" style="margin-top: 1rem;">
+<span class="ui-badge ui-badge--purple">Research</span>
+<span class="ui-badge ui-badge--cyan">Algorithms</span>
+<span class="ui-badge ui-badge--amber">Leadership</span>
+<span class="ui-badge ui-badge--rose">Robotics</span>
+</div>
+`
 
 ### 4. Data Tables & Pagination
 
@@ -235,7 +257,7 @@ Data tables provide clean cell padding, header styling, row hover highlights, an
 
 Designed for faculty conversational reviews across student evaluations.
 
-`html
+```html
 <div class="ui-chat-prompts">
   <button type="button" class="ui-chat-prompt-btn" data-prompt="...">
     <span>Research experience</span>
