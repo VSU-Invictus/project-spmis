@@ -1193,7 +1193,7 @@ table input[type="checkbox"] {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     font: 400 0.875rem/1.5 var(--font-sans);
-    resize: vertical;
+    resize: none; overflow-y: hidden;
     box-sizing: border-box;
 }
 
@@ -1490,4 +1490,146 @@ table input[type="checkbox"] {
     background: color-mix(in srgb, #F43F5E 16%, var(--card));
     color: #FB7185;
     border-color: color-mix(in srgb, #F43F5E 32%, transparent);
+}
+
+
+/* Redesigned Chat UI (Exact Match) */
+.ui-chat-avatar { display: none !important; }
+
+/* The left card containing the chat */
+/* We don't have a specific class for the left card, it's just .ui-card, but we can target .ui-chat-columns > .ui-card if needed. It already uses var(--card) */
+
+.ui-chat-msg-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+/* AI Message */
+.ui-chat-msg--ai .ui-chat-msg-content {
+    background: #1e1e1e;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--primary);
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+.ui-chat-msg--ai .ui-chat-msg-sender {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* User Message */
+.ui-chat-msg--user .ui-chat-msg-content {
+    background: var(--primary); 
+    border: none;
+    margin-left: 4rem; /* indented from left */
+}
+.ui-chat-msg--user .ui-chat-msg-sender {
+    color: #ffffff;
+    font-weight: 600;
+}
+.ui-chat-msg--user .ui-chat-bubble {
+    color: #ffffff !important;
+}
+
+.ui-chat-msg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 0.8125rem;
+}
+.ui-chat-msg-time {
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.ui-chat-bubble {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    color: var(--foreground) !important;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+.ui-chat-bubble::before { display: none !important; }
+
+/* Input Box Styling */
+.ui-chat-textarea {
+    width: 100%;
+    background: #1e1e1e; /* Darker background */
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    color: var(--foreground);
+    font: 400 0.9375rem/1.5 var(--font-sans);
+    resize: none; overflow-y: hidden;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    min-height: 70px;
+}
+.ui-chat-textarea:focus { border-color: var(--ring); }
+.ui-chat-textarea::placeholder { color: var(--muted-foreground); }
+
+.ui-chat-input-hint {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+}
+.ui-chat-send-btn {
+    background: var(--primary);
+    color: #000;
+    border: none;
+    padding: 0.625rem 1.25rem;
+    border-radius: 20px;
+    font: 600 0.875rem/1 var(--font-sans);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.ui-chat-send-btn:hover { opacity: 0.9; }
+.ui-chat-send-btn svg { width: 16px; height: 16px; }
+
+/* Context Card overrides to match screenshot */
+.ui-chat-context-card {
+    background: #1e1e1e;
+    border-color: var(--border);
+}
+.ui-chat-context-avatar {
+    width: 64px;
+    height: 64px;
+    background: color-mix(in srgb, var(--primary) 15%, #27272a);
+    color: var(--primary);
+    border: none; /* No border in screenshot */
+    margin-top: 0.5rem;
+}
+.ui-chat-context-meta {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+    margin-bottom: 0;
+}
+
+.ui-chat-msg--user .ui-chat-msg-time { color: rgba(255,255,255,0.8); }
+
+/* Custom thin scrollbar for chat log */
+.ui-chat-log.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.ui-chat-log.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.ui-chat-log.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+.ui-chat-log.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
 }

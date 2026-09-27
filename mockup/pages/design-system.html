@@ -901,81 +901,72 @@
       <!-- Two-Column Chat Workspace -->
       <div class="ui-chat-columns">
         <!-- Left: Chat Thread Card -->
-        <div class="ui-card" style="padding: 1.25rem; display: flex; flex-direction: column; max-height: 600px;">
+        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start;">
             <div class="ui-card-header" style="margin-bottom: 1rem; flex-shrink: 0;">
             <h3 class="ui-card-title">Ask across student reviews</h3>
             <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
           </div>
-            <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;"><!-- Chat Messages Log -->
-          <div class="ui-chat-log hide-scrollbar" style="display: flex; flex-direction: column; gap: 1.5rem; flex: 1; overflow-y: auto; min-height: 0;">
-            <!-- Sam Message -->
-            <div class="ui-chat-msg ui-chat-msg--ai">
-              <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
-              <div class="ui-chat-msg-content">
-                <div class="ui-chat-msg-header">
-                  <span class="ui-chat-msg-sender">Sam Lee Parker</span>
-                  <span class="ui-chat-msg-time">10:00 AM</span>
-                </div>
-                <div class="ui-chat-bubble ui-chat-bubble--ai">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vulputate eros ullamcorper neque rutrum, ac gravida leo tempor.
-                </div>
-              </div>
-            </div>
-
-            <!-- User Message -->
-            <div class="ui-chat-msg ui-chat-msg--user">
-              <div class="ui-chat-msg-content">
-                <div class="ui-chat-msg-header">
-                  <span class="ui-chat-msg-sender">You</span>
-                  <span class="ui-chat-msg-time">10:02 AM</span>
-                </div>
-                <div class="ui-chat-bubble ui-chat-bubble--user">
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+            <div id="chat-log" class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 1.25rem; flex: 1; overflow-y: auto; min-height: 0;">
+              <!-- AI Message -->
+              <div class="ui-chat-msg ui-chat-msg--ai">
+                <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">AI Assistant</span>
+                    <span class="ui-chat-msg-time">10:42 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">
+                    What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <!-- Sam Typing -->
-            <div class="ui-chat-msg ui-chat-msg--ai" style="animation: fadeIn 0.3s ease;">
-              <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
-              <div class="ui-chat-msg-content" style="justify-content: center; flex-grow: 0;">
-                <div class="ui-chat-bubble ui-chat-bubble--ai" style="padding: 0.75rem 1rem;">
-                  <div class="ui-chat-typing-dots">
-                    <div class="ui-chat-typing-dot"></div>
-                    <div class="ui-chat-typing-dot"></div>
-                    <div class="ui-chat-typing-dot"></div>
+  
+              <!-- User Message -->
+              <div class="ui-chat-msg ui-chat-msg--user">
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">Prof. Morgan</span>
+                    <span class="ui-chat-msg-time">10:43 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--user">
+                    Which students in BS Computer Science demonstrate outstanding research contributions?
+                  </div>
+                </div>
+              </div>
+  
+              <!-- AI Message 2 -->
+              <div class="ui-chat-msg ui-chat-msg--ai">
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">AI Assistant</span>
+                    <span class="ui-chat-msg-time">10:43 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">
+                    Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- User Typing -->
-            <div class="ui-chat-msg ui-chat-msg--user" style="animation: fadeIn 0.3s ease;">
-              <div class="ui-chat-msg-content" style="justify-content: center; flex-grow: 0;">
-                <div class="ui-chat-bubble ui-chat-bubble--user" style="padding: 0.75rem 1rem;">
-                  <div class="ui-chat-typing-dots">
-                    <div class="ui-chat-typing-dot" style="background-color: rgba(0,0,0,0.4);"></div>
-                    <div class="ui-chat-typing-dot" style="background-color: rgba(0,0,0,0.4);"></div>
-                    <div class="ui-chat-typing-dot" style="background-color: rgba(0,0,0,0.4);"></div>
-                  </div>
+            <!-- Chat Input Area -->
+            <div class="ui-chat-input-wrapper" style="flex-shrink: 0; margin-top: 0.5rem;">
+              <form id="chat-form" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
+                <textarea class="ui-chat-textarea" id="chat-prompt" required placeholder="Type a question across student reviews..." rows="2"></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <span class="ui-chat-input-hint">Press Enter to send, Shift+Enter for new line</span>
+                  <button type="submit" class="ui-chat-send-btn" id="send" aria-label="Send">
+                    Send query
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
-
-          <!-- Chat Input Area -->
-          <div class="ui-chat-input-wrapper" style="flex-shrink: 0;">
-            <form id="chat-form" style="width: 100%; display: flex;">
-              <input type="text" class="ui-chat-input-pill" id="chat-prompt" required autocomplete="off" placeholder="Type your message..." />
-              <button type="submit" class="ui-chat-send-circle" id="send" aria-label="Send">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-              </button>
-            </form>
-          </div>
-            </div>
         </div>
 
-        <!-- Right: Student Quick File Context Card -->
+          <!-- Right: Student Quick File Context Card -->
+          <!-- Right: Student Quick File Context Card -->
         <div class="ui-chat-context-card">
           <div class="ui-chat-context-avatar">SP</div>
           <h3 class="ui-heading-3" style="margin: 0;">Sam Lee Parker</h3>
@@ -1962,6 +1953,18 @@
 
     updateThemeUI();
   </script>
+
+<script>
+  // Auto-resize chat textarea
+  document.querySelectorAll('.ui-chat-textarea').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
+    // Trigger once on load
+    textarea.dispatchEvent(new Event('input'));
+  });
+</script>
 </body>
 
 </html>
