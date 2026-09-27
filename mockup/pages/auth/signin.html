@@ -565,99 +565,438 @@
             animation: field-shake .35s cubic-bezier(.36,.07,.19,.97) both;
         }
 
-        /* ---------- Google modal ---------- */
+        /* ==========================================================
+           GOOGLE ACCOUNT CHOOSER OVERLAY (Fixed)
+           ========================================================== */
         .google-overlay {
             position: fixed;
             inset: 0;
             z-index: 100;
             display: grid;
             place-items: center;
-            padding: 1.25rem;
-            background: rgba(0, 0, 0, .6);
-            backdrop-filter: blur(2px);
+            padding: 24px;
+            overflow-y: auto;
+            background: #f1f5f9;
+            color: #202124;
+            backdrop-filter: none;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .google-modal {
             position: relative;
-            width: min(100%, 448px);
-            padding: 40px 40px 28px;
-            border-radius: 28px;
+            width: min(920px, 100%);
+            min-height: 468px;
+            margin-bottom: 0; 
+            padding: 0 38px 30px;
+            border: 1px solid #e1e4e8;
+            border-radius: 26px;
             background: #fff;
             color: #202124;
-            border: 1px solid #dadce0;
-            box-shadow: 0 16px 48px rgba(0, 0, 0, .28);
-            text-align: center;
+            box-shadow: 0 18px 48px rgba(60, 64, 67, .12);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
         }
 
-        .google-brand { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 18px; color: #5f6368; font-size: 15px; }
-        .google-brand svg { width: 24px; height: 24px; }
+        .google-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            height: 42px;
+            margin: 0 -38px;
+            padding: 0 18px;
+            border-bottom: 1px solid #dadce0;
+            color: #5f6368;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .google-header svg { width: 16px; height: 16px; flex: 0 0 auto; }
 
         .google-close {
             position: absolute;
-            top: 12px;
+            top: 11px;
             right: 16px;
             border: 0;
             background: transparent;
             color: #5f6368;
-            font-size: 24px;
+            font-size: 18px;
             cursor: pointer;
             line-height: 1;
         }
         .google-close:hover { color: #202124; }
 
-        .google-title { margin: 4px 0 8px; font-size: 24px; line-height: 1.3; font-weight: 400; color: #202124; }
-        .google-subtitle { margin-bottom: 26px; font-size: 14px; color: #5f6368; }
-        .google-subtitle b { color: #202124; font-weight: 500; }
+        /* This pushes the footer to the bottom of the white card */
+        .google-content { 
+            width: 100%; 
+            padding-top: 76px; 
+            flex: 1; 
+        }
 
+        /* --- IMPORTANT: Hide all steps by default --- */
+        .google-step { display: none; }
+        
+        /* --- Show only the active step --- */
+        .google-step.active { display: block; }
+
+        /* ---------- Account List Layout & Hover ---------- */
+        .google-step.active[data-google-step="accounts"] {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            column-gap: 40px;
+            padding-top: 40px;
+        }
+
+        /* Left Column Grouping: Aligns title and subtitle */
+        .google-step.active[data-google-step="accounts"] .google-SPMIS,
+        .google-step.active[data-google-step="accounts"] .google-title,
+        .google-step.active[data-google-step="accounts"] .google-subtitle {
+            grid-column: 1;
+        }
+        
+        .google-step.active[data-google-step="accounts"] .google-SPMIS {
+            grid-row: 1;
+            margin: 0 0 28px;
+        }
+        
+        .google-step.active[data-google-step="accounts"] .google-title { 
+            grid-row: 2; 
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 32px;
+        }
+        
+        .google-step.active[data-google-step="accounts"] .google-subtitle { 
+            grid-row: 3; 
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        /* Right Column: Account buttons */
+        .google-step.active[data-google-step="accounts"] .google-account-btn,
+        .google-step.active[data-google-step="accounts"] .google-footer {
+            grid-column: 2;
+        }
+
+        /* Align first account button with the title */
+        .google-step.active[data-google-step="accounts"] .google-account-btn:first-of-type { 
+            grid-row: 1 / span 2; 
+            align-self: end; 
+            margin-top: 0; 
+        }
+        .google-step.active[data-google-step="accounts"] .google-account-btn:nth-of-type(2) { grid-row: 3; }
+        .google-step.active[data-google-step="accounts"] .google-account-btn:nth-of-type(3) { grid-row: 4; }
+        .google-step.active[data-google-step="accounts"] .google-footer { grid-row: 5; }
+
+        /* ==========================================================
+           THE ACCOUNT BUTTON (New Hover Effect)
+           ========================================================== */
         .google-account-btn {
             width: 100%;
             display: flex;
             align-items: center;
+            min-height: 72px;
             margin: 0;
-            padding: 13px 8px;
+            padding: 14px 12px; /* Permanent padding so no layout shift occurs */
             border: 0;
-            border-top: 1px solid #dadce0;
-            border-radius: 0;
-            background: #fff;
+            border-top: 1px solid #dadce0 !important;
+            border-bottom: none !important;
+            border-radius: 0 !important;
+            background: transparent !important;
             color: #202124;
             cursor: pointer;
             text-align: left;
-            transition: background .15s ease;
+            position: relative;
+            z-index: 1;
+            /* NO transition here. Instant response. */
         }
 
-        .google-account-btn:last-of-type { border-bottom: 1px solid #dadce0; }
-        .google-account-btn:hover { background: #f8f9fa; }
+        .google-account-btn:last-of-type { 
+            border-bottom: 1px solid #dadce0 !important; 
+        }
+
+        /* --- THE GOOGLE HOVER OUTLINE (Pseudo-element Trick) --- */
+        .google-account-btn:hover,
+        .google-account-btn:focus-visible {
+            border-top-color: transparent !important;
+            border-bottom-color: transparent !important;
+            outline: none;
+        }
+
+        .google-account-btn:hover::before,
+        .google-account-btn:focus-visible::before {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: -4px; /* Slight overhang to wrap the lines */
+            right: -4px;
+            bottom: -1px;
+            border: 1px solid #dadce0;
+            border-radius: 16px;
+            background-color: #f8f9fa;
+            z-index: -1; /* Sits behind text but above the button background */
+            pointer-events: none;
+        }
+
+        /* Hide the default borders on hover so they don't peek out */
+        .google-account-btn:hover,
+        .google-account-btn:focus-visible {
+            border-top-color: transparent !important;
+            border-bottom-color: transparent !important;
+            outline: none;
+            /* Add a subtle transition for the background */
+            transition: background-color 0.1s ease;
+        }
+        
+        /* Ensure the adjacent button's border doesn't show through */
+        .google-account-btn:hover + .google-account-btn,
+        .google-account-btn:focus-visible + .google-account-btn {
+            border-top-color: transparent !important;
+        }
 
         .google-avatar {
             width: 32px;
             height: 32px;
             display: grid;
             place-items: center;
-            margin-right: 12px;
-            border-radius: 50%;
+            margin-right: 16px;
+            border-radius: 50%; /* Keeps it a perfect circle */
             background: #1a73e8;
             color: #fff;
-            font-size: 14px;
-            font-weight: 500;
-            flex-shrink: 0;
+            font-size: 15px;
+            font-weight: 600;
+            flex-shrink: 0; /* Prevents it from squishing */
+            position: relative;
+            z-index: 1;
         }
 
-        .google-acc-info { display: flex; flex-direction: column; gap: 2px; }
-        .google-acc-name { color: #202124; font-size: 14px; font-weight: 500; }
-        .google-acc-email { color: #5f6368; font-size: 12px; }
+        .google-account-btn.other-account .google-avatar {
+            background: transparent !important; /* Removes the gray circle background */
+            border: none !important;            /* Removes the outer ring */
+            color: #5f6368;                     /* Standard Google gray icon color */
+        }
+
+        .google-account-btn.other-account .google-avatar svg {
+            width: 26px;  /* Larger than the text, matches the 32px circle size visually */
+            height: 26px;
+            fill: currentColor;
+        }
+
+        .google-acc-info { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .google-acc-name { 
+            color: #202124 !important; 
+            font-size: 14px !important; 
+            font-weight: 500 !important; 
+            line-height: 1.2;
+        }
+        
+        .google-acc-email { 
+            color: #5f6368 !important; 
+            font-size: 12px !important; 
+            line-height: 1.2;
+        }
+
+        .google-account-btn.other-account {
+            color: #1a73e8;
+        }
 
         .google-footer {
-            margin-top: 28px;
+            margin-top: 42px;
             color: #5f6368;
-            font-size: 12px;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.45;
             text-align: left;
         }
         .google-footer a { color: #1a73e8; text-decoration: none; }
         .google-footer a:hover { text-decoration: underline; }
 
-        @media (max-width: 500px) {
-            .google-modal { padding: 36px 24px 24px; border-radius: 24px; }
+        .google-brand { display: none; }
+
+        /* ---------- Inputs (Fast/Snappy) ---------- */
+        .google-input {
+            appearance: none;
+            color-scheme: light;
+            width: 100%;
+            height: 64px;
+            margin: 0;
+            padding: 16px;
+            border: 1px solid #747775 !important;
+            border-radius: 4px;
+            background-color: #fff !important;
+            color: #202124 !important;
+            font-size: 16px;
+            transition: box-shadow 0.1s ease, border-color 0.1s ease !important;
+        }
+
+        .google-input:focus {
+            border-color: #1a73e8 !important;
+            box-shadow: 0 0 0 1px #1a73e8 !important;
+            outline: none !important;
+        }
+        
+        .google-field {
+            position: relative;
+            grid-column: 2;
+            grid-row: 3;
+        }
+
+        .google-field label {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            z-index: 1;
+            padding: 0 4px;
+            color: #5f6368;
+            background: #fff;
+            font-size: 16px;
+            pointer-events: none;
+            transform: translateY(-50%);
+            transition: 0.15s ease-in-out;
+        }
+
+        .google-field:focus-within label,
+        .google-field.is-filled label {
+            top: 0;
+            color: #1a73e8;
+            font-size: 12px;
+        }
+
+        .google-field:focus-within .google-input { 
+            border-color: #1a73e8 !important; 
+            box-shadow: 0 0 0 1px #1a73e8 !important; 
+        }
+
+        /* Non-account steps layout */
+        .google-step:not([data-google-step="accounts"]) {
+            width: min(590px, 100%);
+            margin: 0 auto;
+        }
+
+        .google-step:not([data-google-step="accounts"]) .google-SPMIS {
+            margin-bottom: 28px;
+        }
+
+        .google-step:not([data-google-step="accounts"]) .google-title {
+            margin-bottom: 14px;
+        }
+
+        .google-step:not([data-google-step="accounts"]) .google-subtitle {
+            margin-bottom: 2px;
+        }
+
+        .google-step.active[data-google-step="email"],
+        .google-step.active[data-google-step="password"] {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 48px;
+            width: 100%;
+        }
+
+        /* Email/Password Grid Alignment */
+        .google-step.active[data-google-step="email"] .google-SPMIS,
+        .google-step.active[data-google-step="password"] .google-SPMIS,
+        .google-step.active[data-google-step="email"] .google-title,
+        .google-step.active[data-google-step="password"] .google-title,
+        .google-step.active[data-google-step="email"] .google-subtitle,
+        .google-step.active[data-google-step="password"] .google-subtitle {
+            grid-column: 1;
+        }
+
+        .google-step.active[data-google-step="email"] .google-title,
+        .google-step.active[data-google-step="password"] .google-title { grid-row: 2; }
+        .google-step.active[data-google-step="email"] .google-subtitle,
+        .google-step.active[data-google-step="password"] .google-subtitle { grid-row: 3; }
+
+        .google-step.active[data-google-step="email"] label,
+        .google-step.active[data-google-step="password"] label { grid-column: 2; grid-row: 2; }
+        .google-step.active[data-google-step="email"] .google-input,
+        .google-step.active[data-google-step="password"] .google-input { grid-column: 2; grid-row: 3; }
+        .google-step.active[data-google-step="email"] .google-help-link,
+        .google-step.active[data-google-step="password"] .google-help-link { grid-column: 2; grid-row: 4; }
+        .google-step.active[data-google-step="email"] .google-error,
+        .google-step.active[data-google-step="password"] .google-error { grid-column: 2; grid-row: 5; }
+        .google-step.active[data-google-step="email"] .google-guest-note { grid-column: 2; grid-row: 6; }
+        .google-step.active[data-google-step="email"] .google-actions,
+        .google-step.active[data-google-step="password"] .google-actions { grid-column: 1 / -1; grid-row: 7; }
+
+        .google-help-link,
+        .google-guest-note a { color: #1a73e8; text-decoration: none; font-size: 12px; font-weight: 600; }
+        .google-help-link { align-self: start; margin-top: 2px; }
+        .google-guest-note { margin: 20px 0 0; color: #5f6368; font-size: 12px; line-height: 1.4; }
+
+        .google-error {
+            min-height: 22px;
+            margin: 0 0 10px;
+            color: #f28b82;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .google-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 26px;
+        }
+
+        .google-text-btn {
+            border: 0;
+            background: transparent;
+            color: #1a73e8;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .google-next-btn {
+            border: 0;
+            border-radius: 20px;
+            padding: 11px 24px;
+            background: #1a73e8;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .google-next-btn:hover {
+            background: #1557b0;
+            box-shadow: 0 1px 2px rgba(60,64,67,0.3);
+        }
+
+        /* FIXED FOOTER BAR: Removed absolute positioning so it doesn't overlap */
+        .google-footer-bar {
+            margin-top: auto; 
+            padding-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #bdc1c6;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .google-footer-links { display: flex; gap: 38px; }
+        .google-footer-links a { color: #5f6368; text-decoration: none; }
+        .google-footer-links a:hover { color: #1a73e8; }
+
+        @media (max-width: 600px) {
+            .google-modal { min-height: 620px; padding-right: 30px; padding-left: 30px; }
+            .google-header { margin-right: -30px; margin-left: -30px; }
+            .google-step.active[data-google-step="accounts"] { display: block; }
+            .google-step.active[data-google-step="accounts"] .google-account-btn,
+            .google-step.active[data-google-step="accounts"] .google-footer { display: flex; }
+            .google-footer-bar { margin-top: 50px; }
+            .google-acc-name { font-size: 16px !important; }
+            .google-acc-email { font-size: 14px !important; }
         }
 
         .hidden { display: none !important; }
@@ -790,7 +1129,7 @@
 
                     <div class="ui-auth-wrapper">
                         <div class="ui-auth-card">
-                            <button type="button" id="trigger-google-btn" class="auth-social-btn">
+                            <button type="button" class="auth-social-btn" id="trigger-google-btn">
                                 <svg viewBox="0 0 24 24">
                                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -864,26 +1203,160 @@
         </div>
     </div>
 
+    <!-- Google Account Chooser Overlay -->
     <div id="google-overlay" class="google-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="google-title">
         <div class="google-modal">
             <button id="close-google" class="google-close" aria-label="Close">&times;</button>
-            <div class="google-brand" aria-label="Google"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"/><path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 1.9-6.9 1.9-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44Z"/><path fill="#FBBC05" d="M12.6 27.5a12 12 0 0 1 0-7v-5.3H5.8a20 20 0 0 0 0 17.6l6.8-5.3Z"/><path fill="#EA4335" d="M24 12.1c3 0 5.7 1 7.8 3.1l5.9-5.9C34.1 6.1 29.5 4 24 4A20 20 0 0 0 5.8 15.2l6.8 5.3c1.6-4.8 6.1-8.4 11.4-8.4Z"/></svg><span>Sign in with Google</span></div>
-            <h2 id="google-title" class="google-title">Choose an account</h2>
-            <p class="google-subtitle">to continue to <b>SPMIS</b></p>
-            <button class="google-account-btn mock-login-action"><span class="google-avatar">F</span><span class="google-acc-info"><span class="google-acc-name">Faculty Member</span><span class="google-acc-email">faculty@university.edu</span></span></button>
-            <button class="google-account-btn mock-login-action"><span class="google-avatar" style="background:#188038">A</span><span class="google-acc-info"><span class="google-acc-name">Admin User</span><span class="google-acc-email">admin.spmis@university.edu</span></span></button>
-            <button class="google-account-btn mock-login-action"><span class="google-avatar" style="background:#5f6368">+</span><span class="google-acc-info"><span class="google-acc-name">Use another account</span></span></button>
-            <p class="google-footer">This is a demo account chooser. No Google account is accessed. See SPMIS <a href="privacy%20policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.</p>
+            <div class="google-header">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
+                <span>Sign in with Google</span>
+            </div>
+            <div class="google-content">
+                <div class="google-step active" data-google-step="accounts">
+                    <!-- Changed to logo image -->
+                    <div class="google-SPMIS">
+                        <img src="../../assets/icons/SPMIS_LM.png" alt="SPMIS" style="height: 56px; width: auto; display: block;">
+                    </div>
+                    <h2 id="google-title" class="google-title">Choose an account</h2>
+                    <p class="google-subtitle">to continue to <b>SPMIS</b></p>
+                    <!-- Updated Names to reflect their respective pages/roles -->
+                    <button class="google-account-btn mock-login-action" data-role="admin">
+                        <span class="google-avatar" style="background:#a56b46">A</span>
+                        <span class="google-acc-info">
+                            <span class="google-acc-name">Admin Portal</span>
+                            <span class="google-acc-email">admin.acc@vsu.edu.ph</span>
+                        </span>
+                    </button>
+                    <button class="google-account-btn mock-login-action" data-role="faculty">
+                        <span class="google-avatar" style="background:#5f6368">F</span>
+                        <span class="google-acc-info">
+                            <span class="google-acc-name">Faculty Portal</span>
+                            <span class="google-acc-email">faculty.acc@vsu.edu.ph</span>
+                        </span>
+                    </button>
+                    <!-- FIXED: Removed the circle wrapper, using a clean SVG icon -->
+                    <button class="google-account-btn other-account" id="use-another-account">
+                        <span class="google-avatar" style="background:transparent; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">
+                            <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:#5f6368;">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                            </svg>
+                        </span>
+                        <span class="google-acc-info">
+                            <span class="google-acc-name">Use another account</span>
+                        </span>
+                    </button>
+                    <p class="google-footer">To continue, Google will share your name, email address, language preference, and profile picture with SPMIS. Before using this app, you can review SPMIS's <a href="privacy%20policy.html">privacy policy</a> and <a href="terms.html">terms of service</a>.</p>
+                </div>
+
+                <form class="google-step" data-google-step="email" id="google-email-form">
+                    <!-- Changed to logo image -->
+                    <div class="google-SPMIS">
+                        <img src="../../assets/icons/SPMIS_LM.png" alt="SPMIS" style="height: 56px; width: auto; display: block;">
+                    </div>
+                    <h2 class="google-title">Sign in</h2>
+                    <p class="google-subtitle">Use your Google Account</p>
+                    <div class="google-field">
+                        <label for="google-email">Email or phone</label>
+                        <input class="google-input" id="google-email" type="email" placeholder=" " autocomplete="email" required />
+                    </div>
+                    <a class="google-help-link" href="#forgot-email">Forgot email?</a>
+                    <p class="google-error" id="google-email-error"></p>
+                    <p class="google-guest-note">Not your computer? Use Guest mode to sign in privately. <a href="#learn-more">Learn more</a></p>
+                    <div class="google-actions"><button type="button" class="google-text-btn" data-google-back>Back</button><button class="google-next-btn" type="submit">Next</button></div>
+                </form>
+
+                <form class="google-step" data-google-step="password" id="google-password-form">
+                    <!-- Changed to logo image -->
+                    <div class="google-SPMIS">
+                        <img src="../../assets/icons/SPMIS_LM.png" alt="SPMIS" style="height: 56px; width: auto; display: block;">
+                    </div>
+                    <h2 class="google-title">Welcome</h2>
+                    <p class="google-subtitle" id="google-email-display"></p>
+                    <div class="google-field">
+                        <label for="google-password">Enter your password</label>
+                        <input class="google-input" id="google-password" type="password" placeholder=" " autocomplete="current-password" required />
+                    <a class="google-help-link" href="#forgot-password">Forgot password?</a>
+                    <p class="google-error" id="google-password-error"></p>
+                    <div class="google-actions"><button type="button" class="google-text-btn" data-google-back>Back</button><button class="google-next-btn" type="submit">Continue</button></div>
+                </form>
+            </div>
+            <!-- Footer Bar inside the white box, pushed to bottom -->
+            <div class="google-footer-bar">
+                <span>English (United States)　⌄</span>
+                <span class="google-footer-links"><a href="#help">Help</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></span>
+            </div>
         </div>
     </div>
 
     <script>
         const overlay = document.getElementById('google-overlay');
-        document.getElementById('trigger-google-btn')?.addEventListener('click', () => overlay.classList.remove('hidden'));
-        document.getElementById('close-google').addEventListener('click', () => overlay.classList.add('hidden'));
-        overlay.addEventListener('click', event => { if (event.target === overlay) overlay.classList.add('hidden'); });
-        document.addEventListener('keydown', event => { if (event.key === 'Escape') overlay.classList.add('hidden'); });
-        document.querySelectorAll('.mock-login-action').forEach(button => button.addEventListener('click', () => { window.location.href = '../faculty/dashboard.html'; }));
+        const googleSteps = [...document.querySelectorAll('[data-google-step]')];
+        const googleEmailForm = document.getElementById('google-email-form');
+        const googlePasswordForm = document.getElementById('google-password-form');
+
+        document.querySelectorAll('.google-input').forEach(input => {
+            const field = input.closest('.google-field');
+            const syncFilledState = () => field?.classList.toggle('is-filled', Boolean(input.value));
+            input.addEventListener('input', syncFilledState, { passive: true });
+            syncFilledState();
+        });
+
+        function showGoogleStep(step) {
+            googleSteps.forEach(current => current.classList.toggle('active', current.dataset.googleStep === step));
+        }
+
+        function closeGooglePopup() {
+            overlay.classList.add('hidden');
+            showGoogleStep('accounts');
+            googleEmailForm.reset();
+            googlePasswordForm.reset();
+            document.getElementById('google-email-error').textContent = '';
+            document.getElementById('google-password-error').textContent = '';
+        }
+
+        document.getElementById('trigger-google-btn')?.addEventListener('click', () => {
+            showGoogleStep('accounts');
+            overlay.classList.remove('hidden');
+        });
+        document.getElementById('close-google').addEventListener('click', closeGooglePopup);
+        overlay.addEventListener('click', event => { if (event.target === overlay) closeGooglePopup(); });
+        document.addEventListener('keydown', event => { if (event.key === 'Escape') closeGooglePopup(); });
+        document.querySelectorAll('.mock-login-action').forEach(button => button.addEventListener('click', () => {
+            window.location.href = button.dataset.role === 'admin' ? '../admin/dashboard.html' : '../faculty/dashboard.html';
+        }));
+        document.getElementById('use-another-account').addEventListener('click', () => showGoogleStep('email'));
+        document.querySelectorAll('[data-google-back]').forEach(button => button.addEventListener('click', () => showGoogleStep('accounts')));
+
+        googleEmailForm.addEventListener('submit', event => {
+            event.preventDefault();
+            const email = document.getElementById('google-email');
+            const error = document.getElementById('google-email-error');
+            if (!email.value.trim() || !email.validity.valid) {
+                error.textContent = 'Enter a valid email address.';
+                email.focus();
+                return;
+            }
+            document.getElementById('google-email-display').textContent = email.value.trim();
+            showGoogleStep('password');
+            document.getElementById('google-password').focus();
+        });
+
+        googlePasswordForm.addEventListener('submit', event => {
+            event.preventDefault();
+            const password = document.getElementById('google-password');
+            const error = document.getElementById('google-password-error');
+            if (!password.value.trim()) {
+                error.textContent = 'Enter your password.';
+                password.focus();
+                return;
+            }
+            window.location.href = '../faculty/dashboard.html';
+        });
 
         const signinForm = document.getElementById('signin-form');
 
