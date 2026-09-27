@@ -47,7 +47,7 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
 }
 
 .app > main {
-    overflow: hidden !important;
+    overflow-y: auto !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
@@ -55,6 +55,11 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     box-sizing: border-box !important;
     height: 100% !important;
     min-width: 0 !important;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+}
+.app > main::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
 }
 
 :is(.sidebar, .app-sidebar, [class*="sidebar-container"], .sidebar-frame) {
