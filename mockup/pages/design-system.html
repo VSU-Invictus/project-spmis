@@ -2053,6 +2053,18 @@ html:not(.dark) .brand-footer {
     
     rowCheckboxes.forEach(cb => {
       cb.addEventListener('change', updateTableState);
+      
+      const tr = cb.closest('tr');
+      if (tr) {
+        tr.style.cursor = 'pointer';
+        tr.addEventListener('click', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.closest('button, a')) {
+            return;
+          }
+          cb.checked = !cb.checked;
+          updateTableState();
+        });
+      }
     });
     
     // Initial state setup
