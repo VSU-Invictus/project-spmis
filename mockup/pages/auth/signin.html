@@ -354,14 +354,9 @@
             color: color-mix(in srgb, var(--primary) 80%, #ffffff);
         }
 
-        .auth-card-signup .arrow {
-            display: inline-block;
-            transition: transform .25s ease;
-        }
+        
 
-        .auth-card-signup a:hover .arrow {
-            transform: translateX(4px);
-        }
+        
 
         /* ---------- Reuse .ui-auth-* primitives ---------- */
         .auth-card .ui-auth-wrapper { width: 100%; max-width: none; }
@@ -737,7 +732,7 @@
             .auth-footer-outside a,
             .auth-footer-outside a::after,
             .auth-card-signup a,
-            .auth-card-signup .arrow { transition: none; }
+            
         }
     
         /* Light Mode overrides for brand card */
@@ -880,7 +875,7 @@
                 <!-- Sign-up prompt INSIDE the card, centered at the bottom -->
                 <div class="auth-card-signup">
                     <a href="#register">
-                        New here? Sign Up <span class="arrow">→</span>
+                        New here? Sign Up <span class="arrow">&rarr;</span>
                     </a>
                 </div>
             </section>

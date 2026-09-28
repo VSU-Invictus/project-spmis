@@ -72,6 +72,36 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
 }
 
 
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+}
+
 /* ==========================================================================
    Shared Unified Sidebar Primitives (Admin & Faculty)
    ========================================================================== */
@@ -291,16 +321,11 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     color: var(--ui-surface-muted-text) !important;
 }
 
-:is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog) a:not(.ui-btn) {
+:is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog) a:not(.ui-btn):not(.ui-link-neutral) {
     color: var(--primary) !important;
 }
 
-:is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog)
-    .quick-links a {
-    background: var(--ui-surface-muted) !important;
-    color: var(--ui-surface-text) !important;
-    border: 1px solid var(--ui-surface-border) !important;
-}
+
 
 :is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog)
     .pending-item {
@@ -404,7 +429,7 @@ table input[type="checkbox"]:checked::after {
     position: absolute;
     width: 12px;
     height: 12px;
-    background-color: #000;
+    background-color: var(--primary-foreground);
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
 }
@@ -635,6 +660,36 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     }
 }
 
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+}
+
 /* ==========================================================================
    Auth & Account Card Primitives (Claude+ Reference Standard)
    ========================================================================== */
@@ -849,6 +904,36 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     text-decoration: underline;
 }
 
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+}
+
 /* ==========================================================================
    Status Badges & Indicator Chips (.ui-badge)
    ========================================================================== */
@@ -897,6 +982,36 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     background: color-mix(in srgb, var(--foreground) 8%, var(--card));
     color: var(--muted-foreground);
     border-color: color-mix(in srgb, var(--foreground) 20%, transparent);
+}
+
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
 }
 
 /* ==========================================================================
@@ -995,6 +1110,36 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     color: var(--foreground);
     border-color: var(--border);
     font-weight: 700;
+}
+
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
 }
 
 /* ==========================================================================
@@ -1298,6 +1443,36 @@ table tbody tr:has(input[type="checkbox"]:checked) {
 .ui-chat-context-dd {
     color: var(--foreground);
     font-weight: 600;
+}
+
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
 }
 
 /* ==========================================================================
@@ -1665,4 +1840,36 @@ table tbody tr:has(input[type="checkbox"]:checked) {
 }
 .ui-chat-log.custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--muted-foreground);
+}
+
+/* Animated Arrow for links/buttons */
+.arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+a:hover .arrow,
+button:hover .arrow,
+.ui-action-card:hover .arrow,
+.ui-card-interactive:hover .arrow,
+.ui-btn:hover .arrow,
+.ui-chat-prompt-btn:hover .arrow {
+    transform: translateX(4px);
+}
+
+.ui-link-neutral {
+    color: var(--foreground) !important;
+    text-decoration: none;
+    transition: color 150ms ease;
+}
+.ui-link-neutral:hover {
+    color: var(--primary) !important;
+}
+
+
+.ui-card-title {
+    transition: color 150ms ease;
+}
+.ui-card-interactive:hover .ui-card-title {
+    color: var(--primary) !important;
 }

@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude+ Design System — Living Style Guide</title>
-  <link rel="stylesheet" href="../assets/css/global.css?v=4">
-  <link rel="stylesheet" href="../assets/css/components.css?v=4">
+  <link rel="stylesheet" href="../assets/css/global.css?v=5">
+  <link rel="stylesheet" href="../assets/css/components.css?v=8">
   <style>
     /* Living Style Guide Showcase Layout */
     body {
@@ -695,7 +695,7 @@ html:not(.dark) .brand-footer {
         <h2 class="ui-section-title">Form Controls</h2>
         <span class="ui-section-desc">Unified input fields, select dropdowns, textareas, and labels using <code>.ui-input</code></span>
       </div>
-      <div class="ui-grid ui-grid-cols-3">
+      <div class="ui-grid ui-grid-cols-4">
         <div class="ui-form-group">
           <label class="ui-form-label" for="sample-text">Student Name</label>
           <input type="text" id="sample-text" class="ui-input" placeholder="e.g. Alex Morgan" />
@@ -756,15 +756,14 @@ html:not(.dark) .brand-footer {
           <p class="ui-card-description">Compact metric summary for dashboard statistics.</p>
         </div>
 
-        <!-- 3. Interactive .ui-card-interactive wrapping an <a> tag -->
-        <div class="ui-card-interactive">
-          <a href="#interactive-target" class="ui-card" style="text-decoration: none; display: flex; flex-direction: column; height: 100%; color: inherit; box-sizing: border-box;">
+        <!-- 3. Interactive .ui-card-interactive on an <a> tag -->
+          <a href="#interactive-target" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; height: 100%; color: inherit; box-sizing: border-box; padding: 1.25rem;">
             <div class="ui-card-header">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
                 <h3 class="ui-card-title">Interactive Card Link</h3>
-                <span class="metric-card-trend">Link &rarr;</span>
+                <span class="metric-card-trend" style="white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">Link <span class="arrow">&rarr;</span></span>
               </div>
-              <p class="ui-card-description"><code>.ui-card-interactive</code> wrapping an anchor element.</p>
+              <p class="ui-card-description" style="margin-top: 8px;"><code>.ui-card-interactive</code> directly on an anchor element.</p>
             </div>
             <div class="ui-card-content">
               <p class="ui-text">
@@ -773,10 +772,11 @@ html:not(.dark) .brand-footer {
               </p>
             </div>
             <div class="ui-card-footer">
-              <span class="ui-text-muted" style="color: var(--primary);">Explore workspace &rarr;</span>
+              <span class="ui-text-muted" style="color: var(--primary);">Explore workspace <span class="arrow">&rarr;</span></span>
             </div>
           </a>
-        </div>
+
+
       </div>
     </section>
 
@@ -881,19 +881,19 @@ html:not(.dark) .brand-footer {
       <div class="ui-chat-prompts" style="margin-bottom: 1.5rem;">
         <button type="button" class="ui-chat-prompt-btn">
           <span>Research experience</span>
-          <small>Explore faculty assessments &rarr;</small>
+          <small>Explore faculty assessments <span class="arrow">&rarr;</span></small>
         </button>
         <button type="button" class="ui-chat-prompt-btn">
           <span>Teamwork &amp; Leadership</span>
-          <small>Ask across student records &rarr;</small>
+          <small>Ask across student records <span class="arrow">&rarr;</span></small>
         </button>
         <button type="button" class="ui-chat-prompt-btn">
           <span>Communication Skills</span>
-          <small>Find relevant review excerpts &rarr;</small>
+          <small>Find relevant review excerpts <span class="arrow">&rarr;</span></small>
         </button>
         <button type="button" class="ui-chat-prompt-btn">
           <span>Capstone Project Review</span>
-          <small>Verify graduation prerequisites &rarr;</small>
+          <small>Verify graduation prerequisites <span class="arrow">&rarr;</span></small>
         </button>
       </div>
 
@@ -984,7 +984,7 @@ html:not(.dark) .brand-footer {
           </p>
 
           <button type="button" class="ui-btn ui-btn-outline" style="width: 100%;">
-            View Full Profile &rarr;
+            View Full Profile <span class="arrow">&rarr;</span>
           </button>
         </div>
       </div>
@@ -1860,7 +1860,7 @@ html:not(.dark) .brand-footer {
                 <!-- Sign-up prompt INSIDE the card, centered at the bottom -->
                 <div class="auth-card-signup">
                     <a href="#register">
-                        New here? Sign Up <span class="arrow">→</span>
+                        New here? Sign Up <span class="arrow">&rarr;</span>
                     </a>
                 </div>
             </section>

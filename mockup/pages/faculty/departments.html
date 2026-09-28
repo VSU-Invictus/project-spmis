@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Departments · SPMIS Faculty</title>
-    <link rel="stylesheet" href="../../assets/css/global.css?v=4" />
-    <link rel="stylesheet" href="../../assets/css/components.css?v=4" />
+    <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
+    <link rel="stylesheet" href="../../assets/css/components.css?v=8" />
     <script src="../../assets/js/faculty-sidebar.js"></script>
     <style>
       /* Faculty layout and components. Shared colors come from assets/css/global.css. */
@@ -1065,7 +1065,7 @@
         </label>
         <section id="entity-list" aria-live="polite"></section>
         <p class="status" id="proposal-status" role="status"></p>
-        <a href="applications.html">Track your proposals →</a>
+        <a href="applications.html">Track your proposals <span class="arrow">&rarr;</span></a>
         <dialog id="proposal-dialog" aria-labelledby="proposal-title">
           <h2 id="proposal-title">Submit proposal</h2>
           <p class="muted">
@@ -1291,10 +1291,10 @@
         "BS Information Systems",
       ];
       const departments = ["Computer Science", "Engineering", "Mathematics"];
-      const full = (s) =>
+      const getColor = (t) => ({ research: "purple", robotics: "rose", teamwork: "amber", communication: "cyan", algorithms: "cyan", leadership: "amber" }[t.toLowerCase()] || "neutral");
+        const full = (s) =>
         `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
-      const badge = (s) =>
-        `<span class="badge ${esc(s)}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
+      const badge = (s) => `<span class="ui-badge ui-badge--${s === 'approved' ? 'success' : s === 'pending' ? 'warning' : s === 'rejected' ? 'destructive' : 'neutral'}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
       document
         .querySelectorAll("[data-name]")
         .forEach((e) => (e.textContent = state.name));
@@ -1395,7 +1395,7 @@
                 .slice((current - 1) * size, current * size)
                 .map(
                   (s) =>
-                    `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="ui-badge ui-badge--neutral">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review</a></td></tr>`,
+                    `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review</a></td></tr>`,
                 )
                 .join("")}</tbody></table></div>`
             : '<div class="card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
@@ -1514,7 +1514,7 @@
                 visible
                   .map(
                     (r) =>
-                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--neutral">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                   )
                   .join("") ||
                 '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
@@ -1652,7 +1652,7 @@
             p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
           );
           $("#entity-list").innerHTML = filtered.length
-            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th><th>Action</th></tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td><td><button class="secondary" data-propose-edit="${esc(p)}">Apply to edit</button></td></tr>`).join("")}</tbody></table></div>`
+            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th><th>Action</th></tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td><td><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;" data-propose-edit="${esc(p)}">Apply to edit</button></td></tr>`).join("")}</tbody></table></div>`
             : '<p class="empty">No matching entries. Try another name.</p>';
         }
         $("#entity-search").oninput = render;
@@ -1692,7 +1692,7 @@
                 ? "Program edit"
                 : "Program proposal"
               : "Department proposal",
-            original ? `${original} → ${name}` : name,
+            original ? `${original} <span class="arrow">&rarr;</span> ${name}` : name,
             { original, name },
           );
           $("#proposal-dialog").close();
