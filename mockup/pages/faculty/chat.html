@@ -1084,7 +1084,7 @@
               <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
             </div>
             <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
-            <div id="chat-log" class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 1.25rem; flex: 1; overflow-y: auto; min-height: 0;">
+            <div id="chat-log" class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 0.75rem; flex: 1; overflow-y: auto; min-height: 0;">
               <!-- AI Message -->
               <div class="ui-chat-msg ui-chat-msg--ai">
                 <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
@@ -1093,9 +1093,7 @@
                     <span class="ui-chat-msg-sender">AI Assistant</span>
                     <span class="ui-chat-msg-time">10:42 AM</span>
                   </div>
-                  <div class="ui-chat-bubble ui-chat-bubble--ai">
-                    What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.
-                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.</div>
                 </div>
               </div>
   
@@ -1106,9 +1104,7 @@
                     <span class="ui-chat-msg-sender">Prof. Morgan</span>
                     <span class="ui-chat-msg-time">10:43 AM</span>
                   </div>
-                  <div class="ui-chat-bubble ui-chat-bubble--user">
-                    Which students in BS Computer Science demonstrate outstanding research contributions?
-                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--user">Which students in BS Computer Science demonstrate outstanding research contributions?</div>
                 </div>
               </div>
   
@@ -1119,9 +1115,7 @@
                     <span class="ui-chat-msg-sender">AI Assistant</span>
                     <span class="ui-chat-msg-time">10:43 AM</span>
                   </div>
-                  <div class="ui-chat-bubble ui-chat-bubble--ai">
-                    Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.
-                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.</div>
                 </div>
               </div>
             </div>
@@ -1132,9 +1126,9 @@
                 <textarea class="ui-chat-textarea" id="chat-prompt" required placeholder="Type a question across student reviews..." rows="2"></textarea>
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                   <span class="ui-chat-input-hint">Press Enter to send, Shift+Enter for new line</span>
-                  <button type="submit" class="ui-chat-send-btn" id="send" aria-label="Send">
+                  <button type="submit" class="ui-btn" id="send" aria-label="Send">
                     Send query
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   </button>
                 </div>
               </form>
@@ -1843,7 +1837,7 @@
           
           const title = document.createElement("span");
           title.className = "ui-chat-msg-sender";
-          title.textContent = role === "You" ? "You" : role;
+          title.textContent = role === "You" ? "Prof. Morgan" : role;
           
           const time = document.createElement("span");
           time.className = "ui-chat-msg-time";
@@ -1854,7 +1848,7 @@
           const bubble = document.createElement("div");
           bubble.className = "ui-chat-bubble " + (role === "You" ? "ui-chat-bubble--user" : "ui-chat-bubble--ai");
           bubble.style.whiteSpace = "pre-wrap";
-          bubble.innerHTML = body.replace(/\n/g, '<br>');
+          bubble.innerHTML = body;
           
           msgContent.append(header, bubble);
           item.appendChild(msgContent);
@@ -1914,6 +1908,7 @@
           lastPrompt = prompt;
           message("You", prompt);
           $("#chat-prompt").value = "";
+          $("#chat-prompt").style.height = "auto";
           generate();
         };
         $("#retry").onclick = () => {

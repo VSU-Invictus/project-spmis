@@ -860,12 +860,14 @@ html:not(.dark) .brand-footer {
           </tbody>
         </table>
         <!-- Table Pagination Footer -->
-          <div class="ui-table-pagination" style="justify-content: center; gap: 1.5rem;">
-            <button type="button" class="ui-table-page-btn" style="border-radius: 9999px; padding: 0.375rem 1rem; width: auto; font-weight: 600;">Previous</button>
-            <span style="color: var(--muted-foreground);">Page 1 of 1 &middot; 3 entries</span>
-            <button type="button" class="ui-table-page-btn" style="border-radius: 9999px; padding: 0.375rem 1rem; width: auto; font-weight: 600;">Next</button>
+          </div> <!-- Closes ui-table-wrap -->
+          <div class="ui-table-pagination" style="border-top: none; padding: 1rem 0; justify-content: space-between; background: transparent;">
+            <span style="color: var(--muted-foreground); font-size: 0.875rem;">2 of 3 row(s) selected.</span>
+            <div class="ui-table-pagination-nav" style="gap: 0.5rem;">
+              <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" disabled>Previous</button>
+              <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;">Next</button>
+            </div>
           </div>
-        </div>
     </section>
 
     <!-- 8. Chats & AI Assistant Section -->
@@ -904,7 +906,7 @@ html:not(.dark) .brand-footer {
             <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
           </div>
             <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
-            <div id="chat-log" class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 1.25rem; flex: 1; overflow-y: auto; min-height: 0;">
+            <div id="chat-log" class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 0.75rem; flex: 1; overflow-y: auto; min-height: 0;">
               <!-- AI Message -->
               <div class="ui-chat-msg ui-chat-msg--ai">
                 <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
@@ -913,9 +915,7 @@ html:not(.dark) .brand-footer {
                     <span class="ui-chat-msg-sender">AI Assistant</span>
                     <span class="ui-chat-msg-time">10:42 AM</span>
                   </div>
-                  <div class="ui-chat-bubble ui-chat-bubble--ai">
-                    What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.
-                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.</div>
                 </div>
               </div>
   
@@ -926,9 +926,7 @@ html:not(.dark) .brand-footer {
                     <span class="ui-chat-msg-sender">Prof. Morgan</span>
                     <span class="ui-chat-msg-time">10:43 AM</span>
                   </div>
-                  <div class="ui-chat-bubble ui-chat-bubble--user">
-                    Which students in BS Computer Science demonstrate outstanding research contributions?
-                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--user">Which students in BS Computer Science demonstrate outstanding research contributions?</div>
                 </div>
               </div>
   
@@ -939,9 +937,7 @@ html:not(.dark) .brand-footer {
                     <span class="ui-chat-msg-sender">AI Assistant</span>
                     <span class="ui-chat-msg-time">10:43 AM</span>
                   </div>
-                  <div class="ui-chat-bubble ui-chat-bubble--ai">
-                    Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.
-                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.</div>
                 </div>
               </div>
             </div>
@@ -952,9 +948,9 @@ html:not(.dark) .brand-footer {
                 <textarea class="ui-chat-textarea" id="chat-prompt" required placeholder="Type a question across student reviews..." rows="2"></textarea>
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                   <span class="ui-chat-input-hint">Press Enter to send, Shift+Enter for new line</span>
-                  <button type="submit" class="ui-chat-send-btn" id="send" aria-label="Send">
+                  <button type="submit" class="ui-btn" id="send" aria-label="Send">
                     Send query
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   </button>
                 </div>
               </form>
@@ -1960,6 +1956,110 @@ html:not(.dark) .brand-footer {
     textarea.dispatchEvent(new Event('input'));
   });
 </script>
+
+
+
+<script>
+  // Handle Chat Input for Design System
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatForm = document.getElementById('chat-form');
+    const chatPrompt = document.getElementById('chat-prompt');
+    const chatLog = document.querySelector('.ui-chat-log');
+
+    if (chatForm && chatPrompt && chatLog) {
+      chatPrompt.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+          e.preventDefault();
+          if (chatPrompt.value.trim() !== '') {
+            chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
+          }
+        }
+      });
+
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = chatPrompt.value.trim();
+        if (!text) return;
+
+        // Current time
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        // Create new user message
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'ui-chat-msg ui-chat-msg--user';
+        
+        // Escape HTML
+        const safeText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        
+        msgDiv.innerHTML = `
+          <div class="ui-chat-msg-content">
+            <div class="ui-chat-msg-header">
+              <span class="ui-chat-msg-sender">Prof. Morgan</span>
+              <span class="ui-chat-msg-time">${timeStr}</span>
+            </div>
+            <div class="ui-chat-bubble ui-chat-bubble--user">${safeText}</div>
+          </div>
+        `;
+        
+        chatLog.appendChild(msgDiv);
+        
+        // Reset input
+        chatPrompt.value = '';
+        chatPrompt.style.height = 'auto'; // trigger auto-resize reset
+        
+        // Scroll to bottom
+        chatLog.scrollTop = chatLog.scrollHeight;
+      });
+    }
+  });
+</script>
+
+
+<script>
+  // Handle Table Checkboxes
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.ui-table');
+    if (!table) return;
+    
+    const headerCheckbox = table.querySelector('thead input[type="checkbox"]');
+    const rowCheckboxes = table.querySelectorAll('tbody input[type="checkbox"]');
+    const paginationText = document.querySelector('.ui-table-pagination span');
+    
+    function updateTableState() {
+      const total = rowCheckboxes.length;
+      const checked = Array.from(rowCheckboxes).filter(cb => cb.checked).length;
+      
+      if (checked === 0) {
+        headerCheckbox.checked = false;
+        headerCheckbox.indeterminate = false;
+      } else if (checked === total) {
+        headerCheckbox.checked = true;
+        headerCheckbox.indeterminate = false;
+      } else {
+        headerCheckbox.checked = false;
+        headerCheckbox.indeterminate = true;
+      }
+      
+      if (paginationText) {
+        paginationText.textContent = `${checked} of ${total} row(s) selected.`;
+      }
+    }
+    
+    headerCheckbox.addEventListener('change', (e) => {
+      rowCheckboxes.forEach(cb => cb.checked = e.target.checked);
+      updateTableState();
+    });
+    
+    rowCheckboxes.forEach(cb => {
+      cb.addEventListener('change', updateTableState);
+    });
+    
+    // Initial state setup
+    updateTableState();
+  });
+</script>
+
 </body>
 
 </html>
