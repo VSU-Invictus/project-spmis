@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **UI:** Added Shadcn-style "Rows per page" dropdown pill to table pagination.
+- **UI:** Added client-side static JavaScript pagination engine to `design-system.html` for interactive mockups.
 - **UI:** Row click selection for data tables (`242e95c`).
 - **UI:** Custom Shadcn-style checkboxes with indeterminate states (`fc2408e`).
 - **UI:** Enter-to-send and Shift+Enter logic in chat inputs (`fc2408e`).
@@ -20,6 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Docs:** Workspace footer documentation added to design system (`0d6f3cf`).
 
 ### Changed
+- **UI:** Standardized data table pagination limits to 5, 10, and 20, defaulting to 5 rows per page globally.
+- **UI:** Streamlined the Design System tables showcase by removing redundant Program and Department mockups.
 - **UI:** Standardized interactive cards and extracted global arrow animations (`70da99c`).
 - **UI:** Refactored faculty dashboard Quick Links to use standard `.ui-card-interactive` components (`70da99c`).
 - **UI:** Optimized internal card spacing and layout gaps for a tighter dashboard UI (`70da99c`).
@@ -35,6 +39,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Docs:** Incorporated feedback, amendments A & B, and PM rule into README (`7686481`).
 
 ### Fixed
+- **UI:** Fixed table pagination chevron vertical alignment by enforcing `min-width: 4rem` and restoring flexbox positioning.
+- **Bug:** Resolved severe Javascript `SyntaxError` in the Faculty portal rendering engine caused by string literal newlines, restoring all tables.
+- **UI:** Removed outdated quick action buttons from the Faculty Applications page.
 - **UI:** Reverted experimental fixed-height constraints on chat containers to restore natural dynamic scaling (`242e95c`).
 - **UI:** Fixed aggressive CSS wildcard overrides causing dark backgrounds and overlapping borders on dashboard panels (`70da99c`).
 - **UI:** Fixed chat message text wrapping and reduced internal padding (`fc2408e`).

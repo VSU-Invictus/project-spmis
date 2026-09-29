@@ -1873,3 +1873,24 @@ button:hover .arrow,
 .ui-card-interactive:hover .ui-card-title {
     color: var(--primary) !important;
 }
+
+
+.ui-select-pill {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-color: transparent !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 9999px !important;
+    color: var(--foreground) !important;
+    padding: 0 1.75rem 0 0.875rem !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    height: 2rem !important;
+    outline: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease !important;
+}
+.ui-select-pill:hover,
+.ui-select-pill:focus {
+    background-color: var(--accent) !important;
+}

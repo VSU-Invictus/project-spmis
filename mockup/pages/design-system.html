@@ -369,7 +369,7 @@
         html:not(.dark) .brand-card {
             background: var(--card);
             border-color: var(--border);
-            color: var(--foreground) !important;
+            color: var(--muted-foreground) !important;
             box-shadow: 0 10px 40px rgba(0,0,0,0.05);
         }
         html:not(.dark) .brand-card::after {
@@ -382,7 +382,7 @@
                 radial-gradient(circle, transparent 0 58%, rgba(0, 0, 0, .01) 58% 58.4%, transparent 58.4%);
         }
         html:not(.dark) .brand-hero-title {
-            color: var(--foreground) !important;
+            color: var(--muted-foreground) !important;
         }
         html:not(.dark) .brand-hero-sub,
         html:not(.dark) .brand-features {
@@ -706,6 +706,9 @@ html:not(.dark) .brand-footer {
             <option value="cs">BS Computer Science</option>
             <option value="is">BS Information Systems</option>
             <option value="it">BS Information Technology</option>
+            <option value="ds">BS Data Science</option>
+            <option value="ai">BS Artificial Intelligence</option>
+            <option value="cy">BS Cybersecurity</option>
           </select>
         </div>
         <div class="ui-form-group">
@@ -857,18 +860,179 @@ html:not(.dark) .brand-footer {
                 <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button>
               </td>
             </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">AD</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Adrian Davis</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">adrian.d@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00210</code></td>
+                <td>BS Computer Science</td>
+                <td>3rd Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">LM</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Liam Moore</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">liam.m@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00211</code></td>
+                <td>BS Information Systems</td>
+                <td>1st Year</td>
+                <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">KS</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Kaitlyn Smith</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">k.smith@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00212</code></td>
+                <td>BS Computer Engineering</td>
+                <td>4th Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">JT</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Justin Taylor</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">j.taylor@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00213</code></td>
+                <td>BS Computer Science</td>
+                <td>2nd Year</td>
+                <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">MJ</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Mia Johnson</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">m.johnson@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00214</code></td>
+                <td>BS Data Science</td>
+                <td>1st Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">EW</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Ethan White</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">e.white@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00215</code></td>
+                <td>BS Artificial Intelligence</td>
+                <td>3rd Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">CB</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Chloe Brown</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">c.brown@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00216</code></td>
+                <td>BS Computer Science</td>
+                <td>4th Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+</tr>
           </tbody>
         </table>
         <!-- Table Pagination Footer -->
           </div> <!-- Closes ui-table-wrap -->
-          <div class="ui-table-pagination" style="border-top: none; padding: 1rem 0; justify-content: space-between; background: transparent;">
+          <div class="ui-table-pagination" style="border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <span style="color: var(--muted-foreground); font-size: 0.875rem;">2 of 3 row(s) selected.</span>
-            <div class="ui-table-pagination-nav" style="gap: 0.5rem;">
-              <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" disabled>Previous</button>
-              <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;">Next</button>
+            
+            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+              
+              <!-- Shadcn-styled Select Dropdown -->
+              <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;">
+                <span>Rows per page</span>
+                                                    <style>
+                    .ui-select-pill {
+                      appearance: none !important;
+                      -webkit-appearance: none !important;
+                      background-color: transparent !important;
+                      border: 1px solid var(--border) !important;
+                      border-radius: 9999px !important;
+                      color: var(--foreground) !important;
+                      padding: 0 1.75rem 0 0.875rem !important;
+                      font-size: 0.8125rem !important;
+                      font-weight: 500 !important;
+                      height: 2rem !important;
+                      outline: none !important;
+                      cursor: pointer !important;
+                      transition: background-color 0.15s ease, border-color 0.15s ease !important;
+                    }
+                    .ui-select-pill:hover,
+                    .ui-select-pill:focus {
+                      background-color: var(--accent) !important;
+                    }
+                  </style>
+                <div style="position: relative; display: flex; align-items: center;">
+                  <select class="ui-select-pill" style="min-width: 4rem;">
+                          <option value="5" selected>5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                        </select>
+                  <svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <span style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;">Page 1 of 2</span>
+              
+              <div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;">
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" disabled>Previous</button>
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;">Next</button>
+              </div>
+              
             </div>
           </div>
-    </section>
+
+
+</section>
 
     <!-- 8. Chats & AI Assistant Section -->
     <section class="ui-section" id="chats">
@@ -1371,7 +1535,7 @@ html:not(.dark) .brand-footer {
             height: 2.625rem;
             background: var(--muted) !important;
             border: 1px solid var(--border) !important;
-            color: var(--foreground) !important;
+            color: var(--muted-foreground) !important;
             font-weight: 500;
             font-size: 0.825rem;
             border-radius: 999px !important;
@@ -1730,7 +1894,7 @@ html:not(.dark) .brand-footer {
         html:not(.dark) .brand-card {
             background: var(--card);
             border-color: var(--border);
-            color: var(--foreground) !important;
+            color: var(--muted-foreground) !important;
             box-shadow: 0 10px 40px rgba(0,0,0,0.05);
         }
         html:not(.dark) .brand-card::after {
@@ -1743,7 +1907,7 @@ html:not(.dark) .brand-footer {
                 radial-gradient(circle, transparent 0 58%, rgba(0, 0, 0, .01) 58% 58.4%, transparent 58.4%);
         }
         html:not(.dark) .brand-hero-title {
-            color: var(--foreground) !important;
+            color: var(--muted-foreground) !important;
         }
         html:not(.dark) .brand-hero-sub,
         html:not(.dark) .brand-features {
@@ -2072,6 +2236,97 @@ html:not(.dark) .brand-footer {
   });
 </script>
 
+  <script>
+    // Handle Table Static Pagination for Design System Mockups
+    document.addEventListener('DOMContentLoaded', () => {
+      const tableWraps = document.querySelectorAll('.ui-table-wrap');
+      tableWraps.forEach(wrap => {
+        const select = wrap.querySelector('select.ui-select-pill');
+        // Let's also check if the pagination is outside ui-table-wrap, 
+        // in some designs the pagination is a sibling to ui-table-wrap.
+        // In the design system, ui-table-pagination is typically inside ui-table-wrap or right after it.
+        
+        // Let's find the pagination container which might be inside wrap or next to it
+        let pagination = wrap.querySelector('.ui-table-pagination');
+        if (!pagination && wrap.nextElementSibling && wrap.nextElementSibling.classList.contains('ui-table-pagination')) {
+            pagination = wrap.nextElementSibling;
+        }
+        
+        if (!pagination) return;
+        
+        const actualSelect = pagination.querySelector('select.ui-select-pill');
+        if (!actualSelect) return;
+        
+        const tbody = wrap.querySelector('tbody');
+        if (!tbody) return;
+        
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const paginationNav = pagination.querySelector('.ui-table-pagination-nav');
+        if (!paginationNav) return;
+        
+        const buttons = paginationNav.querySelectorAll('button');
+        const prevBtn = buttons[0];
+        const nextBtn = buttons[1];
+        
+        let currentPage = 1;
+        
+        function updateView() {
+          const limit = parseInt(actualSelect.value) || 5;
+          const totalPages = Math.max(1, Math.ceil(rows.length / limit));
+          
+          if (currentPage > totalPages) currentPage = totalPages;
+          
+          const start = (currentPage - 1) * limit;
+          const end = start + limit;
+          
+          rows.forEach((row, i) => {
+            if (i >= start && i < end) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+          
+          const spans = Array.from(pagination.querySelectorAll('span'));
+          const pageSpan = spans.find(s => s.textContent.trim().startsWith('Page '));
+          if (pageSpan) {
+              pageSpan.textContent = `Page ${currentPage} of ${totalPages}`;
+          }
+          
+          if (prevBtn) prevBtn.disabled = currentPage === 1;
+          if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+        }
+        
+        actualSelect.addEventListener('change', () => {
+          currentPage = 1;
+          updateView();
+        });
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+              if (currentPage > 1) {
+                currentPage--;
+                updateView();
+              }
+            });
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+              const limit = parseInt(actualSelect.value) || 5;
+              const totalPages = Math.ceil(rows.length / limit);
+              if (currentPage < totalPages) {
+                currentPage++;
+                updateView();
+              }
+            });
+        }
+        
+        // Initial state
+        updateView();
+      });
+    });
+  </script>
 </body>
 
 </html>

@@ -1264,48 +1264,88 @@
         } catch {}
       }
       const students = [
-        {
-          id: "24-1-00001",
-          first: "Sam",
-          middle: "Lee",
-          last: "Parker",
-          program: "BS Computer Science",
-        },
-        {
-          id: "24-1-00002",
-          first: "Taylor",
-          middle: "",
-          last: "Reed",
-          program: "BS Computer Engineering",
-        },
-        {
-          id: "24-1-00003",
-          first: "Jordan",
-          middle: "",
-          last: "Blake",
-          program: "BS Information Systems",
-        },
-        {
-          id: "24-1-00004",
-          first: "Casey",
-          middle: "",
-          last: "Lane",
-          program: "BS Computer Science",
-        },
-        {
-          id: "24-1-00005",
-          first: "Drew",
-          middle: "",
-          last: "Hayes",
-          program: "BS Information Systems",
-        },
-      ];
-      const programs = [
-        "BS Computer Science",
-        "BS Computer Engineering",
-        "BS Information Systems",
-      ];
-      const departments = ["Computer Science", "Engineering", "Mathematics"];
+            {
+                id: "24-1-00001",
+                first: "Sam",
+                middle: "Lee",
+                last: "Parker",
+                program: "BS Computer Science",
+            },
+            {
+                id: "24-1-00002",
+                first: "Taylor",
+                middle: "",
+                last: "Reed",
+                program: "BS Computer Engineering",
+            },
+            {
+                id: "24-1-00003",
+                first: "Jordan",
+                middle: "",
+                last: "Blake",
+                program: "BS Information Systems",
+            },
+            {
+                id: "24-1-00004",
+                first: "Casey",
+                middle: "",
+                last: "Lane",
+                program: "BS Computer Science",
+            },
+            {
+                id: "24-1-00005",
+                first: "Drew",
+                middle: "",
+                last: "Hayes",
+                program: "BS Information Systems",
+            },
+            { id: "24-1-00006", first: "Alex", middle: "C", last: "Smith", program: "BS Information Systems" },
+            { id: "24-1-00007", first: "Morgan", middle: "", last: "Freeman", program: "BS Computer Science" },
+            { id: "24-1-00008", first: "Casey", middle: "D", last: "Jones", program: "BS Computer Engineering" },
+            { id: "24-1-00009", first: "Riley", middle: "", last: "O'Neil", program: "BS Computer Science" },
+            { id: "24-1-00010", first: "Jamie", middle: "L", last: "Martinez", program: "BS Information Systems" },
+            { id: "24-1-00011", first: "Avery", middle: "", last: "Wilson", program: "BS Computer Engineering" },
+            { id: "24-1-00012", first: "Quinn", middle: "M", last: "Taylor", program: "BS Computer Science" },
+            { id: "24-1-00013", first: "Skyler", middle: "", last: "Brown", program: "BS Information Systems" },
+            { id: "24-1-00014", first: "Reese", middle: "T", last: "Davis", program: "BS Computer Engineering" },
+            { id: "24-1-00015", first: "Rowan", middle: "", last: "Miller", program: "BS Computer Science" },
+            { id: "24-1-00016", first: "Emerson", middle: "J", last: "Moore", program: "BS Information Systems" },
+            { id: "24-1-00017", first: "Finley", middle: "", last: "Anderson", program: "BS Computer Engineering" },
+            { id: "24-1-00018", first: "Dallas", middle: "R", last: "Thomas", program: "BS Computer Science" },
+            { id: "24-1-00019", first: "Dakota", middle: "", last: "Jackson", program: "BS Information Systems" },
+            { id: "24-1-00020", first: "Peyton", middle: "S", last: "White", program: "BS Computer Engineering" }
+        ];
+const programs = [
+    "BS Computer Science",
+    "BS Computer Engineering",
+    "BS Information Systems",
+    "BS Data Science",
+    "BS Artificial Intelligence",
+    "BS Cybersecurity",
+    "BS Software Engineering",
+    "BA Digital Media",
+    "BS Applied Mathematics",
+    "BA Game Design",
+    "BS Physics",
+    "BS Chemistry",
+    "BS Biology"
+];
+const departments = [
+    "Computer Science",
+    "Engineering",
+    "Mathematics",
+    "Data Science",
+    "Information Technology",
+    "Cybersecurity",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Digital Arts",
+    "Software Engineering",
+    "Applied Sciences",
+    "Humanities",
+    "Business Administration"
+];
       const getColor = (t) => ({ research: "purple", robotics: "rose", teamwork: "amber", communication: "cyan", algorithms: "cyan", leadership: "amber" }[t.toLowerCase()] || "neutral");
         const full = (s) =>
         `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
@@ -1815,9 +1855,10 @@
         const host = document.getElementById(containerId);
         if (!host) return;
         const controls = document.createElement("div");
-        controls.className = "pagination";
+        controls.className = "ui-table-pagination";
+          controls.style.cssText = "border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;";
         controls.innerHTML =
-          '<label>Rows per page<select aria-label="Rows per page"><option>2</option><option selected>5</option><option>10</option><option>25</option></select></label><button class="secondary" type="button">Previous</button><span role="status"></span><button class="secondary" type="button">Next</button>';
+            '<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;"><span style="color: var(--muted-foreground); font-size: 0.875rem;"></span><div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;"><div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"><span>Rows per page</span><div style="position: relative; display: flex; align-items: center;"><select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem;"><option value="5" selected>5</option><option value="10">10</option><option value="20">20</option></select><svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><span role="status" style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"></span><div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;"><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Previous</button><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Next</button></div></div></div>';
         host.after(controls);
         let current = 1;
         const size = controls.querySelector("select"),
