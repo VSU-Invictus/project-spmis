@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Docs:** Missing review attachments specification added to README (`420709a`).
 - **Docs:** Project context and AI rule configuration (`99ca7f1`).
 - **Docs:** Workspace footer documentation added to design system (`0d6f3cf`).
+- **UI:** Added Terms & Conditions acceptance step to the sign-up flow, requiring explicit agreement before account creation (`d95578d`).
+- **UI:** Added "see/unsee" password visibility toggle on password and confirm-password inputs in the sign-up form (`d95578d`).
 
 ### Changed
 - **UI:** Standardized data table pagination limits to 5, 10, and 20, defaulting to 5 rows per page globally.
@@ -37,6 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Docs:** Updated action item assignees in minutes of meeting 05 (`6082a87`).
 - **Docs:** Updated project team table with designated UI/UX roles in README (`9d232d9`).
 - **Docs:** Incorporated feedback, amendments A & B, and PM rule into README (`7686481`).
+- **UI:** Merged `dev` into `mockup-public/auth-signin`, reconciling sign-in and sign-up page changes and removing the unused `SPMIS_LM.png` icon (`0e0658a`).
 
 ### Fixed
 - **UI:** Fixed table pagination chevron vertical alignment by enforcing `min-width: 4rem` and restoring flexbox positioning.
@@ -54,6 +57,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Corrected corrupted characters in password placeholder (`b61f807`).
 - **UI:** Corrected javascript syntax error in generate function (`a0ca4b3`).
 - **UI:** Removed hardcoded legacy orange borders and corrected component focus states (`9fbc3c9`, `567aa26`).
+- **UI:** Removed stray text beside the closing `</html>` tag in the sign-up page markup (`f84144f`).
 
 ## [Milestone 1] - YYYY-MM-DD
 <!-- Milestone release updates -->
