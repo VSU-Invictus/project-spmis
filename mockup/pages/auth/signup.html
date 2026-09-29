@@ -784,11 +784,13 @@
             border-bottom: 1px solid #3c4043 !important;
         }
 
+        /* Unified hover/focus: transparent borders, a rounded outline behind, and a soft bg */
         .google-account-btn:hover,
         .google-account-btn:focus-visible {
             border-top-color: transparent !important;
             border-bottom-color: transparent !important;
             outline: none;
+            transition: background-color 0.1s ease;
         }
 
         .google-account-btn:hover::before,
@@ -806,14 +808,7 @@
             pointer-events: none;
         }
 
-        .google-account-btn:hover,
-        .google-account-btn:focus-visible {
-            border-top-color: transparent !important;
-            border-bottom-color: transparent !important;
-            outline: none;
-            transition: background-color 0.1s ease;
-        }
-
+        /* When hovering/focusing a button, hide the next button's top border to avoid a doubled line */
         .google-account-btn:hover + .google-account-btn,
         .google-account-btn:focus-visible + .google-account-btn {
             border-top-color: transparent !important;
@@ -1795,4 +1790,4 @@
         });
     </script>
 </body>
-</html>
+</html>x

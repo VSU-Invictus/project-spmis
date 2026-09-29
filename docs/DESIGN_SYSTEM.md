@@ -182,12 +182,34 @@ Load `global.css` before `components.css`. All components follow the unified `.u
 ### 3. Status Badges & Chips
 
 ```html
-<span class="ui-badge ui-badge--success">Approved</span>
-<span class="ui-badge ui-badge--warning">Pending Review</span>
-<span class="ui-badge ui-badge--destructive">Rejected</span>
-<span class="ui-badge ui-badge--info">In Progress</span>
-<span class="ui-badge ui-badge--neutral">Draft</span>
-```
+<div class="ui-btn-group">
+<span class="ui-badge ui-badge--success">
+  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  Approved / Active
+</span>
+<span class="ui-badge ui-badge--warning">
+  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+  Pending Review
+</span>
+<span class="ui-badge ui-badge--destructive">
+  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  Rejected / Deficient
+</span>
+<span class="ui-badge ui-badge--info">
+  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+  In Progress
+</span>
+<span class="ui-badge ui-badge--neutral">
+  Archived / Draft
+</span>
+</div>
+<div class="ui-btn-group" style="margin-top: 1rem;">
+<span class="ui-badge ui-badge--purple">Research</span>
+<span class="ui-badge ui-badge--cyan">Algorithms</span>
+<span class="ui-badge ui-badge--amber">Leadership</span>
+<span class="ui-badge ui-badge--rose">Robotics</span>
+</div>
+`
 
 ### 4. Data Tables & Pagination
 
@@ -236,63 +258,82 @@ Data tables provide clean cell padding, header styling, row hover highlights, an
 Designed for faculty conversational reviews across student evaluations.
 
 ```html
-<div class="ui-chat-container">
-  <!-- Prompt Chips -->
-  <div class="ui-chat-prompts">
-    <button type="button" class="ui-chat-prompt-btn">
-      <span>Research experience</span>
-      <small>Explore faculty assessments →</small>
-    </button>
-    <button type="button" class="ui-chat-prompt-btn">
-      <span>Teamwork &amp; Leadership</span>
-      <small>Ask across student records →</small>
-    </button>
-  </div>
+<div class="ui-chat-prompts">
+  <button type="button" class="ui-chat-prompt-btn" data-prompt="...">
+    <span>Research experience</span>
+    <small>Explore faculty assessments &rarr;</small>
+  </button>
+</div>
 
-  <!-- Chat Columns Layout -->
-  <div class="ui-chat-columns">
-    <!-- Conversation Log Card -->
-    <div class="ui-card">
-      <div class="ui-chat-log">
-        <!-- AI Assistant Bubble -->
+<!-- Two-Column Chat Workspace -->
+<div class="ui-chat-columns">
+  
+  <!-- Left: Chat Thread Card -->
+  <div class="ui-card" style="display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start;">
+    <div class="ui-card-header">
+      <h3 class="ui-card-title">Ask across student reviews</h3>
+      <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
+    </div>
+    
+    <!-- Chat Container -->
+    <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+      <!-- Conversation Log -->
+      <div class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 1.25rem; flex: 1; overflow-y: auto; min-height: 0;">
+        
+        <!-- AI Message -->
         <div class="ui-chat-msg ui-chat-msg--ai">
-          <div class="ui-chat-msg-header">
-            <span class="ui-chat-msg-sender">AI Assistant</span>
-            <span class="ui-chat-msg-time">10:42 AM</span>
+          <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
+          <div class="ui-chat-msg-content">
+            <div class="ui-chat-msg-header">
+              <span class="ui-chat-msg-sender">AI Assistant</span>
+              <span class="ui-chat-msg-time">10:42 AM</span>
+            </div>
+            <div class="ui-chat-bubble ui-chat-bubble--ai">
+              What would you like to explore across the student records?
+            </div>
           </div>
-          <div>What would you like to explore across the student records?</div>
         </div>
-
-        <!-- User Bubble -->
+        
+        <!-- User Message -->
         <div class="ui-chat-msg ui-chat-msg--user">
-          <div class="ui-chat-msg-header">
-            <span class="ui-chat-msg-sender">Prof. Morgan</span>
-            <span class="ui-chat-msg-time">10:43 AM</span>
+          <div class="ui-chat-msg-content">
+            <div class="ui-chat-msg-header">
+              <span class="ui-chat-msg-sender">Prof. Morgan</span>
+              <span class="ui-chat-msg-time">10:43 AM</span>
+            </div>
+            <div class="ui-chat-bubble ui-chat-bubble--user">
+              Which students demonstrate outstanding research contributions?
+            </div>
           </div>
-          <div>Which students demonstrate outstanding research contributions?</div>
         </div>
+        
       </div>
 
-      <!-- Input Bar -->
-      <div class="ui-chat-input-box">
-        <textarea class="ui-chat-textarea" placeholder="Ask across student records..."></textarea>
-        <button type="button" class="ui-btn">Send query</button>
+      <!-- Chat Input Area -->
+      <div class="ui-chat-input-wrapper" style="flex-shrink: 0; margin-top: 0.5rem;">
+        <form class="chat-form" style="display: flex; flex-direction: column; gap: 1rem;">
+          <textarea class="ui-chat-textarea" placeholder="Type a question..."></textarea>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="ui-chat-input-hint">Press Enter to send</span>
+            <button type="submit" class="ui-chat-send-btn">Send query</button>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
 
-    <!-- Student Quick File Context Card -->
-    <aside class="ui-chat-context-card">
-      <div class="ui-chat-context-avatar">SP</div>
-      <h3>Sam Lee Parker</h3>
-      <p class="ui-text-muted">ID: 24-1-00001</p>
-      <div class="ui-chat-context-meta">
-        <span class="ui-chat-context-dt">Program</span>
-        <span class="ui-chat-context-dd">BS Computer Science</span>
-        <span class="ui-chat-context-dt">Status</span>
-        <span class="ui-chat-context-dd"><span class="ui-badge ui-badge--success">Good Standing</span></span>
-      </div>
-      <button type="button" class="ui-btn ui-btn-outline" style="width: 100%;">View Full Profile</button>
-    </aside>
+  <!-- Right: Student Quick File Context Card -->
+  <div class="ui-chat-context-card">
+    <div class="ui-chat-context-avatar">SP</div>
+    <h3 class="ui-heading-3">Sam Lee Parker</h3>
+    <p class="ui-text-muted">ID: 24-1-00001</p>
+    
+    <div class="ui-chat-context-meta">
+      <span class="ui-chat-context-dt">Status</span>
+      <span class="ui-chat-context-dd">Good Standing</span>
+    </div>
+    
+    <a href="#" class="ui-btn ui-btn-outline" style="width: 100%; justify-content: center;">View Full Profile</a>
   </div>
 </div>
 ```
