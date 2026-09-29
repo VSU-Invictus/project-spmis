@@ -384,3 +384,8 @@ dialog.logout-dialog .actions {
         transition: none;
     }
 }
+
+/* Light/Dark Mode Logo Toggles */
+html.dark .logo-light-only { display: none !important; }
+html:not(.dark) .logo-dark-only { display: none !important; }
+html:not(.dark) .logo-light-only { display: block !important; }

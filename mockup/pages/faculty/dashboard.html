@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard · SPMIS Faculty</title>
-  <link rel="stylesheet" href="../../assets/css/global.css" />
-    <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
+    <link rel="stylesheet" href="../../assets/css/components.css?v=8" />
   <script src="../../assets/js/faculty-sidebar.js"></script>
   <style>
     /* Faculty layout and components. Shared colors come from assets/css/global.css. */
@@ -75,18 +75,13 @@
       color: var(--destructive-foreground);
     }
 
-    :focus-visible {
-      outline: 3px solid var(--ring);
-      outline-offset: 3px;
-    }
-
     .app {
       width: 100vw;
       max-width: 100vw;
       height: 100vh;
       margin: 0;
       display: flex;
-      border: 1px solid #D97251;
+      
       box-sizing: border-box;
       border-radius: 0;
       overflow: hidden;
@@ -152,7 +147,6 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       box-sizing: border-box;
     }
 
@@ -255,25 +249,23 @@
       align-items: center;
     }
 
+    
     .quick-links {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 10px;
     }
 
-    .quick-links a {
-      display: block;
-      padding: 18px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      text-decoration: none;
-      color: var(--foreground);
-    }
+    
 
-    .quick-links small {
-      display: block;
-      margin-top: 4px;
-    }
+    
+
+    
+
+
+    
+
+    
 
     .filters {
       display: grid;
@@ -652,9 +644,7 @@
     }
 
     .nav a:hover:not([aria-current="page"]),
-    .quick-links a:hover {
-      background: color-mix(in srgb, var(--primary) 8%, var(--card));
-    }
+    
 
     button:hover,
     .button:hover {
@@ -938,36 +928,29 @@
       margin: 6px 0;
     }
 
-    .dashboard-panels {
+    .dashboard-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
 
-    .dashboard-panels .card {
+    .dashboard-layout .card {
       margin: 0;
     }
 
-    .dashboard-panels .between {
+    .dashboard-layout .between {
       align-items: baseline;
     }
 
-    .dashboard-panels .between a {
+    .dashboard-layout .between a {
       font-size: 12px;
       text-decoration: none;
       white-space: nowrap;
     }
 
-    .quick-links a {
-      background: var(--ui-surface-muted);
-      color: var(--ui-surface-text);
-      border: 1px solid var(--ui-surface-border);
-      padding: 16px;
-    }
+    
 
-    .quick-links small {
-      font-size: 12px;
-    }
+    
 
     .pending-item {
       display: flex;
@@ -994,7 +977,7 @@
     .chat-prompts {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
+      gap: 10px;
       margin: 24px 0;
     }
 
@@ -1094,7 +1077,7 @@
         grid-column: 1/-1;
       }
 
-      .dashboard-panels {
+      .dashboard-layout {
         grid-template-columns: 1fr;
       }
 
@@ -1276,20 +1259,44 @@
           <small>Approved programs</small>
         </div>
       </div>
-      <div class="dashboard-panels">
+      <div class="dashboard-layout">
         <section class="card">
           <h2>Quick links</h2>
           <div class="quick-links">
-            <a href="students.html">Browse students<small>Search records and active reviews</small></a>
-            <a href="students.html">Write a review<small>Select a student to add text and tags</small></a>
-            <a href="chat.html">Open Chats<small>Explore reviews across students</small></a>
-            <a href="register-student.html">Register a student<small>Submit a registration application</small></a>
-          </div>
+              <!-- Card 1 -->
+              <a href="students.html" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
+                <div class="ui-card-header" style="margin-bottom: 0;">
+                  <h3 class="ui-card-title" style="margin-bottom: 4px;">Browse students <span class="arrow">&rarr;</span></h3>
+                    <p class="ui-card-description" style="margin-top: 0;">Search records and active reviews.</p>
+                </div>
+              </a>
+              <!-- Card 2 -->
+              <a href="students.html" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
+                <div class="ui-card-header" style="margin-bottom: 0;">
+                  <h3 class="ui-card-title" style="margin-bottom: 4px;">Write a review <span class="arrow">&rarr;</span></h3>
+                    <p class="ui-card-description" style="margin-top: 0;">Select a student to add text and tags.</p>
+                </div>
+              </a>
+              <!-- Card 3 -->
+              <a href="chat.html" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
+                <div class="ui-card-header" style="margin-bottom: 0;">
+                  <h3 class="ui-card-title" style="margin-bottom: 4px;">Open Chats <span class="arrow">&rarr;</span></h3>
+                    <p class="ui-card-description" style="margin-top: 0;">Explore reviews across students.</p>
+                </div>
+              </a>
+              <!-- Card 4 -->
+              <a href="register-student.html" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
+                <div class="ui-card-header" style="margin-bottom: 0;">
+                  <h3 class="ui-card-title" style="margin-bottom: 4px;">Register a student <span class="arrow">&rarr;</span></h3>
+                    <p class="ui-card-description" style="margin-top: 0;">Submit a registration application.</p>
+                </div>
+              </a>
+            </div>
         </section>
         <section class="card">
           <div class="between">
             <h2>Your pending applications</h2>
-            <a href="applications.html">View all applications →</a>
+            <a href="applications.html">View all applications <span class="arrow">&rarr;</span></a>
           </div>
           <div id="pending-applications"></div>
         </section>
@@ -1301,8 +1308,8 @@
         </p>
       </noscript>
           <!-- Workspace Footer -->
-      <footer class="workspace-footer">
-        <span>© 2026 Faculty Portal. All rights reserved.</span>
+      <footer class="workspace-footer" style="margin-top: 3rem;">
+        <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
     </main>
@@ -1462,52 +1469,92 @@
       } catch { }
     }
     const students = [
-      {
-        id: "24-1-00001",
-        first: "Sam",
-        middle: "Lee",
-        last: "Parker",
-        program: "BS Computer Science",
-      },
-      {
-        id: "24-1-00002",
-        first: "Taylor",
-        middle: "",
-        last: "Reed",
-        program: "BS Computer Engineering",
-      },
-      {
-        id: "24-1-00003",
-        first: "Jordan",
-        middle: "",
-        last: "Blake",
-        program: "BS Information Systems",
-      },
-      {
-        id: "24-1-00004",
-        first: "Casey",
-        middle: "",
-        last: "Lane",
-        program: "BS Computer Science",
-      },
-      {
-        id: "24-1-00005",
-        first: "Drew",
-        middle: "",
-        last: "Hayes",
-        program: "BS Information Systems",
-      },
-    ];
-    const programs = [
-      "BS Computer Science",
-      "BS Computer Engineering",
-      "BS Information Systems",
-    ];
-    const departments = ["Computer Science", "Engineering", "Mathematics"];
-    const full = (s) =>
+            {
+                id: "24-1-00001",
+                first: "Sam",
+                middle: "Lee",
+                last: "Parker",
+                program: "BS Computer Science",
+            },
+            {
+                id: "24-1-00002",
+                first: "Taylor",
+                middle: "",
+                last: "Reed",
+                program: "BS Computer Engineering",
+            },
+            {
+                id: "24-1-00003",
+                first: "Jordan",
+                middle: "",
+                last: "Blake",
+                program: "BS Information Systems",
+            },
+            {
+                id: "24-1-00004",
+                first: "Casey",
+                middle: "",
+                last: "Lane",
+                program: "BS Computer Science",
+            },
+            {
+                id: "24-1-00005",
+                first: "Drew",
+                middle: "",
+                last: "Hayes",
+                program: "BS Information Systems",
+            },
+            { id: "24-1-00006", first: "Alex", middle: "C", last: "Smith", program: "BS Information Systems" },
+            { id: "24-1-00007", first: "Morgan", middle: "", last: "Freeman", program: "BS Computer Science" },
+            { id: "24-1-00008", first: "Casey", middle: "D", last: "Jones", program: "BS Computer Engineering" },
+            { id: "24-1-00009", first: "Riley", middle: "", last: "O'Neil", program: "BS Computer Science" },
+            { id: "24-1-00010", first: "Jamie", middle: "L", last: "Martinez", program: "BS Information Systems" },
+            { id: "24-1-00011", first: "Avery", middle: "", last: "Wilson", program: "BS Computer Engineering" },
+            { id: "24-1-00012", first: "Quinn", middle: "M", last: "Taylor", program: "BS Computer Science" },
+            { id: "24-1-00013", first: "Skyler", middle: "", last: "Brown", program: "BS Information Systems" },
+            { id: "24-1-00014", first: "Reese", middle: "T", last: "Davis", program: "BS Computer Engineering" },
+            { id: "24-1-00015", first: "Rowan", middle: "", last: "Miller", program: "BS Computer Science" },
+            { id: "24-1-00016", first: "Emerson", middle: "J", last: "Moore", program: "BS Information Systems" },
+            { id: "24-1-00017", first: "Finley", middle: "", last: "Anderson", program: "BS Computer Engineering" },
+            { id: "24-1-00018", first: "Dallas", middle: "R", last: "Thomas", program: "BS Computer Science" },
+            { id: "24-1-00019", first: "Dakota", middle: "", last: "Jackson", program: "BS Information Systems" },
+            { id: "24-1-00020", first: "Peyton", middle: "S", last: "White", program: "BS Computer Engineering" }
+        ];
+const programs = [
+    "BS Computer Science",
+    "BS Computer Engineering",
+    "BS Information Systems",
+    "BS Data Science",
+    "BS Artificial Intelligence",
+    "BS Cybersecurity",
+    "BS Software Engineering",
+    "BA Digital Media",
+    "BS Applied Mathematics",
+    "BA Game Design",
+    "BS Physics",
+    "BS Chemistry",
+    "BS Biology"
+];
+const departments = [
+    "Computer Science",
+    "Engineering",
+    "Mathematics",
+    "Data Science",
+    "Information Technology",
+    "Cybersecurity",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Digital Arts",
+    "Software Engineering",
+    "Applied Sciences",
+    "Humanities",
+    "Business Administration"
+];
+    const getColor = (t) => ({ research: "purple", robotics: "rose", teamwork: "amber", communication: "cyan", algorithms: "cyan", leadership: "amber" }[t.toLowerCase()] || "neutral");
+        const full = (s) =>
       `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
-    const badge = (s) =>
-      `<span class="badge ${esc(s)}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
+    const badge = (s) => `<span class="ui-badge ui-badge--${s === 'approved' ? 'success' : s === 'pending' ? 'warning' : s === 'rejected' ? 'destructive' : 'neutral'}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
     document
       .querySelectorAll("[data-name]")
       .forEach((e) => (e.textContent = state.name));
@@ -1608,7 +1655,7 @@
             .slice((current - 1) * size, current * size)
             .map(
               (s) =>
-                `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="tag">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review</a></td></tr>`,
+                `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review</a></td></tr>`,
             )
             .join("")}</tbody></table></div>`
           : '<div class="card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
@@ -1727,7 +1774,7 @@
               visible
                 .map(
                   (r) =>
-                    `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="badge">Hidden · Only you</span>' : '<span class="badge approved">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                    `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                 )
                 .join("") ||
               '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
@@ -1865,7 +1912,7 @@
           p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
         );
         $("#entity-list").innerHTML = filtered.length
-          ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button class="secondary" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
+          ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
           : '<p class="empty">No matching entries. Try another name.</p>';
       }
       $("#entity-search").oninput = render;
@@ -1905,7 +1952,7 @@
               ? "Program edit"
               : "Program proposal"
             : "Department proposal",
-          original ? `${original} → ${name}` : name,
+          original ? `${original} <span class="arrow">&rarr;</span> ${name}` : name,
           { original, name },
         );
         $("#proposal-dialog").close();
@@ -2013,9 +2060,10 @@
       const host = document.getElementById(containerId);
       if (!host) return;
       const controls = document.createElement("div");
-      controls.className = "pagination";
+      controls.className = "ui-table-pagination";
+          controls.style.cssText = "border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;";
       controls.innerHTML =
-        '<label>Rows per page<select aria-label="Rows per page"><option>2</option><option selected>5</option><option>10</option><option>25</option></select></label><button class="secondary" type="button">Previous</button><span role="status"></span><button class="secondary" type="button">Next</button>';
+            '<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;"><span style="color: var(--muted-foreground); font-size: 0.875rem;"></span><div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;"><div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"><span>Rows per page</span><div style="position: relative; display: flex; align-items: center;"><select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem;"><option value="5" selected>5</option><option value="10">10</option><option value="20">20</option></select><svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><span role="status" style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"></span><div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;"><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Previous</button><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Next</button></div></div></div>';
       host.after(controls);
       let current = 1;
       const size = controls.querySelector("select"),
@@ -2063,13 +2111,13 @@
     if (page === "programs" || page === "departments")
       paginateTable("entity-list");
     if (page === "dashboard") {
-      if (!document.querySelector(".dashboard-panels")) {
+      if (!document.querySelector(".dashboard-layout")) {
         const quick = document.querySelector(".quick-links").closest("section"),
           pending = document
             .getElementById("pending-applications")
             .closest("section");
         const panels = document.createElement("div");
-        panels.className = "dashboard-panels";
+        panels.className = "dashboard-layout";
         quick.before(panels);
         pending.classList.add("card");
         panels.append(quick, pending);
@@ -2183,3 +2231,6 @@
 </body>
 
 </html>
+
+
+

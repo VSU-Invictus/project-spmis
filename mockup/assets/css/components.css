@@ -1,4 +1,4 @@
-/* Claude+ reusable component primitives. Load after global.css. */
+﻿/* Claude+ reusable component primitives. Load after global.css. */
 
 /* Dashboard guide: a shared dark workspace for every raw HTML page. */
 body {
@@ -24,11 +24,16 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
     height: 100vh !important;
     max-height: 100vh !important;
     margin: 0 !important;
-    border: 1px solid #D97251 !important;
+    border: none !important;
     box-sizing: border-box !important;
     border-radius: 0 !important;
     display: flex !important;
     overflow: hidden !important;
+}
+
+/* Remove orange border specifically for faculty pages */
+body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
+    border: none !important;
 }
 
 :is(main, .app-main, [class*="main-content"], [class*="workspace"], .section-container) {
@@ -42,7 +47,7 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
 }
 
 .app > main {
-    overflow: hidden !important;
+    overflow-y: auto !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
@@ -50,6 +55,11 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
     box-sizing: border-box !important;
     height: 100% !important;
     min-width: 0 !important;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+}
+.app > main::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
 }
 
 :is(.sidebar, .app-sidebar, [class*="sidebar-container"], .sidebar-frame) {
@@ -61,6 +71,36 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
     overflow-y: auto;
 }
 
+
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+}
 
 /* ==========================================================================
    Shared Unified Sidebar Primitives (Admin & Faculty)
@@ -248,9 +288,12 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
 }
 
 .workspace-footer {
+    flex: none !important;
+    height: auto !important;
+    flex-shrink: 0;
     margin-top: auto;
-    padding-top: 1rem;
-    border-top: 1px solid #383734;
+    padding-top: 0.75rem;
+    border-top: 1px solid #42423F;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -258,6 +301,8 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
     color: #A0988E;
     width: 100%;
 }
+
+
 
 :is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog) {
     background: var(--ui-surface) !important;
@@ -276,16 +321,11 @@ body:has(:is(.app, .app-canvas, .dashboard-container)) {
     color: var(--ui-surface-muted-text) !important;
 }
 
-:is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog) a {
+:is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog) a:not(.ui-btn):not(.ui-link-neutral) {
     color: var(--primary) !important;
 }
 
-:is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog)
-    .quick-links a {
-    background: var(--ui-surface-muted) !important;
-    color: var(--ui-surface-text) !important;
-    border: 1px solid var(--ui-surface-border) !important;
-}
+
 
 :is(.ui-card, .card, [class*="card"], [class*="panel"], .table-container, dialog)
     .pending-item {
@@ -360,10 +400,58 @@ table tbody tr:last-child td {
 }
 
 table input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
     width: 1rem;
     height: 1rem;
-    accent-color: var(--primary);
+    border: 1px solid var(--border) !important;
+    border-radius: 4px;
+    background-color: transparent !important;
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, border-color 0.2s;
+    margin: 0;
+    vertical-align: middle;
 }
+table input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+table input[type="checkbox"]:checked {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+table input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: var(--primary-foreground);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
+}
+table input[type="checkbox"]:indeterminate {
+    background-color: color-mix(in srgb, var(--foreground) 10%, transparent) !important;
+    border-color: var(--border) !important;
+}
+table input[type="checkbox"]:indeterminate::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: var(--foreground);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
+}
+
+/* Highlight checked rows */
+table tbody tr:has(input[type="checkbox"]:checked) {
+    background-color: var(--muted) !important;
+}
+
 
 :is(input, select, textarea) {
     background: var(--muted) !important;
@@ -375,9 +463,7 @@ table input[type="checkbox"] {
     color: var(--muted-foreground) !important;
 }
 
-button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
-    border-color: var(--primary);
-}
+
 
 .ui-card {
     background: var(--card);
@@ -516,7 +602,11 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
     background: color-mix(in srgb, var(--primary) 88%, var(--foreground));
 }
 
-.ui-btn:focus-visible,
+.ui-btn:focus-visible {
+    outline: 2px solid var(--border);
+    outline-offset: 2px;
+}
+
 .ui-input:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
@@ -568,6 +658,36 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
     .ui-card--interactive {
         transition: none;
     }
+}
+
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
 }
 
 /* ==========================================================================
@@ -784,6 +904,36 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
     text-decoration: underline;
 }
 
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+}
+
 /* ==========================================================================
    Status Badges & Indicator Chips (.ui-badge)
    ========================================================================== */
@@ -829,9 +979,39 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 
 .ui-badge--neutral,
 .ui-badge-neutral {
-    background: var(--muted);
+    background: color-mix(in srgb, var(--foreground) 8%, var(--card));
     color: var(--muted-foreground);
-    border-color: var(--border);
+    border-color: color-mix(in srgb, var(--foreground) 20%, transparent);
+}
+
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
 }
 
 /* ==========================================================================
@@ -916,7 +1096,7 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 
 .ui-table-page-btn:hover:not(:disabled) {
     background: var(--accent);
-    border-color: var(--primary);
+    border-color: var(--border);
     color: var(--foreground);
 }
 
@@ -926,10 +1106,40 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 }
 
 .ui-table-page-btn.active {
-    background: var(--primary);
-    color: var(--primary-foreground);
-    border-color: var(--primary);
+    background: var(--accent);
+    color: var(--foreground);
+    border-color: var(--border);
     font-weight: 700;
+}
+
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
 }
 
 /* ==========================================================================
@@ -978,8 +1188,8 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 }
 
 .ui-chat-prompt-btn:hover {
-    border-color: var(--primary);
-    background: color-mix(in srgb, var(--primary) 8%, var(--muted));
+    border-color: var(--border);
+    background: var(--muted);
     transform: translateY(-1px);
 }
 
@@ -994,24 +1204,53 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    min-height: 280px;
-    max-height: 480px;
     overflow-y: auto;
-    padding: 1rem;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    overflow-x: hidden;
 }
 
 .ui-chat-msg {
     display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    font: 400 0.875rem/1.5 var(--font-sans);
+    box-sizing: border-box;
+}
+
+.ui-chat-msg--ai {
+}
+
+.ui-chat-msg--user {
+    justify-content: flex-end;
+}
+
+
+
+.ui-chat-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--muted);
+}
+
+.ui-chat-avatar--text {
+    background: color-mix(in srgb, var(--primary) 20%, var(--card));
+    color: var(--primary);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ui-chat-msg-content {
+    display: flex;
     flex-direction: column;
     gap: 0.375rem;
     max-width: 85%;
-    padding: 1rem 1.125rem;
-    border-radius: var(--radius-md);
-    font: 400 0.875rem/1.55 var(--font-sans);
-    box-sizing: border-box;
 }
 
 .ui-chat-msg-header {
@@ -1019,38 +1258,115 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
-    margin-bottom: 0.25rem;
 }
 
 .ui-chat-msg-sender {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    color: var(--primary);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--primary); /* The orange from the screenshot */
 }
 
 .ui-chat-msg-time {
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     color: var(--muted-foreground);
 }
 
-.ui-chat-msg--ai {
-    align-self: flex-start;
-    background: var(--muted);
-    color: var(--foreground);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--primary);
+.ui-chat-bubble {
+    position: relative;
+    padding: 0.875rem 1rem;
+    border-radius: 1.25rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.ui-chat-msg--user {
-    align-self: flex-end;
-    background: color-mix(in srgb, var(--primary) 15%, var(--card));
-    color: var(--foreground);
-    border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+.ui-chat-bubble--ai {
+    background: #F4F4F5;
+    color: #18181b;
+    border-top-left-radius: 0.25rem;
 }
 
-.ui-chat-msg--user .ui-chat-msg-sender {
-    color: var(--foreground);
+.ui-chat-bubble--ai::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 0;
+    width: 6px;
+    height: 12px;
+    background: #F4F4F5;
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+
+.ui-chat-bubble--user {
+    background: var(--primary);
+    color: #000;
+    border-top-right-radius: 0.25rem;
+}
+
+.ui-chat-bubble--user::before {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 0;
+    width: 6px;
+    height: 12px;
+    background: var(--primary);
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.ui-chat-reactions {
+    position: absolute;
+    right: 12px;
+    bottom: -12px;
+    display: flex;
+    gap: 4px;
+    z-index: 1;
+}
+
+.ui-chat-reaction {
+    background: #27272a;
+    border: 2px solid var(--card);
+    border-radius: 1rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.ui-chat-file {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.25rem 0;
+}
+.ui-chat-file-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: #27272a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.ui-chat-file-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.ui-chat-file-name {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #1a1a1a;
+    line-height: 1.2;
+}
+.ui-chat-file-size {
+    font-size: 0.75rem;
+    color: rgba(0,0,0,0.6);
 }
 
 .ui-chat-input-box {
@@ -1070,7 +1386,7 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     font: 400 0.875rem/1.5 var(--font-sans);
-    resize: vertical;
+    resize: none; overflow-y: hidden;
     box-sizing: border-box;
 }
 
@@ -1127,6 +1443,36 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 .ui-chat-context-dd {
     color: var(--foreground);
     font-weight: 600;
+}
+
+
+/* Quick Link / Action Card */
+.ui-action-card {
+    display: block;
+    padding: 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--foreground);
+    background: transparent;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.ui-action-card:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--primary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-action-card-title {
+    display: block;
+    font-weight: 500;
+}
+.ui-action-card-desc {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
 }
 
 /* ==========================================================================
@@ -1250,4 +1596,301 @@ button:not(.ui-btn-secondary):not(.ui-btn-outline):not(.ui-btn-destructive) {
 
 .ui-auth-footer a:hover {
     text-decoration: underline;
+}
+
+.ui-icon { width: 1rem; height: 1rem; flex-shrink: 0; }
+.ui-chat-typing-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    height: 24px;
+    padding: 0 4px;
+}
+.ui-chat-typing-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #d4d4d8;
+    border-radius: 50%;
+    animation: typingBlink 1.4s infinite both;
+}
+.ui-chat-typing-dot:nth-child(1) { animation-delay: 0s; }
+.ui-chat-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.ui-chat-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBlink {
+    0%, 80%, 100% { opacity: 0.4; }
+    40% { opacity: 1; }
+}
+
+.ui-chat-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+.ui-chat-input-pill {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem 3.5rem 0.75rem 1.25rem;
+    background: #27272a; /* dark grayish matching screenshot */
+    border: 1px solid transparent;
+    border-radius: 2rem;
+    color: var(--foreground);
+    font: 400 0.9375rem/1.2 var(--font-sans);
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+    overflow: hidden;
+}
+.ui-chat-input-pill:focus {
+    border-color: var(--ring);
+}
+.ui-chat-input-pill::placeholder {
+    color: #a1a1aa;
+}
+.ui-chat-send-circle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #000;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.2s;
+}
+.ui-chat-send-circle:hover {
+    opacity: 0.9;
+}
+.ui-chat-send-circle svg {
+    width: 14px;
+    height: 14px;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.ui-chat-msg--user .ui-chat-msg-content {
+    margin-right: 6px;
+}
+
+
+.ui-badge--purple,
+.ui-badge-purple {
+    background: color-mix(in srgb, #8B5CF6 16%, var(--card));
+    color: #A78BFA;
+    border-color: color-mix(in srgb, #8B5CF6 32%, transparent);
+}
+
+.ui-badge--cyan,
+.ui-badge-cyan {
+    background: color-mix(in srgb, #06B6D4 16%, var(--card));
+    color: #22D3EE;
+    border-color: color-mix(in srgb, #06B6D4 32%, transparent);
+}
+
+.ui-badge--amber,
+.ui-badge-amber {
+    background: color-mix(in srgb, #F59E0B 16%, var(--card));
+    color: #FBBF24;
+    border-color: color-mix(in srgb, #F59E0B 32%, transparent);
+}
+
+.ui-badge--rose,
+.ui-badge-rose {
+    background: color-mix(in srgb, #F43F5E 16%, var(--card));
+    color: #FB7185;
+    border-color: color-mix(in srgb, #F43F5E 32%, transparent);
+}
+
+
+/* Redesigned Chat UI (Exact Match) */
+.ui-chat-avatar { display: none !important; }
+
+/* The left card containing the chat */
+/* We don't have a specific class for the left card, it's just .ui-card, but we can target .ui-chat-columns > .ui-card if needed. It already uses var(--card) */
+
+.ui-chat-msg-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+/* AI Message */
+.ui-chat-msg--ai .ui-chat-msg-content {
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--primary);
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+.ui-chat-msg--ai .ui-chat-msg-sender {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* User Message */
+.ui-chat-msg--user .ui-chat-msg-content {
+    background: color-mix(in srgb, var(--primary) 15%, var(--card));
+    border: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
+    margin-left: 4rem; /* indented from left */
+}
+.ui-chat-msg--user .ui-chat-msg-sender {
+    color: var(--foreground);
+    font-weight: 600;
+}
+.ui-chat-msg--user .ui-chat-bubble {
+    color: var(--foreground) !important;
+}
+
+.ui-chat-msg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 0.8125rem;
+}
+.ui-chat-msg-time {
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.ui-chat-bubble {
+    background: transparent !important;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    color: var(--foreground) !important;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+.ui-chat-bubble::before { display: none !important; }
+
+/* Input Box Styling */
+.ui-chat-textarea {
+    width: 100%;
+    background: var(--background); /* Darker background */
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    color: var(--foreground);
+    font: 400 0.9375rem/1.5 var(--font-sans);
+    resize: none; overflow-y: hidden;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    min-height: 70px;
+}
+.ui-chat-textarea:focus { border-color: var(--ring); }
+.ui-chat-textarea::placeholder { color: var(--muted-foreground); }
+
+.ui-chat-input-hint {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+}
+
+/* Context Card overrides to match screenshot */
+.ui-chat-context-card {
+    background: var(--background);
+    border-color: var(--border);
+}
+.ui-chat-context-avatar {
+    width: 64px;
+    height: 64px;
+    background: color-mix(in srgb, var(--primary) 15%, var(--card));
+    color: var(--primary);
+    border: none; /* No border in screenshot */
+    margin-top: 0.5rem;
+}
+.ui-chat-context-meta {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+    margin-bottom: 0;
+}
+
+/* Custom thin scrollbar for chat log */
+.ui-chat-log.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.ui-chat-log.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.ui-chat-log.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+.ui-chat-log.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
+}
+
+/* Animated Arrow for links/buttons */
+.arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+a:hover .arrow,
+button:hover .arrow,
+.ui-action-card:hover .arrow,
+.ui-card-interactive:hover .arrow,
+.ui-btn:hover .arrow,
+.ui-chat-prompt-btn:hover .arrow {
+    transform: translateX(4px);
+}
+
+.ui-link-neutral {
+    color: var(--foreground) !important;
+    text-decoration: none;
+    transition: color 150ms ease;
+}
+.ui-link-neutral:hover {
+    color: var(--primary) !important;
+}
+
+
+.ui-card-title {
+    transition: color 150ms ease;
+}
+.ui-card-interactive:hover .ui-card-title {
+    color: var(--primary) !important;
+}
+
+
+.ui-select-pill {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-color: transparent !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 9999px !important;
+    color: var(--foreground) !important;
+    padding: 0 1.75rem 0 0.875rem !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    height: 2rem !important;
+    outline: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease !important;
+}
+.ui-select-pill:hover,
+.ui-select-pill:focus {
+    background-color: var(--accent) !important;
 }

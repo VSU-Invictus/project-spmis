@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Chats · SPMIS Faculty</title>
-    <link rel="stylesheet" href="../../assets/css/global.css" />
-    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <title>Chats &middot; SPMIS Faculty</title>
+    <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
+    <link rel="stylesheet" href="../../assets/css/components.css?v=8" />
     <script src="../../assets/js/faculty-sidebar.js"></script>
     <style>
       /* Faculty layout and components. Shared colors come from assets/css/global.css. */
-      html.dark {
+    html.dark {
         color-scheme: dark;
       }
       * {
@@ -65,17 +65,13 @@
         background: var(--destructive);
         color: var(--destructive-foreground);
       }
-      :focus-visible {
-        outline: 3px solid var(--ring);
-        outline-offset: 3px;
-      }
       .app {
       width: 100vw;
       max-width: 100vw;
       height: 100vh;
       margin: 0;
       display: flex;
-      border: 1px solid #D97251;
+      
       box-sizing: border-box;
       border-radius: 0;
       overflow: hidden;
@@ -133,7 +129,6 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         box-sizing: border-box;
       }
       .eyebrow {
@@ -655,7 +650,7 @@
         margin-top: auto;
       }
       .profile-link::before {
-        content: "●";
+        content: "â—";
         position: absolute;
         left: 12px;
         top: 16px;
@@ -1062,107 +1057,116 @@
               Explore attributed reviews across students in one conversation.
             </p>
           </div>
-          <a class="button secondary" href="students.html">Browse students</a>
+                    <a class="ui-btn ui-btn-secondary" href="students.html">Browse Student</a>
         </div>
-        <div class="notice">
-          Mock conversation: replies use local sample review excerpts. No AI
-          provider is connected. Hidden and deleted reviews are excluded.
-        </div>
-        <label class="preview-controls"
-          >Response preview<select id="chat-mode">
-            <option value="normal">Sample response</option>
-            <option value="limited">Provider rate limit</option>
-          </select>
-        </label>
-        <div class="chat-prompts">
-          <button
-            type="button"
-            data-prompt="Which students have research experience?"
-          >
-            Research experience<small>Explore faculty assessments →</small>
+        <div class="ui-chat-prompts" style="margin-bottom: 1.5rem; margin-top: 1.5rem;">
+          <button type="button" class="ui-chat-prompt-btn" data-prompt="Which students have research experience?">
+            <span>Research experience</span>
+            <small>Explore faculty assessments <span class="arrow">&rarr;</span></small>
           </button>
-          <button type="button" data-prompt="Which students show teamwork?">
-            Teamwork<small>Ask across student records →</small>
+          <button type="button" class="ui-chat-prompt-btn" data-prompt="Which students show teamwork?">
+            <span>Teamwork</span>
+            <small>Ask across student records <span class="arrow">&rarr;</span></small>
           </button>
-          <button
-            type="button"
-            data-prompt="Find reviews mentioning communication."
-          >
-            Communication<small>Find relevant review excerpts →</small>
+          <button type="button" class="ui-chat-prompt-btn" data-prompt="Find reviews mentioning communication.">
+            <span>Communication</span>
+            <small>Find relevant review excerpts <span class="arrow">&rarr;</span></small>
           </button>
-          <button
-            type="button"
-            data-prompt="Which students have robotics experience?"
-          >
-            Robotics<small>Explore project experience →</small>
+          <button type="button" class="ui-chat-prompt-btn" data-prompt="Which students have robotics experience?">
+            <span>Robotics</span>
+            <small>Explore project experience <span class="arrow">&rarr;</span></small>
           </button>
         </div>
-        <div class="chat-columns">
-          <section class="card">
-            <h2>Ask across student reviews</h2>
-            <div
-              id="chat-log"
-              class="chat-log"
-              role="log"
-              aria-label="Conversation"
-              aria-live="polite"
-              tabindex="0"
-            >
-              <div class="message">
-                <strong>AI assistant</strong>What would you like to explore? Try
-                “Which students have research or teamwork experience?”
+                <div class="ui-chat-columns">
+          <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start;">
+            <div class="ui-card-header" style="margin-bottom: 1rem; flex-shrink: 0;">
+              <h3 class="ui-card-title">Ask across student reviews</h3>
+              <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
+            </div>
+            <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+            <div id="chat-log" class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 0.75rem; flex: 1; overflow-y: auto; min-height: 0;">
+              <!-- AI Message -->
+              <div class="ui-chat-msg ui-chat-msg--ai">
+                <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">AI Assistant</span>
+                    <span class="ui-chat-msg-time">10:42 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.</div>
+                </div>
+              </div>
+  
+              <!-- User Message -->
+              <div class="ui-chat-msg ui-chat-msg--user">
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">Prof. Morgan</span>
+                    <span class="ui-chat-msg-time">10:43 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--user">Which students in BS Computer Science demonstrate outstanding research contributions?</div>
+                </div>
+              </div>
+  
+              <!-- AI Message 2 -->
+              <div class="ui-chat-msg ui-chat-msg--ai">
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">AI Assistant</span>
+                    <span class="ui-chat-msg-time">10:43 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.</div>
+                </div>
               </div>
             </div>
-            <p id="generating" role="status" hidden>Generating a response…</p>
-            <div id="retry-panel" class="notice" role="alert" hidden>
-              <p>
-                The provider is temporarily rate-limited. Your question is
-                preserved. Try again shortly.
-              </p>
-              <button class="secondary" id="retry">Retry last question</button>
-              <small>
-                For this demo, switch Response preview to Sample response before
-                retrying.</small
-              >
+
+            <!-- Chat Input Area -->
+            <div class="ui-chat-input-wrapper" style="flex-shrink: 0; margin-top: 0.5rem;">
+              <form id="chat-form" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
+                <textarea class="ui-chat-textarea" id="chat-prompt" required placeholder="Type a question across student reviews..." rows="2"></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <span class="ui-chat-input-hint">Press Enter to send, Shift+Enter for new line</span>
+                  <button type="submit" class="ui-btn" id="send" aria-label="Send">
+                    Send query
+                    <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </button>
+                </div>
+              </form>
             </div>
-            <form id="chat-form" class="chat-form">
-              <label for="chat-prompt"
-                >Your question<textarea
-                  id="chat-prompt"
-                  required
-                  placeholder="Find students whose reviews mention teamwork…"
-                >
-                </textarea>
-              </label>
-              <button id="send">Send question</button>
-            </form>
-          </section>
-          <aside class="card chat-context">
-            <h2>Student quick file</h2>
-            <div class="avatar">SP</div>
-            <h3>Sam Lee Parker</h3>
-            <p class="muted">ID: 24-1-00001</p>
-            <dl>
-              <dt>Program</dt>
-              <dd>BS Computer Science</dd>
-              <dt>Review tags</dt>
-              <dd>
-                <span class="tag">research</span
-                ><span class="tag">teamwork</span>
-              </dd>
-            </dl>
-            <p class="muted">
-              Example record. This conversation can explore reviews across all
-              students.
+          </div>
+        </div>
+
+          <!-- Right: Student Quick File Context Card -->
+          <div class="ui-chat-context-card">
+            <div class="ui-chat-context-avatar">SP</div>
+            <h3 class="ui-heading-3" style="margin: 0;">Sam Lee Parker</h3>
+            <p class="ui-text-muted" style="font-size: 0.8125rem; margin-top: 0.25rem; margin-bottom: 1.5rem;">ID: 24-1-00001</p>
+  
+            <div class="ui-chat-context-meta">
+              <span class="ui-chat-context-dt">Program</span>
+              <span class="ui-chat-context-dd">BS Computer Science</span>
+              
+              <span class="ui-chat-context-dt">Year Level</span>
+              <span class="ui-chat-context-dd">3rd Year</span>
+              
+              <span class="ui-chat-context-dt">Status</span>
+              <span class="ui-chat-context-dd"><span class="ui-badge ui-badge--success">Good Standing</span></span>
+              
+              <span class="ui-chat-context-dt">Tags</span>
+              <span class="ui-chat-context-dd">
+                <span class="ui-badge ui-badge--purple">Research</span>
+                <span class="ui-badge ui-badge--cyan">Algorithms</span>
+              </span>
+            </div>
+  
+            <p class="ui-text-caption" style="margin: 1.5rem 0; text-align: center; max-width: 90%;">
+              Referenced record. Review conversations can synthesize evaluations across all enrolled students.
             </p>
-            <a class="button" href="new-review.html?id=24-1-00001"
-              >Write review</a
-            ><a
-              class="button secondary"
-              href="student-detail.html?id=24-1-00001"
-              >View student record</a
-            >
-          </aside>
+  
+            <a class="ui-btn ui-btn-outline" href="student-detail.html?id=24-1-00001" style="width: 100%; justify-content: center; text-decoration: none; border-color: var(--border);">
+              View Full Profile <span class="arrow">&rarr;</span>
+            </a>
+          </div>
         </div>
         <p class="muted">
           Use contributor assessments as context for your own decisions. Read
@@ -1174,9 +1178,11 @@
             interactions.
           </p>
         </noscript>
-            <!-- Workspace Footer -->
+            
+      
+      <!-- Workspace Footer -->
       <footer class="workspace-footer">
-        <span>© 2026 Faculty Portal. All rights reserved.</span>
+        <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
     </main>
@@ -1336,52 +1342,92 @@
         } catch {}
       }
       const students = [
-        {
-          id: "24-1-00001",
-          first: "Sam",
-          middle: "Lee",
-          last: "Parker",
-          program: "BS Computer Science",
-        },
-        {
-          id: "24-1-00002",
-          first: "Taylor",
-          middle: "",
-          last: "Reed",
-          program: "BS Computer Engineering",
-        },
-        {
-          id: "24-1-00003",
-          first: "Jordan",
-          middle: "",
-          last: "Blake",
-          program: "BS Information Systems",
-        },
-        {
-          id: "24-1-00004",
-          first: "Casey",
-          middle: "",
-          last: "Lane",
-          program: "BS Computer Science",
-        },
-        {
-          id: "24-1-00005",
-          first: "Drew",
-          middle: "",
-          last: "Hayes",
-          program: "BS Information Systems",
-        },
-      ];
-      const programs = [
-        "BS Computer Science",
-        "BS Computer Engineering",
-        "BS Information Systems",
-      ];
-      const departments = ["Computer Science", "Engineering", "Mathematics"];
-      const full = (s) =>
+            {
+                id: "24-1-00001",
+                first: "Sam",
+                middle: "Lee",
+                last: "Parker",
+                program: "BS Computer Science",
+            },
+            {
+                id: "24-1-00002",
+                first: "Taylor",
+                middle: "",
+                last: "Reed",
+                program: "BS Computer Engineering",
+            },
+            {
+                id: "24-1-00003",
+                first: "Jordan",
+                middle: "",
+                last: "Blake",
+                program: "BS Information Systems",
+            },
+            {
+                id: "24-1-00004",
+                first: "Casey",
+                middle: "",
+                last: "Lane",
+                program: "BS Computer Science",
+            },
+            {
+                id: "24-1-00005",
+                first: "Drew",
+                middle: "",
+                last: "Hayes",
+                program: "BS Information Systems",
+            },
+            { id: "24-1-00006", first: "Alex", middle: "C", last: "Smith", program: "BS Information Systems" },
+            { id: "24-1-00007", first: "Morgan", middle: "", last: "Freeman", program: "BS Computer Science" },
+            { id: "24-1-00008", first: "Casey", middle: "D", last: "Jones", program: "BS Computer Engineering" },
+            { id: "24-1-00009", first: "Riley", middle: "", last: "O'Neil", program: "BS Computer Science" },
+            { id: "24-1-00010", first: "Jamie", middle: "L", last: "Martinez", program: "BS Information Systems" },
+            { id: "24-1-00011", first: "Avery", middle: "", last: "Wilson", program: "BS Computer Engineering" },
+            { id: "24-1-00012", first: "Quinn", middle: "M", last: "Taylor", program: "BS Computer Science" },
+            { id: "24-1-00013", first: "Skyler", middle: "", last: "Brown", program: "BS Information Systems" },
+            { id: "24-1-00014", first: "Reese", middle: "T", last: "Davis", program: "BS Computer Engineering" },
+            { id: "24-1-00015", first: "Rowan", middle: "", last: "Miller", program: "BS Computer Science" },
+            { id: "24-1-00016", first: "Emerson", middle: "J", last: "Moore", program: "BS Information Systems" },
+            { id: "24-1-00017", first: "Finley", middle: "", last: "Anderson", program: "BS Computer Engineering" },
+            { id: "24-1-00018", first: "Dallas", middle: "R", last: "Thomas", program: "BS Computer Science" },
+            { id: "24-1-00019", first: "Dakota", middle: "", last: "Jackson", program: "BS Information Systems" },
+            { id: "24-1-00020", first: "Peyton", middle: "S", last: "White", program: "BS Computer Engineering" }
+        ];
+const programs = [
+    "BS Computer Science",
+    "BS Computer Engineering",
+    "BS Information Systems",
+    "BS Data Science",
+    "BS Artificial Intelligence",
+    "BS Cybersecurity",
+    "BS Software Engineering",
+    "BA Digital Media",
+    "BS Applied Mathematics",
+    "BA Game Design",
+    "BS Physics",
+    "BS Chemistry",
+    "BS Biology"
+];
+const departments = [
+    "Computer Science",
+    "Engineering",
+    "Mathematics",
+    "Data Science",
+    "Information Technology",
+    "Cybersecurity",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Digital Arts",
+    "Software Engineering",
+    "Applied Sciences",
+    "Humanities",
+    "Business Administration"
+];
+      const getColor = (t) => ({ research: "purple", robotics: "rose", teamwork: "amber", communication: "cyan", algorithms: "cyan", leadership: "amber" }[t.toLowerCase()] || "neutral");
+        const full = (s) =>
         `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
-      const badge = (s) =>
-        `<span class="badge ${esc(s)}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
+      const badge = (s) => `<span class="ui-badge ui-badge--${s === 'approved' ? 'success' : s === 'pending' ? 'warning' : s === 'rejected' ? 'destructive' : 'neutral'}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
       document
         .querySelectorAll("[data-name]")
         .forEach((e) => (e.textContent = state.name));
@@ -1440,7 +1486,7 @@
           if (mode === "loading") {
             $("#roster-results").innerHTML =
               '<div role="status" aria-label="Loading students"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>';
-            $("#page-label").textContent = "Loading students…";
+            $("#page-label").textContent = "Loading studentsâ€¦";
             $("#previous").disabled = $("#next").disabled = true;
             return;
           }
@@ -1482,12 +1528,12 @@
                 .slice((current - 1) * size, current * size)
                 .map(
                   (s) =>
-                    `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="tag">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review</a></td></tr>`,
+                    `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review</a></td></tr>`,
                 )
                 .join("")}</tbody></table></div>`
             : '<div class="card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
           $("#page-label").textContent = matches.length
-            ? `Page ${current} of ${total} · ${matches.length} students`
+            ? `Page ${current} of ${total} &middot; ${matches.length} students`
             : "0 students";
           $("#previous").disabled = current === 1;
           $("#next").disabled = current === total;
@@ -1601,7 +1647,7 @@
                 visible
                   .map(
                     (r) =>
-                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="badge">Hidden · Only you</span>' : '<span class="badge approved">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "&middot; You" : ""}</h3><small>${esc(r.department)} &middot; ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden &middot; Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version &middot; ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                   )
                   .join("") ||
                 '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
@@ -1739,7 +1785,7 @@
             p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
           );
           $("#entity-list").innerHTML = filtered.length
-            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button class="secondary" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
+            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
             : '<p class="empty">No matching entries. Try another name.</p>';
         }
         $("#entity-search").oninput = render;
@@ -1779,7 +1825,7 @@
                 ? "Program edit"
                 : "Program proposal"
               : "Department proposal",
-            original ? `${original} → ${name}` : name,
+            original ? `${original} <span class="arrow">&rarr;</span> ${name}` : name,
             { original, name },
           );
           $("#proposal-dialog").close();
@@ -1814,26 +1860,51 @@
           lastPrompt = "";
         function message(role, body) {
           const item = document.createElement("div");
-          item.className = "message " + (role === "You" ? "user" : "");
-          const title = document.createElement("strong");
-          title.textContent = role;
-          item.append(title, document.createTextNode(body));
-          $("#chat-log").append(item);
-          $("#chat-log").scrollTop = $("#chat-log").scrollHeight;
+          item.className = "ui-chat-msg " + (role === "You" ? "ui-chat-msg--user" : "ui-chat-msg--ai");
+
+          if (role !== "You") {
+              const avatar = document.createElement("div");
+              avatar.className = "ui-chat-avatar ui-chat-avatar--text";
+              avatar.textContent = "SP";
+              item.appendChild(avatar);
+          }
+          
+          const msgContent = document.createElement("div");
+          msgContent.className = "ui-chat-msg-content";
+
+          const header = document.createElement("div");
+          header.className = "ui-chat-msg-header";
+          
+          const title = document.createElement("span");
+          title.className = "ui-chat-msg-sender";
+          title.textContent = role === "You" ? "Prof. Morgan" : role;
+          
+          const time = document.createElement("span");
+          time.className = "ui-chat-msg-time";
+          time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          header.append(title, time);
+          
+          const bubble = document.createElement("div");
+          bubble.className = "ui-chat-bubble " + (role === "You" ? "ui-chat-bubble--user" : "ui-chat-bubble--ai");
+          bubble.style.whiteSpace = "pre-wrap";
+          bubble.innerHTML = body;
+          
+          msgContent.append(header, bubble);
+          item.appendChild(msgContent);
+          
+          document.getElementById("chat-log").append(item);
+          document.getElementById("chat-log").scrollTop = document.getElementById("chat-log").scrollHeight;
         }
+
         function generate() {
           busy = true;
           $("#send").disabled = true;
-          $("#retry-panel").hidden = true;
           $("#generating").hidden = false;
           setTimeout(() => {
             busy = false;
             $("#send").disabled = false;
             $("#generating").hidden = true;
-            if ($("#chat-mode").value === "limited") {
-              $("#retry-panel").hidden = false;
-              return;
-            }
             const active = state.reviews.filter((r) => r.status === "active");
             const terms = lastPrompt
               .toLowerCase()
@@ -1846,7 +1917,7 @@
             );
             const sample = (relevant.length ? relevant : active).slice(0, 3);
             message(
-              "AI assistant · Sample response",
+              "AI Assistant",
               sample.length
                 ? "For this mockup, here are active review excerpts" +
                     (relevant.length
@@ -1856,7 +1927,7 @@
                     sample
                       .map(
                         (r) =>
-                          `${full(students.find((s) => s.id === r.student))} — ${r.body}\nContributor: ${r.owner === "self" ? state.name : r.author}`,
+                          `${full(students.find((s) => s.id === r.student))} &mdash; ${r.body}\nContributor: ${r.owner === "self" ? state.name : r.author}`,
                       )
                       .join("\n\n") +
                     "\n\nThese are attributed faculty opinions. Open the student record to review the full context."
@@ -1877,6 +1948,7 @@
           lastPrompt = prompt;
           message("You", prompt);
           $("#chat-prompt").value = "";
+          $("#chat-prompt").style.height = "auto";
           generate();
         };
         $("#retry").onclick = () => {
@@ -1892,9 +1964,10 @@
         const host = document.getElementById(containerId);
         if (!host) return;
         const controls = document.createElement("div");
-        controls.className = "pagination";
+        controls.className = "ui-table-pagination";
+          controls.style.cssText = "border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;";
         controls.innerHTML =
-          '<label>Rows per page<select aria-label="Rows per page"><option>2</option><option selected>5</option><option>10</option><option>25</option></select></label><button class="secondary" type="button">Previous</button><span role="status"></span><button class="secondary" type="button">Next</button>';
+            '<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;"><span style="color: var(--muted-foreground); font-size: 0.875rem;"></span><div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;"><div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"><span>Rows per page</span><div style="position: relative; display: flex; align-items: center;"><select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem;"><option value="5" selected>5</option><option value="10">10</option><option value="20">20</option></select><svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><span role="status" style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"></span><div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;"><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Previous</button><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Next</button></div></div></div>';
         host.after(controls);
         let current = 1;
         const size = controls.querySelector("select"),
@@ -1914,7 +1987,7 @@
             current +
             " of " +
             pages +
-            " · " +
+            " &middot; " +
             rows.length +
             " entries";
           buttons[0].disabled = current === 1;
@@ -1966,7 +2039,7 @@
               (a) =>
                 '<div class="pending-item"><div><strong>' +
                 esc(a.type) +
-                " · " +
+                " &middot; " +
                 esc(a.name) +
                 "</strong><small>Submitted " +
                 esc(a.date) +
@@ -2053,5 +2126,22 @@
           });
       })();
     </script>
-  </body>
+  
+<script>
+  // Auto-resize chat textarea
+  document.querySelectorAll('.ui-chat-textarea').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
+    // Trigger once on load
+    textarea.dispatchEvent(new Event('input'));
+  });
+</script>
+</body>
 </html>
+
+
+
+
+
