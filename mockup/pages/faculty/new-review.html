@@ -1278,9 +1278,27 @@
           identity is always visible with your review.
         </p>
         <div class="form-group" style="margin-bottom: 16px;">
-          <label for="review-text" style="margin-bottom: 6px;">Review text</label>
-          <textarea id="review-text" required
-            placeholder="Describe how you worked with this student and what you observed."></textarea>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px;">
+            <label for="review-text" style="margin-bottom: 0;">Review text</label>
+            <div style="display: flex; gap: 4px;">
+              <button type="button" id="tab-write" class="secondary" style="padding: 2px 10px; font-size: 11px; border-radius: 6px; background: var(--ui-surface); border-color: var(--primary);">Write</button>
+              <button type="button" id="tab-preview" class="secondary" style="padding: 2px 10px; font-size: 11px; border-radius: 6px; opacity: 0.7;">Preview</button>
+            </div>
+          </div>
+          <div id="editor-container">
+            <div class="rich-text-toolbar" style="display: flex; gap: 4px; padding: 6px 8px; background: var(--ui-surface-muted, #2a2a28); border: 1px solid var(--input, #3d3d3a); border-bottom: none; border-top-left-radius: var(--radius-sm, 6px); border-top-right-radius: var(--radius-sm, 6px); align-items: center;">
+              <button type="button" class="toolbar-btn" data-format="bold" title="Bold (**text**)" style="background: transparent; border: 1px solid transparent; padding: 3px 8px; color: var(--foreground); cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px;">B</button>
+              <button type="button" class="toolbar-btn" data-format="italic" title="Italic (*text*)" style="background: transparent; border: 1px solid transparent; padding: 3px 8px; color: var(--foreground); cursor: pointer; border-radius: 4px; font-style: italic; font-size: 12px;">I</button>
+              <div style="width: 1px; height: 16px; background: var(--ui-surface-border, #484844); margin: 0 4px;"></div>
+              <button type="button" class="toolbar-btn" data-format="bullet" title="Bullet List (- item)" style="background: transparent; border: 1px solid transparent; padding: 3px 8px; color: var(--foreground); cursor: pointer; border-radius: 4px; font-size: 12px;">• List</button>
+              <button type="button" class="toolbar-btn" data-format="number" title="Numbered List (1. item)" style="background: transparent; border: 1px solid transparent; padding: 3px 8px; color: var(--foreground); cursor: pointer; border-radius: 4px; font-size: 12px;">1. List</button>
+              <div style="margin-left: auto; font-size: 11px; color: var(--ui-surface-muted-text, #a0988e);">Supports bold, italic, lists &amp; line breaks</div>
+            </div>
+            <textarea id="review-text" required
+              placeholder="Describe how you worked with this student and what you observed."
+              style="margin-top: 0; border-top-left-radius: 0; border-top-right-radius: 0;"></textarea>
+            <div id="review-preview" style="display: none; min-height: 160px; padding: 11px 12px; background: var(--muted); border: 1px solid var(--input); border-radius: var(--radius-sm); color: var(--foreground); margin-top: 0; line-height: 1.6;"></div>
+          </div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
             <small class="muted">Constructive feedback grounded in student coursework.</small>
             <small id="review-limit-counter" class="muted" style="font-variant-numeric: tabular-nums;">
@@ -1806,6 +1824,103 @@
             updateWordCounter();
           };
           updateWordCounter();
+
+          function renderRichText(text) {
+            if (!text) return "";
+            let safe = esc(text);
+            safe = safe.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+            safe = safe.replace(/\*([^*\n]+?)\*/g, "<em>$1</em>");
+            const lines = safe.split(/\r?\n/);
+            let inUl = false;
+            let inOl = false;
+            const result = [];
+            for (const line of lines) {
+              const ulMatch = line.match(/^[-*]\s+(.*)$/);
+              const olMatch = line.match(/^\d+\.\s+(.*)$/);
+              if (ulMatch) {
+                if (inOl) { result.push("</ol>"); inOl = false; }
+                if (!inUl) { result.push("<ul style='margin: 6px 0; padding-left: 20px;'>"); inUl = true; }
+                result.push(`<li>${ulMatch[1]}</li>`);
+              } else if (olMatch) {
+                if (inUl) { result.push("</ul>"); inUl = false; }
+                if (!inOl) { result.push("<ol style='margin: 6px 0; padding-left: 20px;'>"); inOl = true; }
+                result.push(`<li>${olMatch[1]}</li>`);
+              } else {
+                if (inUl) { result.push("</ul>"); inUl = false; }
+                if (inOl) { result.push("</ol>"); inOl = false; }
+                result.push(line);
+              }
+            }
+            if (inUl) result.push("</ul>");
+            if (inOl) result.push("</ol>");
+            return result.join("<br>");
+          }
+
+          function applyFormatting(format) {
+            const textarea = $("#review-text");
+            if (!textarea) return;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const val = textarea.value;
+            const selected = val.substring(start, end);
+            let replacement = "";
+
+            if (format === "bold") {
+              replacement = selected ? `**${selected}**` : `**bold text**`;
+            } else if (format === "italic") {
+              replacement = selected ? `*${selected}*` : `*italic text*`;
+            } else if (format === "bullet") {
+              if (selected) {
+                replacement = selected.split("\n").map(l => l.startsWith("- ") ? l : `- ${l}`).join("\n");
+              } else {
+                replacement = "\n- List item";
+              }
+            } else if (format === "number") {
+              if (selected) {
+                replacement = selected.split("\n").map((l, i) => `${i + 1}. ${l}`).join("\n");
+              } else {
+                replacement = "\n1. List item";
+              }
+            }
+            textarea.setRangeText(replacement, start, end, "end");
+            textarea.focus();
+            updateWordCounter();
+          }
+
+          document.querySelectorAll(".toolbar-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+              applyFormatting(btn.dataset.format);
+            });
+          });
+
+          const tabWrite = $("#tab-write");
+          const tabPreview = $("#tab-preview");
+          const reviewPreview = $("#review-preview");
+          const reviewText = $("#review-text");
+          const toolbar = $(".rich-text-toolbar");
+
+          if (tabWrite && tabPreview && reviewPreview && reviewText) {
+            tabWrite.addEventListener("click", () => {
+              tabWrite.style.opacity = "1";
+              tabWrite.style.borderColor = "var(--primary)";
+              tabPreview.style.opacity = "0.7";
+              tabPreview.style.borderColor = "";
+              reviewText.style.display = "block";
+              if (toolbar) toolbar.style.display = "flex";
+              reviewPreview.style.display = "none";
+            });
+
+            tabPreview.addEventListener("click", () => {
+              tabPreview.style.opacity = "1";
+              tabPreview.style.borderColor = "var(--primary)";
+              tabWrite.style.opacity = "0.7";
+              tabWrite.style.borderColor = "";
+              reviewText.style.display = "none";
+              if (toolbar) toolbar.style.display = "none";
+              reviewPreview.innerHTML = renderRichText(reviewText.value) || '<span class="muted" style="font-style: italic;">Nothing to preview</span>';
+              reviewPreview.style.display = "block";
+            });
+          }
           const attachmentInput = document.getElementById("review-attachment-input");
           const attachmentStatus = document.getElementById("attachment-status");
           const attachmentChips = document.getElementById("attachment-chips");
@@ -1835,7 +1950,7 @@
               visible
                 .map(
                   (r) =>
-                    `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                    `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><div class="review-body">${renderRichText(r.body)}</div><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><div class="review-body">${renderRichText(h.body)}</div><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                 )
                 .join("") ||
               '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
