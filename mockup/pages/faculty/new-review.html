@@ -1082,6 +1082,22 @@
               need approval.</small
             >
           </label>
+          <div class="form-group" style="margin-top: 18px; margin-bottom: 20px;">
+            <label style="margin-bottom: 6px;">Attachments (optional)
+              <small style="color: var(--sidebar-foreground); margin-top: 4px; display: block;">Upload supporting files, notes, or rubrics.</small>
+            </label>
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
+              <label for="review-attachment-input" class="button secondary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-weight: normal; font-size: 13px; margin: 0; width: auto;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                </svg>
+                <span>Attach files</span>
+                <input type="file" id="review-attachment-input" multiple style="display: none;" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+              </label>
+              <span id="attachment-status" class="muted" style="font-size: 13px;">No files chosen</span>
+            </div>
+            <div id="attachment-chips" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;"></div>
+          </div>
           <p class="muted">
             A new review is active immediately. You can edit, hide, or delete
             your own review from the student page.
@@ -1553,9 +1569,25 @@ const departments = [
               save();
               location.href = "student-detail.html?id=" + selected.id;
             };
-          if (page === "new-review")
+          if (page === "new-review") {
             $("#review-text").oninput = () =>
               $("#review-text").setCustomValidity("");
+            const attachmentInput = document.getElementById("review-attachment-input");
+            const attachmentStatus = document.getElementById("attachment-status");
+            const attachmentChips = document.getElementById("attachment-chips");
+            if (attachmentInput) {
+              attachmentInput.addEventListener("change", () => {
+                const files = Array.from(attachmentInput.files || []);
+                if (files.length === 0) {
+                  attachmentStatus.textContent = "No files chosen";
+                  attachmentChips.innerHTML = "";
+                } else {
+                  attachmentStatus.textContent = `${files.length} file${files.length > 1 ? "s" : ""} selected`;
+                  attachmentChips.innerHTML = files.map(f => `<span class="ui-badge ui-badge--neutral" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 12px; border-radius: 6px;">📄 ${esc(f.name)} <small style="opacity: 0.7;">(${(f.size / 1024).toFixed(1)} KB)</small></span>`).join("");
+                }
+              });
+            }
+          }
           if (page === "student-detail") {
             $("#new-review-link").href = "new-review.html?id=" + selected.id;
             function renderReviews() {
