@@ -655,6 +655,11 @@
             opacity: 0.9;
         }
 
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+        }
+
         .stat strong,
         .eyebrow,
         th {
@@ -1233,7 +1238,7 @@
                     <h1>Students</h1>
                     <p>Browse students and search the text of active reviews.</p>
                 </div>
-                <a class="ui-btn" href="register-student.html">+ Register student</a>
+                <button type="button" class="ui-btn" id="open-register-modal">+ Register student</button>
             </div>
             <div class="filters">
                 <label><span class="sr-only">Search students or review text</span><input id="search" type="search"
@@ -1277,6 +1282,22 @@
         <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
+
+      <!-- Route-backed Register Student Modal Overlay -->
+      <dialog id="register-student-modal" style="width: min(600px, calc(100% - 32px)); padding: 0; background: var(--ui-surface, #232321); border: 1px solid var(--ui-surface-border, #3d3d3a); border-radius: 14px; color: var(--foreground); box-shadow: 0 16px 40px rgba(0,0,0,0.6);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 20px 24px; border-bottom: 1px solid var(--ui-surface-border, #3d3d3a);">
+          <div>
+            <h2 style="margin: 0; font-size: 18px; font-weight: 650; color: var(--ui-surface-text);">Register a student</h2>
+            <p class="muted" style="margin: 4px 0 0; font-size: 13px;">Apply to add a new student to the independent SPMIS roster.</p>
+          </div>
+          <button type="button" id="close-register-modal" class="secondary" style="border: none; padding: 6px; cursor: pointer; color: var(--muted-foreground); border-radius: 6px; display: inline-flex;" aria-label="Close modal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div id="register-modal-body" style="padding: 24px;">
+          <!-- Registration form content -->
+        </div>
+      </dialog>
     </main>
     </div>
     <script>
@@ -1670,6 +1691,31 @@ const programs = [
                 '<option value="">All tags</option>' +
                 tags.map((t) => `<option>${esc(t)}</option>`).join("");
             loadStudents();
+
+            // Register Student Modal Controls
+            const registerModal = document.getElementById("register-student-modal");
+            const openRegisterBtn = document.getElementById("open-register-modal");
+            const closeRegisterBtn = document.getElementById("close-register-modal");
+
+            if (openRegisterBtn && registerModal) {
+                openRegisterBtn.addEventListener("click", () => {
+                    registerModal.showModal();
+                });
+            }
+            if (closeRegisterBtn && registerModal) {
+                closeRegisterBtn.addEventListener("click", () => {
+                    registerModal.close();
+                });
+            }
+            if (registerModal) {
+                registerModal.addEventListener("click", (e) => {
+                    const rect = registerModal.getBoundingClientRect();
+                    const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+                    if (!isInDialog) {
+                        registerModal.close();
+                    }
+                });
+            }
         }
         const selected =
             students.find(
