@@ -1306,10 +1306,18 @@
             </small>
           </div>
         </div>
-        <label for="review-tags">Tags (optional)<input id="review-tags" placeholder="research teamwork communication" />
-          <small>Separate tags with spaces. Tags are saved in lowercase and do not
-            need approval.</small>
-        </label>
+        <div class="form-group" style="position: relative; margin-bottom: 16px;">
+          <label for="tag-input" style="margin-bottom: 6px;">Tags (optional)</label>
+          <div id="tag-input-box" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 10px; background: var(--muted); border: 1px solid var(--input); border-radius: var(--radius-sm); min-height: 42px; cursor: text;">
+            <div id="tag-chips-list" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+            <input id="tag-input" placeholder="Type to search or add tag..." style="flex: 1; min-width: 140px; border: none; background: transparent; padding: 4px; margin: 0; outline: none; box-shadow: none; font-size: 13px;" autocomplete="off" />
+          </div>
+          <div id="tag-suggestions" style="display: none; position: absolute; z-index: 50; left: 0; right: 0; top: 100%; margin-top: 4px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 4px 12px rgba(0,0,0,0.4); max-height: 190px; overflow-y: auto;"></div>
+          <small class="muted" style="display: block; margin-top: 5px;">
+            Select from suggestions or type a custom tag and press Enter.
+          </small>
+          <input type="hidden" id="review-tags" name="tags" value="" />
+        </div>
         <div class="form-group" style="margin-top: 18px; margin-bottom: 20px;">
           <label style="margin-bottom: 6px;">Attachments (optional)
             <small style="color: var(--sidebar-foreground); margin-top: 4px; display: block;">Upload supporting files,
@@ -1933,6 +1941,92 @@
               } else {
                 attachmentStatus.textContent = `${files.length} file${files.length > 1 ? "s" : ""} selected`;
                 attachmentChips.innerHTML = files.map(f => `<span class="ui-badge ui-badge--neutral" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 12px; border-radius: 6px;">📄 ${esc(f.name)} <small style="opacity: 0.7;">(${(f.size / 1024).toFixed(1)} KB)</small></span>`).join("");
+              }
+            });
+          }
+          // Tag autocomplete logic
+          const tagInput = document.getElementById("tag-input");
+          const tagSuggestions = document.getElementById("tag-suggestions");
+          const tagInputBox = document.getElementById("tag-input-box");
+          const hiddenTagsInput = document.getElementById("review-tags");
+          const allKnownTags = Array.from(new Set([
+            "research", "teamwork", "communication", "robotics", "algorithms", "leadership", "mentorship",
+            ...state.reviews.flatMap(r => r.tags || [])
+          ])).filter(Boolean);
+
+          let currentTags = [];
+
+          function addTag(rawTag) {
+            if (!rawTag) return;
+            const tag = rawTag.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+            if (tag && !currentTags.includes(tag)) {
+              currentTags.push(tag);
+              if (hiddenTagsInput) hiddenTagsInput.value = currentTags.join(" ");
+              renderTagChips();
+            }
+            if (tagInput) {
+              tagInput.value = "";
+              tagInput.focus();
+            }
+            if (tagSuggestions) tagSuggestions.style.display = "none";
+          }
+
+          function renderTagChips() {
+            const list = document.getElementById("tag-chips-list");
+            if (!list) return;
+            list.innerHTML = currentTags.map(t => `<span class="ui-badge ui-badge--${getColor(t)}" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 12px;">#${esc(t)}</span>`).join("");
+          }
+
+          function showSuggestions(filterText = "") {
+            const query = filterText.trim().toLowerCase();
+            const filtered = allKnownTags.filter(t => !currentTags.includes(t) && (!query || t.toLowerCase().includes(query)));
+            if (!tagSuggestions) return;
+
+            let html = "";
+            if (filtered.length > 0) {
+              html += `<div style="padding: 6px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--sidebar-foreground); border-bottom: 1px solid var(--border);">Suggested tags</div>`;
+              filtered.forEach(t => {
+                html += `<div class="tag-suggestion-item" data-tag="${esc(t)}" style="padding: 8px 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: 13px; border-bottom: 1px solid var(--ui-surface-border, #333);">
+                  <span>${esc(t)}</span>
+                  <span class="ui-badge ui-badge--${getColor(t)}" style="font-size: 10px;">suggested</span>
+                </div>`;
+              });
+            }
+            if (query && !allKnownTags.includes(query) && !currentTags.includes(query)) {
+              html += `<div class="tag-suggestion-item" data-tag="${esc(query)}" style="padding: 8px 12px; cursor: pointer; font-size: 13px; color: var(--primary);">
+                + Create new tag "<strong>${esc(query)}</strong>"
+              </div>`;
+            }
+
+            if (html) {
+              tagSuggestions.innerHTML = html;
+              tagSuggestions.style.display = "block";
+              tagSuggestions.querySelectorAll(".tag-suggestion-item").forEach(item => {
+                item.addEventListener("mouseenter", () => {
+                  item.style.backgroundColor = "color-mix(in srgb, var(--primary) 12%, var(--card))";
+                });
+                item.addEventListener("mouseleave", () => {
+                  item.style.backgroundColor = "transparent";
+                });
+                item.addEventListener("mousedown", (e) => {
+                  e.preventDefault();
+                  addTag(item.dataset.tag);
+                });
+              });
+            } else {
+              tagSuggestions.style.display = "none";
+            }
+          }
+
+          if (tagInput && tagSuggestions) {
+            tagInput.addEventListener("input", () => showSuggestions(tagInput.value));
+            tagInput.addEventListener("focus", () => showSuggestions(tagInput.value));
+            if (tagInputBox) {
+              tagInputBox.addEventListener("click", () => tagInput.focus());
+            }
+            document.addEventListener("click", (e) => {
+              if (tagInputBox && !tagInputBox.contains(e.target) && !tagSuggestions.contains(e.target)) {
+                tagSuggestions.style.display = "none";
               }
             });
           }
