@@ -1295,7 +1295,45 @@
           </button>
         </div>
         <div id="register-modal-body" style="padding: 24px;">
-          <!-- Registration form content -->
+          <div class="notice" style="margin-bottom: 18px; font-size: 13px;">
+            Registration requires physical verification by an administrator outside the system. Your application stays pending until the admin approves it.
+          </div>
+          <form id="registration-form">
+            <label style="margin-bottom: 14px;">Student ID number
+              <input id="student-id" required maxlength="40" placeholder="e.g. 24-1-00006" />
+            </label>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+              <label style="margin-bottom: 0;">First name
+                <input id="first-name" required maxlength="80" autocomplete="off" />
+              </label>
+              <label style="margin-bottom: 0;">Last name
+                <input id="last-name" required maxlength="80" autocomplete="off" />
+              </label>
+            </div>
+            <label style="margin-bottom: 14px;">Middle name (optional)
+              <input id="middle-name" maxlength="80" autocomplete="off" />
+            </label>
+            <label style="margin-bottom: 16px;">Program
+              <select id="program" required></select>
+              <small class="muted" style="margin-top: 4px; display: block;">Choose an approved program. A missing program can be proposed from the Programs page.</small>
+            </label>
+            <p id="registration-status" role="status" style="color: var(--destructive); margin: 8px 0; font-size: 13px;"></p>
+            <div class="actions" style="margin-top: 20px;">
+              <button type="submit" style="background-color: white; color: black;">Submit application</button>
+              <button type="button" class="secondary" id="cancel-register-btn">Cancel</button>
+            </div>
+          </form>
+          <section id="registration-success" hidden style="text-align: center; padding: 16px 0;">
+            <span class="ui-badge ui-badge--warning" style="margin-bottom: 12px;">Pending</span>
+            <h3 style="margin: 8px 0; font-size: 18px;">Registration application submitted</h3>
+            <p class="muted" style="font-size: 13px; max-width: 440px; margin: 0 auto 20px;">
+              The student will appear in the roster after admin approval. You can track this in your applications.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+              <a class="button" href="applications.html" style="background: white; color: black;">View my applications</a>
+              <button type="button" class="button secondary" id="modal-done-btn">Back to students</button>
+            </div>
+          </section>
         </div>
       </dialog>
     </main>
@@ -1696,6 +1734,63 @@ const programs = [
             const registerModal = document.getElementById("register-student-modal");
             const openRegisterBtn = document.getElementById("open-register-modal");
             const closeRegisterBtn = document.getElementById("close-register-modal");
+
+            // Populate programs in modal
+            const programSelect = document.getElementById("program");
+            if (programSelect) {
+                programSelect.innerHTML = programs.map(p => `<option>${p}</option>`).join("");
+            }
+
+            const regForm = document.getElementById("registration-form");
+            const regSuccess = document.getElementById("registration-success");
+            const cancelBtn = document.getElementById("cancel-register-btn");
+            const modalDoneBtn = document.getElementById("modal-done-btn");
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => registerModal.close());
+            }
+            if (modalDoneBtn) {
+                modalDoneBtn.addEventListener("click", () => {
+                    registerModal.close();
+                    if (regForm) regForm.hidden = false;
+                    if (regSuccess) regSuccess.hidden = true;
+                });
+            }
+
+            if (regForm) {
+                regForm.onsubmit = (e) => {
+                    e.preventDefault();
+                    const fields = ["student-id", "first-name", "last-name"];
+                    const regStatus = document.getElementById("registration-status");
+                    if (fields.some((id) => !$("#" + id).value.trim())) {
+                        if (regStatus) regStatus.textContent = "Enter the required student ID, first name, and last name.";
+                        return;
+                    }
+                    const id = $("#student-id").value.trim();
+                    if (
+                        students.some((s) => s.id.toLowerCase() === id.toLowerCase()) ||
+                        state.applications.some(
+                            (a) =>
+                                a.type === "Student registration" &&
+                                a.status === "pending" &&
+                                a.payload?.id?.toLowerCase() === id.toLowerCase(),
+                        )
+                    ) {
+                        if (regStatus) regStatus.textContent = "This student ID already exists or has a pending registration.";
+                        return;
+                    }
+                    const payload = {
+                        id,
+                        first: $("#first-name").value.trim(),
+                        middle: $("#middle-name").value.trim(),
+                        last: $("#last-name").value.trim(),
+                        program: $("#program").value,
+                    };
+                    addApplication("Student registration", full(payload), payload);
+                    regForm.hidden = true;
+                    if (regSuccess) regSuccess.hidden = false;
+                };
+            }
 
             if (openRegisterBtn && registerModal) {
                 openRegisterBtn.addEventListener("click", () => {
