@@ -1792,14 +1792,55 @@ const programs = [
                 };
             }
 
+            function isRegisterRoute() {
+                const params = new URLSearchParams(window.location.search);
+                return params.has("register") || params.get("modal") === "register" || window.location.hash === "#register";
+            }
+
+            function openModal(updateRoute = true) {
+                if (!registerModal.open) {
+                    registerModal.showModal();
+                }
+                if (updateRoute) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set("register", "true");
+                    history.pushState({ modal: "register" }, "", url.toString());
+                }
+            }
+
+            function closeModal(updateRoute = true) {
+                if (registerModal.open) {
+                    registerModal.close();
+                }
+                if (updateRoute) {
+                    const url = new URL(window.location.href);
+                    if (url.searchParams.has("register") || url.searchParams.get("modal") === "register" || url.hash === "#register") {
+                        url.searchParams.delete("register");
+                        url.searchParams.delete("modal");
+                        if (url.hash === "#register") url.hash = "";
+                        history.pushState({}, "", url.toString());
+                    }
+                }
+            }
+
             if (openRegisterBtn && registerModal) {
                 openRegisterBtn.addEventListener("click", () => {
-                    registerModal.showModal();
+                    openModal(true);
                 });
             }
             if (closeRegisterBtn && registerModal) {
                 closeRegisterBtn.addEventListener("click", () => {
-                    registerModal.close();
+                    closeModal(true);
+                });
+            }
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => closeModal(true));
+            }
+            if (modalDoneBtn) {
+                modalDoneBtn.addEventListener("click", () => {
+                    closeModal(true);
+                    if (regForm) regForm.hidden = false;
+                    if (regSuccess) regSuccess.hidden = true;
                 });
             }
             if (registerModal) {
@@ -1807,9 +1848,27 @@ const programs = [
                     const rect = registerModal.getBoundingClientRect();
                     const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
                     if (!isInDialog) {
-                        registerModal.close();
+                        closeModal(true);
                     }
                 });
+                registerModal.addEventListener("cancel", (e) => {
+                    e.preventDefault();
+                    closeModal(true);
+                });
+            }
+
+            // Sync with browser back/forward buttons
+            window.addEventListener("popstate", () => {
+                if (isRegisterRoute()) {
+                    openModal(false);
+                } else {
+                    closeModal(false);
+                }
+            });
+
+            // Auto-open if navigating directly with register route or query parameter
+            if (isRegisterRoute()) {
+                openModal(false);
             }
         }
         const selected =
