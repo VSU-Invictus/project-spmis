@@ -1062,23 +1062,23 @@
         <div class="ui-chat-prompts" style="margin-bottom: 1.5rem; margin-top: 1.5rem;">
           <button type="button" class="ui-chat-prompt-btn" data-prompt="Which students have research experience?">
             <span>Research experience</span>
-            <small>Explore faculty assessments <span class="arrow">&rarr;</span></small>
+            <small>Explore faculty assessments</small>
           </button>
           <button type="button" class="ui-chat-prompt-btn" data-prompt="Which students show teamwork?">
             <span>Teamwork</span>
-            <small>Ask across student records <span class="arrow">&rarr;</span></small>
+            <small>Ask across student records</small>
           </button>
           <button type="button" class="ui-chat-prompt-btn" data-prompt="Find reviews mentioning communication.">
             <span>Communication</span>
-            <small>Find relevant review excerpts <span class="arrow">&rarr;</span></small>
+            <small>Find relevant review excerpts</small>
           </button>
           <button type="button" class="ui-chat-prompt-btn" data-prompt="Which students have robotics experience?">
             <span>Robotics</span>
-            <small>Explore project experience <span class="arrow">&rarr;</span></small>
+            <small>Explore project experience</small>
           </button>
         </div>
                 <div class="ui-chat-columns">
-          <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start;">
+          <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start; min-height: 400px; max-height: 85vh;">
             <div class="ui-card-header" style="margin-bottom: 1rem; flex-shrink: 0;">
               <h3 class="ui-card-title">Ask across student reviews</h3>
               <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
@@ -1900,11 +1900,11 @@ const departments = [
         function generate() {
           busy = true;
           $("#send").disabled = true;
-          $("#generating").hidden = false;
+          if ($("#generating")) $("#generating").hidden = false;
           setTimeout(() => {
             busy = false;
             $("#send").disabled = false;
-            $("#generating").hidden = true;
+            if ($("#generating")) $("#generating").hidden = true;
             const active = state.reviews.filter((r) => r.status === "active");
             const terms = lastPrompt
               .toLowerCase()
@@ -2138,6 +2138,33 @@ const departments = [
     textarea.dispatchEvent(new Event('input'));
   });
 </script>
+
+    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Action successful!</span>
+    </div>
+    <script>
+        function showSuccessToast(message) {
+            const toast = document.getElementById('global-success-toast');
+            const msgEl = document.getElementById('toast-message');
+            if(toast && msgEl) {
+                msgEl.textContent = message || 'Action successful!';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form').forEach(f => {
+                f.addEventListener('submit', (e) => { e.preventDefault(); showSuccessToast('Successfully submitted!'); });
+            });
+            document.querySelectorAll('button').forEach(b => {
+                if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
+                    b.addEventListener('click', (e) => { if(b.type !== 'submit') showSuccessToast('Action completed successfully!'); });
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
 

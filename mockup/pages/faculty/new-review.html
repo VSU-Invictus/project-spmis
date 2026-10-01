@@ -1052,7 +1052,7 @@
             <p>Share an assessment grounded in your work with this student.</p>
           </div>
         </div>
-        <form id="review-form" class="narrow card">
+        <form id="review-form" class="narrow ui-card">
           <section>
             <h2 data-student-name>Sam Lee Parker</h2>
             <p class="muted">
@@ -1450,10 +1450,10 @@ const departments = [
                 .slice((current - 1) * size, current * size)
                 .map(
                   (s) =>
-                    `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review</a></td></tr>`,
+                    `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review <span class="arrow">&rarr;</span></a></td></tr>`,
                 )
                 .join("")}</tbody></table></div>`
-            : '<div class="card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
+            : '<div class="ui-card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
           $("#page-label").textContent = matches.length
             ? `Page ${current} of ${total} · ${matches.length} students`
             : "0 students";
@@ -1569,10 +1569,10 @@ const departments = [
                 visible
                   .map(
                     (r) =>
-                      `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                      `<article class="ui-card review ${r.status ==="hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                   )
                   .join("") ||
-                '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
+                '<div class="ui-card empty">No visible reviews yet. Be the first to write one.</div>';
             }
             let editing, deleting;
             $("#reviews").onclick = (e) => {
@@ -1707,7 +1707,7 @@ const departments = [
             p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
           );
           $("#entity-list").innerHTML = filtered.length
-            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
+            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;" data-propose-edit="${esc(p)}">Apply to edit <span class="arrow">&rarr;</span></button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
             : '<p class="empty">No matching entries. Try another name.</p>';
         }
         $("#entity-search").oninput = render;
@@ -2017,7 +2017,45 @@ const departments = [
           });
       })();
     </script>
-  </body>
+  
+    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Action successful!</span>
+    </div>
+    <script>
+        function showSuccessToast(message) {
+            const toast = document.getElementById('global-success-toast');
+            const msgEl = document.getElementById('toast-message');
+            if(toast && msgEl) {
+                msgEl.textContent = message || 'Action successful!';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+        
+        // Auto-wire forms and add buttons for the mockup
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form').forEach(f => {
+                f.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    showSuccessToast('Successfully submitted!');
+                });
+            });
+            
+            // For admin tables or faculty modals
+            document.querySelectorAll('button').forEach(b => {
+                if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
+                    b.addEventListener('click', (e) => {
+                        if(b.type !== 'submit') {
+                            showSuccessToast('Action completed successfully!');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
 </html>
 
 
