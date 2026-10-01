@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **UI:** Added zero-blink smooth page transitions across admin portal pages using the View Transitions API (`view-transition-name: portal-sidebar`) and link hover prefetching (`admin-sidebar.js`).
+- **UI:** Added skeleton shimmer loading animation (`.skeleton-row`, `.skeleton-bar`) and interactive loading simulation across Admin and Faculty data tables (`admin-table.js`).
+- **UI:** Added empty-state recovery container (`.empty-state`, `.empty-state-btn`) with one-click filter reset across data tables.
+- **UI:** Added live row selection counter ("X of Y row(s) selected") and custom checkbox management to Admin portal tables.
+- **Docs:** Synchronized `DESIGN_SYSTEM.md` with living style guide `design-system.html`, adding comprehensive documentation for the 12 UI sections including Table Controls Toolbar, Skeleton Shimmers, Empty States, Docked Sidebar Navigation, Modals/Dialogs, and Workspace Frame.
 - **UI:** Added Shadcn-style "Rows per page" dropdown pill to table pagination.
 - **UI:** Added client-side static JavaScript pagination engine to `design-system.html` for interactive mockups.
 - **UI:** Row click selection for data tables (`242e95c`).
@@ -24,6 +29,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Added "see/unsee" password visibility toggle on password and confirm-password inputs in the sign-up form (`d95578d`).
 
 ### Changed
+- **UI:** Standardized all entity creation actions (`.add-button`) across Admin and Faculty portals (Add Student, Add Faculty, Add Department, Add Program, Register Student, Propose Program) with unified terracotta background (`#D97251`), bold black text (`#000000`), 38px height, and standard SVG plus icon.
+- **UI:** Updated Portal Sidebar navigation dark mode palette to exact specifications: `#1F1E1D` sidebar background, `#181716` border, active item with `#D97251` terracotta background and bold black text/icon (`#000000`), and inactive items with `#98938D` text and `rgba(255,255,255,0.05)` hover background.
+- **UI:** Replaced circular avatar bubbles in data table rows with clean, accessible typography (`<strong>Name</strong>` + `<span class="muted">email</span>`).
+- **UI:** Generalized design system badges and chips into 4 portal-agnostic semantic groups (Operational & Lifecycle, Entity Classification & Origin, Audit Activity & Mutation Events, Domain & Competency Assessment).
+- **UI:** Merged Workspace Frame section in the design system to unify the top header status bar, toast feedback notifications, and pinned viewport footer (`.workspace-footer`).
+- **UI:** Standardized dashboard and table action links with right arrows across Admin and Faculty portals to use `.ui-link-neutral` with smooth 4px animated glide.
 - **UI:** Standardized data table pagination limits to 5, 10, and 20, defaulting to 5 rows per page globally.
 - **UI:** Streamlined the Design System tables showcase by removing redundant Program and Department mockups.
 - **UI:** Standardized interactive cards and extracted global arrow animations (`70da99c`).
@@ -42,6 +53,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Merged `dev` into `mockup-public/auth-signin`, reconciling sign-in and sign-up page changes and removing the unused `SPMIS_LM.png` icon (`0e0658a`).
 
 ### Fixed
+- **UI:** Fixed text truncation on Department filter dropdowns by expanding width to `195px` so "Department of..." displays fully without clipping ("Departmen...").
+- **UI:** Fixed page switching blink and flickering in the Admin portal by pre-rendering persistent sidebar markup and integrating client-side prefetching.
+- **UI:** Fixed `.nav-btn-active` font and icon color overrides in `components.css` to enforce high-contrast black text (`#000000 !important`).
 - **UI:** Fixed table pagination chevron vertical alignment by enforcing `min-width: 4rem` and restoring flexbox positioning.
 - **Bug:** Resolved severe Javascript `SyntaxError` in the Faculty portal rendering engine caused by string literal newlines, restoring all tables.
 - **UI:** Removed outdated quick action buttons from the Faculty Applications page.
