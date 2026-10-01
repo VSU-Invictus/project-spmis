@@ -519,6 +519,28 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     background: var(--muted);
 }
 
+/* Reusable pending-queue summary card */
+.queue-summary-card {
+    border-radius: 4px;
+    box-shadow: inset 4px 0 0 #77736D, 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+.queue-summary-card--yellow {
+    box-shadow: inset 4px 0 0 #F0D35A, 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+.queue-summary-card--zero {
+    box-shadow: inset 4px 0 0 #77736D, 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+.queue-summary-card__count--zero {
+    color: #77736D;
+}
+
+.queue-summary-card--red {
+    box-shadow: inset 4px 0 0 #C94A4A, 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
 :is(.ui-card-sm, .ui-card--sm) {
     padding: 1rem !important;
 }

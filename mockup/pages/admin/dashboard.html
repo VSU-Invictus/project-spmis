@@ -157,65 +157,48 @@
                     </p>
                 </header>
 
-                <!-- Top Stats Grid Row -->
-                <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-3">
-                    
-                    <!-- Card 1: Pending Student Applications -->
-                    <div class="ui-card ui-card--interactive p-3 flex flex-col justify-between h-[96px]">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Students</span>
-                            <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
-                        </div>
-                        <div class="flex items-end justify-between">
-                            <span class="text-[26px] font-bold text-cod-gray leading-7">3</span>
-                            <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
-                                queue
-                            </span>
-                        </div>
-                    </div>
+                <!-- Pending Approval Queue Summary -->
+                <section class="mb-4">
+                    <h2 class="mb-3 text-[15px] font-bold text-white leading-6">Pending Approval Queue</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
-                    <!-- Card 2: Pending Department Applications -->
-                    <div class="ui-card ui-card--interactive p-3 flex flex-col justify-between h-[96px]">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Departments</span>
-                            <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
-                        </div>
-                        <div class="flex items-end justify-between">
-                            <span class="text-[26px] font-bold text-cod-gray leading-7">2</span>
-                            <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
-                                queue
+                        <!-- Card 1: Pending Student Applications -->
+                        <a href="student-applications.html" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                            <span class="flex flex-col gap-0.5">
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Students</span>
+                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
                             </span>
-                        </div>
-                    </div>
+                            <span class="text-[28px] font-bold text-[#F0D35A] leading-8">3</span>
+                        </a>
 
-                    <!-- Card 3: Pending Program Applications -->
-                    <div class="ui-card ui-card--interactive p-3 flex flex-col justify-between h-[96px]">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Programs</span>
-                            <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
-                        </div>
-                        <div class="flex items-end justify-between">
-                            <span class="text-[26px] font-bold text-cod-gray leading-7">4</span>
-                            <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
-                                queue
+                        <!-- Card 2: Pending Department Applications -->
+                        <a href="department-applications.html" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                            <span class="flex flex-col gap-0.5">
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Departments</span>
+                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
                             </span>
-                        </div>
-                    </div>
+                            <span class="text-[28px] font-bold text-[#F0D35A] leading-8">2</span>
+                        </a>
 
-                    <!-- Card 4: Pending Faculty Applications -->
-                    <div class="ui-card ui-card--interactive p-3 flex flex-col justify-between h-[96px]">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Faculty</span>
-                            <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
-                        </div>
-                        <div class="flex items-end justify-between">
-                            <span class="text-[26px] font-bold text-cod-gray leading-7">5</span>
-                            <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
-                                queue
+                        <!-- Card 3: Pending Program Applications -->
+                        <a href="program-applications.html" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                            <span class="flex flex-col gap-0.5">
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Programs</span>
+                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
                             </span>
-                        </div>
-                    </div>
+                            <span class="text-[28px] font-bold text-[#C94A4A] leading-8">4</span>
+                        </a>
 
+                        <!-- Card 4: Pending Faculty Applications -->
+                        <a href="faculty-applications.html" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                            <span class="flex flex-col gap-0.5">
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Faculty</span>
+                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
+                            </span>
+                            <span class="text-[28px] font-bold text-[#C94A4A] leading-8">5</span>
+                        </a>
+
+                    </div>
                 </section>
 
                 <!-- Split View Content Section -->
