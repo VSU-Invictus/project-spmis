@@ -96,7 +96,7 @@
             <nav class="nav flex flex-col gap-[3px]" id="sidebar-nav" aria-label="Admin navigation">
 
                 <!-- 1. Dashboard -->
-                <a href="../../pages/admin/dashboard.html" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/dashboard.html" data-nav-key="dashboard" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
                         stroke-width="2">
@@ -109,8 +109,7 @@
                 </a>
 
                 <!-- 2. Students -->
-                <!-- 2. Students -->
-                <a href="../../pages/admin/students.html" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/students.html" data-nav-key="students" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -121,8 +120,22 @@
                     <span>Students</span>
                 </a>
 
-                <!-- 7. Departments -->
-                <a href="../../pages/admin/departments.html" onclick="setActiveNav(this)"
+                <!-- 3. Student Applications -->
+                <a href="../../pages/admin/student-applications.html" data-nav-key="student-applications" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 4h4v4"></path>
+                        <path d="M14 10l6-6"></path>
+                        <path d="M20 14v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7"></path>
+                        <path d="M9 7h1"></path>
+                        <path d="M9 12h6"></path>
+                        <path d="M9 17h6"></path>
+                    </svg>
+                    <span>Student Applications</span>
+                </a>
+
+                <!-- 4. Departments -->
+                <a href="../../pages/admin/departments.html" data-nav-key="departments" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="21" x2="21" y2="21"></line>
@@ -135,8 +148,19 @@
                     <span>Departments</span>
                 </a>
 
-                <!-- 8. Programs -->
-                <a href="../../pages/admin/programs.html" onclick="setActiveNav(this)"
+                <!-- 5. Department Applications -->
+                <a href="../../pages/admin/department-applications.html" data-nav-key="department-applications" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <path d="M7 8h10"></path>
+                        <path d="M7 12h7"></path>
+                    </svg>
+                    <span>Department Applications</span>
+                </a>
+
+                <!-- 6. Programs -->
+                <a href="../../pages/admin/programs.html" data-nav-key="programs" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -145,8 +169,20 @@
                     <span>Programs</span>
                 </a>
 
-                <!-- 9. Faculty -->
-                <a href="../../pages/admin/faculty.html" onclick="setActiveNav(this)"
+                <!-- 7. Program Applications -->
+                <a href="../../pages/admin/program-applications.html" data-nav-key="program-applications" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        <path d="M9 7h7"></path>
+                        <path d="M9 11h7"></path>
+                    </svg>
+                    <span>Program Applications</span>
+                </a>
+
+                <!-- 8. Faculty -->
+                <a href="../../pages/admin/faculty.html" data-nav-key="faculty" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -155,8 +191,20 @@
                     <span>Faculty</span>
                 </a>
 
+                <!-- 9. Faculty Applications -->
+                <a href="../../pages/admin/faculty-applications.html" data-nav-key="faculty-applications" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                        <path d="M18 7h2"></path>
+                        <path d="M19 6v2"></path>
+                    </svg>
+                    <span>Faculty Applications</span>
+                </a>
+
                 <!-- 10. Audit Log -->
-                <a href="../../pages/admin/audit-log.html" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/audit-log.html" data-nav-key="audit-log" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -213,19 +261,16 @@
             element.setAttribute('aria-current', 'page');
         }
 
-        // Auto-detect current active page from parent URL
-        try {
-            const currentPath = (window.parent.location.pathname || window.location.pathname).toLowerCase();
-            document.querySelectorAll('#sidebar-nav a').forEach(link => {
-                const href = (link.getAttribute('href') || '').toLowerCase();
-                const pageName = href.substring(href.lastIndexOf('/') + 1);
-                if (pageName && currentPath.endsWith(pageName)) {
-                    setActiveNav(link);
-                }
-            });
-        } catch (e) {
-            // Fallback for security / cross-origin
-        }
+        // Determine the current page from the iframe query string so the correct sidebar item stays selected.
+        const params = new URLSearchParams(window.location.search || '');
+        const activeKey = (params.get('active') || 'dashboard').toLowerCase();
+
+        document.querySelectorAll('#sidebar-nav a').forEach(link => {
+            const key = (link.dataset.navKey || '').toLowerCase();
+            if (key === activeKey) {
+                setActiveNav(link);
+            }
+        });
 
         // Custom Logout Dialog logic
         function handleLogout(event) {
