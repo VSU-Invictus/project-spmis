@@ -354,10 +354,6 @@
             color: color-mix(in srgb, var(--primary) 80%, #ffffff);
         }
 
-        
-
-        
-
         /* ---------- Reuse .ui-auth-* primitives ---------- */
         .auth-card .ui-auth-wrapper { width: 100%; max-width: none; }
 
@@ -405,9 +401,67 @@
             padding-right: 12.5rem;
         }
 
+        /* Password input with toggle needs extra right padding */
+        .ui-auth-field[data-field="password"] .ui-input {
+            padding-right: 3rem;
+        }
+
         .auth-card .ui-input:focus {
             border-color: var(--ring);
             box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 25%, transparent);
+        }
+
+        /* ==========================================================
+           PASSWORD TOGGLE (show / hide) — copied from signup
+           ========================================================== */
+        .ui-pwd-toggle {
+            position: absolute;
+            top: 50%;
+            right: 0.875rem;
+            transform: translateY(-50%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: color .15s ease, background-color .15s ease;
+            z-index: 4;
+        }
+
+        .ui-pwd-toggle:hover {
+            color: var(--foreground);
+            background: color-mix(in srgb, var(--foreground) 8%, transparent);
+        }
+
+        .ui-pwd-toggle:focus-visible {
+            outline: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
+            outline-offset: 2px;
+        }
+
+        .ui-pwd-toggle svg {
+            width: 16px;
+            height: 16px;
+            display: block;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.75;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .ui-pwd-toggle .icon-eye-off { display: none; }
+        .ui-pwd-toggle.is-visible .icon-eye { display: none; }
+        .ui-pwd-toggle.is-visible .icon-eye-off { display: block; }
+
+        /* When a field has an error popup visible, hide the toggle so it doesn't overlap */
+        .ui-auth-field:has(.ui-field-popup.is-visible) .ui-pwd-toggle {
+            display: none;
         }
 
         .auth-card .ui-auth-btn-submit {
@@ -1205,6 +1259,18 @@
                                     </div>
                                     <div class="ui-input-wrap">
                                         <input type="password" id="auth-pwd" class="ui-input" placeholder="••••••••••••" required />
+                                        <button type="button" class="ui-pwd-toggle" data-pwd-toggle="auth-pwd" aria-label="Show password" aria-pressed="false">
+                                            <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                                <circle cx="12" cy="12" r="3"/>
+                                            </svg>
+                                            <svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                                                <line x1="1" y1="1" x2="23" y2="23"/>
+                                            </svg>
+                                        </button>
                                         <div class="ui-field-popup" role="alert" aria-live="polite">
                                             <span class="ui-field-popup-icon" aria-hidden="true">!</span>
                                             <span class="ui-field-popup-text">Please fill in this field.</span>
@@ -1337,6 +1403,24 @@
     </div>
 
     <script>
+        // ==========================================================
+        // PASSWORD VISIBILITY TOGGLE (added to signin)
+        // ==========================================================
+        document.querySelectorAll('.ui-pwd-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = document.getElementById(btn.dataset.pwdToggle);
+                if (!input) return;
+                const show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                btn.classList.toggle('is-visible', show);
+                btn.setAttribute('aria-pressed', String(show));
+                btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+                // Keep the cursor at the end of the value
+                const len = input.value.length;
+                try { input.setSelectionRange(len, len); } catch (_) {}
+            });
+        });
+
         const overlay = document.getElementById('google-overlay');
         const googleSteps = [...document.querySelectorAll('[data-google-step]')];
         const googleEmailForm = document.getElementById('google-email-form');
