@@ -1,9 +1,26 @@
-﻿/* Claude+ reusable component primitives. Load after global.css. */
+/* Claude+ reusable component primitives. Load after global.css. */
 
 /* Dashboard guide: a shared dark workspace for every raw HTML page. */
 body {
     background: var(--background) !important;
     color: var(--foreground) !important;
+}
+
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 180ms;
+    animation-timing-function: ease-out;
+}
+
+#sidebar-menu,
+.sidebar,
+.sidebar-frame,
+[data-component="sidebar-faculty"] {
+    view-transition-name: portal-sidebar;
 }
 
 body:has(:is(.app, .app-canvas, .dashboard-container)) {
@@ -44,6 +61,13 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     height: 100%;
     overflow: hidden;
     box-sizing: border-box;
+}
+
+.section-container {
+    height: 100% !important;
+    padding: 16px 24px !important;
+    overflow: hidden !important;
+    background: var(--background) !important;
 }
 
 .app > main {
@@ -111,7 +135,7 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     min-width: 260px !important;
     max-width: 260px !important;
     height: 100vh !important;
-    background: var(--sidebar, #21201E) !important;
+    background: var(--sidebar, #1F1E1D) !important;
     color: var(--sidebar-foreground, #FFFFFF) !important;
     border-right: 1px solid var(--sidebar-border, #181716) !important;
     padding: 1rem !important;
@@ -177,7 +201,7 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
 :is(.sidebar, .app-sidebar) .nav a[aria-current="page"],
 .nav-btn-active {
     background-color: var(--primary, #D97251) !important;
-    color: var(--primary-foreground, #FFFFFF) !important;
+    color: #000000 !important;
     font-weight: 700 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
 }
@@ -287,6 +311,35 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     width: 100%;
 }
 
+dialog.logout-dialog .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+dialog.logout-dialog button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--primary);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    padding: 10px 16px;
+    color: var(--primary-foreground);
+    font: inherit;
+    font-weight: 650;
+    cursor: pointer;
+}
+
+dialog.logout-dialog button.secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--foreground);
+}
+
 .workspace-footer {
     flex: none !important;
     height: auto !important;
@@ -300,6 +353,10 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     font-size: 11px;
     color: #A0988E;
     width: 100%;
+}
+
+:is(.sidebar-frame, iframe#sidebar-menu) {
+    background: #21201E;
 }
 
 
@@ -355,6 +412,7 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
 
 table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     background: var(--ui-surface) !important;
     color: var(--ui-surface-text) !important;
@@ -413,7 +471,7 @@ table input[type="checkbox"] {
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s, border-color 0.2s;
-    margin: 0;
+    margin: 0 auto !important;
     vertical-align: middle;
 }
 table input[type="checkbox"]:focus-visible {
@@ -427,6 +485,8 @@ table input[type="checkbox"]:checked {
 table input[type="checkbox"]:checked::after {
     content: "";
     position: absolute;
+    inset: 0;
+    margin: auto;
     width: 12px;
     height: 12px;
     background-color: var(--primary-foreground);
@@ -440,6 +500,8 @@ table input[type="checkbox"]:indeterminate {
 table input[type="checkbox"]:indeterminate::after {
     content: "";
     position: absolute;
+    inset: 0;
+    margin: auto;
     width: 12px;
     height: 12px;
     background-color: var(--foreground);
@@ -448,7 +510,8 @@ table input[type="checkbox"]:indeterminate::after {
 }
 
 /* Highlight checked rows */
-table tbody tr:has(input[type="checkbox"]:checked) {
+table tbody tr:has(input[type="checkbox"]:checked),
+table tbody tr.checked {
     background-color: var(--muted) !important;
 }
 
@@ -605,6 +668,36 @@ table tbody tr:has(input[type="checkbox"]:checked) {
 .ui-btn:focus-visible {
     outline: 2px solid var(--border);
     outline-offset: 2px;
+}
+
+/* Standardized Admin Header Action Add Buttons (.btn-add, .add-button, #addButton.ui-btn) */
+:is(.btn-add, .add-button, #addButton.ui-btn) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 18px !important;
+    background: var(--primary, #D97251) !important;
+    color: #000000 !important;
+    border: 1px solid var(--primary, #D97251) !important;
+    border-radius: 12px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    font-family: var(--font-sans, 'Outfit', sans-serif) !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    transform: none !important;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease !important;
+}
+
+:is(.btn-add, .add-button, #addButton.ui-btn):hover {
+    background: color-mix(in srgb, var(--primary) 88%, var(--foreground)) !important;
+    color: #000000 !important;
+    border-color: color-mix(in srgb, var(--primary) 88%, var(--foreground)) !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .ui-input:focus-visible {
@@ -1024,16 +1117,17 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     background: var(--card);
 }
 
-:is(.ui-table, table.ui-table) {
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     background: var(--card);
     color: var(--card-foreground);
     text-align: left;
 }
 
-:is(.ui-table, table.ui-table) th {
-    padding: 0.875rem 1rem;
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) th {
+    padding: 0.875rem 1rem !important;
     background: var(--muted);
     color: var(--muted-foreground);
     font-size: 0.75rem;
@@ -1041,20 +1135,40 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+    box-sizing: border-box;
 }
 
-:is(.ui-table, table.ui-table) td {
-    padding: 0.875rem 1rem;
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) td {
+    padding: 0.875rem 1rem !important;
     font-size: 0.875rem;
     color: var(--card-foreground);
     border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: middle;
+    box-sizing: border-box;
 }
 
-:is(.ui-table, table.ui-table) tbody tr:last-child td {
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td):first-child:has(input[type="checkbox"]),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td):has(.select-all-checkbox),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td):has(.row-checkbox),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td).checkbox-cell {
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) tbody tr:last-child td {
     border-bottom: 0;
 }
 
-:is(.ui-table, table.ui-table) tbody tr:hover {
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) tbody tr:hover {
     background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
 }
 
@@ -1062,6 +1176,8 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
     padding: 0.75rem 1rem;
     border-top: 1px solid var(--border);
     background: var(--card);
@@ -1075,6 +1191,7 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-left: auto;
 }
 
 .ui-table-page-btn {
@@ -1187,11 +1304,7 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
 }
 
-.ui-chat-prompt-btn:hover {
-    border-color: var(--border);
-    background: var(--muted);
-    transform: translateY(-1px);
-}
+.ui-chat-prompt-btn:hover { border-color: var(--border) !important; background: var(--muted) !important; transform: none !important; }
 
 .ui-chat-prompt-btn small {
     margin-top: 0.375rem;
@@ -1219,6 +1332,7 @@ table tbody tr:has(input[type="checkbox"]:checked) {
 }
 
 .ui-chat-msg--ai {
+    justify-content: flex-start;
 }
 
 .ui-chat-msg--user {
@@ -1857,13 +1971,37 @@ button:hover .arrow,
     transform: translateX(4px);
 }
 
+:is(a, button).ui-link-neutral,
 .ui-link-neutral {
     color: var(--foreground) !important;
-    text-decoration: none;
+    text-decoration: none !important;
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     transition: color 150ms ease;
 }
+
+:is(a, button).ui-link-neutral:hover,
 .ui-link-neutral:hover {
     color: var(--primary) !important;
+    text-decoration: none !important;
+}
+
+:is(a, button).ui-link-neutral .arrow,
+.ui-link-neutral .arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+:is(a, button).ui-link-neutral:hover .arrow,
+.ui-link-neutral:hover .arrow {
+    transform: translateX(4px);
 }
 
 
@@ -1894,3 +2032,424 @@ button:hover .arrow,
 .ui-select-pill:focus {
     background-color: var(--accent) !important;
 }
+
+
+/* --- 10. SUCCESS TOASTS --- */
+.ui-toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    color: var(--foreground);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.ui-toast.show {
+    transform: translateX(0);
+}
+
+
+.pill-btn {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    padding: 7px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--ui-surface-border, #3E3D39);
+    background: var(--ui-surface-muted, #21201E);
+    color: var(--ui-surface-text, #FFFFFF);
+    font-size: 12px;
+    line-height: 16px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn.pagination {
+    padding: 6px 16px;
+}
+
+.pill-btn.accept {
+    background: #2c7e39;
+    border-color: #2c7e39;
+    color: #fff;
+}
+
+.pill-btn.reject {
+    background: #f9464a;
+    border-color: #f9464a;
+    color: #fff;
+}
+
+
+/* ==========================================================================
+   Unified Badge & Tag Design System (Identical tag = identical color)
+   ========================================================================== */
+.badge-pill, .ui-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.25rem 0.625rem !important;
+    border-radius: 9999px !important;
+    font: 600 0.6875rem/1 var(--font-sans, 'Outfit', sans-serif) !important;
+    letter-spacing: 0.02em !important;
+    white-space: nowrap !important;
+    border: 1px solid transparent !important;
+    line-height: 1.2 !important;
+    min-height: 22px !important;
+    box-sizing: border-box !important;
+}
+
+/* Green: Approved, Active, Addition, Created, Review */
+.ui-badge--success, .ui-badge-success, .badge-approved, .type-addition, [data-tag="approved"], [data-tag="addition"], [data-tag="active"] {
+    background: color-mix(in srgb, #10B981 16%, var(--card, #21201E)) !important;
+    color: #10B981 !important;
+    border-color: color-mix(in srgb, #10B981 30%, transparent) !important;
+}
+
+/* Amber: Pending, Student, Self Registered */
+.ui-badge--warning, .ui-badge-warning, .badge-pending, [data-tag="pending"], [data-tag="student"] {
+    background: color-mix(in srgb, #F59E0B 16%, var(--card, #21201E)) !important;
+    color: #FBBF24 !important;
+    border-color: color-mix(in srgb, #F59E0B 32%, transparent) !important;
+}
+
+/* Blue: Faculty, Faculty Applied, Edit Existing, Updated */
+.ui-badge--info, .ui-badge-info, .badge-faculty, .type-edit, [data-tag="faculty"], [data-tag="edit-existing"] {
+    background: color-mix(in srgb, #3B82F6 16%, var(--card, #21201E)) !important;
+    color: #60A5FA !important;
+    border-color: color-mix(in srgb, #3B82F6 32%, transparent) !important;
+}
+
+/* Red/Coral: Admin, Admin Direct, Rejected, Removed, Destructive */
+.ui-badge--destructive, .ui-badge-destructive, .badge-admin, .badge-rejected, [data-tag="admin"], [data-tag="rejected"] {
+    background: color-mix(in srgb, #EF4444 16%, var(--card, #21201E)) !important;
+    color: #F87171 !important;
+    border-color: color-mix(in srgb, #EF4444 32%, transparent) !important;
+}
+
+/* Purple: Department */
+.ui-badge--purple, .badge-department, [data-tag="department"] {
+    background: color-mix(in srgb, #8B5CF6 16%, var(--card, #21201E)) !important;
+    color: #A78BFA !important;
+    border-color: color-mix(in srgb, #8B5CF6 32%, transparent) !important;
+}
+
+/* Cyan: Program */
+.ui-badge--cyan, .badge-program, [data-tag="program"] {
+    background: color-mix(in srgb, #06B6D4 16%, var(--card, #21201E)) !important;
+    color: #22D3EE !important;
+    border-color: color-mix(in srgb, #06B6D4 32%, transparent) !important;
+}
+
+/* Action group buttons for admin tables */
+.action-group {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.pill-btn-sm, .pill-btn.edit-btn, .pill-btn.remove-btn {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    padding: 0 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform .15s ease, background .15s ease;
+}
+
+.pill-btn-sm:hover, .pill-btn.edit-btn:hover, .pill-btn.remove-btn:hover {
+    transform: translateY(-1px);
+}
+
+.pill-btn-sm.edit, .pill-btn.edit-btn {
+    background: var(--ui-surface-muted, #21201E);
+    border: 1px solid var(--ui-surface-border, #3E3D39);
+    color: var(--ui-surface-text, #FFFFFF);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn-sm.edit:hover, .pill-btn.edit-btn:hover {
+    background: #33322E;
+}
+
+.pill-btn-sm.remove, .pill-btn.remove-btn {
+    background: #f9464a;
+    border: 1px solid #f9464a;
+    color: #fff;
+}
+
+.pill-btn-sm.remove:hover, .pill-btn.remove-btn:hover {
+    background: #d83539;
+}
+
+
+/* ==========================================================================
+   Unified Dropdown Filter Component (Consistent 120px size across admin)
+   ========================================================================== */
+.dropdown-container {
+    position: relative;
+    width: 120px !important;
+    height: 38px !important;
+    flex-shrink: 0;
+}
+
+.dropdown-container.department {
+    width: 160px !important;
+}
+
+.dropdown-container :is(.dropdown-select, select) {
+    width: 100% !important;
+    height: 38px !important;
+    padding: 0 30px 0 14px !important;
+    background: var(--muted, #21201E) !important;
+    border: 1px solid var(--input, #43362B) !important;
+    border-radius: 12px !important;
+    color: var(--foreground, #FFFFFF) !important;
+    font-size: 12px !important;
+    appearance: none !important;
+    outline: none !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+}
+
+.dropdown-container :is(.dropdown-chevron, svg) {
+    position: absolute !important;
+    right: 11px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 14px !important;
+    height: 14px !important;
+    pointer-events: none !important;
+    left: auto !important;
+}
+
+/* ==========================================================================
+   Skeleton Loading Component (from page/faculty/student)
+   ========================================================================== */
+.skeleton {
+    height: 38px;
+    margin: 8px 0;
+    background: linear-gradient(90deg,
+            var(--card, #21201E),
+            var(--input, #362923),
+            var(--card, #21201E)) !important;
+    background-size: 200% 100% !important;
+    border-radius: var(--radius-sm, 6px) !important;
+    animation: loading 1.2s infinite ease-in-out !important;
+}
+
+@keyframes loading {
+    to {
+        background-position: -200% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton {
+        animation: none !important;
+    }
+}
+
+tr.skeleton-row td {
+    padding: 16px !important;
+    border-bottom: 1px solid var(--border, #383734) !important;
+}
+
+tr.skeleton-row .skeleton {
+    height: 22px !important;
+    margin: 6px 0 !important;
+}
+
+.empty-state {
+    padding: 36px 16px;
+    text-align: center;
+    color: var(--muted-foreground, #A0988E);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.empty-state-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    border-radius: 99px;
+    background: transparent;
+    color: var(--primary, #D97251);
+    border: 1px solid var(--primary, #D97251);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms ease;
+}
+
+.empty-state-btn:hover {
+    background: var(--primary, #D97251);
+    color: var(--primary-foreground, #FFFFFF);
+}
+
+/* ==========================================================================
+   Portal Modal Overlay & Container Specification
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: overlayFadeIn 0.2s ease-out;
+}
+
+.modal-overlay.active,
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-container {
+    background: #444746;
+    border: 1px solid var(--primary, #D97251);
+    border-radius: 15px;
+    padding: 24px 32px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    position: relative;
+    color: #FFFFFF;
+    animation: modalPopIn 0.2s ease-out;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    opacity: 0.8;
+    transition: opacity 150ms ease;
+}
+
+.modal-close:hover {
+    opacity: 1;
+}
+
+.modal-title {
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: #FFFFFF;
+    text-align: center;
+    margin: 0 0 20px;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-form label {
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.modal-form input,
+.modal-form select,
+.modal-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--muted, #21201E);
+    border: 1px solid var(--input, #43362B);
+    border-radius: 12px;
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-size: 14px;
+    color: var(--foreground, #FFFFFF);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.modal-form textarea {
+    min-height: 100px;
+    resize: none;
+}
+
+.modal-form input:focus,
+.modal-form select:focus,
+.modal-form textarea:focus {
+    box-shadow: 0 0 0 2px var(--primary, #D97251);
+}
+
+.modal-submit {
+    width: 100%;
+    height: 40px;
+    margin: 12px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #343434;
+    border: 1px solid #3D3D3A;
+    border-radius: 10px;
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease;
+}
+
+.modal-submit:hover {
+    background: #2a2a2a;
+    border-color: var(--primary, #D97251);
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalPopIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
