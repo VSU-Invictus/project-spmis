@@ -1,0 +1,22 @@
+<div class="modal-overlay" id="rejectModal" aria-hidden="true">
+	<div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="rejectModalTitle">
+		<button class="modal-close" id="closeReject" type="button" aria-label="Close rejection dialog">
+			<svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+				<path d="M1 13L13 1M1 1L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+		</button>
+		<h3 class="modal-title" id="rejectModalTitle">Reject Application</h3>
+		<form class="modal-form" id="rejectForm">
+			<div class="modal-select-wrapper">
+				<label for="rejectAppSelect">Application:</label>
+				<select id="rejectAppSelect" aria-describedby="rejectReasonHint"></select>
+			</div>
+			<div>
+				<label for="rejectReason">Reason for rejection:</label>
+				<textarea id="rejectReason" placeholder="Enter reason here..." required></textarea>
+				<span id="rejectReasonHint" class="sr-only">A reason is required before rejecting the application.</span>
+			</div>
+			<button type="submit" class="modal-submit">Confirm Rejection</button>
+		</form>
+	</div>
+</div>

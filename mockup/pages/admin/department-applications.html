@@ -886,12 +886,35 @@
 
       const acceptBtn = document.querySelector('.pill-btn.accept');
       const rejectBtn = document.querySelector('.pill-btn.reject');
+      let approveModal = null;
+      const approveReady = fetch('../../components/modals/modal-approval-confirm.html')
+        .then(response => response.text())
+        .then(markup => {
+          document.body.insertAdjacentHTML('beforeend', markup);
+          approveModal = document.getElementById('approveModal');
+          const closeApprove = document.getElementById('closeApprove');
+          const cancelApprove = document.getElementById('cancelApprove');
+          const confirmApprove = document.getElementById('confirmApprove');
+          if (closeApprove) closeApprove.addEventListener('click', () => closeModal(approveModal));
+          if (cancelApprove) cancelApprove.addEventListener('click', () => closeModal(approveModal));
+          if (approveModal) {
+            approveModal.addEventListener('click', e => {
+              if (e.target === approveModal) closeModal(approveModal);
+            });
+          }
+          if (confirmApprove) {
+            confirmApprove.addEventListener('click', () => {
+              closeModal(approveModal);
+              window.setTimeout(() => showToast('Applications Approved Successfully'), 120);
+            });
+          }
+        });
 
       if (acceptBtn) {
         acceptBtn.addEventListener('click', () => {
           const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
           if (checked.length > 0) {
-            showToast('Application Accepted Successfully');
+            approveReady.then(() => openModal(approveModal));
           } else {
             showToast('Please select at least one application');
           }
