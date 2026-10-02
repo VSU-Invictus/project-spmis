@@ -47,11 +47,9 @@
                     rgba(30, 30, 29, 0.6) 0%, transparent 70%);
             background-attachment: fixed;
 
-            /* Enter Animation (Matches Sign In) */
             animation: page-in 0.4s ease-out both;
         }
 
-        /* Exit Animation (Matches Sign In) */
         body.page-exit {
             opacity: 0;
             transform: translateY(-10px) scale(.99);
@@ -138,7 +136,7 @@
         }
 
         .logo-container {
-            height: 68px;   
+            height: 68px;
             display: flex;
             align-items: center;
             flex-shrink: 0;
@@ -247,7 +245,7 @@
         }
 
         /* ── Typography ── */
-        .policy-text {
+        .terms-text {
             font-family: var(--font-mono);
             font-size: .9rem;
             line-height: 1.75;
@@ -255,32 +253,33 @@
             letter-spacing: 0.005em;
         }
 
-        .policy-text p {
+        .terms-text p {
             margin-bottom: 1.1rem;
         }
 
-        .policy-text p:last-child {
+        .terms-text p:last-child {
             margin-bottom: 0;
         }
 
-        .policy-text strong {
+        .terms-text strong {
             color: var(--text);
             font-weight: 600;
+        }
+
+        .terms-text p.section-header strong {
             display: block;
-            margin-top: 1.5rem;
+            margin-top: 1.75rem;
             margin-bottom: .5rem;
-            font-size: .95rem;
+            font-size: 1.5rem;
             letter-spacing: 0.01em;
+            padding-left: 0.85rem;
+            border-left: 2px solid var(--primary);
+            line-height: 1.35;
+            color: #faf9f5;
         }
 
-        .policy-text p:first-child strong {
+        .terms-text p.section-header:first-child strong {
             margin-top: 0;
-        }
-
-        .policy-text strong:not(:first-child)::before {
-            content: "▸ ";
-            color: var(--primary);
-            opacity: .7;
         }
 
         /* ── Responsive ── */
@@ -293,8 +292,8 @@
             }
             .logo-container { height: 60px; }
             .content-box { padding: 1.75rem 1.5rem; border-radius: 20px; }
-            .policy-text { font-size: .82rem; line-height: 1.7; }
-            .policy-text strong { font-size: .88rem; }
+            .terms-text { font-size: .82rem; line-height: 1.7; }
+            .terms-text p.section-header strong { font-size: .95rem; }
         }
     </style>
 </head>
@@ -313,39 +312,39 @@
 
         <!-- Main Content Box -->
         <main class="content-box">
-            <div class="policy-text">
-                <p><strong>SPMIS TERMS &amp; CONDITIONS</strong></p>
+            <div class="terms-text">
+                <p class="section-header"><strong>SPMIS TERMS &amp; CONDITIONS</strong></p>
 
                 <p>Please read the following terms carefully. You must accept these terms before your SPMIS account can be activated.</p>
 
-                <p><strong>1. PURPOSE OF SPMIS</strong></p>
+                <p class="section-header"><strong>1. PURPOSE OF SPMIS</strong></p>
                 <p>The Student Profiling Management Information System (SPMIS) is a university-wide system that allows faculty members to contribute review-style information about students they have taught, advised, coached, or otherwise worked with. The information in SPMIS is intended to support faculty in making decisions outside the system, including student selection, recommendation, and vetting for activities, competitions, events, tasks, and similar opportunities. SPMIS does not manage activities or opportunities themselves and is not a student-facing system.</p>
 
-                <p><strong>2. APPROPRIATE USE</strong></p>
+                <p class="section-header"><strong>2. APPROPRIATE USE</strong></p>
                 <p>SPMIS is intended for legitimate academic and institutional purposes. You agree to use information available through SPMIS responsibly and only for appropriate purposes. You must not use information in the system for unlawful, harmful, unauthorized, or otherwise inappropriate activities. You are responsible for exercising appropriate judgment when viewing, contributing, or using information obtained through SPMIS.</p>
 
-                <p><strong>3. REVIEW CONTRIBUTIONS</strong></p>
+                <p class="section-header"><strong>3. REVIEW CONTRIBUTIONS</strong></p>
                 <p>Reviews in SPMIS represent the contributor's opinions and experiences based on their relationship with the student. Reviews are not verified factual records. A review may contain free-text observations and optional tags. Contributors should provide information that is relevant to their direct experience with the student. Contributor identity is always visible. SPMIS does not provide anonymous reviews.</p>
 
-                <p><strong>4. REVIEW VISIBILITY AND CONTROL</strong></p>
+                <p class="section-header"><strong>4. REVIEW VISIBILITY AND CONTROL</strong></p>
                 <p>A faculty member retains exclusive control over the reviews they create. You may edit, hide, unhide, or delete your own reviews. Hiding a review is reversible. A hidden review is visible only to its owner and is excluded from student search results and AI-assisted research for other users. Deleting a review is irreversible within the SPMIS application. Deleted review content is no longer visible through the application, including to the review owner and System Administrators. System Administrators cannot modify, hide, unhide, or delete another faculty member's review content.</p>
 
-                <p><strong>5. STUDENT PRIVACY</strong></p>
+                <p class="section-header"><strong>5. STUDENT PRIVACY</strong></p>
                 <p>Do not include unnecessary identifying information about students or third parties in review text. SPMIS applies a de-identification process to review text before information is sent to its external AI provider. However, this process is a technical safeguard and is not a guarantee that every possible identifying detail can be removed. Contributors should therefore avoid unnecessary names, nicknames, physical descriptions, identifying circumstances, or other information that could unnecessarily identify a student or third party.</p>
 
-                <p><strong>6. AI DE-IDENTIFICATION NOTICE</strong></p>
+                <p class="section-header"><strong>6. AI DE-IDENTIFICATION NOTICE</strong></p>
                 <p>SPMIS includes an AI chatbot that can reason across the visible review corpus to assist faculty with research. Before review text is sent to the external AI provider, known student name variants are replaced with an opaque placeholder identifier. The original review text is not sent directly to the external AI provider. Only de-identified review text is used for AI retrieval and generation. Hidden and deleted reviews are excluded from the AI index and are not used by the chatbot. The de-identification process is performed within SPMIS before information crosses the system boundary.</p>
 
-                <p><strong>7. AI-ASSISTED RESEARCH</strong></p>
+                <p class="section-header"><strong>7. AI-ASSISTED RESEARCH</strong></p>
                 <p>The AI chatbot may be used to ask questions across visible faculty reviews, including questions that cannot easily be answered using structured filters. AI-generated responses are provided as an aid to faculty research and decision-making. Faculty members remain responsible for how information from SPMIS is interpreted and used. The AI chatbot does not grant access to information that the requesting faculty member is otherwise not authorized to view.</p>
 
-                <p><strong>8. TRANSPARENCY AND ACCOUNTABILITY</strong></p>
+                <p class="section-header"><strong>8. TRANSPARENCY AND ACCOUNTABILITY</strong></p>
                 <p>SPMIS maintains an audit trail of mutating system actions, including actions involving reviews and applications. Review edit history is retained and is visible to users who can view the corresponding review. Audit information does not expose protected review content. Hide, unhide, and delete events are recorded without exposing the underlying review text.</p>
 
-                <p><strong>9. ACCESS AND ACCOUNT RESPONSIBILITY</strong></p>
+                <p class="section-header"><strong>9. ACCESS AND ACCOUNT RESPONSIBILITY</strong></p>
                 <p>Faculty accounts are subject to System Administrator verification before feature access is granted. You are responsible for using your account appropriately and for the information you contribute to SPMIS. Students do not have accounts or access to SPMIS.</p>
 
-                <p><strong>10. ACCEPTANCE</strong></p>
+                <p class="section-header"><strong>10. ACCEPTANCE</strong></p>
                 <p>By accepting these Terms &amp; Conditions, you acknowledge that you have read and understood the terms above and agree to use SPMIS in accordance with them.</p>
             </div>
         </main>

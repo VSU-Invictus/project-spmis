@@ -47,11 +47,9 @@
                     rgba(30, 30, 29, 0.6) 0%, transparent 70%);
             background-attachment: fixed;
 
-            /* Enter Animation (Matches Sign In) */
             animation: page-in 0.4s ease-out both;
         }
 
-        /* Exit Animation (Matches Sign In) */
         body.page-exit {
             opacity: 0;
             transform: translateY(-10px) scale(.99);
@@ -138,7 +136,7 @@
         }
 
         .logo-container {
-            height: 68px;   
+            height: 68px;
             display: flex;
             align-items: center;
             flex-shrink: 0;
@@ -247,7 +245,7 @@
         }
 
         /* ── Typography ── */
-        .policy-text {
+        .about-text {
             font-family: var(--font-mono);
             font-size: .9rem;
             line-height: 1.75;
@@ -255,32 +253,61 @@
             letter-spacing: 0.005em;
         }
 
-        .policy-text p {
+        .about-text p {
             margin-bottom: 1.1rem;
         }
 
-        .policy-text p:last-child {
+        .about-text p:last-child {
             margin-bottom: 0;
         }
 
-        .policy-text strong {
+        .about-text strong {
             color: var(--text);
             font-weight: 600;
-            display: block;
-            margin-top: 1.5rem;
-            margin-bottom: .5rem;
-            font-size: .95rem;
-            letter-spacing: 0.01em;
         }
 
-        .policy-text p:first-child strong {
+        /* Section headers — bar + bigger */
+        .about-text p.section-header strong {
+            display: block;
+            margin-top: 1.75rem;
+            margin-bottom: .5rem;
+            font-size: 1.5rem;
+            letter-spacing: 0.01em;
+            padding-left: 0.85rem;
+            border-left: 2px solid var(--primary);
+            line-height: 1.35;
+            color: #faf9f5;
+        }
+
+        .about-text p.section-header:first-child strong {
             margin-top: 0;
         }
 
-        .policy-text strong:not(:first-child)::before {
-            content: "▸ ";
+        /* Lists — dashed markers */
+        .about-text ul {
+            list-style-type: none;
+            margin-bottom: 1.1rem;
+            padding-left: 0;
+        }
+
+        .about-text li {
+            margin-bottom: .6rem;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .about-text li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
             color: var(--primary);
-            opacity: .7;
+            opacity: .85;
+            font-weight: 600;
+        }
+
+        .about-text li strong {
+            color: #faf9f5;
+            font-weight: 600;
         }
 
         /* ── Responsive ── */
@@ -293,8 +320,8 @@
             }
             .logo-container { height: 60px; }
             .content-box { padding: 1.75rem 1.5rem; border-radius: 20px; }
-            .policy-text { font-size: .82rem; line-height: 1.7; }
-            .policy-text strong { font-size: .88rem; }
+            .about-text { font-size: .82rem; line-height: 1.7; }
+            .about-text p.section-header strong { font-size: .95rem; }
         }
     </style>
 </head>
@@ -313,31 +340,32 @@
 
         <!-- Main Content Box -->
         <main class="content-box">
-            <div class="policy-text">
-                <p><strong>About SPMIS</strong></p>
+            <div class="about-text">
+                <p class="section-header"><strong>About SPMIS</strong></p>
 
                 <p>The Student Profiling Management Information System (SPMIS) is a dedicated, university-wide platform built to empower faculty members in supporting student success. SPMIS serves as an internal reference tool designed to assist faculty in vetting, recommending, and selecting students for competitions, leadership roles, special tasks, academic opportunities, and institutional events.</p>
 
-                <p><strong>Our Purpose & Vision</strong></p>
+                <p class="section-header"><strong>Our Purpose & Vision</strong></p>
                 <p>SPMIS bridges the gap between faculty experience and student opportunities. By allowing educators to share, record, and consult review-style observations about students they have taught, coached, or advised, the system enables more informed, holistic decision-making across the university. SPMIS focuses purely on profile insights and faculty research—it is not a student-facing portal nor an activity management application.</p>
 
-                <p><strong>Key Features & Platform Safeguards</strong></p>
-                <p><strong>Faculty-Driven Insights:</strong> Reviews reflect direct faculty experiences, combining free-text observations with descriptive tags. To maintain accountability and trust, contributor identities are transparently attached to every review.</p>
+                <p class="section-header"><strong>Key Features & Platform Safeguards</strong></p>
+                <ul>
+                    <li><strong>Faculty-Driven Insights:</strong> Reviews reflect direct faculty experiences, combining free-text observations with descriptive tags. To maintain accountability and trust, contributor identities are transparently attached to every review.</li>
 
-                <p><strong>Complete Contributor Control:</strong> Faculty members retain exclusive ownership over the content they create. You can edit, hide, or permanently delete your reviews at any time. Hidden reviews are strictly private to the creator, while deleted content is permanently purged from the application.</p>
+                    <li><strong>Complete Contributor Control:</strong> Faculty members retain exclusive ownership over the content they create. You can edit, hide, or permanently delete your reviews at any time. Hidden reviews are strictly private to the creator, while deleted content is permanently purged from the application.</li>
 
-                <p><strong>Privacy by Design:</strong> SPMIS is built around strong privacy standards. Review edit histories are transparently maintained, while system actions are audited without exposing protected review text. Students do not have access or accounts within the system.</p>
+                    <li><strong>Privacy by Design:</strong> SPMIS is built around strong privacy standards. Review edit histories are transparently maintained, while system actions are audited without exposing protected review text. Students do not have access or accounts within the system.</li>
 
-                <p><strong>Privacy-Preserving AI Research:</strong> SPMIS includes an integrated AI research assistant to help faculty search across visible reviews. Before any review content reaches external AI processing, all student name variants are replaced with opaque placeholder identifiers inside the system boundary to safeguard student identity. Hidden and deleted reviews are strictly excluded from the AI index.</p>
+                    <li><strong>Privacy-Preserving AI Research:</strong> SPMIS includes an integrated AI research assistant to help faculty search across visible reviews. Before any review content reaches external AI processing, all student name variants are replaced with opaque placeholder identifiers inside the system boundary to safeguard student identity. Hidden and deleted reviews are strictly excluded from the AI index.</li>
+                </ul>
 
-                <p><strong>Our Commitment to Responsible Use</strong></p>
+                <p class="section-header"><strong>Our Commitment to Responsible Use</strong></p>
                 <p>SPMIS is built for legitimate academic and institutional growth. By using the platform, faculty commit to maintaining student privacy, exercising professional judgment, and leveraging system insights responsibly to help every student find the right opportunity to excel.</p>
             </div>
         </main>
 
         <!-- Footer component -->
-        <!-- INCLUDE: components/navigation/footer-nav.html -->
-         <div data-include="../../components/navigation/footer-nav.html"></div>
+        <div data-include="../../components/navigation/footer-nav.html"></div>
 
     </div>
 
@@ -374,13 +402,9 @@
                     const href = link.getAttribute('href');
                     if (!href || href.startsWith('javascript:') || link.classList.contains('active')) return;
                     
-                    // Prevent immediate navigation
                     event.preventDefault();
-                    
-                    // Trigger the exit animation
                     document.body.classList.add('page-exit');
                     
-                    // Wait for animation to finish (300ms matches the CSS transition), then navigate
                     setTimeout(() => { 
                         window.location.href = href; 
                     }, 300);
