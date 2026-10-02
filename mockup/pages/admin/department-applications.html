@@ -6,10 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
   <title>Admin Portal - Department Applications</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -23,7 +21,7 @@
       height: 100%;
       margin: 0;
       background: #30302E;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-sans);
       color: #fff;
     }
 
@@ -466,7 +464,7 @@
       line-height: 16px;
     }
     button, input, select, textarea {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-sans);
       font-weight: 500;
     }
 
@@ -532,7 +530,7 @@
       justify-content: center;
     }
     .modal-title {
-      font-family: 'Intel One Mono', 'Inter', sans-serif;
+      font-family: var(--font-mono);
       font-weight: 600;
       font-size: 20px;
       line-height: 28px;
@@ -546,7 +544,7 @@
       gap: 16px;
     }
     .modal-form label {
-      font-family: 'Intel One Mono', 'Inter', sans-serif;
+      font-family: var(--font-mono);
       font-weight: 600;
       font-size: 15px;
       line-height: 21px;
@@ -561,7 +559,7 @@
       background: var(--muted, #21201E);
       border: 1px solid var(--input, #43362B);
       border-radius: 12px;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 400;
       font-size: 14px;
       color: var(--foreground, #FFFFFF);
@@ -581,7 +579,7 @@
       background: #343434;
       border: 1px solid #3D3D3A;
       border-radius: 10px;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 500;
       font-size: 14px;
       line-height: 17px;
@@ -613,7 +611,7 @@
         <form class="modal-form" id="rejectForm">
           <div class="modal-select-wrapper" style="margin-bottom: 8px;">
             <label>Application:</label>
-            <select id="rejectAppSelect" style="width: 100%; height: 40px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 12px; font-family: 'Inter'; font-size: 14px; color: var(--foreground, #FFFFFF); padding: 0 10px; outline: none;"></select>
+            <select id="rejectAppSelect" style="width: 100%; height: 40px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 12px; font-family: var(--font-sans); font-size: 14px; color: var(--foreground, #FFFFFF); padding: 0 10px; outline: none;"></select>
           </div>
           <div>
             <label>Reason for rejection:</label>
@@ -726,7 +724,7 @@
       <div class="bottom-bar-container">
         <div class="action-btn-group">
           <button class="pill-btn select-all">Select All</button>
-          <button class="pill-btn accept">Accept</button>
+          <button class="pill-btn approve">Approve</button>
           <button class="pill-btn reject">Reject</button>
         </div>
 
@@ -737,6 +735,7 @@
         </div>
       </div>
     </main>
+    <script src="../../assets/js/queue-modal.js"></script>
     <script>
       function setSidebarActive(fileName) {
         const frame = document.getElementById('sidebar-frame');
@@ -891,7 +890,7 @@
         acceptBtn.addEventListener('click', () => {
           const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
           if (checked.length > 0) {
-            showToast('Application Accepted Successfully');
+            showToast('Application Approved Successfully');
           } else {
             showToast('Please select at least one application');
           }

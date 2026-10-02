@@ -1,0 +1,14 @@
+<!--
+  Shared queue rejection pattern.
+  The queue-modal.js behavior expands this panel inside the selected row.
+  Keep rejection inline so the queue modal never opens a second modal.
+-->
+<div class="queue-rejection-row" data-queue-rejection hidden>
+  <p data-queue-rejection-message>This reason will be sent to all 0 submitters.</p>
+  <label data-queue-rejection-label for="queue-rejection-reason">Reason for rejection</label>
+  <textarea id="queue-rejection-reason" data-queue-rejection-input required placeholder="Enter reason here..."></textarea>
+  <div class="modal-actions queue-rejection-actions">
+    <button type="button" class="modal-cancel" data-queue-rejection-close>Close</button>
+    <button type="button" class="ui-btn ui-btn-destructive" data-queue-rejection-confirm>Reject</button>
+  </div>
+</div>
