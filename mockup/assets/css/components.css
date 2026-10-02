@@ -1894,3 +1894,71 @@ button:hover .arrow,
 .ui-select-pill:focus {
     background-color: var(--accent) !important;
 }
+
+/* --- 6. FOOTER NAVIGATION --- */
+.footer-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-top: 1rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.01em;
+    flex-shrink: 0;
+}
+
+.footer-nav a {
+    color: var(--text, #faf9f5);
+    text-decoration: none;
+    position: relative;
+    display: inline-block;          /* ← ensures ::after spans the full text width */
+    padding-bottom: 3px;
+    opacity: 0.7;                    /* non-active links are dimmed */
+    transition: opacity .25s ease, transform .25s ease, color .25s ease;
+}
+
+.footer-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--primary, #d97757);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform .3s ease;
+}
+
+.footer-nav a:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.footer-nav a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Active = current page: orange, full opacity, underline always on */
+.footer-nav a.active {
+    color: var(--primary, #d97757);
+    opacity: 1;
+}
+
+.footer-nav a.active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.footer-nav .dot {
+    color: #888;
+    opacity: 0.7;
+    margin: 0 10px;
+    pointer-events: none;
+    transform: none;
+    transition: none;
+    position: relative;
+    top: -1px;
+    font-size: 0.82rem;
+}

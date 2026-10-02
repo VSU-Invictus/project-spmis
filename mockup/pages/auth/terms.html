@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPMIS - Terms and Conditions</title>
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/global.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
 
@@ -266,71 +268,6 @@
             opacity: .7;
         }
 
-        /* ── Footer ── */
-        .footer-nav {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-            margin-top: 1rem;
-            font-size: 0.82rem;
-            letter-spacing: 0.01em;
-            flex-shrink: 0;
-        }
-
-        .footer-nav a {
-            color: var(--text);
-            text-decoration: none;
-            position: relative;
-            display: inline-block;
-            padding-bottom: 2px;
-            transition: color .25s ease, transform .25s ease;
-        }
-
-        .footer-nav a::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 1px;
-            background: var(--primary);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform .3s ease;
-        }
-
-        .footer-nav a:hover {
-            transform: translateY(-2px);
-        }
-
-        .footer-nav a:hover::after {
-            transform: scaleX(0);
-            transform-origin: left;
-        }
-
-        .footer-nav a.active {
-            color: var(--primary);
-        }
-
-        .footer-nav a.active::after {
-            transform: scaleX(1);
-            transform-origin: left;
-            background: var(--primary);
-        }
-
-        .footer-nav .dot {
-            color: #888;
-            opacity: 0.7;
-            margin: 0 10px;
-            pointer-events: none;
-            transform: none;
-            transition: none;
-            position: relative;
-            top: -1px;
-            font-size: 0.82rem;
-        }
-
         /* ── Responsive ── */
         @media (max-width: 768px) {
             body { padding-inline: 1rem; padding-top: 1.5rem; }
@@ -398,25 +335,50 @@
             </div>
         </main>
 
-        <!-- Footer -->
-        <nav class="footer-nav">
-            <a href="about.html">About</a>
-            <span class="dot" aria-hidden="true">•</span>
-            <a href="terms.html" class="active">Terms</a>
-            <span class="dot" aria-hidden="true">•</span>
-            <a href="privacy%20policy.html">Privacy Policy</a>
-        </nav>
+        <!-- Footer component -->
+        <div data-include="../../components/navigation/footer-nav.html"></div>
+
     </div>
 
     <script>
-        document.querySelectorAll('.footer-nav a').forEach(link => {
-            link.addEventListener('click', event => {
-                if (link.classList.contains('active') || event.ctrlKey || event.metaKey) return;
-                event.preventDefault();
-                document.body.classList.add('page-leaving');
-                setTimeout(() => { window.location.href = link.href; }, 280);
+        (async () => {
+            // 1. Load the footer component into its slot
+            const slot = document.querySelector('[data-include]');
+            if (slot) {
+                try {
+                    const res = await fetch(slot.getAttribute('data-include'), { cache: 'no-cache' });
+                    if (res.ok) {
+                        slot.innerHTML = await res.text();
+                    } else {
+                        console.error('Failed to load footer:', res.status, res.statusText);
+                    }
+                } catch (err) {
+                    console.error('Footer include error (are you running from file:// ?):', err);
+                }
+            }
+
+            // 2. Mark the active footer link based on current filename
+            const currentPage = decodeURIComponent(location.pathname.split('/').pop() || 'about.html');
+            document.querySelectorAll('.footer-nav a').forEach(a => {
+                const href = decodeURIComponent(a.getAttribute('href'));
+                if (href === currentPage) a.classList.add('active');
             });
-        });
+
+            console.log('currentPage =', JSON.stringify(currentPage));
+            document.querySelectorAll('.footer-nav a').forEach(a =>
+                console.log('link =', JSON.stringify(decodeURIComponent(a.getAttribute('href'))))
+            );
+
+            // 3. Page-leave transition on footer link click
+            document.querySelectorAll('.footer-nav a').forEach(link => {
+                link.addEventListener('click', event => {
+                    if (link.classList.contains('active') || event.ctrlKey || event.metaKey) return;
+                    event.preventDefault();
+                    document.body.classList.add('page-leaving');
+                    setTimeout(() => { window.location.href = link.href; }, 280);
+                });
+            });
+        })();
     </script>
 </body>
 </html>
