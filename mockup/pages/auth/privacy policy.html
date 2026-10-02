@@ -3,77 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../assets/css/global.css">
-    <link rel="stylesheet" href="../../assets/css/components.css">
     <title>SPMIS - Privacy Policy</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Intel+One+Mono:wght@600&display=swap" rel="stylesheet">
-    
     <style>
-        /* Reset and Base Styles */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
+
+        :root {
+            --background: #262624;
+            --card: #1e1e1d;
+            --primary: #d97757;
+            --text: #faf9f5;
+            --muted: rgba(250, 249, 245, 0.7);
+            --field: #333;
+            --font-mono: 'Geist Mono', monospace;
         }
 
+        * { box-sizing: border-box; margin: 0; }
+
+        /* ── Body ── */
         body {
-            background-color: #30302E; /* Main dark background */
-            color: #FFFFFF;
-            font-family: 'Inter', sans-serif;
             min-height: 100vh;
+            min-height: 100dvh;
+            height: 100dvh;
+            overflow: hidden;
+            padding: 2rem 1.25rem 2rem;
             display: flex;
-            justify-content: center;
-            padding: 40px 20px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+
+            color: var(--text);
+            font-family: var(--font-mono);
+            position: relative;
+
+            background-color: var(--background);
+            background-image:
+                radial-gradient(ellipse 70% 60% at 15% 15%,
+                    rgba(217, 119, 87, 0.10) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 60% at 85% 85%,
+                    rgba(217, 119, 87, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 80% 60% at 50% 50%,
+                    rgba(30, 30, 29, 0.6) 0%, transparent 70%);
+            background-attachment: fixed;
+
             animation: page-enter 0.45s ease both;
         }
 
-        body.page-leaving {
-            animation: page-leave 0.28s ease both;
-        }
+        body.page-leaving { animation: page-leave 0.28s ease both; }
 
         @keyframes page-enter {
             from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes page-leave {
             to { opacity: 0; transform: translateY(-10px); }
         }
 
-        /* Main Container to center content */
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        /* ── Pixel matrix background ── */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='3' height='3' x='6' y='6' fill='%23d97757' fill-opacity='0.55'/></svg>");
+            background-size: 16px 16px;
+
+            mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 90%);
+            -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 90%);
+
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 0;
+            animation: pixel-drift 8s linear infinite;
+            will-change: background-position;
         }
 
-        /* --- Header Section (Title + Logo) --- */
+        @keyframes pixel-drift {
+            from { background-position: 0 0; }
+            to   { background-position: 16px 16px; }
+        }
+
+        /* ── Container ── */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Header (title + logo) ── */
         .header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
+            align-items: center;
+            gap: 2rem;
+            flex-shrink: 0;
         }
 
         h1 {
-            font-family: 'Intel One Mono', monospace;
-            font-weight: 600;
-            font-size: 56px;
-            line-height: 1.2;
-            color: #FFFFFF;
-            letter-spacing: -1px;
+            font-family: var(--font-mono);
+            font-weight: 500;
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            background: linear-gradient(90deg,
+                var(--text) 0%,
+                var(--text) 55%,
+                var(--primary) 80%,
+                #b85a3d 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
         }
 
         .logo-container {
-            height: 80px; /* Matches the visual height in Figma */
+            height: 75px;
             display: flex;
             align-items: center;
-            margin-top: 10px;
         }
 
         .logo-container img {
@@ -82,104 +133,260 @@
             object-fit: contain;
         }
 
-        /* --- Content Box --- */
-        .content-box {
-            background-color: #1A1A18; /* Darker box background */
-            border: 1px solid #444;
-            border-radius: 12px;
-            padding: 40px;
-            width: 100%;
+        .logo-link {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity .2s ease, transform .2s ease;
         }
 
-        /* Typography inside the box */
+        .logo-link:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+
+        .logo-link:active {
+            transform: scale(0.98);
+        }
+
+        .logo-link img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* ── Content box (scrollable) ── */
+        .content-box {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            width: 100%;
+            padding: 2.5rem 3rem;
+            border: 1px solid rgba(217, 119, 87, .15);
+            border-radius: 24px;
+            background-color: var(--card);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, .04) inset,
+                        0 8px 24px rgba(0, 0, 0, .35);
+
+            scrollbar-width: thin;
+            scrollbar-color: rgba(217, 119, 87, 0.4) transparent;
+        }
+
+        .content-box::-webkit-scrollbar { width: 8px; }
+        .content-box::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 16px 0;
+        }
+        .content-box::-webkit-scrollbar-thumb {
+            background: rgba(217, 119, 87, 0.35);
+            border-radius: 4px;
+        }
+        .content-box::-webkit-scrollbar-thumb:hover {
+            background: rgba(217, 119, 87, 0.6);
+        }
+
+        /* Orange accent line at the top */
+        .content-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                var(--primary) 50%,
+                transparent 100%
+            );
+            opacity: .6;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Corner warmth */
+        .content-box::after {
+            content: "";
+            position: absolute;
+            top: -60px;
+            left: -60px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: .06;
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content-box > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── Typography ── */
         .policy-text {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #E0E0E0;
+            font-family: var(--font-mono);
+            font-size: .9rem;
+            line-height: 1.75;
+            color: var(--muted);
+            letter-spacing: 0.005em;
         }
 
         .policy-text p {
-            margin-bottom: 16px;
+            margin-bottom: 1.1rem;
+        }
+
+        .policy-text p:last-child {
+            margin-bottom: 0;
         }
 
         .policy-text strong {
-            color: #FFFFFF;
+            color: var(--text);
             font-weight: 600;
+            display: block;
+            margin-top: 1.5rem;
+            margin-bottom: .5rem;
+            font-size: .95rem;
+            letter-spacing: 0.01em;
         }
 
+        .policy-text p:first-child strong {
+            margin-top: 0;
+        }
+
+        .policy-text strong:not(:first-child)::before {
+            content: "▸ ";
+            color: var(--primary);
+            opacity: .7;
+        }
+
+        /* Lists (kept from original privacy policy content) */
         .policy-text ul {
-            list-style-type: disc;
-            margin-left: 20px;
-            margin-bottom: 16px;
+            list-style-type: none;
+            margin-bottom: 1.1rem;
+            padding-left: 0;
         }
 
         .policy-text li {
-            margin-bottom: 8px;
+            margin-bottom: .6rem;
+            padding-left: 1.25rem;
+            position: relative;
         }
 
-        /* --- Footer Navigation --- */
+        .policy-text li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            opacity: .6;
+        }
+
+        .policy-text li strong {
+            display: inline;
+            margin: 0;
+            font-size: inherit;
+        }
+
+        .policy-text li strong::before {
+            content: none;
+        }
+
+        /* ── Footer ── */
         .footer-nav {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 15px;
-            margin-top: 30px;
-            font-size: 18px;
-            padding-bottom: 20px;
+            justify-content: center;
+            gap: 0;
+            margin-top: 1rem;
+            font-size: 0.82rem;
+            letter-spacing: 0.01em;
+            flex-shrink: 0;
         }
 
         .footer-nav a {
+            color: var(--text);
             text-decoration: none;
-            color: rgba(255, 255, 255, 0.5);
-            transition: color 0.2s ease, transform 0.2s ease;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 2px;
+            transition: color .25s ease, transform .25s ease;
+        }
+
+        .footer-nav a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 1px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform .3s ease;
         }
 
         .footer-nav a:hover {
-            color: #FFFFFF;
             transform: translateY(-2px);
         }
 
-        /* Active state for Privacy Policy */
+        .footer-nav a:hover::after {
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
         .footer-nav a.active {
-            color: #FFFFFF;
-            font-weight: 700;
+            color: var(--primary);
         }
 
-        .dot {
-            width: 6px;
-            height: 6px;
-            background: rgba(217, 217, 217, 0.4);
-            border-radius: 50%;
+        .footer-nav a.active::after {
+            transform: scaleX(1);
+            transform-origin: left;
+            background: var(--primary);
         }
 
-        /* Responsive */
+        .footer-nav .dot {
+            color: #888;
+            opacity: 0.7;
+            margin: 0 10px;
+            pointer-events: none;
+            transform: none;
+            transition: none;
+            position: relative;
+            top: -1px;
+            font-size: 0.82rem;
+        }
+
+        /* ── Responsive ── */
         @media (max-width: 768px) {
+            body { padding-inline: 1rem; padding-top: 1.5rem; }
             .header {
-                flex-direction: column;
-                gap: 20px;
+                flex-direction: column-reverse;
+                align-items: flex-start;
+                gap: 1rem;
             }
-            h1 {
-                font-size: 40px;
-            }
-            .logo-container {
-                height: 60px;
-            }
-            .content-box {
-                padding: 20px;
-            }
+            .logo-container { height: 60px; }
+            .content-box { padding: 1.75rem 1.5rem; border-radius: 20px; }
+            .policy-text { font-size: .82rem; line-height: 1.7; }
+            .policy-text strong { font-size: .88rem; }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Header Section -->
+        <!-- Header -->
         <header class="header">
             <h1>Privacy Policy</h1>
             <div class="logo-container">
-                <!-- Corrected path based on your folder structure -->
-                <img class="logo-dark-only" src="../../assets/icons/SPMIS.png" alt="SPMIS Logo">
-<img class="logo-light-only" src="../../assets/icons/SPMIS_LM.png" alt="SPMIS Logo">
+                <a href="signin.html" class="logo-link" aria-label="Back to sign in">
+                    <img src="../../assets/icons/SPMIS.png" alt="SPMIS Logo">
+                </a>
             </div>
         </header>
 
@@ -187,9 +394,9 @@
         <main class="content-box">
             <div class="policy-text">
                 <p><strong>SPMIS Privacy Policy</strong></p>
-                
+
                 <p>This Privacy Policy explains how the Student Profiling Management Information System (SPMIS) collects, uses, protects, and handles information contributed by faculty and stored within the platform.</p>
-                
+
                 <p><strong>1. Information We Collect</strong></p>
                 <ul>
                     <li><strong>Faculty Account & Profile Data:</strong> Directory information (e.g., name, university email, department) required for account authentication and administrator verification.</li>
@@ -230,14 +437,14 @@
             </div>
         </main>
 
-        <!-- Footer Navigation -->
-        <div class="footer-nav">
+        <!-- Footer -->
+        <nav class="footer-nav">
             <a href="about.html">About</a>
-            <span class="dot"></span>
+            <span class="dot" aria-hidden="true">•</span>
             <a href="terms.html">Terms</a>
-            <span class="dot"></span>
+            <span class="dot" aria-hidden="true">•</span>
             <a href="privacy%20policy.html" class="active">Privacy Policy</a>
-        </div>
+        </nav>
     </div>
 
     <script>
