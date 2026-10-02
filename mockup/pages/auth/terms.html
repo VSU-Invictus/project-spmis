@@ -21,7 +21,7 @@
 
         * { box-sizing: border-box; margin: 0; }
 
-        /* ── Body ── */
+        /* ── Body & Page Transitions ── */
         body {
             min-height: 100vh;
             min-height: 100dvh;
@@ -47,17 +47,30 @@
                     rgba(30, 30, 29, 0.6) 0%, transparent 70%);
             background-attachment: fixed;
 
-            animation: page-enter 0.45s ease both;
+            /* Enter Animation (Matches Sign In) */
+            animation: page-in 0.4s ease-out both;
         }
 
-        body.page-leaving { animation: page-leave 0.28s ease both; }
-
-        @keyframes page-enter {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
+        /* Exit Animation (Matches Sign In) */
+        body.page-exit {
+            opacity: 0;
+            transform: translateY(-10px) scale(.99);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
         }
-        @keyframes page-leave {
-            to { opacity: 0; transform: translateY(-10px); }
+
+        @keyframes page-in {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body, body.page-exit {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
         }
 
         /* ── Pixel matrix background ── */
@@ -342,7 +355,7 @@
 
     <script>
         (async () => {
-            // 1. Load the footer component into its slot
+            // 1. Load the footer component
             const slot = document.querySelector('[data-include]');
             if (slot) {
                 try {
@@ -353,29 +366,36 @@
                         console.error('Failed to load footer:', res.status, res.statusText);
                     }
                 } catch (err) {
-                    console.error('Footer include error (are you running from file:// ?):', err);
+                    console.error('Footer include error:', err);
                 }
             }
 
-            // 2. Mark the active footer link based on current filename
-            const currentPage = decodeURIComponent(location.pathname.split('/').pop() || 'about.html');
+            // 2. Determine the current page and apply the 'active' class
+            let currentPage = decodeURIComponent(window.location.pathname.split('/').pop()).toLowerCase().trim() || 'about.html';
+            
             document.querySelectorAll('.footer-nav a').forEach(a => {
-                const href = decodeURIComponent(a.getAttribute('href'));
-                if (href === currentPage) a.classList.add('active');
+                let href = decodeURIComponent(a.getAttribute('href')).toLowerCase().trim().split('/').pop();
+                if (href === currentPage) {
+                    a.classList.add('active');
+                }
             });
 
-            console.log('currentPage =', JSON.stringify(currentPage));
-            document.querySelectorAll('.footer-nav a').forEach(a =>
-                console.log('link =', JSON.stringify(decodeURIComponent(a.getAttribute('href'))))
-            );
-
-            // 3. Page-leave transition on footer link click
-            document.querySelectorAll('.footer-nav a').forEach(link => {
+            // 3. Page Exit Transition (Matches the Sign In page logic)
+            document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(link => {
                 link.addEventListener('click', event => {
-                    if (link.classList.contains('active') || event.ctrlKey || event.metaKey) return;
+                    const href = link.getAttribute('href');
+                    if (!href || href.startsWith('javascript:') || link.classList.contains('active')) return;
+                    
+                    // Prevent immediate navigation
                     event.preventDefault();
-                    document.body.classList.add('page-leaving');
-                    setTimeout(() => { window.location.href = link.href; }, 280);
+                    
+                    // Trigger the exit animation
+                    document.body.classList.add('page-exit');
+                    
+                    // Wait for animation to finish (300ms matches the CSS transition), then navigate
+                    setTimeout(() => { 
+                        window.location.href = href; 
+                    }, 300);
                 });
             });
         })();
