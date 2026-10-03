@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude+ Design System — Living Style Guide</title>
-  <link rel="stylesheet" href="../assets/css/global.css?v=5">
-  <link rel="stylesheet" href="../assets/css/components.css?v=8">
+  <link rel="stylesheet" href="../assets/css/global.css?v=6">
+  <link rel="stylesheet" href="../assets/css/components.css?v=9">
   <style>
     /* Living Style Guide Showcase Layout */
     body {
@@ -15,6 +15,11 @@
       font-family: var(--font-sans, 'Outfit', sans-serif);
       margin: 0;
       padding: 0;
+      border: none !important;
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      border-bottom: none !important;
       line-height: 1.5;
       transition: background-color 0.2s ease, color 0.2s ease;
     }
@@ -716,7 +721,31 @@ html:not(.dark) .brand-footer {
             <span class="ui-badge ui-badge--neutral">General Academic</span>
           </div>
           <p class="ui-text-caption">
-            Subject-matter and competency review tags applied to student evaluations and academic curriculum areas.
+            Subject-matter and competency review tags applied to student evaluations and academic curriculum areas. Uniform 1px border is applied across all color variants.
+          </p>
+        </div>
+
+        <!-- 5. Tag Cluster & Overflow Counter -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Tag Cluster &amp; Overflow Counter (+N)</span>
+          <div class="ui-btn-group">
+            <div class="ui-tags-cluster">
+              <span class="ui-badge ui-badge--purple">Research</span>
+              <span class="ui-badge ui-badge--cyan">Algorithms</span>
+              <div class="ui-tags-more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="2 more tags">
+                <span class="ui-badge ui-badge--neutral ui-tags-more-btn">+2</span>
+                <div class="ui-tags-popover" role="tooltip">
+                  <div class="ui-tags-popover-title">Additional Tags (2)</div>
+                  <div class="ui-tags-popover-list">
+                    <span class="ui-badge ui-badge--amber">Leadership</span>
+                    <span class="ui-badge ui-badge--rose">Robotics</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Prevents table and card crowding by displaying up to 2 primary tags with an interactive <code>+N</code> counter that reveals additional tags on hover or click.
           </p>
         </div>
       </div>
@@ -1265,7 +1294,7 @@ html:not(.dark) .brand-footer {
                 <span style="color: #98938D;">Audit Log</span>
               </a>
             </nav>
-            <div style="margin-top: 1rem; border-top: 1px solid rgba(217, 114, 81, 0.35); padding-top: 10px;">
+            <div style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 10px;">
               <div class="sidebar-account-card" style="display: flex; align-items: center; justify-content: space-between; padding: 0 14px; height: 58px; border-radius: 18px; background: #2B2A27; border: 1px solid #383734;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                   <div class="sidebar-avatar" style="width: 34px; height: 34px; border-radius: 50%; background-color: #F7E2D6; color: #A35233; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px;">U</div>
@@ -1319,30 +1348,46 @@ html:not(.dark) .brand-footer {
           </div>
           
           <!-- Static Visual Representation of the Modal Container -->
-          <div style="background: #444746; border: 1px solid var(--primary, #D97251); border-radius: 15px; padding: 20px 24px; position: relative; box-shadow: 0 12px 32px rgba(0,0,0,0.3); color: #fff;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h4 style="margin: 0; font-size: 16px; font-weight: 700; color: #fff;">Reject Application Proposal</h4>
-              <span style="font-size: 18px; opacity: 0.7; cursor: pointer;">&times;</span>
+          <div style="background: var(--card, #21201E); border: 1px solid var(--border, #3E3D39); border-radius: 16px; padding: 22px 26px; position: relative; box-shadow: 0 20px 48px -10px rgba(0,0,0,0.6), 0 8px 16px -4px rgba(0,0,0,0.4); color: var(--foreground, #FFFFFF);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <h4 style="margin: 0; font-size: 16px; font-weight: 700; color: var(--foreground, #FFFFFF);">Reject Application Proposal</h4>
+              <span style="font-size: 18px; opacity: 0.7; cursor: pointer; color: var(--muted-foreground);">&times;</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Contextual Action Confirmation Alert -->
+              <div class="ui-alert ui-alert--warning" style="margin-bottom: 2px;">
+                <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <div class="ui-alert-content">
+                  <span class="ui-alert-title">Confirm Rejection Decision</span>
+                  <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+                </div>
+              </div>
+
               <div>
-                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #fff;">Selected Application</label>
-                <div style="padding: 8px 12px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 10px; font-size: 13px; color: #fff;">
+                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--foreground, #FFFFFF);">Selected Application</label>
+                <div style="padding: 9px 12px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 10px; font-size: 13px; color: var(--foreground, #FFFFFF);">
                   Dr. Eleanor Vance (Faculty Application)
                 </div>
               </div>
               <div>
-                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #fff;">Reason for Rejection</label>
-                <div style="padding: 8px 12px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 10px; font-size: 12px; color: var(--muted-foreground); min-height: 50px;">
+                <label style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--foreground, #FFFFFF);">
+                  <span>Reason for Rejection <span style="color: var(--destructive, #EF4444); font-weight: 700;">*</span></span>
+                  <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
+                </label>
+                <div style="padding: 9px 12px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 10px; font-size: 13px; color: var(--muted-foreground); min-height: 60px; line-height: 1.45;">
                   Incomplete accreditation documentation for curriculum prerequisites.
                 </div>
               </div>
-              <button type="button" class="modal-submit" style="margin-top: 6px; height: 36px; font-size: 13px;">Confirm Rejection</button>
+              <button type="button" class="modal-submit" style="margin-top: 4px; height: 38px; font-size: 13px;">Confirm Rejection</button>
             </div>
           </div>
 
           <p class="ui-text-caption">
-            Utilizes <code>.modal-overlay</code> with <code>backdrop-filter: blur(4px)</code> and <code>.modal-container</code> with warm charcoal background (<code>#444746</code>), terracotta border (<code>#D97251</code>), and 15px radius.
+            Conforms strictly to the <strong>Standard Card</strong> architecture (<code>background: var(--card)</code>, <code>border: 1px solid var(--border)</code>, 16px radius) with standard lighter-bordered form controls (<code>var(--input)</code>), an expandable rejection textarea, required reason validation, primary terracotta submission button (<code>var(--primary)</code>), and embedded alert confirmation banners (<code>.ui-alert</code>).
           </p>
         </div>
 
@@ -1366,24 +1411,24 @@ html:not(.dark) .brand-footer {
         <span class="ui-section-desc">Prompt chips, message bubbles, query textarea, and student quick-file context card</span>
       </div>
 
-      <!-- Quick Prompt Chips -->
+      <!-- Regular Topic Cards -->
       <div class="ui-chat-prompts" style="margin-bottom: 1.5rem;">
-        <button type="button" class="ui-chat-prompt-btn">
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have research experience?">
           <span>Research experience</span>
           <small>Explore faculty assessments</small>
-        </button>
-        <button type="button" class="ui-chat-prompt-btn">
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students show teamwork and leadership?">
           <span>Teamwork &amp; Leadership</span>
           <small>Ask across student records</small>
-        </button>
-        <button type="button" class="ui-chat-prompt-btn">
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Find reviews mentioning communication skills.">
           <span>Communication Skills</span>
           <small>Find relevant review excerpts</small>
-        </button>
-        <button type="button" class="ui-chat-prompt-btn">
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Verify capstone project reviews and prerequisites.">
           <span>Capstone Project Review</span>
           <small>Verify graduation prerequisites</small>
-        </button>
+        </div>
       </div>
 
       <!-- Two-Column Chat Workspace -->
@@ -1472,7 +1517,7 @@ html:not(.dark) .brand-footer {
             Referenced record. Review conversations can synthesize evaluations across all enrolled students.
           </p>
 
-          <button type="button" class="ui-btn ui-btn-outline" style="width: 100%;">
+          <button type="button" class="ui-btn ui-btn-outline view-profile-btn" style="width: 100%;">
             View Full Profile <span class="arrow">&rarr;</span>
           </button>
         </div>
@@ -2535,6 +2580,39 @@ html:not(.dark) .brand-footer {
         // Scroll to bottom
         chatLog.scrollTop = chatLog.scrollHeight;
       });
+
+      // Prompt cards automatic send
+      document.querySelectorAll('.ui-chat-prompt-card[data-prompt]').forEach((card) => {
+        const sendCardPrompt = () => {
+          const text = card.dataset.prompt;
+          if (!text) return;
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const msgDiv = document.createElement('div');
+          msgDiv.className = 'ui-chat-msg ui-chat-msg--user';
+          const safeText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          msgDiv.innerHTML = `
+            <div class="ui-chat-msg-content">
+              <div class="ui-chat-msg-header">
+                <span class="ui-chat-msg-sender">Prof. Morgan</span>
+                <span class="ui-chat-msg-time">${timeStr}</span>
+              </div>
+              <div class="ui-chat-bubble ui-chat-bubble--user">${safeText}</div>
+            </div>
+          `;
+          chatLog.appendChild(msgDiv);
+          chatPrompt.value = '';
+          chatPrompt.style.height = 'auto';
+          chatLog.scrollTop = chatLog.scrollHeight;
+        };
+        card.onclick = sendCardPrompt;
+        card.onkeydown = (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            sendCardPrompt();
+          }
+        };
+      });
     }
   });
 </script>
@@ -2697,6 +2775,19 @@ html:not(.dark) .brand-footer {
       </button>
       <h3 class="modal-title">Reject Application</h3>
       <form class="modal-form" id="demoRejectForm">
+        <!-- Contextual Action Confirmation Alert -->
+        <div class="ui-alert ui-alert--warning" role="alert">
+          <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <div class="ui-alert-content">
+            <span class="ui-alert-title">Confirm Rejection Decision</span>
+            <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+          </div>
+        </div>
+
         <div>
           <label for="demoRejectAppSelect">Application:</label>
           <select id="demoRejectAppSelect">
@@ -2706,8 +2797,11 @@ html:not(.dark) .brand-footer {
           </select>
         </div>
         <div>
-          <label for="demoRejectReason">Reason for rejection:</label>
-          <textarea id="demoRejectReason" placeholder="Enter specific deficiency or prerequisites reason..."></textarea>
+          <label for="demoRejectReason">
+            <span>Reason for rejection <span style="color: var(--destructive); font-weight: 700;">*</span></span>
+            <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
+          </label>
+          <textarea id="demoRejectReason" required placeholder="Enter specific deficiency or prerequisites reason..."></textarea>
         </div>
         <button type="submit" class="modal-submit">Confirm Rejection</button>
       </form>
@@ -2720,8 +2814,8 @@ html:not(.dark) .brand-footer {
       <h2>Log out?</h2>
       <p>Are you sure you want to end your current session?</p>
       <div class="actions">
-        <button type="submit" value="cancel" class="secondary">Cancel</button>
-        <button type="submit" value="confirm">Log out</button>
+        <button type="submit" value="cancel" class="ui-btn ui-btn-outline">Cancel</button>
+        <button type="submit" value="confirm" class="ui-btn ui-btn-primary">Log out</button>
       </div>
     </form>
   </dialog>
@@ -2805,6 +2899,12 @@ html:not(.dark) .brand-footer {
       if (rejectForm) {
         rejectForm.addEventListener('submit', (e) => {
           e.preventDefault();
+          const reasonInput = document.getElementById('demoRejectReason');
+          if (!reasonInput || !reasonInput.value.trim()) {
+            showDemoToast('Please provide a reason for rejection before confirming.');
+            if (reasonInput) reasonInput.focus();
+            return;
+          }
           rejectModal.classList.remove('active');
           showDemoToast('Application proposal rejected successfully.');
         });
@@ -2873,6 +2973,35 @@ html:not(.dark) .brand-footer {
           });
         });
       }
+
+      // Tag Overflow (+N) Popover Toggle Listener
+      document.addEventListener('click', (e) => {
+        const moreBtn = e.target.closest('.ui-tags-more');
+        document.querySelectorAll('.ui-tags-more.is-open').forEach((el) => {
+          if (el !== moreBtn) {
+            el.classList.remove('is-open');
+            el.setAttribute('aria-expanded', 'false');
+          }
+        });
+        if (moreBtn) {
+          e.stopPropagation();
+          const isOpen = moreBtn.classList.toggle('is-open');
+          moreBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.ui-tags-more.is-open').forEach((el) => {
+            el.classList.remove('is-open');
+            el.setAttribute('aria-expanded', 'false');
+          });
+        }
+        if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('ui-tags-more')) {
+          e.preventDefault();
+          const isOpen = e.target.classList.toggle('is-open');
+          e.target.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+      });
     });
   </script>
 </body>
