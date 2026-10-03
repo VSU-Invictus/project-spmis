@@ -10,13 +10,13 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Navigate parent window when used in an iframe -->
     <base target="_parent">
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-sans, 'Outfit'), sans-serif;
             margin: 0;
             padding: 0;
             background-color: #141413;
@@ -27,7 +27,7 @@
         }
 
         .border-sidebar-right {
-            border-color: #181716;
+            border-right: 1px solid #3E3D39 !important;
         }
 
         /* Active Navigation Item State */
@@ -98,7 +98,7 @@
                 <!-- 1. Dashboard -->
                 <a href="../../pages/faculty/dashboard.html"
                     class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg class="w-[18px] h-[18px] shrink-0" width="18" height="18" style="width: 18px; height: 18px;" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
                         <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
                         <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
@@ -189,7 +189,7 @@
                 </div>
 
                 <!-- Logout Button -->
-                <a href="../../pages/auth/signin.html" class="text-[#929292] hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10" aria-label="Log out" title="Log out">
+                <a href="../../pages/auth/signin.html" class="logout-btn text-[#929292] hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10" aria-label="Log out" title="Log out">
                     <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
                     </svg>

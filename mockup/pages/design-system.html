@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="dark">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude+ Design System — Living Style Guide</title>
-  <link rel="stylesheet" href="../assets/css/global.css?v=5">
-  <link rel="stylesheet" href="../assets/css/components.css?v=8">
+  <link rel="stylesheet" href="../assets/css/global.css?v=6">
+  <link rel="stylesheet" href="../assets/css/components.css?v=9">
   <style>
     /* Living Style Guide Showcase Layout */
     body {
@@ -15,6 +15,11 @@
       font-family: var(--font-sans, 'Outfit', sans-serif);
       margin: 0;
       padding: 0;
+      border: none !important;
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      border-bottom: none !important;
       line-height: 1.5;
       transition: background-color 0.2s ease, color 0.2s ease;
     }
@@ -122,6 +127,52 @@
       color: var(--muted-foreground);
       margin: 0;
       max-width: 760px;
+    }
+
+    .ui-workspace-surface {
+      background-color: var(--muted) !important;
+    }
+
+    .ui-faculty-header-preview {
+      background-color: var(--muted) !important;
+      color: #fff;
+      border: 1px solid #42423f;
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.25rem;
+    }
+
+    .ui-faculty-header-preview .top-header-bar {
+      margin-bottom: 1.5rem;
+    }
+
+    .ui-faculty-header-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: #A0988E;
+      font-size: 11px;
+    }
+
+    .ui-faculty-header-content-arrow {
+      color: #A0988E;
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .ui-workspace-footer-preview .workspace-footer {
+      width: auto;
+      margin-left: 1.25rem;
+      margin-right: 1.25rem;
+      background-color: var(--muted) !important;
+    }
+
+    @media (max-width: 640px) {
+      .ui-faculty-header-preview .top-header-bar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
     }
 
     /* Showcase Sections */
@@ -403,6 +454,9 @@ html:not(.dark) .brand-footer {
         }
 
     </style>
+  <style>
+    body { overflow-y: auto !important; }
+  </style>
 </head>
 
 <body>
@@ -436,6 +490,22 @@ html:not(.dark) .brand-footer {
         with unified <code>.ui-*</code> class architecture.
       </p>
     </div>
+
+    <!-- Quick Navigation Anchor Bar -->
+    <nav class="ui-quick-nav" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border);">
+      <a href="#color-palette" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Colors</a>
+      <a href="#typography" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Typography</a>
+      <a href="#badges" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Badges &amp; Tags</a>
+      <a href="#buttons" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Buttons &amp; Actions</a>
+      <a href="#form-controls" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Form Controls &amp; Filters</a>
+      <a href="#cards" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Cards &amp; KPIs</a>
+      <a href="#data-tables" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Data Tables &amp; Shimmers</a>
+      <a href="#portal-sidebars" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Portal Sidebars</a>
+      <a href="#portal-modals" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Modals &amp; Dialogs</a>
+      <a href="#chats" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Chats &amp; AI</a>
+      <a href="#auth-cards" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Auth Cards</a>
+      <a href="#workspace-frame" class="ui-badge ui-badge--neutral" style="text-decoration: none; padding: 6px 12px; font-size: 12px; transition: transform 0.15s ease;">Workspace Frame &amp; Footer</a>
+    </nav>
 
     <!-- 1. Color Palette Section -->
     <section class="ui-section" id="color-palette">
@@ -578,40 +648,106 @@ html:not(.dark) .brand-footer {
     <!-- 3. Status Badges & Chips Section -->
     <section class="ui-section" id="badges">
       <div class="ui-section-header">
-        <h2 class="ui-section-title">Status Badges &amp; Chips</h2>
-        <span class="ui-section-desc">Semantic pill tags for table statuses, application reviews, and records</span>
+        <h2 class="ui-section-title">Status Badges &amp; Tags</h2>
+        <span class="ui-section-desc">Unified semantic pill tags and status indicators matching portal tables and audit logs</span>
       </div>
-      <div class="ui-btn-row">
-        <div class="ui-btn-group">
-          <span class="ui-badge ui-badge--success">
-            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Approved / Active
-          </span>
-          <span class="ui-badge ui-badge--warning">
-            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            Pending Review
-          </span>
-          <span class="ui-badge ui-badge--destructive">
-            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            Rejected / Deficient
-          </span>
-          <span class="ui-badge ui-badge--info">
-            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            In Progress
-          </span>
-          <span class="ui-badge ui-badge--neutral">
-            Archived / Draft
-          </span>
+      <div class="ui-grid ui-grid-cols-2">
+        <!-- 1. Lifecycle & Operational Statuses -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Operational &amp; Lifecycle Statuses</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--success">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Approved / Active
+            </span>
+            <span class="ui-badge ui-badge--warning">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Pending Review
+            </span>
+            <span class="ui-badge ui-badge--destructive">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              Rejected / Deficient
+            </span>
+            <span class="ui-badge ui-badge--info">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              In Progress
+            </span>
+            <span class="ui-badge ui-badge--neutral">
+              Archived / Draft
+            </span>
+          </div>
+          <p class="ui-text-caption">
+            Standard status badges across applications and roster views with color-matched iconography and semantic background tints.
+          </p>
         </div>
-        <div class="ui-btn-group" style="margin-top: 1rem;">
-          <span class="ui-badge ui-badge--purple">Research</span>
-          <span class="ui-badge ui-badge--cyan">Algorithms</span>
-          <span class="ui-badge ui-badge--amber">Leadership</span>
-          <span class="ui-badge ui-badge--rose">Robotics</span>
+
+        <!-- 2. Entity Types & Origin Context -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Entity Classification &amp; Origin Tags</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--purple">Department</span>
+            <span class="ui-badge ui-badge--cyan">Program</span>
+            <span class="ui-badge ui-badge--warning">Student Origin</span>
+            <span class="ui-badge ui-badge--info">Faculty Origin</span>
+            <span class="ui-badge ui-badge--destructive">System / Direct</span>
+          </div>
+          <p class="ui-text-caption">
+            Structural entity types used in directory tables, application routing, and system entity filters.
+          </p>
         </div>
-        <p class="ui-text-caption">
-          Badges utilize subtle tinted backgrounds (<code>color-mix</code>) with sharp readable foreground text matching their semantic severity.
-        </p>
+
+        <!-- 3. Audit Activity & Mutation Events -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Audit Log Activity Badges</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--success">Created / Addition</span>
+            <span class="ui-badge ui-badge--info">Updated / Edit</span>
+            <span class="ui-badge ui-badge--destructive">Removed / Deleted</span>
+            <span class="ui-badge ui-badge--purple">Evaluation Review</span>
+          </div>
+          <p class="ui-text-caption">
+            Mutation indicators used across system audit trails to identify record creation, modifications, and removals.
+          </p>
+        </div>
+
+        <!-- 4. Domain & Competency Categories -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Domain &amp; Competency Assessment Tags</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--purple">Research</span>
+            <span class="ui-badge ui-badge--cyan">Algorithms</span>
+            <span class="ui-badge ui-badge--amber">Leadership</span>
+            <span class="ui-badge ui-badge--rose">Robotics</span>
+            <span class="ui-badge ui-badge--neutral">General Academic</span>
+          </div>
+          <p class="ui-text-caption">
+            Subject-matter and competency review tags applied to student evaluations and academic curriculum areas. Uniform 1px border is applied across all color variants.
+          </p>
+        </div>
+
+        <!-- 5. Tag Cluster & Overflow Counter -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Tag Cluster &amp; Overflow Counter (+N)</span>
+          <div class="ui-btn-group">
+            <div class="ui-tags-cluster">
+              <span class="ui-badge ui-badge--purple">Research</span>
+              <span class="ui-badge ui-badge--cyan">Algorithms</span>
+              <div class="ui-tags-more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="2 more tags">
+                <span class="ui-badge ui-badge--neutral ui-tags-more-btn">+2</span>
+                <div class="ui-tags-popover" role="tooltip">
+                  <div class="ui-tags-popover-title">Additional Tags (2)</div>
+                  <div class="ui-tags-popover-list">
+                    <span class="ui-badge ui-badge--amber">Leadership</span>
+                    <span class="ui-badge ui-badge--rose">Robotics</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Prevents table and card crowding by displaying up to 2 primary tags with an interactive <code>+N</code> counter that reveals additional tags on hover or click.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -619,7 +755,7 @@ html:not(.dark) .brand-footer {
     <section class="ui-section" id="buttons">
       <div class="ui-section-header">
         <h2 class="ui-section-title">Buttons &amp; Actions</h2>
-        <span class="ui-section-desc">Interactive button primitives conforming to the <code>.ui-btn</code> specification</span>
+        <span class="ui-section-desc">Interactive button primitives conforming to the unified <code>.ui-btn</code> specification</span>
       </div>
       <div class="ui-grid ui-grid-cols-2">
         <!-- Standard Button Variants -->
@@ -640,7 +776,7 @@ html:not(.dark) .brand-footer {
             </button>
           </div>
           <p class="ui-text-caption">
-            Primary uses terracotta <code>var(--primary)</code>. Secondary and outline utilize <code>var(--secondary)</code> and <code>var(--border)</code>.
+            Primary uses terracotta <code>var(--primary)</code> with bold black text. Secondary and outline utilize <code>var(--secondary)</code> and <code>var(--border)</code>.
           </p>
         </div>
 
@@ -670,20 +806,73 @@ html:not(.dark) .brand-footer {
           </p>
         </div>
 
-        <!-- Faculty Portal Specific Buttons -->
-        <div class="ui-btn-row" style="grid-column: 1 / -1;">
-          <span class="ui-btn-label">Faculty Portal Page Actions</span>
+        <!-- Primary Entity Add & Proposal Actions -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Primary Entity Creation Actions (.add-button)</span>
           <div class="ui-btn-group" style="flex-wrap: wrap;">
-            <button type="button" class="ui-btn">+ Register student</button>
-            <button type="button" class="ui-btn">Browse Student</button>
-            <button type="button" class="ui-btn">+ Propose program</button>
-            <button type="button" class="ui-btn">+ Propose department</button>
-            <button type="button" class="ui-btn ui-btn-secondary">Register student</button>
-            <button type="button" class="ui-btn ui-btn-secondary">Propose program</button>
-            <button type="button" class="ui-btn ui-btn-secondary">Propose department</button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Student</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Faculty</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Department</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Program</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Register Student</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Propose Program</span>
+            </button>
           </div>
           <p class="ui-text-caption">
-            Standard action buttons used across the faculty portal headers and action sections. Utilizes base <code>.ui-btn</code> for primary page actions, and <code>.ui-btn-secondary</code> for grouped tertiary actions.
+            Unified primary action across all portals: Terracotta background (<code>#D97251</code>), bold black text (<code>#000000</code>), consistent SVG plus icon, and <code>height: 38px</code>.
+          </p>
+        </div>
+
+        <!-- Proposal Decision Pill Buttons -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Decision Pill Buttons (.pill-btn)</span>
+          <div class="ui-btn-group" style="flex-wrap: wrap;">
+            <button type="button" class="pill-btn accept">Accept Application</button>
+            <button type="button" class="pill-btn reject">Reject Application</button>
+            <button type="button" class="ui-btn ui-btn-secondary" style="height: 30px; padding: 0 16px; border-radius: 999px; font-size: 12px;">Browse Records</button>
+          </div>
+          <p class="ui-text-caption">
+            Full-pill radius (9999px) decision buttons: Accept uses forest green (<code>#2c7e39</code>), Reject uses crimson (<code>#f9464a</code>), with a subtle <code>translateY(-1px)</code> hover lift.
+          </p>
+        </div>
+
+        <!-- Interactive Neutral Action Links with Arrow -->
+        <div class="ui-btn-row" style="grid-column: 1 / -1;">
+          <span class="ui-btn-label">Interactive Action Links with Animated Arrow (.ui-link-neutral)</span>
+          <div class="ui-btn-group" style="flex-wrap: wrap; gap: 1.5rem; align-items: center;">
+            <a href="#data-tables" class="ui-link-neutral" style="font-size: 13px; font-weight: 500;">
+              Review <span class="arrow">&rarr;</span>
+            </a>
+            <a href="#data-tables" class="ui-link-neutral" style="font-size: 13px; font-weight: 500;">
+              View All Logs <span class="arrow">&rarr;</span>
+            </a>
+            <a href="#data-tables" class="ui-link-neutral" style="font-size: 13px; font-weight: 500;">
+              Write review <span class="arrow">&rarr;</span>
+            </a>
+            <a href="#data-tables" class="ui-link-neutral" style="font-size: 13px; font-weight: 500;">
+              View details <span class="arrow">&rarr;</span>
+            </a>
+            <button type="button" class="empty-state-btn" style="margin-left: auto;">Clear all filters</button>
+          </div>
+          <p class="ui-text-caption">
+            <code>.ui-link-neutral</code> renders high-contrast neutral text (<code>#FAF9F5</code>) that turns primary terracotta (<code>#D97251</code>) on hover, while <code>.arrow</code> smoothly glides 4px to the right. <code>.empty-state-btn</code> provides filter reset recovery.
           </p>
         </div>
       </div>
@@ -713,11 +902,55 @@ html:not(.dark) .brand-footer {
         </div>
         <div class="ui-form-group">
           <label class="ui-form-label" for="sample-search">Search Records</label>
-          <input type="search" id="sample-search" class="ui-input" placeholder="Search roster or IDs..." />
+            <div style="position: relative; display: flex; align-items: center;">
+              <svg style="position: absolute; left: 0.75rem; width: 16px; height: 16px; pointer-events: none; opacity: 0.6; color: var(--foreground);" viewBox="0 0 16 16" fill="none">
+                <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.33"/>
+                <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.33" stroke-linecap="round"/>
+              </svg>
+              <input type="search" id="sample-search" class="ui-input" style="padding-left: 2.25rem;" placeholder="Search roster or IDs..." />
+            </div>
         </div>
         <div class="ui-form-group" style="grid-column: 1 / -1;">
           <label class="ui-form-label" for="sample-notes">Review Assessment Notes</label>
           <textarea id="sample-notes" class="ui-input" style="min-height: 80px;" placeholder="Provide detailed evaluation feedback..."></textarea>
+        </div>
+
+        <!-- Table Controls Toolbar (Search & Dropdown Filters) -->
+        <div class="ui-btn-row" style="grid-column: 1 / -1;">
+          <span class="ui-btn-label">Standard Portal Table Controls Toolbar</span>
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; width: 100%;">
+            <div class="search-wrapper" style="position: relative; width: 280px; max-width: 100%;">
+              <svg class="search-icon" viewBox="0 0 16 16" fill="none" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none;"><circle cx="7" cy="7" r="4.5" stroke="#6C655D" stroke-width="1.3"/><path d="M10.5 10.5L14 14" stroke="#6C655D" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input class="search-input" type="search" placeholder="Search by student, faculty, or proposal..." style="width: 100%; height: 38px; padding-left: 36px; padding-right: 12px; background: var(--muted); border: 1px solid var(--border); border-radius: 12px; color: var(--foreground); font-size: 12px; outline: none;">
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <div class="dropdown-container department" style="position: relative; width: 195px; height: 38px;">
+                <select class="dropdown-select" style="width: 100%; height: 38px; padding: 0 30px 0 14px; background: var(--muted); border: 1px solid var(--input, #43362B); border-radius: 12px; color: var(--foreground); font-size: 12px; appearance: none; outline: none; cursor: pointer;">
+                  <option value="all">Department: All</option>
+                  <option>Department of Computer Science</option>
+                  <option>Department of Information Technology</option>
+                  <option>Department of Applied Mathematics</option>
+                </select>
+                <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 12px; height: 12px;"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="dropdown-container status" style="position: relative; width: 130px; height: 38px;">
+                <select class="dropdown-select" style="width: 100%; height: 38px; padding: 0 30px 0 14px; background: var(--muted); border: 1px solid var(--input, #43362B); border-radius: 12px; color: var(--foreground); font-size: 12px; appearance: none; outline: none; cursor: pointer;">
+                  <option value="all">Status: All</option>
+                  <option>Active</option>
+                  <option>Under Review</option>
+                  <option>Archived</option>
+                </select>
+                <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 12px; height: 12px;"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <button type="button" class="ui-btn add-button">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <span>Add Record</span>
+              </button>
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Unified control bar used across all portal tables. Dropdown filters feature customized chevrons, standardized 12px radius, and dedicated widths (e.g. 195px for department to prevent text truncation).
+          </p>
         </div>
       </div>
     </section>
@@ -786,8 +1019,15 @@ html:not(.dark) .brand-footer {
     <!-- 7. Data Tables & Pagination Section -->
     <section class="ui-section" id="data-tables">
       <div class="ui-section-header">
-        <h2 class="ui-section-title">Data Tables &amp; Pagination</h2>
+        <h2 class="ui-section-title">Data Tables &amp; Loading Shimmers</h2>
         <span class="ui-section-desc">Responsive table wrappers with subtle row hovers, status pills, and pagination bars</span>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <span style="font-size: 0.8125rem; color: var(--muted-foreground);">Table features interactive loading shimmers, live row checkboxes, pagination slicing, and empty-state recovery.</span>
+        <button type="button" id="demo-simulate-skeleton-btn" class="ui-btn ui-btn-outline" style="min-height: 2.25rem; padding: 0.25rem 0.875rem; font-size: 0.78125rem; display: inline-flex; align-items: center; gap: 6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Simulate Skeleton Loading (280ms)
+        </button>
       </div>
       <div class="ui-table-wrap">
         <table class="ui-table">
@@ -806,12 +1046,9 @@ html:not(.dark) .brand-footer {
             <tr>
               <td><input type="checkbox" aria-label="Select row"></td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">SM</div>
-                  <div>
-                    <strong style="display: block; font-size: 0.875rem;">Sam Lee Parker</strong>
-                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">sam.parker@vsu.edu.ph</span>
-                  </div>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Sam Lee Parker</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">sam.parker@vsu.edu.ph</span>
                 </div>
               </td>
               <td><code class="ui-text-mono">24-1-00001</code></td>
@@ -825,12 +1062,9 @@ html:not(.dark) .brand-footer {
             <tr>
               <td><input type="checkbox" aria-label="Select row"></td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">EB</div>
-                  <div>
-                    <strong style="display: block; font-size: 0.875rem;">Elena Bautista</strong>
-                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">elena.b@vsu.edu.ph</span>
-                  </div>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Elena Bautista</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">elena.b@vsu.edu.ph</span>
                 </div>
               </td>
               <td><code class="ui-text-mono">24-1-00042</code></td>
@@ -838,18 +1072,15 @@ html:not(.dark) .brand-footer {
               <td>2nd Year</td>
               <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
               <td style="text-align: right;">
-                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">Review</button>
+                <a href="#data-tables" class="ui-link-neutral" style="font-size: 13px; font-weight: 500;">Review <span class="arrow">&rarr;</span></a>
               </td>
             </tr>
             <tr>
               <td><input type="checkbox" aria-label="Select row"></td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">RC</div>
-                  <div>
-                    <strong style="display: block; font-size: 0.875rem;">Rafael Cruz</strong>
-                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">r.cruz@vsu.edu.ph</span>
-                  </div>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Rafael Cruz</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">r.cruz@vsu.edu.ph</span>
                 </div>
               </td>
               <td><code class="ui-text-mono">24-1-00109</code></td>
@@ -857,129 +1088,107 @@ html:not(.dark) .brand-footer {
               <td>4th Year</td>
               <td><span class="ui-badge ui-badge--info">In Progress</span></td>
               <td style="text-align: right;">
-                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button>
+                <a href="#data-tables" class="ui-link-neutral" style="font-size: 13px; font-weight: 500;">Write review <span class="arrow">&rarr;</span></a>
               </td>
             </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">AD</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Adrian Davis</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">adrian.d@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00210</code></td>
-                <td>BS Computer Science</td>
-                <td>3rd Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">LM</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Liam Moore</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">liam.m@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00211</code></td>
-                <td>BS Information Systems</td>
-                <td>1st Year</td>
-                <td><span class="ui-badge ui-badge--info">In Progress</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">KS</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Kaitlyn Smith</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">k.smith@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00212</code></td>
-                <td>BS Computer Engineering</td>
-                <td>4th Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">JT</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Justin Taylor</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">j.taylor@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00213</code></td>
-                <td>BS Computer Science</td>
-                <td>2nd Year</td>
-                <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">MJ</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Mia Johnson</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">m.johnson@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00214</code></td>
-                <td>BS Data Science</td>
-                <td>1st Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">EW</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Ethan White</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">e.white@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00215</code></td>
-                <td>BS Artificial Intelligence</td>
-                <td>3rd Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">CB</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Chloe Brown</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">c.brown@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00216</code></td>
-                <td>BS Computer Science</td>
-                <td>4th Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-</tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Adrian Davis</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">adrian.d@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00210</code></td>
+              <td>BS Computer Science</td>
+              <td>3rd Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Liam Moore</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">liam.m@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00211</code></td>
+              <td>BS Information Systems</td>
+              <td>1st Year</td>
+              <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Kaitlyn Smith</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">k.smith@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00212</code></td>
+              <td>BS Computer Engineering</td>
+              <td>4th Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Justin Taylor</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">j.taylor@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00213</code></td>
+              <td>BS Computer Science</td>
+              <td>2nd Year</td>
+              <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Mia Johnson</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">m.johnson@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00214</code></td>
+              <td>BS Data Science</td>
+              <td>1st Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Ethan White</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">e.white@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00215</code></td>
+              <td>BS Artificial Intelligence</td>
+              <td>3rd Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong style="display: block; font-size: 0.875rem; color: var(--foreground);">Chloe Brown</strong>
+                  <span style="font-size: 0.75rem; color: var(--muted-foreground);">c.brown@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00216</code></td>
+              <td>BS Computer Science</td>
+              <td>4th Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+            </tr>
           </tbody>
         </table>
         <!-- Table Pagination Footer -->
@@ -1031,43 +1240,204 @@ html:not(.dark) .brand-footer {
             </div>
           </div>
 
+          <!-- Empty State Demo Container -->
+          <div id="demo-empty-state" class="empty-state" style="display: none; padding: 36px 16px; text-align: center; border-top: 1px solid var(--border); margin-top: 12px; border-radius: var(--radius-lg); background: var(--muted);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--muted-foreground); margin: 0 auto 8px; display: block;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <p style="margin: 0; font-size: 13px; font-weight: 600; color: var(--foreground);">No records matching your search or filters found.</p>
+            <p style="margin: 4px 0 12px; font-size: 11px; color: var(--muted-foreground);">Try adjusting your query or resetting the active filters.</p>
+            <button type="button" class="empty-state-btn" id="demo-empty-state-btn">Clear all filters</button>
+          </div>
+    </section>
 
-</section>
+    <!-- 8. Portal Sidebar Navigation Section -->
+    <section class="ui-section" id="portal-sidebars">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Portal Sidebar Navigation</h2>
+        <span class="ui-section-desc">Docked 260px navigation sidebar with active state highlights, user account card, and zero-blink view transitions</span>
+      </div>
 
-    <!-- 8. Chats & AI Assistant Section -->
+      <div class="ui-grid ui-grid-cols-2" style="gap: 1.5rem; align-items: flex-start;">
+        <!-- Standard Portal Sidebar Showcase -->
+        <div class="ui-card" style="padding: 1.25rem; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;">
+          <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); margin-bottom: 0.75rem; padding-left: 0.25rem;">
+            Standard Portal Sidebar Navigation
+          </div>
+          <div id="demo-sidebar-container" style="width: 100%; max-width: 260px; background: #1F1E1D; border: 1px solid #181716; border-radius: 16px; padding: 14px 10px; display: flex; flex-direction: column; gap: 8px;">
+            <div class="brand-header" style="padding: 4px 10px;"><h1 class="brand-title" style="font-size: 16px; font-weight: 700; color: #FAF9F5;">Academic Portal</h1></div>
+            <nav class="nav" id="demo-sidebar-nav" style="display: flex; flex-direction: column; gap: 4px;">
+              <a href="#portal-sidebars" class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold" style="text-decoration: none; background: #D97251 !important; color: #000000 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.2);" aria-current="page">
+                <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: #000000;"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg>
+                <span style="color: #000000 !important; font-weight: 700;">Dashboard</span>
+              </a>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: #98938D;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg>
+                <span style="color: #98938D;">Faculty Applications</span>
+              </a>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/></svg>
+                <span style="color: #98938D;">Student Applications</span>
+              </a>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg>
+                <span style="color: #98938D;">Program Applications</span>
+              </a>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <span style="color: #98938D;">Dept. Applications</span>
+              </a>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <span style="color: #98938D;">Students</span>
+              </a>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span style="color: #98938D;">Audit Log</span>
+              </a>
+            </nav>
+            <div style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 10px;">
+              <div class="sidebar-account-card" style="display: flex; align-items: center; justify-content: space-between; padding: 0 14px; height: 58px; border-radius: 18px; background: #2B2A27; border: 1px solid #383734;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="sidebar-avatar" style="width: 34px; height: 34px; border-radius: 50%; background-color: #F7E2D6; color: #A35233; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px;">U</div>
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-size: 13px; font-weight: 700; color: #FFFFFF; line-height: 1.2;">Portal User</span>
+                    <span style="font-size: 11px; font-weight: 500; color: #929292; line-height: 1.2;">Academic Staff</span>
+                  </div>
+                </div>
+                <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out" style="background: transparent; border: none; color: #929292; cursor: pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width: 18px; height: 18px;"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Persistent View Transition Architecture -->
+        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <h3 class="ui-card-title" style="margin: 0; font-size: 1.125rem;">Persistent View Transitions Architecture</h3>
+          <p class="ui-text" style="margin: 0; font-size: 0.875rem;">
+            All portal workspaces enforce persistent sidebar positioning and instant, blink-free navigation across pages via the View Transitions API and hover prefetching:
+          </p>
+          <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.8125rem; color: var(--muted-foreground); display: flex; flex-direction: column; gap: 0.5rem;">
+            <li><strong>Hardcoded Static DOM:</strong> The complete <code>&lt;aside id="sidebar-menu" class="sidebar sidebar-frame"&gt;</code> is pre-rendered in all portal HTML templates, preventing post-load layout shifts.</li>
+            <li><strong>View Transition Tag:</strong> <code>view-transition-name: portal-sidebar;</code> instructs Chromium browsers to anchor the sidebar in place during cross-page crossfades.</li>
+            <li><strong>Hover Prefetch:</strong> Navigation scripts listen for <code>mouseenter</code> on links and inject <code>&lt;link rel="prefetch"&gt;</code> for instantaneous page responses.</li>
+            <li><strong>Semantic Active State:</strong> The current page is marked with <code>.nav-btn-active</code> and <code>aria-current="page"</code>, featuring primary terracotta background (<code>#D97251</code>) and bold black text (<code>#000000</code>).</li>
+          </ul>
+          <div style="margin-top: 0.5rem; display: flex; gap: 0.75rem;">
+            <button type="button" id="demo-open-logout-btn" class="ui-btn ui-btn-outline" style="min-height: 2.25rem; font-size: 0.8125rem;">
+              Preview Logout Confirmation Dialog
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Portal Modals & Dialogs Section -->
+    <section class="ui-section" id="portal-modals">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Portal Modals &amp; Confirmation Dialogs</h2>
+        <span class="ui-section-desc">Accessible, backdrop-blurred modal dialogs for proposal rejections, entity edits, and destructive confirmations</span>
+      </div>
+
+      <div class="ui-grid ui-grid-cols-2" style="gap: 1.5rem; align-items: flex-start;">
+        <!-- Embedded Modal Preview Card -->
+        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="ui-btn-label">Standard Portal Modal Architecture</span>
+            <button type="button" id="demo-open-reject-modal-btn" class="ui-btn add-button" style="height: 32px; font-size: 12px; padding: 0 12px;">
+              Open Live Modal
+            </button>
+          </div>
+          
+          <!-- Static Visual Representation of the Modal Container -->
+          <div style="background: var(--card, #21201E); border: 1px solid var(--border, #3E3D39); border-radius: 16px; padding: 22px 26px; position: relative; box-shadow: 0 20px 48px -10px rgba(0,0,0,0.6), 0 8px 16px -4px rgba(0,0,0,0.4); color: var(--foreground, #FFFFFF);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <h4 style="margin: 0; font-size: 16px; font-weight: 700; color: var(--foreground, #FFFFFF);">Reject Application Proposal</h4>
+              <span style="font-size: 18px; opacity: 0.7; cursor: pointer; color: var(--muted-foreground);">&times;</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Contextual Action Confirmation Alert -->
+              <div class="ui-alert ui-alert--warning" style="margin-bottom: 2px;">
+                <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <div class="ui-alert-content">
+                  <span class="ui-alert-title">Confirm Rejection Decision</span>
+                  <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+                </div>
+              </div>
+
+              <div>
+                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--foreground, #FFFFFF);">Selected Application</label>
+                <div style="padding: 9px 12px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 10px; font-size: 13px; color: var(--foreground, #FFFFFF);">
+                  Dr. Eleanor Vance (Faculty Application)
+                </div>
+              </div>
+              <div>
+                <label style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--foreground, #FFFFFF);">
+                  <span>Reason for Rejection <span style="color: var(--destructive, #EF4444); font-weight: 700;">*</span></span>
+                  <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
+                </label>
+                <div style="padding: 9px 12px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 10px; font-size: 13px; color: var(--muted-foreground); min-height: 60px; line-height: 1.45;">
+                  Incomplete accreditation documentation for curriculum prerequisites.
+                </div>
+              </div>
+              <button type="button" class="modal-submit" style="margin-top: 4px; height: 38px; font-size: 13px;">Confirm Rejection</button>
+            </div>
+          </div>
+
+          <p class="ui-text-caption">
+            Conforms strictly to the <strong>Standard Card</strong> architecture (<code>background: var(--card)</code>, <code>border: 1px solid var(--border)</code>, 16px radius) with standard lighter-bordered form controls (<code>var(--input)</code>), an expandable rejection textarea, required reason validation, primary terracotta submission button (<code>var(--primary)</code>), and embedded alert confirmation banners (<code>.ui-alert</code>).
+          </p>
+        </div>
+
+        <!-- Specifications & Behavioral Contract -->
+        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <h3 class="ui-card-title" style="margin: 0; font-size: 1.125rem;">Modal Keyboard &amp; Accessibility Contract</h3>
+          <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.8125rem; color: var(--muted-foreground); display: flex; flex-direction: column; gap: 0.625rem;">
+            <li><strong>Escape Key Dismissal:</strong> Pressing <kbd style="background: var(--muted); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 11px;">Esc</kbd> immediately closes the active modal overlay without submitting data.</li>
+            <li><strong>Backdrop Click to Close:</strong> Clicking the dimmed overlay outside the <code>.modal-container</code> safely dismisses the modal.</li>
+            <li><strong>Auto-focus &amp; Trap:</strong> Opening shifts focus into the first input or textarea; closing returns focus to the triggering button.</li>
+            <li><strong>Validation &amp; Error Feedback:</strong> Required rejection reasons trigger immediate warning toasts before modal confirmation can proceed.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Chats & AI Assistant Section -->
     <section class="ui-section" id="chats">
       <div class="ui-section-header">
         <h2 class="ui-section-title">Chats &amp; AI Assistant</h2>
         <span class="ui-section-desc">Prompt chips, message bubbles, query textarea, and student quick-file context card</span>
       </div>
 
-      <!-- Quick Prompt Chips -->
+      <!-- Regular Topic Cards -->
       <div class="ui-chat-prompts" style="margin-bottom: 1.5rem;">
-        <button type="button" class="ui-chat-prompt-btn">
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have research experience?">
           <span>Research experience</span>
-          <small>Explore faculty assessments <span class="arrow">&rarr;</span></small>
-        </button>
-        <button type="button" class="ui-chat-prompt-btn">
+          <small>Explore faculty assessments</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students show teamwork and leadership?">
           <span>Teamwork &amp; Leadership</span>
-          <small>Ask across student records <span class="arrow">&rarr;</span></small>
-        </button>
-        <button type="button" class="ui-chat-prompt-btn">
+          <small>Ask across student records</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Find reviews mentioning communication skills.">
           <span>Communication Skills</span>
-          <small>Find relevant review excerpts <span class="arrow">&rarr;</span></small>
-        </button>
-        <button type="button" class="ui-chat-prompt-btn">
+          <small>Find relevant review excerpts</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Verify capstone project reviews and prerequisites.">
           <span>Capstone Project Review</span>
-          <small>Verify graduation prerequisites <span class="arrow">&rarr;</span></small>
-        </button>
+          <small>Verify graduation prerequisites</small>
+        </div>
       </div>
 
       <!-- Two-Column Chat Workspace -->
       <div class="ui-chat-columns">
         <!-- Left: Chat Thread Card -->
-        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start;">
+        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start; min-height: 400px; max-height: 85vh;">
             <div class="ui-card-header" style="margin-bottom: 1rem; flex-shrink: 0;">
             <h3 class="ui-card-title">Ask across student reviews</h3>
-            <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
+            <p class="ui-card-description">Conversational AI query assistant for student evaluations.</p>
           </div>
             <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
             <div id="chat-log" class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 0.75rem; flex: 1; overflow-y: auto; min-height: 0;">
@@ -1147,7 +1517,7 @@ html:not(.dark) .brand-footer {
             Referenced record. Review conversations can synthesize evaluations across all enrolled students.
           </p>
 
-          <button type="button" class="ui-btn ui-btn-outline" style="width: 100%;">
+          <button type="button" class="ui-btn ui-btn-outline view-profile-btn" style="width: 100%;">
             View Full Profile <span class="arrow">&rarr;</span>
           </button>
         </div>
@@ -2045,38 +2415,73 @@ html:not(.dark) .brand-footer {
         
       </section>
 
-    <!-- 10. Workspace Footer -->
-    <section class="ui-section" id="workspace-footer">
+    <!-- 12. Workspace Frame: Header, Status, Toasts & Pinned Footer -->
+    <section class="ui-section" id="workspace-frame">
       <div class="ui-section-header">
-        <h2 class="ui-section-title">Workspace Footer</h2>
-        <span class="ui-section-desc">Fixed footer bar for admin and faculty portals — pinned to the bottom of the viewport</span>
+        <h2 class="ui-section-title">Workspace Frame (Header, Status, Toasts &amp; Footer)</h2>
+        <span class="ui-section-desc">Unified viewport frame primitives: persistent status header bar, notification toasts, and docked footer</span>
       </div>
 
-      <!-- Footer Demo -->
-      <div style="position: relative; background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end;">
-        <div style="padding: 1rem 1.5rem; color: var(--muted-foreground); font-size: 0.8125rem; text-align: center;">↑ Page content sits above the footer</div>
-        <footer class="workspace-footer" style="flex: none !important; height: auto !important; padding: 0.75rem 1.5rem;">
-          <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
-          <span>System Version 2.4.0</span>
-        </footer>
-      </div>
+      <div class="ui-grid ui-grid-cols-2" style="gap: 1.5rem; align-items: flex-start;">
+        <!-- Portal Top Header Bar Preview -->
+        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <span class="ui-btn-label">Portal Status Header Bar</span>
+          <div class="ui-workspace-surface" style="padding: 1.25rem; border: 1px solid var(--border); border-radius: 12px; background: #141413;">
+            <div class="admin-top-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #42423F; padding-bottom: 0.75rem; margin-bottom: 0.75rem; width: 100%;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="red-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #D97251;"></div>
+                <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #9C948B;">Workspace / Overview</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844; font-size: 11px; color: #9C948B;">
+                  <span class="green-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;"></span>
+                  System Live
+                </span>
+                <span style="font-size: 11px; color: #9C948B;">AY 2026-2027</span>
+              </div>
+            </div>
+            <div style="text-align: center; font-size: 12px; color: var(--muted-foreground); padding: 8px 0;">
+              &darr; Page content and tables sit below this header bar
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Pinned at the top of portal viewports. The terracotta dot anchors the workspace context while the pulsing green indicator verifies real-time operational status.
+          </p>
+        </div>
 
-      <!-- Code Reference -->
-      <div class="ui-card" style="margin-top: 1.5rem; padding: 1.25rem;">
-        <h3 class="ui-card-title" style="margin-bottom: 0.75rem;">Usage</h3>
-        <pre style="background: var(--muted); padding: 1rem; border-radius: var(--radius-md); font-size: 0.8125rem; overflow-x: auto; color: var(--foreground); margin: 0;">&lt;main&gt;
-  &lt;div style="flex:1;min-height:0;overflow-y:auto;"&gt;
-    &lt;!-- Page content --&gt;
-  &lt;/div&gt;
-  &lt;footer class="workspace-footer"&gt;
-    &lt;span&gt;&copy; 2026 Portal. All rights reserved.&lt;/span&gt;
-    &lt;span&gt;System Version 2.4.0&lt;/span&gt;
-  &lt;/footer&gt;
-&lt;/main&gt;</pre>
-        <p style="margin-top: 1rem; font-size: 0.8125rem; color: var(--muted-foreground);">
-          The footer uses <code style="background: var(--muted); padding: 2px 6px; border-radius: 4px;">flex: none; height: auto;</code> to override the workspace wildcard selector. 
-          Content is wrapped in a scrollable <code style="background: var(--muted); padding: 2px 6px; border-radius: 4px;">div</code> with <code style="background: var(--muted); padding: 2px 6px; border-radius: 4px;">flex:1</code> so the footer stays pinned at the bottom.
-        </p>
+        <!-- Toast Notifications Demo -->
+        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <span class="ui-btn-label">Toast Notification Primitive (.ui-toast)</span>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button type="button" id="demo-show-toast-btn" class="ui-btn add-button" style="height: 36px; font-size: 13px;">
+              Trigger Success Toast
+            </button>
+          </div>
+          
+          <div style="padding: 1rem; border: 1px solid var(--border); border-radius: 12px; background: var(--muted); display: flex; align-items: center; gap: 12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span style="font-size: 13px; font-weight: 500; color: var(--foreground);">Application Action Completed Successfully</span>
+          </div>
+
+          <p class="ui-text-caption">
+            Fixed toast positioned at the bottom right with <code>backdrop-filter: blur(8px)</code>, automatic 3-second timeout, and screen reader announcements via <code>aria-live="polite"</code>.
+          </p>
+        </div>
+
+        <!-- Pinned Viewport Workspace Footer -->
+        <div class="ui-card" style="grid-column: 1 / -1; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <span class="ui-btn-label">Pinned Viewport Workspace Footer (.workspace-footer)</span>
+          <div class="ui-workspace-surface ui-workspace-footer-preview" style="position: relative; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; min-height: 110px; display: flex; flex-direction: column; justify-content: flex-end; background: #141413;">
+            <div style="padding: 1rem 1.5rem; color: var(--muted-foreground); font-size: 0.8125rem; text-align: center;">↑ Scrollable workspace content sits above this footer</div>
+            <footer class="workspace-footer" style="flex: none !important; height: auto !important; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #42423F; font-size: 11px; color: #9C948B; background: #141413;">
+              <span>&copy; 2026 Academic Management System. All rights reserved.</span>
+              <span>System Version 2.4.0 &middot; AY 2026-2027</span>
+            </footer>
+          </div>
+          <p class="ui-text-caption">
+            Integrated into the bottom of the workspace canvas via <code>flex: none</code> inside the vertical flex column, ensuring clean alignment across desktop and responsive displays.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -2174,6 +2579,39 @@ html:not(.dark) .brand-footer {
         
         // Scroll to bottom
         chatLog.scrollTop = chatLog.scrollHeight;
+      });
+
+      // Prompt cards automatic send
+      document.querySelectorAll('.ui-chat-prompt-card[data-prompt]').forEach((card) => {
+        const sendCardPrompt = () => {
+          const text = card.dataset.prompt;
+          if (!text) return;
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const msgDiv = document.createElement('div');
+          msgDiv.className = 'ui-chat-msg ui-chat-msg--user';
+          const safeText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          msgDiv.innerHTML = `
+            <div class="ui-chat-msg-content">
+              <div class="ui-chat-msg-header">
+                <span class="ui-chat-msg-sender">Prof. Morgan</span>
+                <span class="ui-chat-msg-time">${timeStr}</span>
+              </div>
+              <div class="ui-chat-bubble ui-chat-bubble--user">${safeText}</div>
+            </div>
+          `;
+          chatLog.appendChild(msgDiv);
+          chatPrompt.value = '';
+          chatPrompt.style.height = 'auto';
+          chatLog.scrollTop = chatLog.scrollHeight;
+        };
+        card.onclick = sendCardPrompt;
+        card.onkeydown = (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            sendCardPrompt();
+          }
+        };
       });
     }
   });
@@ -2324,6 +2762,245 @@ html:not(.dark) .brand-footer {
         
         // Initial state
         updateView();
+      });
+    });
+  </script>
+
+  <!-- Interactive Demo Modals and Toasts -->
+  <!-- 1. Live Reject Application Modal -->
+  <div class="modal-overlay" id="demoRejectModal">
+    <div class="modal-container">
+      <button class="modal-close" id="demoCloseRejectModal" aria-label="Close modal">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M1 1L13 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h3 class="modal-title">Reject Application</h3>
+      <form class="modal-form" id="demoRejectForm">
+        <!-- Contextual Action Confirmation Alert -->
+        <div class="ui-alert ui-alert--warning" role="alert">
+          <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <div class="ui-alert-content">
+            <span class="ui-alert-title">Confirm Rejection Decision</span>
+            <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+          </div>
+        </div>
+
+        <div>
+          <label for="demoRejectAppSelect">Application:</label>
+          <select id="demoRejectAppSelect">
+            <option value="app_1">Dr. Eleanor Vance (Faculty Proposal)</option>
+            <option value="app_2">BS Data Science (Program Proposal)</option>
+            <option value="app_3">Dept. of Applied Mathematics</option>
+          </select>
+        </div>
+        <div>
+          <label for="demoRejectReason">
+            <span>Reason for rejection <span style="color: var(--destructive); font-weight: 700;">*</span></span>
+            <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
+          </label>
+          <textarea id="demoRejectReason" required placeholder="Enter specific deficiency or prerequisites reason..."></textarea>
+        </div>
+        <button type="submit" class="modal-submit">Confirm Rejection</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Live Logout Confirmation Dialog -->
+  <dialog id="demoLogoutDialog" class="logout-dialog">
+    <form method="dialog">
+      <h2>Log out?</h2>
+      <p>Are you sure you want to end your current session?</p>
+      <div class="actions">
+        <button type="submit" value="cancel" class="ui-btn ui-btn-outline">Cancel</button>
+        <button type="submit" value="confirm" class="ui-btn ui-btn-primary">Log out</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 3. Live Success Toast -->
+  <div id="demoToast" class="ui-toast" role="status" aria-live="polite">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="demoToastMessage">Action completed successfully!</span>
+  </div>
+
+  <script>
+    // Wire Interactive Style Guide Demos: Skeleton Loading, Modals & Toasts
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Skeleton Simulation Demo
+      const skelBtn = document.getElementById('demo-simulate-skeleton-btn');
+      const tableWrap = document.querySelector('.ui-table-wrap');
+      const tbody = tableWrap ? tableWrap.querySelector('tbody') : null;
+
+      if (skelBtn && tbody) {
+        skelBtn.addEventListener('click', () => {
+          skelBtn.disabled = true;
+          const rows = Array.from(tbody.querySelectorAll('tr'));
+          rows.forEach(r => r.style.display = 'none');
+
+          // Insert skeleton shimmer rows
+          const frag = document.createDocumentFragment();
+          for (let i = 0; i < 4; i++) {
+            const tr = document.createElement('tr');
+            tr.className = 'skeleton-row';
+            tr.innerHTML = '<td colspan="7"><div class="skeleton"></div></td>';
+            frag.appendChild(tr);
+          }
+          tbody.appendChild(frag);
+
+          setTimeout(() => {
+            tbody.querySelectorAll('.skeleton-row').forEach(sr => sr.remove());
+            rows.forEach((r, i) => {
+              if (i < 5) r.style.display = '';
+            });
+            skelBtn.disabled = false;
+          }, 320);
+        });
+      }
+
+      // 2. Empty State Demo & Reset
+      const emptyState = document.getElementById('demo-empty-state');
+      const emptyStateBtn = document.getElementById('demo-empty-state-btn');
+      if (emptyStateBtn && emptyState) {
+        emptyStateBtn.addEventListener('click', () => {
+          emptyState.style.display = 'none';
+          if (tbody) {
+            tbody.querySelectorAll('tr').forEach((r, i) => {
+              if (i < 5) r.style.display = '';
+            });
+          }
+        });
+      }
+
+      // 3. Modal Previews
+      const rejectModal = document.getElementById('demoRejectModal');
+      const openRejectBtn = document.getElementById('demo-open-reject-modal-btn');
+      const closeRejectBtn = document.getElementById('demoCloseRejectModal');
+      const rejectForm = document.getElementById('demoRejectForm');
+
+      if (openRejectBtn && rejectModal) {
+        openRejectBtn.addEventListener('click', () => rejectModal.classList.add('active'));
+      }
+      if (closeRejectBtn && rejectModal) {
+        closeRejectBtn.addEventListener('click', () => rejectModal.classList.remove('active'));
+      }
+      if (rejectModal) {
+        rejectModal.addEventListener('click', (e) => {
+          if (e.target === rejectModal) rejectModal.classList.remove('active');
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && rejectModal.classList.contains('active')) {
+            rejectModal.classList.remove('active');
+          }
+        });
+      }
+      if (rejectForm) {
+        rejectForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const reasonInput = document.getElementById('demoRejectReason');
+          if (!reasonInput || !reasonInput.value.trim()) {
+            showDemoToast('Please provide a reason for rejection before confirming.');
+            if (reasonInput) reasonInput.focus();
+            return;
+          }
+          rejectModal.classList.remove('active');
+          showDemoToast('Application proposal rejected successfully.');
+        });
+      }
+
+      // 4. Logout Confirmation Dialog
+      const logoutDialog = document.getElementById('demoLogoutDialog');
+      const openLogoutBtn = document.getElementById('demo-open-logout-btn');
+      if (openLogoutBtn && logoutDialog) {
+        openLogoutBtn.addEventListener('click', () => {
+          logoutDialog.showModal();
+        });
+      }
+
+      // 5. Toast Demonstration
+      const toastBtn = document.getElementById('demo-show-toast-btn');
+      const toastEl = document.getElementById('demoToast');
+      const toastMsgEl = document.getElementById('demoToastMessage');
+      let toastTimer = null;
+
+      function showDemoToast(msg) {
+        if (!toastEl) return;
+        if (toastMsgEl && msg) toastMsgEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 3000);
+      }
+
+      if (toastBtn) {
+        toastBtn.addEventListener('click', () => {
+          showDemoToast('Operation executed successfully! Record updated.');
+        });
+      }
+
+      // 6. Interactive Sidebar Nav Switcher Demo
+      const demoNav = document.getElementById('demo-sidebar-nav');
+      if (demoNav) {
+        const demoLinks = demoNav.querySelectorAll('a');
+        demoLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            demoLinks.forEach(l => {
+              l.className = 'nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold';
+              l.style.textDecoration = 'none';
+              l.style.background = 'transparent';
+              l.style.color = '#98938D';
+              l.style.boxShadow = 'none';
+              l.removeAttribute('aria-current');
+              const icon = l.querySelector('svg');
+              if (icon) icon.style.color = '#98938D';
+              const text = l.querySelector('span');
+              if (text) text.style.color = '#98938D';
+            });
+            link.className = 'nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold';
+            link.style.textDecoration = 'none';
+            link.style.background = '#D97251';
+            link.style.color = '#000000';
+            link.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
+            link.setAttribute('aria-current', 'page');
+            const icon = link.querySelector('svg');
+            if (icon) icon.style.color = '#000000';
+            const text = link.querySelector('span');
+            if (text) text.style.color = '#000000';
+          });
+        });
+      }
+
+      // Tag Overflow (+N) Popover Toggle Listener
+      document.addEventListener('click', (e) => {
+        const moreBtn = e.target.closest('.ui-tags-more');
+        document.querySelectorAll('.ui-tags-more.is-open').forEach((el) => {
+          if (el !== moreBtn) {
+            el.classList.remove('is-open');
+            el.setAttribute('aria-expanded', 'false');
+          }
+        });
+        if (moreBtn) {
+          e.stopPropagation();
+          const isOpen = moreBtn.classList.toggle('is-open');
+          moreBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.ui-tags-more.is-open').forEach((el) => {
+            el.classList.remove('is-open');
+            el.setAttribute('aria-expanded', 'false');
+          });
+        }
+        if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('ui-tags-more')) {
+          e.preventDefault();
+          const isOpen = e.target.classList.toggle('is-open');
+          e.target.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
       });
     });
   </script>

@@ -43,7 +43,7 @@
         }
 
         button,
-        .button {
+        .ui-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -218,7 +218,7 @@
             margin-bottom: 24px;
         }
 
-        .card {
+        .ui-card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
@@ -226,7 +226,7 @@
             margin-bottom: 20px;
         }
 
-        .grid .card {
+        .grid .ui-card {
             margin-bottom: 0;
         }
 
@@ -271,7 +271,7 @@
 
         .filters {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
+            
             gap: 12px;
             margin-bottom: 20px;
         }
@@ -540,7 +540,7 @@
             }
 
             .filters {
-                grid-template-columns: 1fr 1fr;
+                
             }
 
             .grid {
@@ -616,7 +616,7 @@
 
             .filters,
             .quick-links {
-                grid-template-columns: 1fr;
+                
             }
 
             .grid {
@@ -665,7 +665,7 @@
             font-weight: 600;
         }
 
-        .card {
+        .ui-card {
             box-shadow: var(--shadow-sm);
         }
 
@@ -746,7 +746,7 @@
     }
 
         button,
-        .button {
+        .ui-btn {
             border-radius: 10px;
         }
 
@@ -883,8 +883,7 @@
         }
 
         .filters {
-            grid-template-columns: minmax(155px, 2fr) 130px repeat(2,
-                    minmax(85px, 1fr)) auto;
+            
             align-items: end;
             gap: 10px;
         }
@@ -938,7 +937,7 @@
             gap: 20px;
         }
 
-        .dashboard-panels .card {
+        .dashboard-panels .ui-card {
             margin: 0;
         }
 
@@ -1014,7 +1013,7 @@
             align-items: start;
         }
 
-        .chat-columns .card {
+        .chat-columns .ui-card {
             margin: 0;
         }
 
@@ -1070,7 +1069,7 @@
             margin: 24px 0;
         }
 
-        .chat-context .button {
+        .chat-context .ui-btn {
             width: 100%;
             margin-top: 8px;
         }
@@ -1081,7 +1080,7 @@
 
         @media (max-width: 850px) {
             .filters {
-                grid-template-columns: 2fr 1fr 1fr;
+                
             }
 
             .filters label:first-child {
@@ -1103,7 +1102,7 @@
             }
 
             .filters {
-                grid-template-columns: 1fr 1fr;
+                
             }
 
             .filters button {
@@ -1141,7 +1140,88 @@
             white-space: nowrap;
             font-weight: 400;
         }
-    </style>
+    
+        
+        
+        .filters label {
+            display: contents !important;
+        }
+        .filters input[type="search"], .filters input[type="text"] {
+            width: 320px !important;
+            height: 38px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 320px !important;
+        }
+        .filters select {
+            width: 140px !important;
+            height: 38px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 140px !important;
+        }
+        .filters button, #clear-filters, #empty-clear {
+            height: 38px !important;
+            padding: 0 16px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 auto !important;
+        }
+
+      
+        /* Match admin search/filters */
+        .filters {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: flex-start !important;
+            align-items: center !important;
+            gap: 10px !important;
+            margin-bottom: 20px !important;
+        }
+        .filters label {
+            display: contents !important;
+        }
+        .filters .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 320px !important;
+            flex: 0 0 320px !important;
+            margin: 0 !important;
+        }
+        .filters .search-wrapper input[type="search"] {
+            width: 100% !important;
+            height: 38px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            padding-left: 2.25rem !important;
+            border-radius: var(--radius-md, 6px);
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--foreground);
+        }
+        .filters select {
+            width: 140px !important;
+            height: 38px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 140px !important;
+        }
+        .filters button, #clear-filters, #empty-clear {
+            height: 38px !important;
+            padding: 0 16px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 auto !important;
+        }
+        .filters input:focus, .filters select:focus, .filters button:focus, .filters button:active, #clear-filters:focus, #clear-filters:active, #empty-clear:focus, #empty-clear:active {
+            outline: 2px solid var(--primary) !important;
+            outline-offset: 2px !important;
+        }
+        .filters select#department {
+            margin-left: auto !important;
+        }
+      </style>
 </head>
 
 <body data-page="students">
@@ -1236,8 +1316,14 @@
                 <a class="ui-btn" href="register-student.html">+ Register student</a>
             </div>
             <div class="filters">
-                <label><span class="sr-only">Search students or review text</span><input id="search" type="search"
-                        placeholder="Search by student name or keyword..." /></label>
+                <label><span class="sr-only">Search students or review text</span><div class="search-wrapper">
+                  <svg style="position: absolute; left: 0.75rem; width: 16px; height: 16px; pointer-events: none; opacity: 0.6; color: var(--foreground);" viewBox="0 0 16 16" fill="none">
+                    <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.33"/>
+                    <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.33" stroke-linecap="round"/>
+                  </svg>
+                  <input id="search" type="search"
+                        placeholder="Search by student name or keyword..." />
+                </div></label>
                 <label><span class="sr-only">Review owner’s department</span><select id="department">
                         <option value="">All departments</option>                        <option>Computer Science</option>                        <option>Engineering</option>                    </select></label>
                 <label><span class="sr-only">Review tag</span><select id="tag">
@@ -1261,8 +1347,8 @@
                     </div>
                     <span id="page-label" role="status" style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;">Page 1 of 2</span>
                     <div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;">
-                      <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" id="previous">Previous</button>
-                      <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" id="next">Next</button>
+                      <button type="button" id="previous" class="secondary" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;">Previous</button>
+                      <button type="button" id="next" class="secondary" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;">Next</button>
                     </div>
                   </div>
               </div>
@@ -1517,6 +1603,55 @@ const programs = [
             "Business Administration"
         ];
         const getColor = (t) => ({ research: "purple", robotics: "rose", teamwork: "amber", communication: "cyan", algorithms: "cyan", leadership: "amber" }[t.toLowerCase()] || "neutral");
+        function renderTagsCluster(tags) {
+            if (!tags || tags.length === 0) {
+                return '<span class="ui-badge ui-badge--neutral">No active reviews</span>';
+            }
+            if (tags.length <= 2) {
+                return `<div class="ui-tags-cluster">${tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div>`;
+            }
+            const visibleTags = tags.slice(0, 2);
+            const hiddenTags = tags.slice(2);
+            return `<div class="ui-tags-cluster">
+                ${visibleTags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}
+                <div class="ui-tags-more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="${hiddenTags.length} more tags: ${hiddenTags.map(esc).join(', ')}">
+                    <span class="ui-badge ui-badge--neutral ui-tags-more-btn">+${hiddenTags.length}</span>
+                    <div class="ui-tags-popover" role="tooltip">
+                        <div class="ui-tags-popover-title">More Tags (+${hiddenTags.length})</div>
+                        <div class="ui-tags-popover-list">
+                            ${hiddenTags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+        document.addEventListener("click", (e) => {
+            const moreBtn = e.target.closest(".ui-tags-more");
+            document.querySelectorAll(".ui-tags-more.is-open").forEach((el) => {
+                if (el !== moreBtn) {
+                    el.classList.remove("is-open");
+                    el.setAttribute("aria-expanded", "false");
+                }
+            });
+            if (moreBtn) {
+                e.stopPropagation();
+                const isOpen = moreBtn.classList.toggle("is-open");
+                moreBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            }
+        });
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                document.querySelectorAll(".ui-tags-more.is-open").forEach((el) => {
+                    el.classList.remove("is-open");
+                    el.setAttribute("aria-expanded", "false");
+                });
+            }
+            if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("ui-tags-more")) {
+                e.preventDefault();
+                const isOpen = e.target.classList.toggle("is-open");
+                e.target.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            }
+        });
         const full = (s) =>
             `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
         const badge = (s) => `<span class="ui-badge ui-badge--${s === 'approved' ? 'success' : s === 'pending' ? 'warning' : s === 'rejected' ? 'destructive' : 'neutral'}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
@@ -1613,14 +1748,14 @@ const programs = [
                     ? `<div class="table-wrap"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th>Action</th></tr></thead><tbody>${matches
                         .slice((current - 1) * size, current * size)
                         .map(
-                            (s) =>
-                                `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}" class="ui-link-neutral">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}" class="ui-link-neutral">Write review <span class="arrow">&rarr;</span></a></td></tr>`,
+                            (s) => {
+                                const studentTags = [...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))];
+                                return `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}" class="ui-link-neutral">${esc(full(s))}</a></td><td>${s.program}</td><td style="color: var(--primary); font-weight: 500;">${renderTagsCluster(studentTags)}</td><td><a href="new-review.html?id=${s.id}" class="ui-link-neutral">Write review <span class="arrow">&rarr;</span></a></td></tr>`;
+                            }
                         )
                         .join("")}</tbody></table></div>`
-                    : '<div class="card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
-                $("#page-label").textContent = matches.length
-                    ? `Page ${current} of ${total} · ${matches.length} students`
-                    : "0 students";
+                    : '<div class="ui-card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
+                $("#page-label").innerHTML = matches.length ? `Page ${current} of ${total} &middot; ${matches.length} entries` : "0 students";
                 $("#previous").disabled = current === 1;
                 $("#next").disabled = current === total;
                 if ($("#empty-clear")) $("#empty-clear").onclick = clear;
@@ -1678,7 +1813,7 @@ const programs = [
         if (page === "student-detail" || page === "new-review") {
             if (!selected) {
                 $("main").innerHTML =
-                    '<h1>Student not found</h1><p>This sample student record is unavailable.</p><a class="button" href="students.html">Back to students</a>';
+                    '<h1>Student not found</h1><p>This sample student record is unavailable.</p><a class="ui-btn" href="students.html">Back to students</a>';
             } else {
                 document
                     .querySelectorAll("[data-student-name]")
@@ -1734,10 +1869,10 @@ const programs = [
                             visible
                                 .map(
                                     (r) =>
-                                        `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                                        `<article class="ui-card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                                 )
                                 .join("") ||
-                            '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
+                            '<div class="ui-card empty">No visible reviews yet. Be the first to write one.</div>';
                     }
                     let editing, deleting;
                     $("#reviews").onclick = (e) => {
@@ -2182,6 +2317,33 @@ const programs = [
                 });
         })();
     </script>
+
+    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Action successful!</span>
+    </div>
+    <script>
+        function showSuccessToast(message) {
+            const toast = document.getElementById('global-success-toast');
+            const msgEl = document.getElementById('toast-message');
+            if(toast && msgEl) {
+                msgEl.textContent = message || 'Action successful!';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form').forEach(f => {
+                f.addEventListener('submit', (e) => { e.preventDefault(); showSuccessToast('Successfully submitted!'); });
+            });
+            document.querySelectorAll('button').forEach(b => {
+                if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
+                    b.addEventListener('click', (e) => { if(b.type !== 'submit') showSuccessToast('Action completed successfully!'); });
+                }
+            });
+        });
+    </script>
+
 </body>
 
 </html>

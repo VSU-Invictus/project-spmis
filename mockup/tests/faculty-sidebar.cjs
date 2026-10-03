@@ -3,106 +3,125 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const vm = require("node:vm");
 
-const classes = new Set();
-const rootClasses = new Set();
-const nav = { id: "" };
-let button;
-let logout;
-let logoutDialog;
-let profileWrapped = false;
-const stored = { "faculty-sidebar-collapsed": "true" };
-const sidebar = {
-  classList: {
-    add: (name) => classes.add(name),
-    contains: (name) => classes.has(name),
-    toggle(name) {
-      classes.has(name) ? classes.delete(name) : classes.add(name);
-      return classes.has(name);
+const rootClasses = new Set(["sidebar-collapsed"]);
+const stored = { "faculty-sidebar-collapsed": "true", "faculty-demo-v1": "data" };
+
+let logoutBtn;
+let createdDialog = null;
+
+const createEl = (tag) => {
+  const el = {
+    tagName: tag.toUpperCase(),
+    attributes: {},
+    className: "",
+    innerHTML: "",
+    returnValue: "",
+    handlers: {},
+    setAttribute(name, val) { this.attributes[name] = val; },
+    getAttribute(name) { return this.attributes[name]; },
+    addEventListener(evt, fn) {
+      this.handlers[evt] = fn;
     },
-  },
-  querySelector(selector) {
-    if (selector === ".nav") return nav;
-    if (selector === ".sidebar-toggle") return button;
-    if (selector === ".logout-button") return logout;
-    if (selector === ".profile-link") return profile;
-  },
-  prepend: (element) => { button = element; },
+    querySelector(sel) {
+      if (sel === 'button[value="confirm"]') {
+        return {
+          addEventListener(evt, fn) { this.handlers = this.handlers || {}; this.handlers[evt] = fn; }
+        };
+      }
+      if (sel === 'button[value="cancel"]') {
+        return {
+          addEventListener(evt, fn) { this.handlers = this.handlers || {}; this.handlers[evt] = fn; }
+        };
+      }
+      if (sel === 'form') {
+        return {
+          addEventListener(evt, fn) { this.handlers = this.handlers || {}; this.handlers[evt] = fn; }
+        };
+      }
+      return null;
+    },
+    showModal() { this.open = true; },
+    close() {
+      this.open = false;
+      this.handlers.close?.();
+    }
+  };
+  return el;
 };
-const profile = {
-  before: () => { profileWrapped = true; },
+
+logoutBtn = {
+  handlers: {},
+  addEventListener(evt, fn) { this.handlers[evt] = fn; },
+  click() { this.handlers.click?.({ preventDefault() {} }); }
 };
+
 const document = {
   readyState: "complete",
-  body: {
-    append(element) { logoutDialog = element; },
-  },
   documentElement: {
     classList: {
-      toggle(name, enabled) {
-        enabled ? rootClasses.add(name) : rootClasses.delete(name);
-      },
+      remove(name) { rootClasses.delete(name); },
+      add(name) { rootClasses.add(name); },
     },
   },
-  querySelector: () => sidebar,
-  createElement(tag) {
-    return {
-      attributes: {},
-      handlers: {},
-      returnValue: "",
-      setAttribute(name, value) { this.attributes[name] = value; },
-      addEventListener(name, handler) {
-        this.handlers[name] = handler;
-        if (name === "click") this.click = handler;
-      },
-      append(element) {
-        if (tag === "div" && element !== profile) logout = element;
-      },
-      showModal() { this.open = true; },
-      close() {
-        this.open = false;
-        this.handlers.close?.();
-      },
-    };
+  body: {
+    appendChild(el) { createdDialog = el; },
+    append(el) { createdDialog = el; },
   },
+  querySelector(sel) {
+    if (sel === '.logout-dialog') return createdDialog;
+    return null;
+  },
+  querySelectorAll(sel) {
+    if (sel === '.sidebar-logout-btn, .logout-btn') return [logoutBtn];
+    return [];
+  },
+  getElementById() { return null; },
+  createElement(tag) {
+    const el = createEl(tag);
+    if (tag.toLowerCase() === "dialog") createdDialog = el;
+    return el;
+  }
 };
+
 const sessionStorage = {
   getItem: (key) => stored[key] ?? null,
   setItem: (key, value) => { stored[key] = value; },
   removeItem: (key) => { delete stored[key]; },
 };
+
 const location = { href: "faculty/dashboard.html" };
-class MutationObserver { observe() {} }
+const window = {
+  setTimeout: (fn) => fn(),
+};
 
 vm.runInNewContext(
   fs.readFileSync("mockup/assets/js/faculty-sidebar.js", "utf8"),
-  { document, location, MutationObserver, sessionStorage },
+  { document, location, window, sessionStorage },
 );
-assert.equal(nav.id, "faculty-navigation");
-assert(classes.has("sidebar-collapsed"), "Saved collapsed state must be restored");
-assert(rootClasses.has("sidebar-collapsed"), "Root state must prevent startup flicker");
-assert(classes.has("sidebar-ready"), "Transitions must be enabled after restoration");
-assert.equal(button.attributes["aria-expanded"], "false");
-button.click();
-assert(!classes.has("sidebar-collapsed"));
-assert(!rootClasses.has("sidebar-collapsed"));
-assert.equal(stored["faculty-sidebar-collapsed"], "false");
-assert.equal(button.attributes["aria-label"], "Collapse sidebar");
-button.click();
-assert(classes.has("sidebar-collapsed"));
-assert(rootClasses.has("sidebar-collapsed"));
-assert.equal(stored["faculty-sidebar-collapsed"], "true");
-assert.equal(button.attributes["aria-label"], "Expand sidebar");
-assert(profileWrapped);
-assert.equal(logout.attributes["aria-label"], "Log out");
-logout.click();
-assert(logoutDialog.open, "Logout dialog must open");
-logoutDialog.returnValue = "cancel";
-logoutDialog.close();
-assert.equal(location.href, "faculty/dashboard.html", "Cancel must keep the session");
-logout.click();
-logoutDialog.returnValue = "confirm";
-logoutDialog.close();
-assert.equal(location.href, "../auth/signup.html");
-assert.equal(stored["faculty-demo-v1"], undefined);
-assert.equal(stored["faculty-sidebar-collapsed"], undefined);
-console.log("Faculty sidebar toggle checks passed.");
+
+// 1. Check collapsed state removal
+assert.equal(stored["faculty-sidebar-collapsed"], undefined, "Legacy collapsed storage must be removed");
+assert(!rootClasses.has("sidebar-collapsed"), "Root element must not be collapsed");
+
+// 2. Check logout dialog initialization
+assert.ok(createdDialog, "Logout dialog should be created");
+assert.ok(createdDialog.innerHTML.includes("ui-btn-outline"), "Cancel button must use outline style");
+assert.ok(createdDialog.innerHTML.includes("ui-btn-primary"), "Log out button must use primary style");
+
+// 3. Check trigger open
+logoutBtn.click();
+assert.equal(createdDialog.open, true, "Dialog must open when logout button is clicked");
+
+// 4. Check cancel
+createdDialog.returnValue = "cancel";
+createdDialog.close();
+assert.equal(location.href, "faculty/dashboard.html", "Cancel must not redirect");
+
+// 5. Check confirm
+logoutBtn.click();
+createdDialog.returnValue = "confirm";
+createdDialog.close();
+assert.equal(stored["faculty-demo-v1"], undefined, "Confirming logout must clear session");
+assert.equal(location.href, "../auth/signin.html", "Confirming logout must redirect to signin");
+
+console.log("Faculty sidebar checks passed.");

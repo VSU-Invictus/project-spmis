@@ -1,9 +1,26 @@
-﻿/* Claude+ reusable component primitives. Load after global.css. */
+/* Claude+ reusable component primitives. Load after global.css. */
 
 /* Dashboard guide: a shared dark workspace for every raw HTML page. */
 body {
     background: var(--background) !important;
     color: var(--foreground) !important;
+}
+
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 180ms;
+    animation-timing-function: ease-out;
+}
+
+#sidebar-menu,
+.sidebar,
+.sidebar-frame,
+[data-component="sidebar-faculty"] {
+    view-transition-name: portal-sidebar;
 }
 
 body:has(:is(.app, .app-canvas, .dashboard-container)) {
@@ -46,20 +63,111 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     box-sizing: border-box;
 }
 
-.app > main {
+:is(.section-container, .app > main, .app-canvas > main) {
+    height: 100% !important;
+    min-height: 100% !important;
+    padding: 16px 24px !important;
     overflow-y: auto !important;
+    background: var(--background) !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding: 16px 24px !important;
     box-sizing: border-box !important;
-    height: 100% !important;
-    min-width: 0 !important;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* IE and Edge */
 }
-.app > main::-webkit-scrollbar {
+:is(.section-container, .app > main, .app-canvas > main)::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
+}
+
+/* Standardized Admin Header and Pinned Viewport Footer */
+.admin-top-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-bottom: 1px solid #42423F !important;
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 1rem !important;
+    width: 100% !important;
+    flex: none !important;
+}
+.admin-top-header .header-left,
+.admin-top-header .header-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+.admin-top-header .red-dot {
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 50% !important;
+    background: #D97251 !important;
+    flex-shrink: 0 !important;
+}
+.admin-top-header .breadcrumb-text {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+    color: #9C948B !important;
+    text-transform: uppercase !important;
+}
+.admin-top-header .status-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 4px 10px !important;
+    border-radius: 9999px !important;
+    background: #3d3d3a !important;
+    border: 1px solid #484844 !important;
+    font-size: 11px !important;
+    color: #9C948B !important;
+}
+.admin-top-header .green-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: #10B981 !important;
+    flex-shrink: 0 !important;
+}
+.admin-top-header .ay-text {
+    font-size: 11px !important;
+    color: #9C948B !important;
+}
+
+.admin-footer {
+    flex: none !important;
+    height: auto !important;
+    flex-shrink: 0 !important;
+    margin-top: auto !important;
+    padding-top: 0.75rem !important;
+    border-top: 1px solid #42423F !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    font-size: 11px !important;
+    color: #A0988E !important;
+    width: 100% !important;
+    background: transparent !important;
+}
+
+.heading-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    min-height: 60px !important;
+    height: 60px !important;
+    justify-content: center !important;
+}
+
+.controls-container {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
 }
 
 :is(.sidebar, .app-sidebar, [class*="sidebar-container"], .sidebar-frame) {
@@ -111,7 +219,7 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     min-width: 260px !important;
     max-width: 260px !important;
     height: 100vh !important;
-    background: var(--sidebar, #21201E) !important;
+    background: var(--sidebar, #1F1E1D) !important;
     color: var(--sidebar-foreground, #FFFFFF) !important;
     border-right: 1px solid var(--sidebar-border, #181716) !important;
     padding: 1rem !important;
@@ -154,8 +262,10 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
 .nav-btn-inactive,
 .nav-btn-active {
     min-height: 40px !important;
+    height: 40px !important;
+    max-height: 40px !important;
     padding: 0 14px !important;
-    border-radius: 14px !important;
+    border-radius: 16px !important;
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
@@ -177,7 +287,7 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
 :is(.sidebar, .app-sidebar) .nav a[aria-current="page"],
 .nav-btn-active {
     background-color: var(--primary, #D97251) !important;
-    color: var(--primary-foreground, #FFFFFF) !important;
+    color: #000000 !important;
     font-weight: 700 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
 }
@@ -201,7 +311,7 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
 .sidebar-divider {
     height: 1px;
     width: 100%;
-    border-bottom: 1px solid rgba(217, 114, 81, 0.35);
+    border-bottom: 1px solid #42423F !important;
 }
 
 .sidebar-account-card {
@@ -287,6 +397,40 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     width: 100%;
 }
 
+dialog.logout-dialog .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+dialog.logout-dialog button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--primary);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    padding: 10px 16px;
+    color: var(--primary-foreground);
+    font: inherit;
+    font-weight: 650;
+    cursor: pointer;
+}
+
+dialog.logout-dialog :is(button.ui-btn-outline, button.secondary, .ui-btn-outline) {
+    background: transparent !important;
+    border: 1px solid var(--border) !important;
+    color: var(--foreground) !important;
+}
+
+dialog.logout-dialog :is(button.ui-btn-outline, button.secondary, .ui-btn-outline):hover {
+    background: var(--accent) !important;
+    color: var(--accent-foreground) !important;
+}
+
 .workspace-footer {
     flex: none !important;
     height: auto !important;
@@ -300,6 +444,10 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
     font-size: 11px;
     color: #A0988E;
     width: 100%;
+}
+
+:is(.sidebar-frame, iframe#sidebar-menu) {
+    background: #21201E;
 }
 
 
@@ -340,21 +488,28 @@ body[data-portal="faculty"] :is(.app, .app-canvas, .dashboard-container) {
 
 /* Shared dark data table treatment. */
 :is(.table-container, [class*="table-container"], [class*="table-wrapper"]) {
-    overflow: hidden;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid var(--ui-surface-border) !important;
     border-radius: var(--radius-lg);
     background: var(--ui-surface) !important;
+    width: 100%;
+    max-width: 100%;
 }
 
 :is(.table-wrap, [class*="table-wrap"]) {
-    overflow: hidden;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
     background: var(--ui-surface) !important;
     color: var(--ui-surface-text);
     border-color: var(--ui-surface-border) !important;
+    width: 100%;
+    max-width: 100%;
 }
 
 table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     background: var(--ui-surface) !important;
     color: var(--ui-surface-text) !important;
@@ -413,42 +568,42 @@ table input[type="checkbox"] {
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s, border-color 0.2s;
-    margin: 0;
+    margin: 0 auto !important;
     vertical-align: middle;
 }
 table input[type="checkbox"]:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
 }
-table input[type="checkbox"]:checked {
-    background-color: var(--primary) !important;
-    border-color: var(--primary) !important;
+table input[type="checkbox"]:checked:not(:indeterminate) {
+    background-color: var(--primary, #D97251) !important;
+    border-color: var(--primary, #D97251) !important;
 }
-table input[type="checkbox"]:checked::after {
-    content: "";
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background-color: var(--primary-foreground);
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
-}
+
 table input[type="checkbox"]:indeterminate {
-    background-color: color-mix(in srgb, var(--foreground) 10%, transparent) !important;
-    border-color: var(--border) !important;
+    background-color: transparent !important;
+    border-color: var(--border, #3E3D39) !important;
 }
-table input[type="checkbox"]:indeterminate::after {
+
+table input[type="checkbox"]:is(:checked, :indeterminate)::after {
     content: "";
     position: absolute;
+    inset: 0;
+    margin: auto;
     width: 12px;
     height: 12px;
-    background-color: var(--foreground);
+    background-color: #FFFFFF !important;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
 }
 
-/* Highlight checked rows */
-table tbody tr:has(input[type="checkbox"]:checked) {
+/* Highlight checked rows and make interactive */
+table tbody tr:has(input[type="checkbox"]) {
+    cursor: pointer;
+}
+
+table tbody tr:has(input[type="checkbox"]:checked),
+table tbody tr.checked {
     background-color: var(--muted) !important;
 }
 
@@ -605,6 +760,36 @@ table tbody tr:has(input[type="checkbox"]:checked) {
 .ui-btn:focus-visible {
     outline: 2px solid var(--border);
     outline-offset: 2px;
+}
+
+/* Standardized Admin Header Action Add Buttons (.btn-add, .add-button, #addButton.ui-btn) */
+:is(.btn-add, .add-button, #addButton.ui-btn) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 18px !important;
+    background: var(--primary, #D97251) !important;
+    color: #000000 !important;
+    border: 1px solid var(--primary, #D97251) !important;
+    border-radius: 12px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    font-family: var(--font-sans, 'Outfit', sans-serif) !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    transform: none !important;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease !important;
+}
+
+:is(.btn-add, .add-button, #addButton.ui-btn):hover {
+    background: color-mix(in srgb, var(--primary) 88%, var(--foreground)) !important;
+    color: #000000 !important;
+    border-color: color-mix(in srgb, var(--primary) 88%, var(--foreground)) !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .ui-input:focus-visible {
@@ -1017,23 +1202,28 @@ table tbody tr:has(input[type="checkbox"]:checked) {
 /* ==========================================================================
    Data Tables & Pagination Primitives (.ui-table)
    ========================================================================== */
-:is(.ui-table-wrap, .table-wrap) {
-    overflow-x: auto;
+:is(.ui-table-wrap, .table-wrap, .table-container, [class*="table-container"], [class*="table-wrapper"], .table-scroll) {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--card);
+    width: 100%;
+    max-width: 100%;
 }
 
-:is(.ui-table, table.ui-table) {
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table, [class*="table-container"] table, .table-scroll table) {
     width: 100%;
+    min-width: 680px;
+    table-layout: fixed;
     border-collapse: collapse;
     background: var(--card);
     color: var(--card-foreground);
     text-align: left;
 }
 
-:is(.ui-table, table.ui-table) th {
-    padding: 0.875rem 1rem;
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) th {
+    padding: 0.875rem 1rem !important;
     background: var(--muted);
     color: var(--muted-foreground);
     font-size: 0.75rem;
@@ -1041,20 +1231,40 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+    box-sizing: border-box;
 }
 
-:is(.ui-table, table.ui-table) td {
-    padding: 0.875rem 1rem;
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) td {
+    padding: 0.875rem 1rem !important;
     font-size: 0.875rem;
     color: var(--card-foreground);
     border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: middle;
+    box-sizing: border-box;
 }
 
-:is(.ui-table, table.ui-table) tbody tr:last-child td {
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td):first-child:has(input[type="checkbox"]),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td):has(.select-all-checkbox),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td):has(.row-checkbox),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td).checkbox-cell {
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) tbody tr:last-child td {
     border-bottom: 0;
 }
 
-:is(.ui-table, table.ui-table) tbody tr:hover {
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) tbody tr:hover {
     background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
 }
 
@@ -1062,6 +1272,8 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
     padding: 0.75rem 1rem;
     border-top: 1px solid var(--border);
     background: var(--card);
@@ -1075,6 +1287,7 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-left: auto;
 }
 
 .ui-table-page-btn {
@@ -1110,6 +1323,20 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     color: var(--foreground);
     border-color: var(--border);
     font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    :is(.ui-table-wrap, .table-wrap, .table-container, [class*="table-container"], [class*="table-wrapper"], .table-scroll) {
+        display: block !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    :is(.ui-table, table.ui-table, .table-wrap table, .table-container table, [class*="table-container"] table, .table-scroll table) {
+        min-width: 680px !important;
+    }
 }
 
 
@@ -1172,27 +1399,40 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     width: 100%;
 }
 
+.ui-chat-prompt-card,
 .ui-chat-prompt-btn {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 0.875rem 1rem;
-    background: var(--muted);
-    color: var(--foreground);
+    background: var(--card);
+    color: var(--card-foreground);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     font: 600 0.8125rem/1.3 var(--font-sans);
-    cursor: pointer;
+    cursor: pointer !important;
     text-align: left;
-    transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+    transition: border-color 150ms ease, background 150ms ease, transform 150ms ease, box-shadow 150ms ease !important;
+    user-select: none;
 }
 
+.ui-chat-prompt-card:hover,
 .ui-chat-prompt-btn:hover {
-    border-color: var(--border);
-    background: var(--muted);
-    transform: translateY(-1px);
+    border-color: var(--primary, #D97251) !important;
+    background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+    cursor: pointer !important;
 }
 
+.ui-chat-prompt-card:active,
+.ui-chat-prompt-btn:active {
+    transform: translateY(0) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.ui-chat-prompt-card small,
 .ui-chat-prompt-btn small {
     margin-top: 0.375rem;
     font-size: 0.6875rem;
@@ -1219,6 +1459,7 @@ table tbody tr:has(input[type="checkbox"]:checked) {
 }
 
 .ui-chat-msg--ai {
+    justify-content: flex-start;
 }
 
 .ui-chat-msg--user {
@@ -1827,6 +2068,25 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     margin-bottom: 0;
 }
 
+/* View Full Profile action button - orange color on hover */
+.ui-chat-context-card .ui-btn-outline,
+.view-profile-btn {
+    transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease !important;
+}
+
+.ui-chat-context-card .ui-btn-outline:hover,
+.view-profile-btn:hover {
+    color: var(--primary, #D97251) !important;
+    border-color: var(--primary, #D97251) !important;
+    background: transparent !important;
+}
+
+.ui-chat-context-card .ui-btn-outline:hover .arrow,
+.view-profile-btn:hover .arrow {
+    color: var(--primary, #D97251) !important;
+    transform: translateX(4px);
+}
+
 /* Custom thin scrollbar for chat log */
 .ui-chat-log.custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -1852,18 +2112,41 @@ a:hover .arrow,
 button:hover .arrow,
 .ui-action-card:hover .arrow,
 .ui-card-interactive:hover .arrow,
-.ui-btn:hover .arrow,
-.ui-chat-prompt-btn:hover .arrow {
+.ui-btn:hover .arrow {
     transform: translateX(4px);
 }
 
+:is(a, button).ui-link-neutral,
 .ui-link-neutral {
     color: var(--foreground) !important;
-    text-decoration: none;
+    text-decoration: none !important;
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     transition: color 150ms ease;
 }
+
+:is(a, button).ui-link-neutral:hover,
 .ui-link-neutral:hover {
     color: var(--primary) !important;
+    text-decoration: none !important;
+}
+
+:is(a, button).ui-link-neutral .arrow,
+.ui-link-neutral .arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+:is(a, button).ui-link-neutral:hover .arrow,
+.ui-link-neutral:hover .arrow {
+    transform: translateX(4px);
 }
 
 
@@ -1894,3 +2177,612 @@ button:hover .arrow,
 .ui-select-pill:focus {
     background-color: var(--accent) !important;
 }
+
+
+/* --- 10. SUCCESS TOASTS --- */
+.ui-toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    color: var(--foreground);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.ui-toast.show {
+    transform: translateX(0);
+}
+
+
+.pill-btn {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    padding: 7px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--ui-surface-border, #3E3D39);
+    background: var(--ui-surface-muted, #21201E);
+    color: var(--ui-surface-text, #FFFFFF);
+    font-size: 12px;
+    line-height: 16px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn.pagination {
+    padding: 6px 16px;
+}
+
+.pill-btn.accept {
+    background: #2c7e39;
+    border-color: #2c7e39;
+    color: #fff;
+}
+
+.pill-btn.reject {
+    background: #f9464a;
+    border-color: #f9464a;
+    color: #fff;
+}
+
+
+/* ==========================================================================
+   Unified Badge & Tag Design System (Identical tag = identical color)
+   ========================================================================== */
+.badge-pill, .ui-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.25rem 0.625rem !important;
+    border-radius: 9999px !important;
+    font: 600 0.6875rem/1 var(--font-sans, 'Outfit', sans-serif) !important;
+    letter-spacing: 0.02em !important;
+    white-space: nowrap !important;
+    border: 1px solid transparent !important;
+    line-height: 1.2 !important;
+    min-height: 22px !important;
+    box-sizing: border-box !important;
+}
+
+/* Green: Approved, Active, Addition, Created, Review */
+.ui-badge--success, .ui-badge-success, .badge-approved, .type-addition, [data-tag="approved"], [data-tag="addition"], [data-tag="active"] {
+    background: color-mix(in srgb, #10B981 16%, var(--card, #21201E)) !important;
+    color: #10B981 !important;
+    border-color: color-mix(in srgb, #10B981 30%, transparent) !important;
+}
+
+/* Amber: Pending, Student, Self Registered, Leadership, Teamwork */
+.ui-badge--warning, .ui-badge-warning, .ui-badge--amber, .ui-badge-amber, .badge-pending, [data-tag="pending"], [data-tag="student"], [data-tag="amber"], [data-tag="leadership"], [data-tag="teamwork"] {
+    background: color-mix(in srgb, #F59E0B 16%, var(--card, #21201E)) !important;
+    color: #FBBF24 !important;
+    border-color: color-mix(in srgb, #F59E0B 32%, transparent) !important;
+}
+
+/* Blue: Faculty, Faculty Applied, Edit Existing, Updated */
+.ui-badge--info, .ui-badge-info, .badge-faculty, .type-edit, [data-tag="faculty"], [data-tag="edit-existing"] {
+    background: color-mix(in srgb, #3B82F6 16%, var(--card, #21201E)) !important;
+    color: #60A5FA !important;
+    border-color: color-mix(in srgb, #3B82F6 32%, transparent) !important;
+}
+
+/* Red/Coral: Admin, Admin Direct, Rejected, Removed, Destructive */
+.ui-badge--destructive, .ui-badge-destructive, .badge-admin, .badge-rejected, [data-tag="admin"], [data-tag="rejected"] {
+    background: color-mix(in srgb, #EF4444 16%, var(--card, #21201E)) !important;
+    color: #F87171 !important;
+    border-color: color-mix(in srgb, #EF4444 32%, transparent) !important;
+}
+
+/* Purple: Department, Research */
+.ui-badge--purple, .ui-badge-purple, .badge-department, [data-tag="department"], [data-tag="research"] {
+    background: color-mix(in srgb, #8B5CF6 16%, var(--card, #21201E)) !important;
+    color: #A78BFA !important;
+    border-color: color-mix(in srgb, #8B5CF6 32%, transparent) !important;
+}
+
+/* Cyan: Program, Algorithms, Communication */
+.ui-badge--cyan, .ui-badge-cyan, .badge-program, [data-tag="program"], [data-tag="algorithms"], [data-tag="communication"] {
+    background: color-mix(in srgb, #06B6D4 16%, var(--card, #21201E)) !important;
+    color: #22D3EE !important;
+    border-color: color-mix(in srgb, #06B6D4 32%, transparent) !important;
+}
+
+/* Rose: Robotics */
+.ui-badge--rose, .ui-badge-rose, [data-tag="rose"], [data-tag="robotics"] {
+    background: color-mix(in srgb, #F43F5E 16%, var(--card, #21201E)) !important;
+    color: #FB7185 !important;
+    border-color: color-mix(in srgb, #F43F5E 32%, transparent) !important;
+}
+
+/* Neutral: General Academic, Default, Secondary, Hidden */
+.ui-badge--neutral, .ui-badge-neutral, [data-tag="neutral"] {
+    background: color-mix(in srgb, var(--foreground) 8%, var(--card, #21201E)) !important;
+    color: var(--muted-foreground) !important;
+    border-color: color-mix(in srgb, var(--foreground) 20%, transparent) !important;
+}
+
+/* Tags Cluster & Overflow Component (+N hidden tags with hover/toggle popover) */
+.ui-tags-cluster {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+    position: relative;
+    vertical-align: middle;
+}
+
+.ui-tags-more {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    outline: none;
+}
+
+.ui-tags-more-btn {
+    cursor: pointer;
+    font-weight: 700 !important;
+    user-select: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ui-tags-more:hover .ui-tags-more-btn,
+.ui-tags-more:focus-visible .ui-tags-more-btn,
+.ui-tags-more.is-open .ui-tags-more-btn {
+    background: color-mix(in srgb, var(--primary, #D97251) 20%, var(--card, #21201E)) !important;
+    border-color: var(--primary, #D97251) !important;
+    color: var(--primary, #D97251) !important;
+}
+
+.ui-tags-popover {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 100;
+    background: var(--card, #21201E);
+    border: 1px solid var(--border, #3E3D39);
+    border-radius: var(--radius-md, 8px);
+    padding: 0.5rem 0.625rem;
+    box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+    min-width: 140px;
+    max-width: 260px;
+    box-sizing: border-box;
+}
+
+/* Flip upward for lower rows to avoid container edge clipping */
+tr:nth-last-child(-n+2) .ui-tags-popover,
+.ui-tags-more--up .ui-tags-popover {
+    top: auto;
+    bottom: calc(100% + 6px);
+}
+
+.ui-tags-popover-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--muted-foreground, #A8A29E);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.375rem;
+    white-space: nowrap;
+}
+
+.ui-tags-popover-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}
+
+.ui-tags-more:hover .ui-tags-popover,
+.ui-tags-more:focus-within .ui-tags-popover,
+.ui-tags-more.is-open .ui-tags-popover {
+    display: block;
+}
+
+/* Action group buttons for admin tables */
+.action-group {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.pill-btn-sm, .pill-btn.edit-btn, .pill-btn.remove-btn {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    padding: 0 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform .15s ease, background .15s ease;
+}
+
+.pill-btn-sm:hover, .pill-btn.edit-btn:hover, .pill-btn.remove-btn:hover {
+    transform: translateY(-1px);
+}
+
+.pill-btn-sm.edit, .pill-btn.edit-btn {
+    background: var(--ui-surface-muted, #21201E);
+    border: 1px solid var(--ui-surface-border, #3E3D39);
+    color: var(--ui-surface-text, #FFFFFF);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn-sm.edit:hover, .pill-btn.edit-btn:hover {
+    background: #33322E;
+}
+
+.pill-btn-sm.remove, .pill-btn.remove-btn {
+    background: #f9464a;
+    border: 1px solid #f9464a;
+    color: #fff;
+}
+
+.pill-btn-sm.remove:hover, .pill-btn.remove-btn:hover {
+    background: #d83539;
+}
+
+
+/* ==========================================================================
+   Unified Dropdown Filter Component (Consistent 120px size across admin)
+   ========================================================================== */
+.dropdown-container {
+    position: relative;
+    width: 120px !important;
+    height: 38px !important;
+    flex-shrink: 0;
+}
+
+.dropdown-container.department {
+    width: 160px !important;
+}
+
+.dropdown-container :is(.dropdown-select, select) {
+    width: 100% !important;
+    height: 38px !important;
+    padding: 0 30px 0 14px !important;
+    background: var(--muted, #21201E) !important;
+    border: 1px solid var(--input, #43362B) !important;
+    border-radius: 12px !important;
+    color: var(--foreground, #FFFFFF) !important;
+    font-size: 12px !important;
+    appearance: none !important;
+    outline: none !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+}
+
+.dropdown-container :is(.dropdown-chevron, svg) {
+    position: absolute !important;
+    right: 11px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 14px !important;
+    height: 14px !important;
+    pointer-events: none !important;
+    left: auto !important;
+}
+
+/* ==========================================================================
+   Skeleton Loading Component (from page/faculty/student)
+   ========================================================================== */
+.skeleton {
+    height: 38px;
+    margin: 8px 0;
+    background: linear-gradient(90deg,
+            var(--card, #21201E),
+            var(--input, #362923),
+            var(--card, #21201E)) !important;
+    background-size: 200% 100% !important;
+    border-radius: var(--radius-sm, 6px) !important;
+    animation: loading 1.2s infinite ease-in-out !important;
+}
+
+@keyframes loading {
+    to {
+        background-position: -200% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton {
+        animation: none !important;
+    }
+}
+
+tr.skeleton-row td {
+    padding: 16px !important;
+    border-bottom: 1px solid var(--border, #383734) !important;
+}
+
+tr.skeleton-row .skeleton {
+    height: 22px !important;
+    margin: 6px 0 !important;
+}
+
+.empty-state {
+    padding: 36px 16px;
+    text-align: center;
+    color: var(--muted-foreground, #A0988E);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.empty-state-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    border-radius: 99px;
+    background: transparent;
+    color: var(--primary, #D97251);
+    border: 1px solid var(--primary, #D97251);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms ease;
+}
+
+.empty-state-btn:hover {
+    background: var(--primary, #D97251);
+    color: var(--primary-foreground, #FFFFFF);
+}
+
+/* ==========================================================================
+   Portal Modal Overlay & Container Specification
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: overlayFadeIn 0.2s ease-out;
+}
+
+.modal-overlay.active,
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-container {
+    background: var(--card, #21201E) !important;
+    border: 1px solid var(--border, #3E3D39) !important;
+    border-radius: var(--radius-lg, 16px);
+    padding: 24px 28px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6), 0 8px 16px -4px rgba(0, 0, 0, 0.4);
+    position: relative;
+    color: var(--foreground, #FFFFFF);
+    animation: modalPopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+.modal-close {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted-foreground, #A8A29E);
+    border-radius: var(--radius-sm, 6px);
+    transition: color 150ms ease, background-color 150ms ease;
+}
+
+.modal-close:hover {
+    color: var(--foreground, #FFFFFF);
+    background: var(--muted, rgba(255, 255, 255, 0.06));
+}
+
+.modal-title {
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: var(--foreground, #FFFFFF);
+    text-align: left;
+    margin: 0 0 16px;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-form label {
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--foreground, #FFFFFF);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-form input,
+.modal-form select,
+.modal-form textarea {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--muted, #21201E);
+    border: 1px solid var(--input, #43362B);
+    border-radius: var(--radius-md, 10px);
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-size: 13px;
+    color: var(--foreground, #FFFFFF);
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.modal-form textarea {
+    min-height: 90px;
+    max-height: 260px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.modal-form input:focus,
+.modal-form select:focus,
+.modal-form textarea:focus {
+    border-color: var(--primary, #D97251);
+    box-shadow: 0 0 0 1px var(--primary, #D97251);
+}
+
+.modal-submit {
+    width: 100%;
+    height: 42px;
+    margin: 8px 0 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary, #D97251) !important;
+    border: 1px solid var(--primary, #D97251) !important;
+    border-radius: var(--radius-md, 10px);
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #000000 !important;
+    cursor: pointer;
+    transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.modal-submit:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.modal-submit:active {
+    transform: translateY(0);
+}
+
+.modal-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================================================
+   UI Alert Callout Component (Contextual Warnings & Action Confirmations)
+   ========================================================================== */
+.ui-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md, 10px);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    box-sizing: border-box;
+}
+
+.ui-alert--warning {
+    background: color-mix(in srgb, #F59E0B 12%, var(--card, #21201E));
+    border: 1px solid color-mix(in srgb, #F59E0B 35%, transparent);
+    color: #FBBF24;
+}
+
+.ui-alert--destructive {
+    background: color-mix(in srgb, #EF4444 12%, var(--card, #21201E));
+    border: 1px solid color-mix(in srgb, #EF4444 35%, transparent);
+    color: #F87171;
+}
+
+.ui-alert--info {
+    background: color-mix(in srgb, #3B82F6 12%, var(--card, #21201E));
+    border: 1px solid color-mix(in srgb, #3B82F6 35%, transparent);
+    color: #60A5FA;
+}
+
+.ui-alert--success {
+    background: color-mix(in srgb, #10B981 12%, var(--card, #21201E));
+    border: 1px solid color-mix(in srgb, #10B981 35%, transparent);
+    color: #34D399;
+}
+
+.ui-alert-icon {
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.125rem;
+}
+
+.ui-alert-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.ui-alert-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: inherit;
+}
+
+.ui-alert-desc {
+    font-size: 0.8125rem;
+    color: color-mix(in srgb, currentColor 88%, var(--foreground));
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalPopIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ==========================================================================
+   Global Uniform Typography Enforcement (Outfit for all UI components)
+   ========================================================================== */
+:is(
+    html, body, button, input, optgroup, select, textarea,
+    dialog, .logout-dialog, [role="dialog"], .modal-overlay, .modal-container,
+    .ui-toast, [role="status"], [role="alert"], .alert, .ui-alert, .ui-field-popup,
+    .ui-card, .ui-badge, .ui-btn, table, th, td
+) {
+    font-family: var(--font-sans, 'Outfit', sans-serif) !important;
+}
+
+:is(code, kbd, samp, pre, .ui-text-mono, [data-mono], .font-mono) {
+    font-family: var(--font-mono, 'Geist Mono', monospace) !important;
+}
+

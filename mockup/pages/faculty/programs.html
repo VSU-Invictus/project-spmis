@@ -269,12 +269,15 @@
             margin-top: 4px;
         }
 
+        
         .filters {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: flex-end !important;
+            gap: 10px !important;
+            margin-bottom: 20px !important;
         }
+
 
         label {
             display: block;
@@ -882,12 +885,7 @@
             padding: 5px 9px;
         }
 
-        .filters {
-            grid-template-columns: minmax(155px, 2fr) 130px repeat(2,
-                    minmax(85px, 1fr)) auto;
-            align-items: end;
-            gap: 10px;
-        }
+        
 
         .filters label {
             margin: 0;
@@ -1141,7 +1139,90 @@
             white-space: nowrap;
             font-weight: 400;
         }
-    </style>
+    
+        
+        .filters select {
+            height: 38px !important;
+        }
+        
+    
+        
+        .filters label {
+            display: contents !important;
+        }
+        .filters input[type="search"], .filters input[type="text"] {
+            width: 320px !important;
+            height: 38px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 320px !important;
+        }
+        .filters select {
+            width: 140px !important;
+            height: 38px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 140px !important;
+        }
+        .filters button, #clear-filters, #empty-clear {
+            height: 38px !important;
+            padding: 0 16px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 auto !important;
+        }
+
+      
+        /* Match admin search/filters */
+        .filters {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: flex-start !important;
+            align-items: center !important;
+            gap: 10px !important;
+            margin-bottom: 20px !important;
+        }
+        .filters label {
+            display: contents !important;
+        }
+        .filters .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 320px !important;
+            flex: 0 0 320px !important;
+            margin: 0 !important;
+        }
+        .filters .search-wrapper input[type="search"] {
+            width: 100% !important;
+            height: 38px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            padding-left: 2.25rem !important;
+            border-radius: var(--radius-md, 6px);
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--foreground);
+        }
+        .filters select {
+            width: 140px !important;
+            height: 38px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 140px !important;
+        }
+        .filters button, #clear-filters, #empty-clear {
+            height: 38px !important;
+            padding: 0 16px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            flex: 0 0 auto !important;
+        }
+        .filters input:focus, .filters select:focus, .filters button:focus, .filters button:active, #clear-filters:focus, #clear-filters:active, #empty-clear:focus, #empty-clear:active {
+            outline: 2px solid var(--primary) !important;
+            outline-offset: 2px !important;
+        }
+      </style>
 </head>
 
 <body data-page="programs">
@@ -1239,11 +1320,17 @@
                 Programs are independent of departments. Your proposals require admin
                 approval.
             </p>
-            <label>Search programs<input type="search" id="entity-search" placeholder="Search by program name" />
-            </label>
+            <div class="filters">
+<label><span class="sr-only">Search programs</span><div class="search-wrapper">
+                  <svg style="position: absolute; left: 0.75rem; width: 16px; height: 16px; pointer-events: none; opacity: 0.6; color: var(--foreground);" viewBox="0 0 16 16" fill="none">
+                    <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.33"/>
+                    <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.33" stroke-linecap="round"/>
+                  </svg>
+                  <input type="search" id="entity-search" placeholder="Search by program name" />
+                </div></label>
+</div>
             <section id="entity-list" aria-live="polite"></section>
             <p class="status" id="proposal-status" role="status"></p>
-            <a href="applications.html">Track your proposals <span class="arrow">&rarr;</span></a>
             <dialog id="proposal-dialog" aria-labelledby="proposal-title">
                 <h2 id="proposal-title">Submit proposal</h2>
                 <p class="muted">
@@ -1615,7 +1702,7 @@ const programs = [
                                 `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}">${esc(full(s))}</a></td><td>${s.program}</td><td>${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ") || "No active reviews"}</td><td><a href="new-review.html?id=${s.id}">Write review</a></td></tr>`,
                         )
                         .join("")}</tbody></table></div>`
-                    : '<div class="card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
+                    : '<div class="ui-card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
                 $("#page-label").textContent = matches.length
                     ? `Page ${current} of ${total} · ${matches.length} students`
                     : "0 students";
@@ -1731,10 +1818,10 @@ const programs = [
                             visible
                                 .map(
                                     (r) =>
-                                        `<article class="card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                                        `<article class="ui-card review ${r.status ==="hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                                 )
                                 .join("") ||
-                            '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
+                            '<div class="ui-card empty">No visible reviews yet. Be the first to write one.</div>';
                     }
                     let editing, deleting;
                     $("#reviews").onclick = (e) => {
@@ -1864,14 +1951,19 @@ const programs = [
             const isProgram = page === "programs",
                 list = isProgram ? programs : departments;
             let original = "";
-            function render() {
+            let listTimer;
+              function render() {
+                  $("#entity-list").innerHTML = '<div role="status" aria-label="Loading"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>';
+                  clearTimeout(listTimer);
+                  listTimer = setTimeout(() => {
                 const filtered = list.filter((p) =>
                     p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
                 );
                 $("#entity-list").innerHTML = filtered.length
                     ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
                     : '<p class="empty">No matching entries. Try another name.</p>';
-            }
+                              }, 300);
+              }
             $("#entity-search").oninput = render;
             function open(name = "") {
                 original = name;
@@ -1909,7 +2001,7 @@ const programs = [
                             ? "Program edit"
                             : "Program proposal"
                         : "Department proposal",
-                    original ? `${original} <span class="arrow">&rarr;</span> ${name}` : name,
+                    original ? `${original} ${name}` : name,
                     { original, name },
                 );
                 $("#proposal-dialog").close();
@@ -2179,6 +2271,44 @@ const programs = [
                 });
         })();
     </script>
+
+    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Action successful!</span>
+    </div>
+    <script>
+        function showSuccessToast(message) {
+            const toast = document.getElementById('global-success-toast');
+            const msgEl = document.getElementById('toast-message');
+            if(toast && msgEl) {
+                msgEl.textContent = message || 'Action successful!';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+        
+        // Auto-wire forms and add buttons for the mockup
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form').forEach(f => {
+                f.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    showSuccessToast('Successfully submitted!');
+                });
+            });
+            
+            // For admin tables or faculty modals
+            document.querySelectorAll('button').forEach(b => {
+                if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
+                    b.addEventListener('click', (e) => {
+                        if(b.type !== 'submit') {
+                            showSuccessToast('Action completed successfully!');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
 </body>
 
 </html>

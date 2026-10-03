@@ -100,11 +100,39 @@
     border-color: var(--border);
 }
 
+html,
+body,
+button,
+input,
+optgroup,
+select,
+textarea,
+dialog,
+.modal-overlay,
+.modal-container,
+.logout-dialog,
+.ui-dialog,
+.ui-toast,
+.ui-alert,
+.alert,
+.ui-field-popup,
+[role="dialog"],
+[role="alert"],
+[role="status"] {
+    font-family: var(--font-sans, 'Outfit', sans-serif);
+}
+
 body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-sans);
+    font-family: var(--font-sans, 'Outfit', sans-serif);
     -webkit-font-smoothing: antialiased;
+    /* Theme & Viewport Harmonization */
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important; 
+    border: none !important;
+    box-sizing: border-box !important;
 }
 
 /* --- 4. LAYOUT SKELETON --- */
@@ -389,3 +417,43 @@ dialog.logout-dialog .actions {
 html.dark .logo-light-only { display: none !important; }
 html:not(.dark) .logo-dark-only { display: none !important; }
 html:not(.dark) .logo-light-only { display: block !important; }
+
+
+/* --- SKELETON LOADING --- */
+.skeleton {
+    height: 40px;
+    margin: 12px 0;
+    background: linear-gradient(90deg, var(--ui-surface-border, #e5e5e5) 25%, var(--ui-surface-muted, #d4d4d4) 50%, var(--ui-surface-border, #e5e5e5) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-load 1.5s infinite;
+    border-radius: var(--radius-sm, 6px);
+}
+@keyframes skeleton-load {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .skeleton { animation: none; }
+}
+
+/* --- RESPONSIVE DATA TABLES GUARANTEE --- */
+:is(.ui-table-wrap, .table-wrap, .table-container, [class*="table-container"], [class*="table-wrapper"], .table-scroll) {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    :is(.ui-table-wrap, .table-wrap, .table-container, [class*="table-container"], [class*="table-wrapper"], .table-scroll) {
+        display: block !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    :is(.ui-table, table.ui-table, .table-wrap table, .table-container table, [class*="table-container"] table, .table-scroll table) {
+        min-width: 680px !important;
+    }
+}

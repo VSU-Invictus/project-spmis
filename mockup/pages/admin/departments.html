@@ -8,7 +8,7 @@
   <title>Admin Portal - Departments</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -16,13 +16,8 @@
       margin: 0;
       padding: 0;
     }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      background: #30302E;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    body {
+      font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
       color: #fff;
     }
 
@@ -42,8 +37,8 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      background: #30302E;
-      border: 1px solid #D97251;
+      background: #141413;
+      border: none;
       overflow: hidden;
     }
 
@@ -62,9 +57,10 @@
       left: 260px;
       top: 0;
       width: calc(100% - 260px);
-      height: calc(100% - 4px);
-      padding: 14px 0 0 0;
+      height: 100%;
+      padding: 16px 24px;
       display: flex;
+      overflow-y: auto;
       flex-direction: column;
       align-items: flex-start;
     }
@@ -72,8 +68,8 @@
     .header-container {
       display: flex;
       align-items: flex-start;
-      width: calc(100% - 10px);
-      margin-left: 10px;
+      width: 100%;
+      margin-left: 0;
     }
 
     .heading-wrapper {
@@ -98,15 +94,15 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      width: calc(100% - 24px);
+      width: 100%;
       min-height: 52px;
-      margin-left: 10px;
-      padding-top: 14px;
+      margin-left: 0;
+      padding-top: 0;
     }
 
     .search-wrapper {
       position: relative;
-      width: 500px;
+      width: 320px;
       height: 38px;
     }
 
@@ -148,9 +144,9 @@
       flex: 0 0 auto;
     }
 
-    .dropdown-container.status { width: 145px; margin-left: auto; }
-    .dropdown-container.department { width: 190px; }
-    .dropdown-container.audit { width: 128px; }
+    .dropdown-container.status { width: 120px; margin-left: auto; }
+    .dropdown-container.department { width: 120px; }
+    .dropdown-container.audit { width: 120px; }
 
     .dropdown-select {
       width: 100%;
@@ -175,36 +171,46 @@
     }
 
     .add-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       height: 38px;
       padding: 0 18px;
-      border: 0;
+      border: 1px solid var(--primary, #D97251);
       border-radius: 12px;
-      background: #D97251;
-      color: #fff;
-      font-size: 12px;
+      background: var(--primary, #D97251);
+      color: #000000;
+      font-size: 13px;
+      font-weight: 600;
       white-space: nowrap;
-      transition: background .15s ease, transform .15s ease;
+      cursor: pointer;
+      transform: none;
+      transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
     }
 
     .add-button:hover {
-      background: #C45F3E;
-      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--primary) 88%, var(--foreground));
+      color: #000000;
+      border-color: color-mix(in srgb, var(--primary) 88%, var(--foreground));
+      transform: none;
+      box-shadow: none;
     }
 
     .table-margin-container {
       padding: 10px 0 0;
-      width: calc(100% - 24px);
-      margin-left: 10px;
+      width: 100%;
+      margin-left: 0;
       flex: 0 0 auto;
     }
 
     .table-container {
       width: 100%;
       background: var(--ui-surface, #2B2A27);
-      border: 1px solid var(--ui-surface-border, #383734);
-      border-radius: 12px;
+      border: none;
+      border-radius: 0;
       overflow: hidden;
-      box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      box-shadow: none;
     }
 
     .table-scroll {
@@ -222,25 +228,6 @@
 
     thead {
       background: var(--ui-surface-muted, #21201E);
-    }
-
-    th {
-      min-height: 44px;
-      padding: 12px 14px;
-      color: var(--ui-surface-text, #FFFFFF);
-      font-size: 14px;
-      font-weight: 700;
-      text-align: left;
-    }
-
-    td {
-      min-height: 49px;
-      padding: 12px 14px;
-      color: var(--ui-surface-text, #FFFFFF);
-      font-size: 14px;
-      font-weight: 500;
-      border-top: 1px solid var(--ui-surface-border, #383734);
-      vertical-align: middle;
     }
 
     tbody tr:hover {
@@ -262,20 +249,11 @@
       font-weight: 500;
     }
 
-    .badge-approved {
-      background: #F3EBD9;
-      color: #715C32;
-    }
+    
 
-    .badge-faculty {
-      background: #E8F0FE;
-      color: #1A73E8;
-    }
+    
 
-    .badge-admin {
-      background: #F3EBD9;
-      color: #715C32;
-    }
+    
 
     .action-group {
       display: flex;
@@ -314,7 +292,7 @@
 
     .bottom-bar-container {
       width: calc(100% - 24px);
-      margin-left: 10px;
+      margin-left: 0;
       padding-top: 16px;
       display: flex;
       align-items: center;
@@ -452,7 +430,7 @@
       background: var(--muted, #21201E);
       border: 1px solid var(--input, #43362B);
       border-radius: 12px;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-sans, 'Outfit'), sans-serif;
       font-weight: 400;
       font-size: 14px;
       line-height: 17px;
@@ -468,7 +446,7 @@
       background: var(--muted, #21201E);
       border: 1px solid var(--input, #43362B);
       border-radius: 12px;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-sans, 'Outfit'), sans-serif;
       font-weight: 400;
       font-size: 14px;
       color: var(--foreground, #FFFFFF);
@@ -496,7 +474,7 @@
       background: #343434;
       border: 1px solid #3D3D3A;
       border-radius: 10px;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-sans, 'Outfit'), sans-serif;
       font-weight: 500;
       font-size: 14px;
       line-height: 17px;
@@ -559,27 +537,163 @@
       }
 
       .app-canvas {
-        min-width: 880px;
-        min-height: 640px;
+        width: 100%;
+        min-width: 0;
         overflow: auto;
       }
     }
     button, input, select, textarea {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
       font-weight: 500;
     }
+  
+    @media (max-width: 768px) {
+      .sidebar { width: 60px !important; }
+      .sidebar .nav-text { display: none !important; }
+      .section-container { left: 60px !important; width: calc(100% - 60px) !important; padding: 10px !important; }
+      .header-container { flex-direction: column !important; align-items: flex-start !important; min-height: auto !important; height: auto !important; gap: 8px !important; }
+      .search-wrapper { width: 100% !important; margin-top: 8px !important; }
+      .dropdown-container { width: 100% !important; margin-left: 0 !important; margin-top: 8px !important; }
+      .controls-row { flex-direction: column !important; align-items: flex-start !important; height: auto !important; }
+      .table-margin-container { width: 100% !important; margin-left: 0 !important; }
+      :is(.ui-table-wrap, .table-wrap, .table-container, .table-scroll) { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; width: 100% !important; display: block !important; }
+      :is(.ui-table, table.ui-table, table) { min-width: 680px !important; }
+    }
+    
+  
+    /* Header & Footer Custom Styling */
+    .admin-top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #42423F;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .red-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #D97251;
+    }
+    .breadcrumb-text {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: #9C948B;
+      text-transform: uppercase;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: #3d3d3a;
+      border: 1px solid #484844;
+      font-size: 11px;
+      color: #9C948B;
+    }
+    .green-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .5; }
+    }
+    .ay-text {
+      font-size: 11px;
+      color: #9C948B;
+    }
+    .admin-footer {
+      flex: none !important;
+      height: auto !important;
+      flex-shrink: 0;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid #42423F;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #A0988E;
+      width: 100%;
+    }
+    @media (max-width: 768px) {
+      .admin-top-header, .admin-footer {
+      flex: none !important;
+      height: auto !important;
+      flex-shrink: 0;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid #42423F;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #A0988E;
+      width: 100%;
+    }
+    }
+
   </style>
 </head>
 <body>
   <div class="app-canvas">
-    <iframe
-      src="../../components/navigation/sidebar-admin.html"
-      id="sidebar-frame"
-      class="sidebar-frame"
-      title="Admin Sidebar">
-    </iframe>
+    <!-- Admin Sidebar Component -->
+    <aside id="sidebar-menu" class="sidebar sidebar-frame">
+      <div class="flex flex-col gap-1">
+        <div class="brand-header"><h1 class="brand-title">Admin Portal</h1></div>
+        <nav class="nav" id="sidebar-nav" aria-label="Admin navigation">
+          <a href="../../pages/admin/dashboard.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg><span>Dashboard</span></a>
+          <a href="../../pages/admin/faculty-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg><span>Faculty Applications</span></a>
+          <a href="../../pages/admin/student-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/></svg><span>Student Applications</span></a>
+          <a href="../../pages/admin/program-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg><span>Program Applications</span></a>
+          <a href="../../pages/admin/department-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Dept. Applications</span></a>
+          <a href="../../pages/admin/students.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+          <a href="../../pages/admin/departments.html" class="nav-btn-active min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm" aria-current="page"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M12 2 3 10h18L12 2ZM7 21V10M12 21V10M17 21V10"/></svg><span>Departments</span></a>
+          <a href="../../pages/admin/programs.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>Programs</span></a>
+          <a href="../../pages/admin/faculty.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Faculty</span></a>
+          <a href="../../pages/admin/audit-log.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Audit Log</span></a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-account-card">
+          <div style="display:flex;align-items:center;gap:10px;"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
+          <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg></button>
+        </div>
+      </div>
+    </aside>
+    <script src="../../assets/js/admin-sidebar.js"></script>
+    <script src="../../assets/js/admin-table.js"></script>
 
     <main class="section-container">
+        <!-- Admin Top Header -->
+        <div class="admin-top-header">
+          <div class="header-left">
+            <div class="red-dot"></div>
+            <span class="breadcrumb-text">Admin Portal / Departments</span>
+          </div>
+          <div class="header-right">
+            <span class="status-badge">
+              <span class="green-dot"></span>
+              System Live
+            </span>
+            <span class="ay-text">AY 2026-2027</span>
+          </div>
+        </div>
+
       <div class="header-container">
         <div class="heading-wrapper">
           <h1 class="heading-title">Departments</h1>
@@ -606,87 +720,106 @@
 </svg>
           </div>
 
-          <button id="addButton" type="button" class="add-button">+ Add Department</button>
+          <button id="addButton" type="button" class="ui-btn add-button">+ Add Department</button>
         </div>
       </div>
 
-      <div class="table-margin-container">
-        <div class="table-container">
-          <div class="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width: 62%;">Department</th>
-                  <th class="text-center" style="width: 18%;">Status</th>
-                  <th class="text-right" style="width: 20%;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="tableBody">
-            <tr data-name="department of computer science" data-status="approved">
-              <td>Department of Computer Science</td>
-              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
-              <td class="text-right">
-                <div class="action-group">
-                  <button class="pill-btn edit-btn" type="button">Edit</button>
-                  <button class="pill-btn remove-btn" type="button">Remove</button>
-                </div>
-              </td>
-            </tr>
-            <tr data-name="department of computer engineering" data-status="approved">
-              <td>Department of Computer Engineering</td>
-              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
-              <td class="text-right">
-                <div class="action-group">
-                  <button class="pill-btn edit-btn" type="button">Edit</button>
-                  <button class="pill-btn remove-btn" type="button">Remove</button>
-                </div>
-              </td>
-            </tr>
-            <tr data-name="department of medical technology" data-status="approved">
-              <td>Department of Medical Technology</td>
-              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
-              <td class="text-right">
-                <div class="action-group">
-                  <button class="pill-btn edit-btn" type="button">Edit</button>
-                  <button class="pill-btn remove-btn" type="button">Remove</button>
-                </div>
-              </td>
-            </tr>
-            <tr data-name="department of information system" data-status="approved">
-              <td>Department of Information System</td>
-              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
-              <td class="text-right">
-                <div class="action-group">
-                  <button class="pill-btn edit-btn" type="button">Edit</button>
-                  <button class="pill-btn remove-btn" type="button">Remove</button>
-                </div>
-              </td>
-            </tr>
-            <tr data-name="department of applied mathematics" data-status="approved">
-              <td>Department of Applied Mathematics</td>
-              <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
-              <td class="text-right">
-                <div class="action-group">
-                  <button class="pill-btn edit-btn" type="button">Edit</button>
-                  <button class="pill-btn remove-btn" type="button">Remove</button>
-                </div>
-              </td>
-            </tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="emptyState" class="empty-state">No departments found.</div>
+      <div class="table-margin-container" style="padding-top: 0; width: 100%;">
+        <div class="ui-table-wrap" style="margin-top: 16px;">
+          <table class="ui-table">
+            <thead>
+              <tr style="text-transform: uppercase;">
+                <th style="width: 55%; text-align: left;">Department</th>
+                <th style="width: 25%; text-align: left;">Status</th>
+                <th style="width: 20%; text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr data-name="department of computer science" data-status="approved">
+                <td style="text-align: left;">Department of Computer Science</td>
+                <td style="text-align: left;"><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;">
+                  <div class="action-group">
+                    <button class="pill-btn edit-btn" type="button">Edit</button>
+                    <button class="pill-btn remove-btn" type="button">Remove</button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-name="department of computer engineering" data-status="approved">
+                <td style="text-align: left;">Department of Computer Engineering</td>
+                <td style="text-align: left;"><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;">
+                  <div class="action-group">
+                    <button class="pill-btn edit-btn" type="button">Edit</button>
+                    <button class="pill-btn remove-btn" type="button">Remove</button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-name="department of medical technology" data-status="approved">
+                <td style="text-align: left;">Department of Medical Technology</td>
+                <td style="text-align: left;"><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;">
+                  <div class="action-group">
+                    <button class="pill-btn edit-btn" type="button">Edit</button>
+                    <button class="pill-btn remove-btn" type="button">Remove</button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-name="department of information system" data-status="approved">
+                <td style="text-align: left;">Department of Information System</td>
+                <td style="text-align: left;"><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;">
+                  <div class="action-group">
+                    <button class="pill-btn edit-btn" type="button">Edit</button>
+                    <button class="pill-btn remove-btn" type="button">Remove</button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-name="department of applied mathematics" data-status="approved">
+                <td style="text-align: left;">Department of Applied Mathematics</td>
+                <td style="text-align: left;"><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;">
+                  <div class="action-group">
+                    <button class="pill-btn edit-btn" type="button">Edit</button>
+                    <button class="pill-btn remove-btn" type="button">Remove</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div id="emptyState" class="empty-state" style="display: none; padding: 24px; text-align: center; color: var(--muted-foreground);">No departments found.</div>
         </div>
-      </div>
 
-      <div class="bottom-bar-container">
-        <div class="pagination-wrapper">
-          <button class="pill-btn pagination" type="button">Previous</button>
-          <span class="page-text">Page 1 of 3</span>
-          <button class="pill-btn pagination" type="button">Next</button>
+        <div class="ui-table-pagination" style="background: transparent; border: none; padding-left: 4px; padding-right: 4px; margin-top: 8px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <!-- No bulk actions on this page -->
+            </div>
+            <div class="ui-table-pagination-nav" style="margin-left: auto;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                    <span style="color: var(--muted-foreground);">Rows per page</span>
+                    <div style="position: relative; display: flex; align-items: center;">
+                        <select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem; cursor: pointer; outline: none;">
+                            <option>5</option>
+                            <option>10</option>
+                        </select>
+                        <svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m6 9 6 6 6-6"/>
+                        </svg>
+                    </div>
+                </span>
+                <span style="margin: 0 16px; color: var(--muted-foreground); font-weight: 500; font-size: 13px;">Page 1 of 3</span>
+                <button class="ui-table-page-btn" disabled style="width: auto; padding: 6px 16px; border-radius: 99px; background: transparent; color: #6C655D; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Previous</button>
+                <button class="ui-table-page-btn" style="width: auto; padding: 6px 20px; border-radius: 99px; background: transparent; color: #FFFFFF; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Next</button>
+            </div>
         </div>
       </div>
-    </main>
+      
+      <!-- Footer indicator -->
+      <footer class="admin-footer" style="margin-top: auto; width: 100%;">
+        <span>&copy; 2026 Admin Portal. All rights reserved.</span>
+        <span>System Version 2.4.0</span>
+      </footer>
+</main>
 
     <div id="entityModal" class="modal-overlay">
       <section class="modal-card">
@@ -722,34 +855,6 @@
 
 
     <script>
-      function setSidebarActive(fileName) {
-        const frame = document.getElementById('sidebar-frame');
-        if (!frame) return;
-
-        frame.addEventListener('load', () => {
-          try {
-            const doc = frame.contentDocument || frame.contentWindow.document;
-            const links = doc.querySelectorAll('#sidebar-nav a');
-
-            links.forEach(link => {
-              link.classList.remove('nav-btn-active', 'font-bold', 'shadow-sm');
-              link.classList.add('nav-btn-inactive', 'font-semibold');
-
-              const svg = link.querySelector('svg');
-              if (svg) svg.setAttribute('stroke', 'currentColor');
-
-              if ((link.getAttribute('href') || '').endsWith(fileName)) {
-                link.classList.remove('nav-btn-inactive', 'font-semibold');
-                link.classList.add('nav-btn-active', 'font-bold', 'shadow-sm');
-                if (svg) svg.setAttribute('stroke', '#A35233');
-              }
-            });
-          } catch (_) {}
-        });
-      }
-    </script>
-    <script>
-      setSidebarActive('departments.html');
 
       const tableBody = document.getElementById('tableBody');
       const searchInput = document.getElementById('searchInput');
@@ -838,7 +943,7 @@
           row.dataset.status = 'approved';
           row.innerHTML = `
             <td>${value}</td>
-            <td class="text-center"><span class="badge-pill badge-approved">Approved</span></td>
+            <td style="text-align: left;"><span class="ui-badge ui-badge--success">Approved</span></td>
             <td class="text-right">
               <div class="action-group">
                 <button class="pill-btn edit-btn" type="button">Edit</button>
@@ -850,7 +955,8 @@
           window.setTimeout(() => showToast('Department Created Successfully'), 120);
         }
 
-        filterRows();
+        if (typeof adminTable !== 'undefined' && adminTable) adminTable.reload();
+        else filterRows();
       });
 
       document.getElementById('confirmRemove').addEventListener('click', () => {
@@ -859,15 +965,32 @@
         selectedRow = null;
         closeModal(removeModal);
         window.setTimeout(() => showToast('Department Removed Successfully'), 120);
-        filterRows();
+        if (typeof adminTable !== 'undefined' && adminTable) adminTable.reload();
+        else filterRows();
       });
 
       document.getElementById('cancelRemove').addEventListener('click', () => closeModal(removeModal));
 
       document.getElementById('closeEntity').addEventListener('click', () => closeModal(entityModal));
       document.getElementById('closeRemove').addEventListener('click', () => closeModal(removeModal));
-      searchInput.addEventListener('input', filterRows);
-      statusFilter.addEventListener('change', filterRows);
+      
+      const adminTable = window.initAdminTable({
+        tableBody: '#tableBody',
+        searchInput: '#searchInput',
+        filterElements: ['#statusFilter'],
+        emptyState: '#emptyState',
+        rowsPerPage: '.ui-select-pill',
+        prevBtn: '.ui-table-page-btn:first-of-type',
+        nextBtn: '.ui-table-page-btn:last-of-type',
+        entityName: 'departments',
+        searchFields: (row, query) => {
+          return (row.dataset.name || '').toLowerCase().includes(query);
+        },
+        filterMatches: (row) => {
+          const status = statusFilter ? statusFilter.value : 'all';
+          return status === 'all' || (row.dataset.status || '').toLowerCase() === status.toLowerCase();
+        }
+      });
 
       [entityModal, removeModal].forEach(modal => {
         modal.addEventListener('click', event => {
@@ -884,6 +1007,44 @@
     </script>
 
   </div>
+
+
+    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Action successful!</span>
+    </div>
+    <script>
+        function showSuccessToast(message) {
+            const toast = document.getElementById('global-success-toast');
+            const msgEl = document.getElementById('toast-message');
+            if(toast && msgEl) {
+                msgEl.textContent = message || 'Action successful!';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+        
+        // Auto-wire forms and add buttons for the mockup
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form').forEach(f => {
+                f.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    showSuccessToast('Successfully submitted!');
+                });
+            });
+            
+            // For admin tables or faculty modals
+            document.querySelectorAll('button').forEach(b => {
+                if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
+                    b.addEventListener('click', (e) => {
+                        if(b.type !== 'submit') {
+                            showSuccessToast('Action completed successfully!');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
