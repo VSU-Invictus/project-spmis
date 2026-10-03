@@ -1960,7 +1960,7 @@ const programs = [
                             );
                             if (editing) {
                                 $("#edit-body").value = editing.body;
-                                $("#edit-tags").value = editing.tags.join(" ");
+                                $("#edit-tags").value = editing.tags.join(", ");
                                 $("#edit-dialog").showModal();
                             }
                         }
@@ -2004,8 +2004,15 @@ const programs = [
             }
         }
         function normalizeTags(value) {
+            if (Array.isArray(value)) return value;
+            if (!value || typeof value !== "string") return [];
             return [
-                ...new Set(value.trim().toLowerCase().split(/\s+/).filter(Boolean)),
+                ...new Set(
+                    value
+                        .split(",")
+                        .map((t) => t.trim().toLowerCase())
+                        .filter(Boolean)
+                ),
             ];
         }
         if (page === "register-student") {
