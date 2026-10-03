@@ -55,4 +55,19 @@ assert.match(sidebarScript, /nav-btn-active/);
 assert.match(sidebarScript, /window\.location\.pathname/);
 assert.match(sidebarScript, /sidebar-account-card/);
 
-console.log("Admin sidebar checks passed.");
+// Verify header, footer, fixed icon and button heights across all admin pages
+const componentsCss = fs.readFileSync(path.join(__dirname, "../assets/css/components.css"), "utf8");
+assert.match(componentsCss, /\.sidebar-divider\s*\{[^}]*#42423F/i, "Sidebar divider must use #42423F to match header and footer border");
+
+const validFacultyIconPath = 'H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2';
+
+for (const page of adminPages) {
+  const html = fs.readFileSync(path.join(adminPagesDir, page), "utf8");
+  assert.match(html, /class="[^"]*admin-top-header[^"]*"/, `${page} must contain .admin-top-header`);
+  assert.match(html, /class="[^"]*admin-footer[^"]*"/, `${page} must contain .admin-footer`);
+  assert.match(html, /<main[\s\S]*?<footer class="admin-footer"[\s\S]*?<\/main>/, `${page} must place .admin-footer inside <main>`);
+  assert.doesNotMatch(html, /min-h-\[42px\]/, `${page} must not have 42px nav button height (must be 40px locked)`);
+  assert.match(html, new RegExp(validFacultyIconPath), `${page} must have unbroken faculty applications icon`);
+}
+
+console.log("Admin sidebar, header, footer, and navigation button checks passed.");

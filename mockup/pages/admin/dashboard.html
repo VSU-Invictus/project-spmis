@@ -124,6 +124,38 @@
       font-weight: 500;
     }
     
+    .app-canvas {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #141413;
+      border: none;
+      overflow: hidden;
+    }
+
+    .sidebar-frame {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 260px;
+      height: 100%;
+      border: none;
+      z-index: 50;
+    }
+
+    .section-container {
+      position: absolute;
+      left: 260px;
+      top: 0;
+      width: calc(100% - 260px);
+      height: 100%;
+      padding: 16px 24px;
+      display: flex;
+      overflow-y: auto;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
     @media (max-width: 768px) {
       .sidebar { width: 60px !important; }
       .sidebar .nav-text { display: none !important; }
@@ -138,66 +170,54 @@
     
   </style>
 </head>
-<body class="flex justify-center items-center min-h-screen p-0">
+<body>
 
-    <!-- Main Dashboard Container -->
-    <div class="bg-dashboard-outer rounded-[10px] w-screen h-screen flex flex-col lg:flex-row shadow-2xl relative overflow-hidden">
-        
-        <!-- Mobile Sidebar Header Toggle -->
-        <div class="lg:hidden bg-sidebar p-4 border-b border-sidebar flex items-center justify-between">
-            <h1 class="font-intel-mono font-semibold text-lg text-white">Admin Portal</h1>
-            <button onclick="toggleMobileMenu()" class="p-2 text-white hover:bg-white/10 rounded-lg">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
+  <div class="app-canvas">
+    
+    <!-- Admin Sidebar Component -->
+    <aside id="sidebar-menu" class="sidebar sidebar-frame">
+      <div class="flex flex-col gap-1">
+        <div class="brand-header"><h1 class="brand-title">Admin Portal</h1></div>
+        <nav class="nav" id="sidebar-nav" aria-label="Admin navigation">
+          <a href="../../pages/admin/dashboard.html" class="nav-btn-active min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm" aria-current="page"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg><span>Dashboard</span></a>
+          <a href="../../pages/admin/faculty-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg><span>Faculty Applications</span></a>
+          <a href="../../pages/admin/student-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/></svg><span>Student Applications</span></a>
+          <a href="../../pages/admin/program-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg><span>Program Applications</span></a>
+          <a href="../../pages/admin/department-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Dept. Applications</span></a>
+          <a href="../../pages/admin/students.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+          <a href="../../pages/admin/departments.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M12 2 3 10h18L12 2ZM7 21V10M12 21V10M17 21V10"/></svg><span>Departments</span></a>
+          <a href="../../pages/admin/programs.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>Programs</span></a>
+          <a href="../../pages/admin/faculty.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Faculty</span></a>
+          <a href="../../pages/admin/audit-log.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Audit Log</span></a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-account-card">
+          <div style="display:flex;align-items:center;gap:10px;"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
+          <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg></button>
         </div>
+      </div>
+    </aside>
+    <script src="../../assets/js/admin-sidebar.js"></script>
 
-        <!-- Navigation Sidebar Component -->
-        <aside id="sidebar-menu" class="hidden lg:block sidebar shrink-0 w-full lg:w-[260px] h-full bg-sidebar" style="position: relative; height: 100%;">
-          <div class="flex flex-col gap-1">
-            <div class="brand-header"><h1 class="brand-title">Admin Portal</h1></div>
-            <nav class="nav" id="sidebar-nav" aria-label="Admin navigation">
-              <a href="../../pages/admin/dashboard.html" class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm" aria-current="page"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg><span>Dashboard</span></a>
-              <a href="../../pages/admin/faculty-applications.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg><span>Faculty Applications</span></a>
-              <a href="../../pages/admin/student-applications.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/></svg><span>Student Applications</span></a>
-              <a href="../../pages/admin/program-applications.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg><span>Program Applications</span></a>
-              <a href="../../pages/admin/department-applications.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Dept. Applications</span></a>
-              <a href="../../pages/admin/students.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
-              <a href="../../pages/admin/departments.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M12 2 3 10h18L12 2ZM7 21V10M12 21V10M17 21V10"/></svg><span>Departments</span></a>
-              <a href="../../pages/admin/programs.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>Programs</span></a>
-              <a href="../../pages/admin/faculty.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Faculty</span></a>
-              <a href="../../pages/admin/audit-log.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Audit Log</span></a>
-            </nav>
+    <!-- Right Main Content Panel Container -->
+    <main class="section-container">
+      <div>
+        <!-- Admin Top Header -->
+        <div class="admin-top-header">
+          <div class="header-left">
+            <div class="red-dot"></div>
+            <span class="breadcrumb-text">Admin Portal / Overview</span>
           </div>
-          <div class="sidebar-footer">
-            <div class="sidebar-divider"></div>
-            <div class="sidebar-account-card">
-              <div style="display:flex;align-items:center;gap:10px;"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
-              <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg></button>
-            </div>
+          <div class="header-right">
+            <span class="status-badge">
+              <span class="green-dot"></span>
+              System Live
+            </span>
+            <span class="ay-text">AY 2026-2027</span>
           </div>
-        </aside>
-        <script src="../../assets/js/admin-sidebar.js"></script>
-
-        <!-- Right Main Content Panel Container -->
-        <main class="flex-1 py-4 px-6 flex flex-col justify-between overflow-hidden">
-            
-            <div>
-                <!-- Top Brand Header Bar -->
-                <div class="flex items-center justify-between border-b border-[#42423F] pb-3 mb-4">
-                    <div class="flex items-center gap-[10px]">
-                        <div class="w-[10px] h-[10px] rounded-full bg-[#D97251]"></div>
-                        <span class="text-[11px] font-semibold tracking-wider text-zorba uppercase">Admin Portal / Overview</span>
-                    </div>
-                    <div class="flex items-center gap-3 text-[11px] text-zorba">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#3d3d3a] border border-[#484844]">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                            System Live
-                        </span>
-                        <span class="hidden sm:inline text-[11px] text-zorba">AY 2026-2027</span>
-                    </div>
-                </div>
+        </div>
 
                 <!-- Page Heading Section -->
                 <header class="mb-4">
@@ -391,21 +411,21 @@
                 </section>
             </div>
 
-            <!-- Footer indicator -->
-            <footer class="mt-auto pt-3 border-t border-[#42423F] text-[11px] text-zorba flex flex-col sm:flex-row justify-between items-center gap-1 w-full shrink-0">
-                <span>&copy; 2026 Admin Portal. All rights reserved.</span>
-                <span>System Version 2.4.0</span>
-            </footer>
+        <!-- Footer indicator -->
+        <footer class="admin-footer" style="margin-top: auto; width: 100%;">
+          <span>&copy; 2026 Admin Portal. All rights reserved.</span>
+          <span>System Version 2.4.0</span>
+        </footer>
 
-        </main>
+      </main>
 
-        <!-- Action Toast Modal -->
-        <div id="toast-modal" class="fixed bottom-6 right-6 bg-[#1A1918] text-white px-4 py-3 rounded-xl shadow-xl border border-[#D97251] transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50">
-            <svg class="w-5 h-5 text-[#D97251]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path>
-            </svg>
-            <span id="toast-message" class="text-xs font-medium">Opening review workspace...</span>
-        </div>
+      <!-- Action Toast Modal -->
+      <div id="toast-modal" class="fixed bottom-6 right-6 bg-[#1A1918] text-white px-4 py-3 rounded-xl shadow-xl border border-[#D97251] transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50">
+        <svg class="w-5 h-5 text-[#D97251]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path>
+        </svg>
+        <span id="toast-message" class="text-xs font-medium">Opening review workspace...</span>
+      </div>
 
     </div>
 

@@ -16,7 +16,7 @@
       dialog.className = "logout-dialog";
       dialog.setAttribute("aria-labelledby", "logout-title");
       dialog.innerHTML =
-        '<form method="dialog"><h2 id="logout-title">Log out?</h2><p>Are you sure you want to end your faculty session?</p><div class="actions"><button type="submit" value="cancel" class="secondary">Cancel</button><button type="submit" value="confirm">Log out</button></div></form>';
+        '<form method="dialog"><h2 id="logout-title">Log out?</h2><p>Are you sure you want to end your faculty session?</p><div class="actions"><button type="submit" value="cancel" class="ui-btn ui-btn-outline">Cancel</button><button type="submit" value="confirm" class="ui-btn ui-btn-primary">Log out</button></div></form>';
       dialog.querySelector("form").addEventListener("submit", (event) => {
         event.preventDefault();
         event.stopImmediatePropagation();

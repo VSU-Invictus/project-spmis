@@ -27,8 +27,8 @@ window.initAdminTable = function (config) {
   const prevBtn = config.prevBtn ? document.querySelector(config.prevBtn) : document.querySelector('.ui-table-page-btn:first-of-type');
   const nextBtn = config.nextBtn ? document.querySelector(config.nextBtn) : document.querySelector('.ui-table-page-btn:last-of-type');
 
-  const selectAllCb = config.selectAllCheckbox ? document.querySelector(config.selectAllCheckbox) : document.querySelector('.select-all-checkbox');
-  const selectionCountEl = config.selectionCount ? document.querySelector(config.selectionCount) : document.querySelector('#selection-count');
+  const selectAllCb = typeof config.selectAllCheckbox === 'string' ? document.querySelector(config.selectAllCheckbox) : (config.selectAllCheckbox || document.querySelector('.select-all-checkbox'));
+  const selectionCountEl = typeof config.selectionCount === 'string' ? document.querySelector(config.selectionCount) : (config.selectionCount || document.querySelector('#selection-count'));
 
   const entityName = config.entityName || 'entries';
   let currentPage = 1;
@@ -46,35 +46,75 @@ window.initAdminTable = function (config) {
   }
 
   function getRows() {
-    return Array.from(tableBody.querySelectorAll('tr')).filter(tr => !tr.classList.contains('skeleton-row'));
+    const rows = Array.from(tableBody.querySelectorAll('tr')).filter(tr => !tr.classList.contains('skeleton-row'));
+    rows.forEach(r => {
+      if (r.querySelector('input[type="checkbox"]')) r.style.cursor = 'pointer';
+    });
+    return rows;
+  }
+
+  function getVisibleRowCheckboxes() {
+    return Array.from(tableBody.querySelectorAll('tr:not([style*="display: none"]):not([style*="display:none"]):not(.skeleton-row) input[type="checkbox"]'));
   }
 
   function updateCheckboxes() {
-    const visibleRowCheckboxes = Array.from(tableBody.querySelectorAll('tr:not([style*="display: none"]):not([style*="display:none"]) .row-checkbox'));
-    const checkedBoxes = visibleRowCheckboxes.filter(cb => cb.checked);
+    const visibleRowCheckboxes = getVisibleRowCheckboxes();
+    const total = visibleRowCheckboxes.length;
+    const checked = visibleRowCheckboxes.filter(cb => cb.checked).length;
 
     if (selectAllCb) {
-      selectAllCb.checked = visibleRowCheckboxes.length > 0 && checkedBoxes.length === visibleRowCheckboxes.length;
-      selectAllCb.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < visibleRowCheckboxes.length;
+      if (checked === 0 || total === 0) {
+        selectAllCb.checked = false;
+        selectAllCb.indeterminate = false;
+      } else if (checked === total) {
+        selectAllCb.checked = true;
+        selectAllCb.indeterminate = false;
+      } else {
+        selectAllCb.checked = false;
+        selectAllCb.indeterminate = true;
+      }
     }
 
     if (selectionCountEl) {
-      selectionCountEl.textContent = `${checkedBoxes.length} of ${visibleRowCheckboxes.length} row(s) selected.`;
+      selectionCountEl.textContent = `${checked} of ${total} row(s) selected.`;
     }
   }
 
   if (selectAllCb) {
-    selectAllCb.addEventListener('change', () => {
-      const visibleRowCheckboxes = tableBody.querySelectorAll('tr:not([style*="display: none"]):not([style*="display:none"]) .row-checkbox');
+    selectAllCb.addEventListener('change', (e) => {
+      const visibleRowCheckboxes = getVisibleRowCheckboxes();
       visibleRowCheckboxes.forEach(cb => {
-        cb.checked = selectAllCb.checked;
+        cb.checked = e.target.checked;
+        const row = cb.closest('tr');
+        if (row) {
+          if (e.target.checked) row.classList.add('checked');
+          else row.classList.remove('checked');
+        }
       });
       updateCheckboxes();
     });
   }
 
   tableBody.addEventListener('change', (e) => {
-    if (e.target && e.target.classList.contains('row-checkbox')) {
+    if (e.target && (e.target.classList.contains('row-checkbox') || e.target.type === 'checkbox')) {
+      const row = e.target.closest('tr');
+      if (row) {
+        if (e.target.checked) row.classList.add('checked');
+        else row.classList.remove('checked');
+      }
+      updateCheckboxes();
+    }
+  });
+
+  tableBody.addEventListener('click', (e) => {
+    const tr = e.target.closest('tr');
+    if (!tr || tr.classList.contains('skeleton-row')) return;
+    if (e.target.tagName === 'INPUT' || e.target.closest('button, a, select, textarea, label')) return;
+    const cb = tr.querySelector('.row-checkbox, input[type="checkbox"]');
+    if (cb) {
+      cb.checked = !cb.checked;
+      if (cb.checked) tr.classList.add('checked');
+      else tr.classList.remove('checked');
       updateCheckboxes();
     }
   });

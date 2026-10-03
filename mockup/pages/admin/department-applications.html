@@ -31,7 +31,7 @@
       width: 100vw;
       height: 100vh;
       background: #141413;
-      border: 1px solid #D97251;
+      border: none;
       overflow: hidden;
     }
 
@@ -491,104 +491,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Modals */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.active {
-      display: flex;
-    }
-    .modal-container {
-      background: #444746;
-      border: 1px solid #D97251;
-      border-radius: 15px;
-      padding: 24px 32px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
-      position: relative;
-    }
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 20px;
-      background: transparent;
-      border: 1px solid #000;
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-title {
-      font-family: 'Intel One Mono', 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: 20px;
-      line-height: 28px;
-      color: #FFFFFF;
-      text-align: center;
-      margin: 0 0 24px;
-    }
-    .modal-form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .modal-form label {
-      font-family: 'Intel One Mono', 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: 15px;
-      line-height: 21px;
-      color: #FFFFFF;
-      margin-bottom: 4px;
-      display: block;
-    }
-    .modal-form textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 10px;
-      background: var(--muted, #21201E);
-      border: 1px solid var(--input, #43362B);
-      border-radius: 12px;
-      font-family: var(--font-sans, 'Outfit'), sans-serif;
-      font-weight: 400;
-      font-size: 14px;
-      color: var(--foreground, #FFFFFF);
-      outline: none;
-      resize: none;
-    }
-    .modal-form textarea:focus {
-      box-shadow: 0 0 0 2px #D97251;
-    }
-    .modal-submit {
-      width: 224px;
-      height: 39px;
-      margin: 24px auto 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #343434;
-      border: 1px solid #3D3D3A;
-      border-radius: 10px;
-      font-family: var(--font-sans, 'Outfit'), sans-serif;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 17px;
-      color: #FFFFFF;
-      cursor: pointer;
-      transition: background .15s ease;
-    }
-    .modal-submit:hover {
-      background: #2a2a2a;
-    }
-  
     @media (max-width: 768px) {
       .sidebar { width: 60px !important; }
       .sidebar .nav-text { display: none !important; }
@@ -598,7 +500,8 @@
       .dropdown-container { width: 100% !important; margin-left: 0 !important; margin-top: 8px !important; }
       .controls-row { flex-direction: column !important; align-items: flex-start !important; height: auto !important; }
       .table-margin-container { width: 100% !important; margin-left: 0 !important; }
-      .table-scroll { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+      :is(.ui-table-wrap, .table-wrap, .table-container, .table-scroll) { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; width: 100% !important; display: block !important; }
+      :is(.ui-table, table.ui-table, table) { min-width: 680px !important; }
     }
     
   
@@ -698,23 +601,73 @@
 
     <!-- Reject Modal -->
     <div class="modal-overlay" id="rejectModal">
-      <div class="modal-container">
-        <button class="modal-close" id="closeReject">
+      <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="rejectModalTitle">
+        <button class="modal-close" id="closeReject" aria-label="Close modal">
           <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-            <path d="M1 13L13 1M1 1L13 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M1 13L13 1M1 1L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        <h3 class="modal-title">Reject Application</h3>
+        <h3 class="modal-title" id="rejectModalTitle">Reject Application</h3>
         <form class="modal-form" id="rejectForm">
-          <div class="modal-select-wrapper" style="margin-bottom: 8px;">
-            <label>Application:</label>
-            <select id="rejectAppSelect" style="width: 100%; height: 40px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 12px; font-family: var(--font-sans, 'Outfit'); font-size: 14px; color: var(--foreground, #FFFFFF); padding: 0 10px; outline: none;"></select>
+          <!-- Action Confirmation Alert -->
+          <div class="ui-alert ui-alert--warning" role="alert">
+            <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div class="ui-alert-content">
+              <span class="ui-alert-title">Confirm Rejection Decision</span>
+              <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+            </div>
+          </div>
+
+          <div class="modal-select-wrapper">
+            <label for="rejectAppSelect">Application:</label>
+            <select id="rejectAppSelect"></select>
           </div>
           <div>
-            <label>Reason for rejection:</label>
-            <textarea placeholder="Enter reason here..." id="rejectReason"></textarea>
+            <label for="rejectReason">
+              <span>Reason for rejection <span style="color: var(--destructive); font-weight: 700;">*</span></span>
+              <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
+            </label>
+            <textarea placeholder="Enter specific deficiency or prerequisites reason..." id="rejectReason" required></textarea>
           </div>
           <button type="submit" class="modal-submit">Confirm Rejection</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Accept Modal -->
+    <div class="modal-overlay" id="acceptModal">
+      <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="acceptModalTitle">
+        <button class="modal-close" id="closeAccept" aria-label="Close modal">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M1 13L13 1M1 1L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h3 class="modal-title" id="acceptModalTitle">Accept Application</h3>
+        <form class="modal-form" id="acceptForm">
+          <!-- Action Confirmation Alert -->
+          <div class="ui-alert ui-alert--info" role="alert">
+            <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <div class="ui-alert-content">
+              <span class="ui-alert-title">Confirm Acceptance</span>
+              <span class="ui-alert-desc">Are you sure you want to approve the selected department application(s)? This will update official department records.</span>
+            </div>
+          </div>
+          <div>
+            <label>Selected Application(s):</label>
+            <div id="acceptSummary" style="padding: 10px 14px; background: var(--muted); border: 1px solid var(--input); border-radius: var(--radius-md); font-size: 13px; color: var(--foreground); line-height: 1.45;"></div>
+          </div>
+          <div style="display: flex; gap: 10px; margin-top: 4px;">
+            <button type="button" class="ui-btn ui-btn-outline" id="cancelAcceptBtn" style="flex: 1; height: 42px; border-radius: 10px;">Cancel</button>
+            <button type="submit" class="modal-submit" style="flex: 1; margin-top: 0; height: 42px;">Confirm Approval</button>
+          </div>
         </form>
       </div>
     </div>
@@ -724,16 +677,16 @@
       <div class="flex flex-col gap-1">
         <div class="brand-header"><h1 class="brand-title">Admin Portal</h1></div>
         <nav class="nav" id="sidebar-nav" aria-label="Admin navigation">
-          <a href="../../pages/admin/dashboard.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg><span>Dashboard</span></a>
-          <a href="../../pages/admin/faculty-applications.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg><span>Faculty Applications</span></a>
-          <a href="../../pages/admin/student-applications.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/></svg><span>Student Applications</span></a>
-          <a href="../../pages/admin/program-applications.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg><span>Program Applications</span></a>
-          <a href="../../pages/admin/department-applications.html" class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm" aria-current="page"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Dept. Applications</span></a>
-          <a href="../../pages/admin/students.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
-          <a href="../../pages/admin/departments.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M12 2 3 10h18L12 2ZM7 21V10M12 21V10M17 21V10"/></svg><span>Departments</span></a>
-          <a href="../../pages/admin/programs.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>Programs</span></a>
-          <a href="../../pages/admin/faculty.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Faculty</span></a>
-          <a href="../../pages/admin/audit-log.html" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Audit Log</span></a>
+          <a href="../../pages/admin/dashboard.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg><span>Dashboard</span></a>
+          <a href="../../pages/admin/faculty-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg><span>Faculty Applications</span></a>
+          <a href="../../pages/admin/student-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/></svg><span>Student Applications</span></a>
+          <a href="../../pages/admin/program-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg><span>Program Applications</span></a>
+          <a href="../../pages/admin/department-applications.html" class="nav-btn-active min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm" aria-current="page"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Dept. Applications</span></a>
+          <a href="../../pages/admin/students.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
+          <a href="../../pages/admin/departments.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M12 2 3 10h18L12 2ZM7 21V10M12 21V10M17 21V10"/></svg><span>Departments</span></a>
+          <a href="../../pages/admin/programs.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>Programs</span></a>
+          <a href="../../pages/admin/faculty.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Faculty</span></a>
+          <a href="../../pages/admin/audit-log.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Audit Log</span></a>
         </nav>
       </div>
       <div class="sidebar-footer">
@@ -886,86 +839,10 @@
       </div>
       
       <script>
-      const headerCheckbox = document.querySelector('.select-all-checkbox');
-      const rowCheckboxes = document.querySelectorAll(".ui-table tbody input[type='checkbox']");
-
-      function updateSelectAllBtn() {
-        const checkedCount = Array.from(rowCheckboxes).filter(cb => cb.checked).length;
-        const totalCount = rowCheckboxes.length;
-        const allChecked = totalCount > 0 && checkedCount === totalCount;
-        const someChecked = checkedCount > 0 && checkedCount < totalCount;
-        
-        if (headerCheckbox) {
-            headerCheckbox.checked = allChecked;
-            headerCheckbox.indeterminate = someChecked;
-        }
-        
-        const countSpan = document.getElementById('selection-count');
-        if (countSpan) {
-            countSpan.textContent = checkedCount + ' of ' + totalCount + ' row(s) selected.';
-        }
-      }
-
-      if (headerCheckbox) {
-        headerCheckbox.addEventListener('change', (e) => {
-          const isChecked = e.target.checked;
-          rowCheckboxes.forEach(cb => {
-            cb.checked = isChecked;
-            cb.dispatchEvent(new Event('change'));
-          });
-          updateSelectAllBtn();
-        });
-      }
-
-      rowCheckboxes.forEach(cb => {
-        cb.addEventListener('change', (e) => {
-          updateSelectAllBtn();
-        });
-      });
-
-      const tableRows = document.querySelectorAll('.ui-table tbody tr');
-      tableRows.forEach(row => {
-        row.addEventListener('click', (e) => {
-          if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'button') {
-            return;
-          }
-          const cb = row.querySelector("input[type='checkbox']");
-          if (cb) {
-            cb.checked = !cb.checked;
-            cb.dispatchEvent(new Event('change'));
-          }
-        });
-      });
-
-      // Search, Filter and Skeleton Loading
+      // Search, Filter and Admin Table initialization
       const searchInput = document.getElementById('searchInput');
       const typeFilter = document.getElementById('typeFilter');
       const sortFilter = document.getElementById('sortFilter');
-      const tableBody = document.getElementById('tableBody');
-      const emptyState = document.getElementById('emptyState');
-      const rowsPerPageSelect = document.querySelector('.ui-select-pill');
-      const prevBtn = document.querySelector('.ui-table-page-btn:first-of-type');
-      const nextBtn = document.querySelector('.ui-table-page-btn:last-of-type');
-
-      function filterRows() {
-        if (!tableBody) return;
-        const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-        const type = typeFilter ? typeFilter.value.toLowerCase() : 'all';
-        let visibleCount = 0;
-
-        const rows = [...tableBody.querySelectorAll('tr:not(.skeleton-row)')];
-        rows.forEach(row => {
-          const text = row.textContent.toLowerCase();
-          const matchesQuery = !query || text.includes(query);
-          const matchesType = type.includes('all') || text.includes(type);
-          const visible = matchesQuery && matchesType;
-          row.style.display = visible ? '' : 'none';
-          if (visible) visibleCount++;
-        });
-
-        if (emptyState) emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-        updateSelectAllBtn();
-      }
 
       const adminTable = window.initAdminTable({
         tableBody: '#tableBody',
@@ -1000,12 +877,61 @@
       const rejectModal = document.getElementById('rejectModal');
       const rejectForm = document.getElementById('rejectForm');
       const closeReject = document.getElementById('closeReject');
+      const acceptModal = document.getElementById('acceptModal');
+      const acceptForm = document.getElementById('acceptForm');
+      const closeAccept = document.getElementById('closeAccept');
+      const cancelAcceptBtn = document.getElementById('cancelAcceptBtn');
+      const acceptSummary = document.getElementById('acceptSummary');
+
+      function openModal(modal) {
+        if (modal) {
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      function closeModal(modal) {
+        if (modal) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      }
+
+      if (closeReject) {
+        closeReject.addEventListener('click', () => closeModal(rejectModal));
+      }
+      if (closeAccept) {
+        closeAccept.addEventListener('click', () => closeModal(acceptModal));
+      }
+      if (cancelAcceptBtn) {
+        cancelAcceptBtn.addEventListener('click', () => closeModal(acceptModal));
+      }
+
+      window.addEventListener('click', (e) => {
+        if (e.target === rejectModal) closeModal(rejectModal);
+        if (e.target === acceptModal) closeModal(acceptModal);
+      });
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          closeModal(rejectModal);
+          closeModal(acceptModal);
+        }
+      });
 
       let rejectReasons = {};
       let currentAppId = null;
 
       const rejectAppSelect = document.getElementById('rejectAppSelect');
       const rejectReason = document.getElementById('rejectReason');
+
+      if (rejectReason) {
+        // Auto-expand textarea on typing to cater long inputs
+        rejectReason.addEventListener('input', () => {
+          rejectReason.style.height = 'auto';
+          rejectReason.style.height = Math.max(90, Math.min(260, rejectReason.scrollHeight)) + 'px';
+        });
+      }
 
       if (rejectAppSelect && rejectReason) {
         rejectAppSelect.addEventListener('change', (e) => {
@@ -1014,24 +940,10 @@
           }
           currentAppId = e.target.value;
           rejectReason.value = rejectReasons[currentAppId] || '';
+          rejectReason.style.height = 'auto';
+          rejectReason.style.height = Math.max(90, Math.min(260, rejectReason.scrollHeight)) + 'px';
         });
       }
-
-      function openModal(modal) {
-        if (modal) modal.classList.add('active');
-      }
-
-      function closeModal(modal) {
-        if (modal) modal.classList.remove('active');
-      }
-
-      if (closeReject) {
-        closeReject.addEventListener('click', () => closeModal(rejectModal));
-      }
-
-      window.addEventListener('click', (e) => {
-        if (e.target === rejectModal) closeModal(rejectModal);
-      });
 
       if (rejectForm) {
         rejectForm.addEventListener('submit', e => {
@@ -1049,13 +961,14 @@
             }
           });
 
-          if (!allFilled) {
-            showToast('Please provide a reason for all selected applications');
+          if (!allFilled || (rejectReason && !rejectReason.value.trim())) {
+            showToast('Please provide a reason for rejection before confirming.');
+            if (rejectReason) rejectReason.focus();
             return;
           }
 
           closeModal(rejectModal);
-          window.setTimeout(() => showToast('Applications Rejected Successfully'), 120);
+          window.setTimeout(() => showToast('Application Rejected Successfully'), 120);
         });
       }
 
@@ -1066,10 +979,26 @@
         acceptBtn.addEventListener('click', () => {
           const checked = document.querySelectorAll(".ui-table tbody input[type='checkbox']:checked");
           if (checked.length > 0) {
-            showToast('Application Accepted Successfully');
+            if (acceptSummary) {
+              const names = Array.from(checked).map((cb, idx) => {
+                const row = cb.closest('tr');
+                const nameEl = row ? row.querySelectorAll('td')[1] : null;
+                return nameEl ? nameEl.textContent.trim() : `Application #${idx + 1}`;
+              });
+              acceptSummary.innerHTML = `<strong>${checked.length} department(s):</strong> ${names.join(', ')}`;
+            }
+            openModal(acceptModal);
           } else {
             showToast('Please select at least one application');
           }
+        });
+      }
+
+      if (acceptForm) {
+        acceptForm.addEventListener('submit', e => {
+          e.preventDefault();
+          closeModal(acceptModal);
+          window.setTimeout(() => showToast('Application Accepted Successfully'), 120);
         });
       }
 
@@ -1082,7 +1011,7 @@
             
             checked.forEach((cb, index) => {
               const row = cb.closest('tr');
-              const nameEl = row.querySelectorAll('td')[2];
+              const nameEl = row.querySelectorAll('td')[1];
               const name = nameEl ? nameEl.textContent.trim() : 'Application ' + (index + 1);
               const id = 'app_' + index;
               cb.dataset.appId = id;
@@ -1100,6 +1029,7 @@
             }
             if (rejectReason) {
               rejectReason.value = '';
+              rejectReason.style.height = 'auto';
             }
             openModal(rejectModal);
           } else {
