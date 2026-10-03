@@ -1,0 +1,118 @@
+/* Shared queue behavior styles. Visual values come from the Claude+ tokens. */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: color-mix(in srgb, var(--background) 72%, transparent);
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-overlay .modal-container {
+  width: min(960px, 100%);
+  max-height: min(760px, calc(100vh - 2rem));
+  overflow: auto;
+  padding: 1.5rem;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--shadow-md);
+}
+
+.modal-header,
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.modal-header {
+  margin-bottom: 1rem;
+}
+
+.modal-actions {
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.modal-cancel {
+  cursor: pointer;
+}
+
+.queue-rejection-row {
+  display: none;
+  grid-column: 1 / -1;
+  padding: 0.75rem 1rem 1rem;
+  background: var(--muted);
+  border-top: 1px solid var(--border);
+}
+
+.queue-rejection-row.is-expanded {
+  display: block;
+}
+
+.queue-rejection-row label,
+.queue-rejection-row p {
+  display: block;
+  margin: 0 0 0.5rem;
+  color: var(--foreground);
+  font: 600 0.8125rem/1.4 var(--font-sans);
+}
+
+.queue-rejection-row p {
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.queue-rejection-row textarea {
+  width: 100%;
+  min-height: 5rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--foreground);
+  font: 500 0.875rem/1.5 var(--font-sans);
+  resize: vertical;
+}
+
+.queue-rejection-row textarea:focus-visible,
+[data-queue-modal]:focus-visible,
+[data-queue-modal] button:focus-visible,
+[data-queue-modal] input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.queue-rejection-row .queue-rejection-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.625rem;
+}
+
+.queue-row-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.queue-row-actions .pill-btn {
+  min-height: 2rem;
+}
+
+@media (max-width: 700px) {
+  .queue-row-actions {
+    justify-content: flex-start;
+  }
+}
