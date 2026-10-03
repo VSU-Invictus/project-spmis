@@ -1124,11 +1124,21 @@
             cursor: pointer;
         }
 
+        .terms-step-agree input[type="checkbox"]:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
         .terms-step-agree label {
             font-size: 14.5px;
             line-height: 1.55;
             color: #e8eaed;
             cursor: pointer;
+        }
+
+        .terms-step-agree:has(input:disabled) label {
+            cursor: not-allowed;
+            opacity: 0.8;
         }
 
         .terms-step-actions {
@@ -1395,6 +1405,10 @@
                                     </div>
                                 </div>
 
+                                <p class="ui-auth-terms-notice" style="font-size: 0.78rem; color: var(--muted-foreground, #A0988E); margin: 0.75rem 0 0.875rem; text-align: center; line-height: 1.4;">
+                                    By signing up, you agree to our <a href="terms.html" style="color: var(--primary); text-decoration: underline;">Terms of Service</a>.
+                                </p>
+
                                 <button type="submit" class="ui-auth-btn-submit">Create Account</button>
                             </form>
                         </div>
@@ -1547,8 +1561,11 @@
                     </div>
 
                     <div class="terms-step-agree">
-                        <input type="checkbox" id="terms-step-checkbox" />
-                        <label for="terms-step-checkbox">I have read and agree to the SPMIS Terms &amp; Conditions.</label>
+                        <input type="checkbox" id="terms-step-checkbox" disabled />
+                        <label for="terms-step-checkbox">
+                            <span>I have read and agree to the SPMIS Terms &amp; Conditions.</span>
+                            <span id="terms-scroll-hint" style="display: block; font-size: 12px; color: #9aa0a6; margin-top: 4px;">(Please scroll to the bottom of the terms to agree)</span>
+                        </label>
                     </div>
 
                     <div class="terms-step-actions">
@@ -1590,6 +1607,27 @@
         const googlePasswordForm = document.getElementById('google-password-form');
         const termsCheckbox = document.getElementById('terms-step-checkbox');
         const termsContinueBtn = document.getElementById('terms-step-continue');
+        const termsScroll = document.querySelector('.terms-step-scroll');
+        const termsScrollHint = document.getElementById('terms-scroll-hint');
+        let termsScrolledToBottom = false;
+
+        function checkTermsScroll() {
+            if (termsScrolledToBottom || !termsScroll) return;
+            const atBottom = (termsScroll.scrollTop + termsScroll.clientHeight >= termsScroll.scrollHeight - 16) ||
+                             (termsScroll.scrollHeight <= termsScroll.clientHeight + 16);
+            if (atBottom) {
+                termsScrolledToBottom = true;
+                termsCheckbox.disabled = false;
+                if (termsScrollHint) {
+                    termsScrollHint.textContent = '(You may now check the box to agree)';
+                    termsScrollHint.style.color = '#34a853';
+                }
+            }
+        }
+
+        if (termsScroll) {
+            termsScroll.addEventListener('scroll', checkTermsScroll, { passive: true });
+        }
 
         let selectedRole = 'faculty';
 
@@ -1605,6 +1643,9 @@
             googleSteps.forEach(current => current.classList.toggle('active', current.dataset.googleStep === step));
             // Hide the Google header on the terms step — terms is generic
             googleModal.classList.toggle('terms-active', step === 'terms');
+            if (step === 'terms') {
+                setTimeout(checkTermsScroll, 60);
+            }
         }
 
         function resetGoogleFlow() {
@@ -1612,7 +1653,14 @@
             googleEmailForm.reset();
             googlePasswordForm.reset();
             termsCheckbox.checked = false;
+            termsCheckbox.disabled = true;
+            termsScrolledToBottom = false;
             termsContinueBtn.disabled = true;
+            if (termsScroll) termsScroll.scrollTop = 0;
+            if (termsScrollHint) {
+                termsScrollHint.textContent = '(Please scroll to the bottom of the terms to agree)';
+                termsScrollHint.style.color = '#9aa0a6';
+            }
             document.getElementById('google-email-error').textContent = '';
             document.getElementById('google-password-error').textContent = '';
             document.querySelectorAll('.google-field').forEach(f => f.classList.remove('is-filled'));
