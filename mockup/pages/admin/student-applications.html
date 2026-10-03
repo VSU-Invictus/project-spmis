@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
   <title>Admin Portal - Student Applications</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -17,7 +15,7 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-sans);
       background-color: #30302E;
       color: #FFFFFF;
       min-height: 100vh;
@@ -90,7 +88,7 @@
 
     .heading-title {
       margin: 8px 0 16px;
-      font-family: 'Inter';
+      font-family: var(--font-sans);
       font-style: normal;
       font-weight: 700;
       font-size: 30px;
@@ -262,7 +260,7 @@
       padding: 13px 12px 13px;
       min-height: 43.5px;
       min-width: 0;
-      font-family: 'Inter';
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 14px;
       line-height: 16px;
@@ -372,7 +370,7 @@
       align-items: flex-start;
       padding: 16px 12px 17px;
       min-width: 0;
-      font-family: 'Inter';
+      font-family: var(--font-sans);
       font-size: 14px;
       font-weight: 500;
       line-height: 16px;
@@ -531,14 +529,14 @@
     }
 
     .page-text {
-      font-family: 'Inter';
+      font-family: var(--font-sans);
       font-weight: 400;
       font-size: 12px;
       line-height: 16px;
       color: #9C948B;
     }
     button, input, select, textarea {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-sans);
       font-weight: 500;
     }
 
@@ -604,7 +602,7 @@
       justify-content: center;
     }
     .modal-title {
-      font-family: 'Intel One Mono', 'Inter', sans-serif;
+      font-family: var(--font-mono);
       font-weight: 600;
       font-size: 20px;
       line-height: 28px;
@@ -618,7 +616,7 @@
       gap: 16px;
     }
     .modal-form label {
-      font-family: 'Intel One Mono', 'Inter', sans-serif;
+      font-family: var(--font-mono);
       font-weight: 600;
       font-size: 15px;
       line-height: 21px;
@@ -633,7 +631,7 @@
       background: var(--muted, #21201E);
       border: 1px solid var(--input, #43362B);
       border-radius: 12px;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 400;
       font-size: 14px;
       color: var(--foreground, #FFFFFF);
@@ -653,7 +651,7 @@
       background: #343434;
       border: 1px solid #3D3D3A;
       border-radius: 10px;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 500;
       font-size: 14px;
       line-height: 17px;
@@ -672,32 +670,9 @@
     
     <!-- Toast Notification -->
     <div id="toast" class="toast">Notification</div>
-
-    <!-- Reject Modal -->
-    <div class="modal-overlay" id="rejectModal">
-      <div class="modal-container">
-        <button class="modal-close" id="closeReject">
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-            <path d="M1 13L13 1M1 1L13 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <h3 class="modal-title">Reject Application</h3>
-        <form class="modal-form" id="rejectForm">
-          <div class="modal-select-wrapper" style="margin-bottom: 8px;">
-            <label>Application:</label>
-            <select id="rejectAppSelect" style="width: 100%; height: 40px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 12px; font-family: 'Inter'; font-size: 14px; color: var(--foreground, #FFFFFF); padding: 0 10px; outline: none;"></select>
-          </div>
-          <div>
-            <label>Reason for rejection:</label>
-            <textarea placeholder="Enter reason here..." id="rejectReason"></textarea>
-          </div>
-          <button type="submit" class="modal-submit">Confirm Rejection</button>
-        </form>
-      </div>
-    </div>
-    
+    <!-- Shared queue behavior is provided by queue-modal.js. -->
     <!-- Admin Sidebar Component -->
-    <iframe src="../../components/navigation/sidebar-admin.html" class="sidebar-frame" title="Admin Sidebar"></iframe>
+    <iframe src="../../components/navigation/sidebar-admin.html?active=student-applications" class="sidebar-frame" title="Admin Sidebar"></iframe>
 
 
     <!-- RIGHT / MAIN SECTION AREA -->
@@ -829,7 +804,7 @@
       <div class="bottom-bar-container">
         <div class="action-btn-group">
           <button class="pill-btn select-all">Select All</button>
-          <button class="pill-btn accept">Accept</button>
+          <button class="pill-btn approve">Approve</button>
           <button class="pill-btn reject">Reject</button>
         </div>
 
@@ -842,6 +817,7 @@
 
     </main>
 
+    <script src="../../assets/js/queue-modal.js"></script>
     <script>
       function setSidebarActive(fileName) {
         const frame = document.getElementById('sidebar-frame');
@@ -929,114 +905,7 @@
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
       }
-
-      const rejectModal = document.getElementById('rejectModal');
-      const rejectForm = document.getElementById('rejectForm');
-      const closeReject = document.getElementById('closeReject');
-
-      function openModal(modal) { if (modal) modal.classList.add('active'); }
-      function closeModal(modal) { if (modal) modal.classList.remove('active'); }
-
-      if (closeReject) closeReject.addEventListener('click', () => closeModal(rejectModal));
-      if (rejectModal) {
-        rejectModal.addEventListener('click', e => {
-          if (e.target === rejectModal) closeModal(rejectModal);
-        });
-      }
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeModal(rejectModal);
-      });
-
-      let rejectReasons = {};
-      let currentAppId = null;
-
-      const rejectAppSelect = document.getElementById('rejectAppSelect');
-      const rejectReason = document.getElementById('rejectReason');
-
-      if (rejectAppSelect && rejectReason) {
-        rejectAppSelect.addEventListener('change', (e) => {
-          if (currentAppId) {
-            rejectReasons[currentAppId] = rejectReason.value;
-          }
-          currentAppId = e.target.value;
-          rejectReason.value = rejectReasons[currentAppId] || '';
-        });
-      }
-
-      if (rejectForm) {
-        rejectForm.addEventListener('submit', e => {
-          e.preventDefault();
-          if (currentAppId) {
-            rejectReasons[currentAppId] = rejectReason.value;
-          }
-
-          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
-          let allFilled = true;
-          checked.forEach((cb) => {
-            const id = cb.dataset.appId;
-            if (!rejectReasons[id] || rejectReasons[id].trim() === '') {
-              allFilled = false;
-            }
-          });
-
-          if (!allFilled) {
-            showToast('Please provide a reason for all selected applications');
-            return;
-          }
-
-          closeModal(rejectModal);
-          window.setTimeout(() => showToast('Applications Rejected Successfully'), 120);
-        });
-      }
-
-      const acceptBtn = document.querySelector('.pill-btn.accept');
-      const rejectBtn = document.querySelector('.pill-btn.reject');
-
-      if (acceptBtn) {
-        acceptBtn.addEventListener('click', () => {
-          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
-          if (checked.length > 0) {
-            showToast('Application Accepted Successfully');
-          } else {
-            showToast('Please select at least one application');
-          }
-        });
-      }
-
-      if (rejectBtn) {
-        rejectBtn.addEventListener('click', () => {
-          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
-          if (checked.length > 0) {
-            rejectReasons = {};
-            if (rejectAppSelect) rejectAppSelect.innerHTML = '';
-            
-            checked.forEach((cb, index) => {
-              const row = cb.closest('.table-row');
-              const nameEl = row.querySelector('.col-name');
-              const name = nameEl ? nameEl.textContent.trim() : 'Application ' + (index + 1);
-              const id = 'app_' + index;
-              cb.dataset.appId = id;
-              
-              if (rejectAppSelect) {
-                const option = document.createElement('option');
-                option.value = id;
-                option.textContent = name;
-                rejectAppSelect.appendChild(option);
-              }
-            });
-
-            if (rejectAppSelect) {
-              currentAppId = rejectAppSelect.value;
-            }
-            if (rejectReason) {
-              rejectReason.value = '';
-            }
-            openModal(rejectModal);
-          } else {
-            showToast('Please select at least one application');
-          }
-        });
-      }
+<<      // Inline rejection is handled by the shared queue-modal.js behavior.
     </script>
   </div>
 

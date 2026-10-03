@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,8 @@
     <title>Standalone Sidebar Navigation</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,13 +24,6 @@
             background-color: #141413;
         }
 
-        .bg-sidebar {
-            background-color: #21201E;
-        }
-
-        .border-sidebar-right {
-            border-color: #181716;
-        }
 
         /* Active Navigation Item State */
         .nav-btn-active {
@@ -45,6 +40,11 @@
         .nav-btn-inactive:hover {
             background-color: rgba(255, 255, 255, 0.05);
             color: #FFFFFF;
+        }
+
+        #sidebar-nav a.nav-btn-active svg {
+            color: var(--primary-foreground, #141413);
+            stroke: currentColor;
         }
 
         /* Bottom Account Profile Card Styling */
@@ -84,7 +84,7 @@
 
     <!-- ========================= STANDALONE NAVIGATION SIDEBAR ========================= -->
     <aside id="sidebar-menu"
-        class="fixed top-0 left-0 bottom-0 w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50">
+        class="app-sidebar fixed top-0 left-0 bottom-0 w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50">
 
         <div class="flex flex-col gap-1">
             <!-- Brand Title Header -->
@@ -93,10 +93,10 @@
             </div>
 
             <!-- Navigation Links Stream -->
-            <nav class="flex flex-col gap-[3px]" id="sidebar-nav">
+            <nav class="nav flex flex-col gap-[3px]" id="sidebar-nav" aria-label="Admin navigation">
 
                 <!-- 1. Dashboard -->
-                <a href="../../pages/admin/dashboard.html" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/dashboard.html" data-nav-key="dashboard" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
                         stroke-width="2">
@@ -108,52 +108,8 @@
                     <span>Dashboard</span>
                 </a>
 
-                <!-- 2. Faculty Applications -->
-                <a href="../../pages/admin/faculty-applications.html" onclick="setActiveNav(this)"
-                    class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                        <path d="M9 14h6"></path>
-                        <path d="M9 18h6"></path>
-                        <path d="M9 10h.01"></path>
-                    </svg>
-                    <span>Faculty Applications</span>
-                </a>
-
-                <!-- 3. Student Applications -->
-                <a href="../../pages/admin/student-applications.html" onclick="setActiveNav(this)"
-                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
-                        <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
-                    </svg>
-                    <span>Student Applications</span>
-                </a>
-
-                <!-- 4. Program Applications -->
-                <a href="../../pages/admin/program-applications.html" onclick="setActiveNav(this)"
-                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                        <polyline points="2 17 12 22 22 17"></polyline>
-                        <polyline points="2 12 12 17 22 12"></polyline>
-                    </svg>
-                    <span>Program Applications</span>
-                </a>
-
-                <!-- 5. Department Application (Wrapped text matching reference) -->
-                <a href="../../pages/admin/department-applications.html" onclick="setActiveNav(this)"
-                    class="nav-btn-inactive py-2 px-3.5 rounded-2xl flex items-start gap-[12px] text-[13px] font-semibold transition-all leading-tight">
-                    <svg class="w-[18px] h-[18px] shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                    </svg>
-                    <span>Department<br>Application</span>
-                </a>
-
-                <!-- 6. Students -->
-                <a href="../../pages/admin/students.html" onclick="setActiveNav(this)"
+                <!-- 2. Students -->
+                <a href="../../pages/admin/students.html" data-nav-key="students" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -164,8 +120,22 @@
                     <span>Students</span>
                 </a>
 
-                <!-- 7. Departments -->
-                <a href="../../pages/admin/departments.html" onclick="setActiveNav(this)"
+                <!-- 3. Student Applications -->
+                <a href="../../pages/admin/student-applications.html" data-nav-key="student-applications" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 4h4v4"></path>
+                        <path d="M14 10l6-6"></path>
+                        <path d="M20 14v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7"></path>
+                        <path d="M9 7h1"></path>
+                        <path d="M9 12h6"></path>
+                        <path d="M9 17h6"></path>
+                    </svg>
+                    <span>Student Applications</span>
+                </a>
+
+                <!-- 4. Departments -->
+                <a href="../../pages/admin/departments.html" data-nav-key="departments" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="21" x2="21" y2="21"></line>
@@ -178,8 +148,19 @@
                     <span>Departments</span>
                 </a>
 
-                <!-- 8. Programs -->
-                <a href="../../pages/admin/programs.html" onclick="setActiveNav(this)"
+                <!-- 5. Department Applications -->
+                <a href="../../pages/admin/department-applications.html" data-nav-key="department-applications" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <path d="M7 8h10"></path>
+                        <path d="M7 12h7"></path>
+                    </svg>
+                    <span>Department Applications</span>
+                </a>
+
+                <!-- 6. Programs -->
+                <a href="../../pages/admin/programs.html" data-nav-key="programs" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -188,8 +169,20 @@
                     <span>Programs</span>
                 </a>
 
-                <!-- 9. Faculty -->
-                <a href="../../pages/admin/faculty.html" onclick="setActiveNav(this)"
+                <!-- 7. Program Applications -->
+                <a href="../../pages/admin/program-applications.html" data-nav-key="program-applications" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        <path d="M9 7h7"></path>
+                        <path d="M9 11h7"></path>
+                    </svg>
+                    <span>Program Applications</span>
+                </a>
+
+                <!-- 8. Faculty -->
+                <a href="../../pages/admin/faculty.html" data-nav-key="faculty" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -198,8 +191,20 @@
                     <span>Faculty</span>
                 </a>
 
+                <!-- 9. Faculty Applications -->
+                <a href="../../pages/admin/faculty-applications.html" data-nav-key="faculty-applications" onclick="setActiveNav(this)"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                        <path d="M18 7h2"></path>
+                        <path d="M19 6v2"></path>
+                    </svg>
+                    <span>Faculty Applications</span>
+                </a>
+
                 <!-- 10. Audit Log -->
-                <a href="../../pages/admin/audit-log.html" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/audit-log.html" data-nav-key="audit-log" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -246,35 +251,26 @@
         // Dynamic navigation active state switcher
         function setActiveNav(element) {
             document.querySelectorAll('#sidebar-nav a').forEach(nav => {
-                const isDept = (nav.getAttribute('href') || '').includes('department-application');
-                nav.className = isDept
-                    ? 'nav-btn-inactive py-2 px-3.5 rounded-2xl flex items-start gap-[12px] text-[13px] font-semibold transition-all leading-tight'
-                    : 'nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all';
-                const svg = nav.querySelector('svg');
-                if (svg) svg.setAttribute('stroke', 'currentColor');
+                nav.classList.remove('nav-btn-active');
+                nav.classList.add('nav-btn-inactive');
+                nav.removeAttribute('aria-current');
             });
 
-            const isCurrentDept = (element.getAttribute('href') || '').includes('department-application');
-            element.className = isCurrentDept
-                ? 'nav-btn-active py-2 px-3.5 rounded-[16px] flex items-start gap-[12px] text-[13px] font-bold transition-all shadow-sm leading-tight'
-                : 'nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm';
-            const activeSvg = element.querySelector('svg');
-            if (activeSvg) activeSvg.setAttribute('stroke', 'currentColor');
+            element.classList.remove('nav-btn-inactive');
+            element.classList.add('nav-btn-active');
+            element.setAttribute('aria-current', 'page');
         }
 
-        // Auto-detect current active page from parent URL
-        try {
-            const currentPath = (window.parent.location.pathname || window.location.pathname).toLowerCase();
-            document.querySelectorAll('#sidebar-nav a').forEach(link => {
-                const href = (link.getAttribute('href') || '').toLowerCase();
-                const pageName = href.substring(href.lastIndexOf('/') + 1);
-                if (pageName && currentPath.endsWith(pageName)) {
-                    setActiveNav(link);
-                }
-            });
-        } catch (e) {
-            // Fallback for security / cross-origin
-        }
+        // Determine the current page from the iframe query string so the correct sidebar item stays selected.
+        const params = new URLSearchParams(window.location.search || '');
+        const activeKey = (params.get('active') || 'dashboard').toLowerCase();
+
+        document.querySelectorAll('#sidebar-nav a').forEach(link => {
+            const key = (link.dataset.navKey || '').toLowerCase();
+            if (key === activeKey) {
+                setActiveNav(link);
+            }
+        });
 
         // Custom Logout Dialog logic
         function handleLogout(event) {
