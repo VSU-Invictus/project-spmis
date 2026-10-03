@@ -1060,22 +1060,22 @@
                     <a class="ui-btn ui-btn-secondary" href="students.html">Browse Student</a>
         </div>
         <div class="ui-chat-prompts" style="margin-bottom: 1.5rem; margin-top: 1.5rem;">
-          <button type="button" class="ui-chat-prompt-btn" data-prompt="Which students have research experience?">
+          <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have research experience?">
             <span>Research experience</span>
             <small>Explore faculty assessments</small>
-          </button>
-          <button type="button" class="ui-chat-prompt-btn" data-prompt="Which students show teamwork?">
+          </div>
+          <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students show teamwork?">
             <span>Teamwork</span>
             <small>Ask across student records</small>
-          </button>
-          <button type="button" class="ui-chat-prompt-btn" data-prompt="Find reviews mentioning communication.">
+          </div>
+          <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Find reviews mentioning communication.">
             <span>Communication</span>
             <small>Find relevant review excerpts</small>
-          </button>
-          <button type="button" class="ui-chat-prompt-btn" data-prompt="Which students have robotics experience?">
+          </div>
+          <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have robotics experience?">
             <span>Robotics</span>
             <small>Explore project experience</small>
-          </button>
+          </div>
         </div>
                 <div class="ui-chat-columns">
           <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start; min-height: 400px; max-height: 85vh;">
@@ -1163,7 +1163,7 @@
               Referenced record. Review conversations can synthesize evaluations across all enrolled students.
             </p>
   
-            <a class="ui-btn ui-btn-outline" href="student-detail.html?id=24-1-00001" style="width: 100%; justify-content: center; text-decoration: none; border-color: var(--border);">
+            <a class="ui-btn ui-btn-outline view-profile-btn" href="student-detail.html?id=24-1-00001" style="width: 100%; justify-content: center; text-decoration: none;">
               View Full Profile <span class="arrow">&rarr;</span>
             </a>
           </div>
@@ -1951,9 +1951,37 @@ const departments = [
           $("#chat-prompt").style.height = "auto";
           generate();
         };
-        $("#retry").onclick = () => {
-          if (!busy) generate();
-        };
+        if ($("#retry")) {
+          $("#retry").onclick = () => {
+            if (!busy) generate();
+          };
+        }
+        function sendCardPrompt(prompt) {
+          if (busy || !prompt) return;
+          lastPrompt = prompt;
+          message("You", prompt);
+          $("#chat-prompt").value = "";
+          $("#chat-prompt").style.height = "auto";
+          generate();
+        }
+        document.querySelectorAll(".ui-chat-prompt-card[data-prompt]").forEach((card) => {
+          card.onclick = (e) => {
+            e.preventDefault();
+            sendCardPrompt(card.dataset.prompt);
+          };
+          card.onkeydown = (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              sendCardPrompt(card.dataset.prompt);
+            }
+          };
+        });
+        document.addEventListener("click", (e) => {
+          const card = e.target.closest(".ui-chat-prompt-card[data-prompt]");
+          if (card && !busy) {
+            sendCardPrompt(card.dataset.prompt);
+          }
+        });
       }
       document
         .querySelectorAll("[data-close]")
@@ -2048,15 +2076,6 @@ const departments = [
                 "</div>",
             )
             .join("") || "<p>No pending applications.</p>";
-      }
-      if (page === "chat") {
-        document.querySelectorAll("[data-prompt]").forEach(
-          (b) =>
-            (b.onclick = () => {
-              document.getElementById("chat-prompt").value = b.dataset.prompt;
-              document.getElementById("chat-prompt").focus();
-            }),
-        );
       }
     </script>
     <script>
@@ -2155,6 +2174,7 @@ const departments = [
         }
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('form').forEach(f => {
+                if (f.id === 'chat-form') return;
                 f.addEventListener('submit', (e) => { e.preventDefault(); showSuccessToast('Successfully submitted!'); });
             });
             document.querySelectorAll('button').forEach(b => {
