@@ -29,7 +29,7 @@ Use the supplied reference as the default direction for admin and faculty dashbo
 ### Composition & Full-Screen Architecture
 
 - **Unified Full-Screen Viewport:** Both Admin and Faculty portals share the same full-screen layout (`100vw` × `100vh`).
-- **Terracotta Orange Outer Border:** Outer containers (`.app`, `.app-canvas`, `.dashboard-container`) are bordered with a 1px solid terracotta orange border (`border: 1px solid #D97251; box-sizing: border-box;`), giving both portals the exact same unified framing.
+- **Clean Borderless Framing:** Outer containers (`.app`, `.app-canvas`, `body`) use a clean borderless layout (`border: none; box-sizing: border-box;`) with no top or left terracotta orange borders.
 - **Zero Outer Scroll Policy:** Neither portal has an outer page, body, or window scrollbar (`overflow: hidden` on `body`, `.app`, and `main`). The layout fits completely within the screen (`100vh`), and any data-dense tables or logs scroll internally inside `.table-wrap`, `.ui-table-wrap`, or specific list containers.
 - **Docked Sidebar:** Fixed non-collapsible left navigation (`260px`, full `100%` height) with persistent navigation and user account actions.
 - **Fluid Main Content Workspace:** `main` fills the remaining width (`flex: 1; min-width: 0; height: 100%; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; padding: 16px 24px;`), allowing metrics, tables, and panels to span comfortably.
@@ -253,12 +253,29 @@ Unified, portal-agnostic semantic pill tags and status indicators used across ta
 <span class="ui-badge ui-badge--destructive">Removed / Deleted</span>
 <span class="ui-badge ui-badge--purple">Evaluation Review</span>
 
-<!-- 4. Domain & Competency Assessment Tags -->
+<!-- 4. Domain & Competency Assessment Tags (Uniform 1px border across all color variants) -->
 <span class="ui-badge ui-badge--purple">Research</span>
 <span class="ui-badge ui-badge--cyan">Algorithms</span>
 <span class="ui-badge ui-badge--amber">Leadership</span>
 <span class="ui-badge ui-badge--rose">Robotics</span>
 <span class="ui-badge ui-badge--neutral">General Academic</span>
+
+<!-- 5. Tag Cluster & Overflow Counter (+N) Pattern -->
+<!-- Limit visible tags to 1-2 in dense table rows; remaining tags expand via popover on hover or click -->
+<div class="ui-tags-cluster">
+  <span class="ui-badge ui-badge--purple">Research</span>
+  <span class="ui-badge ui-badge--cyan">Algorithms</span>
+  <div class="ui-tags-more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="2 more tags">
+    <span class="ui-badge ui-badge--neutral ui-tags-more-btn">+2</span>
+    <div class="ui-tags-popover" role="tooltip">
+      <div class="ui-tags-popover-title">Additional Tags (2)</div>
+      <div class="ui-tags-popover-list">
+        <span class="ui-badge ui-badge--amber">Leadership</span>
+        <span class="ui-badge ui-badge--rose">Robotics</span>
+      </div>
+    </div>
+  </div>
+</div>
 ```
 
 ---
@@ -317,6 +334,11 @@ Standard inputs, selects, textareas, and the unified Table Controls Toolbar patt
   </div>
 </div>
 ```
+
+#### Vertical Alignment Standard (.heading-wrapper & .controls-container):
+- **Page Heading Wrapper:** `.heading-wrapper` is strictly constrained to `min-height: 60px; height: 60px; display: flex; flex-direction: column; justify-content: center;`, guaranteeing the title block occupies the identical vertical height across all pages.
+- **Controls Toolbar Container:** `.controls-container` has a locked height of `52px` (`min-height: 52px; height: 52px; display: flex; align-items: center; padding: 0 !important; margin-left: 0;`), ensuring search bars, filter dropdowns, and add action buttons sit at the exact same vertical pixel position when switching between pages.
+- **Action Add Buttons:** Standardized to `height: 38px; min-height: 38px;` (`:is(.btn-add, .add-button, #addButton.ui-btn)`), matching the 38px height of search inputs and filter selects.
 
 ---
 
@@ -410,8 +432,15 @@ Data tables support clean typography profiles (no circular avatars), live row se
   <p style="margin: 0; font-size: 13px; font-weight: 600; color: var(--foreground);">No records matching your search or filters found.</p>
   <p style="margin: 4px 0 12px; font-size: 11px; color: var(--muted-foreground);">Try adjusting your query or resetting the active filters.</p>
   <button type="button" class="empty-state-btn">Clear all filters</button>
-</div>
 ```
+
+#### Specifications:
+- **Interactive Row Selection:** Clicking anywhere on a table row (excluding interactive links, buttons, or inputs) toggles the row's checkbox and applies the `.checked` highlight (`background-color: var(--muted)`).
+- **Select-All Checkbox States:**
+  - *All Rows Checked:* Header checkbox is `:checked:not(:indeterminate)` with solid terracotta background (`var(--primary, #D97251)`) and crisp white checkmark.
+  - *Partial Selection (Indeterminate):* Header checkbox is `:indeterminate` with neutral transparent background (`background-color: transparent`, `border-color: var(--border)`), preserving the crisp white checkmark (`::after`) without turning orange.
+  - *No Rows Checked:* Header checkbox is unchecked and empty.
+- **Mobile Responsiveness (<768px):** Table container enforces `overflow-x: auto` and `-webkit-overflow-scrolling: touch` with a minimum table width of 680px, preventing layout breakage on mobile screens.
 
 ---
 
@@ -431,8 +460,8 @@ Docked 260px navigation sidebar with active state highlights, user account card,
 
     <!-- Navigation Items List -->
     <nav class="nav" style="display: flex; flex-direction: column; gap: 4px;">
-      <!-- Active Navigation Item -->
-      <a href="dashboard.html" class="nav-btn-active" style="text-decoration: none; min-height: 42px; padding: 0 14px; border-radius: 16px; display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 700; background: #D97251 !important; color: #000000 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.2);" aria-current="page">
+      <!-- Active Navigation Item (40px locked height) -->
+      <a href="dashboard.html" class="nav-btn-active min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm" style="text-decoration: none; background: #D97251 !important; color: #000000 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.2);" aria-current="page">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: #000000;">
           <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/>
           <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/>
@@ -440,10 +469,10 @@ Docked 260px navigation sidebar with active state highlights, user account card,
         <span>Dashboard</span>
       </a>
 
-      <!-- Inactive Navigation Item -->
-      <a href="faculty.html" class="nav-btn-inactive" style="text-decoration: none; min-height: 40px; padding: 0 14px; border-radius: 14px; display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 600; color: #98938D; transition: all 150ms ease;">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: #98938D;">
-          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/>
+      <!-- Inactive Navigation Item (40px locked height) -->
+      <a href="faculty-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all" style="text-decoration: none; color: #98938D;">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;">
+          <rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14h6M9 18h6M9 10h.01"/>
         </svg>
         <span>Faculty Applications</span>
       </a>
@@ -451,7 +480,8 @@ Docked 260px navigation sidebar with active state highlights, user account card,
   </div>
 
   <!-- Docked User Account Card -->
-  <div style="margin-top: 1rem; border-top: 1px solid rgba(217, 114, 81, 0.35); padding-top: 10px;">
+  <div class="sidebar-footer">
+    <div class="sidebar-divider" style="border-bottom: 1px solid #42423F; margin-bottom: 10px;"></div>
     <div class="sidebar-account-card" style="display: flex; align-items: center; justify-content: space-between; padding: 0 14px; height: 58px; border-radius: 18px; background: #2B2A27; border: 1px solid #383734;">
       <div style="display: flex; align-items: center; gap: 10px;">
         <div class="sidebar-avatar" style="width: 34px; height: 34px; border-radius: 50%; background-color: #F7E2D6; color: #A35233; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px;">U</div>
@@ -471,54 +501,90 @@ Docked 260px navigation sidebar with active state highlights, user account card,
 
 #### Color and Behavior Standard:
 - **Sidebar Background:** `#1F1E1D` (RGB: 31, 30, 29) with `border-right: 1px solid #181716`.
-- **Active Navigation Item:** Primary terracotta background (`#D97251`), bold black text (`#000000`, `font-weight: 700`), black SVG icon (`color: #000000`), 16px border-radius, 42px min-height, and `box-shadow: 0 1px 3px rgba(0,0,0,0.2)`.
-- **Inactive Navigation Items:** Text and SVG icons styled in `#98938D`, 14px border-radius, 40px min-height. On hover: `background: rgba(255,255,255,0.05); color: #FFFFFF;`.
+- **Sidebar Divider Line:** `.sidebar-divider` above the user account card uses `#42423F` (`border-bottom: 1px solid #42423F !important;`), matching the exact divider color of the top header and bottom footer borders.
+- **Locked 40px Button Height:** Both active and inactive sidebar navigation buttons are strictly constrained to `min-height: 40px; height: 40px; max-height: 40px; border-radius: 16px;`. This guarantees that navigating between pages does not cause buttons to jump or shift vertically by 2px.
+- **Active Navigation Item:** Primary terracotta background (`#D97251`), bold black text (`#000000`, `font-weight: 700`), black SVG icon (`color: #000000`), 16px border-radius, 40px locked height, and `box-shadow: 0 1px 3px rgba(0,0,0,0.2)`.
+- **Inactive Navigation Items:** Text and SVG icons styled in `#98938D`, 16px border-radius, 40px locked height. On hover: `background: rgba(255,255,255,0.05); color: #FFFFFF;`.
 - **Persistent View Transitions:** Hardcoded static DOM structure combined with CSS declaration `view-transition-name: portal-sidebar;` prevents sidebar flickering and layout jumps when navigating between pages.
+- **Logout Confirmation Dialog:** Triggered by `.sidebar-logout-btn`. Implemented using a native `<dialog class="logout-dialog">` with title "Log out?", session confirmation prompt, an outline action button (`.ui-btn ui-btn-outline`) for the **Cancel** action, and primary button (`.ui-btn ui-btn-primary`) for the **Log out** action.
 
 ---
 
 ### 7. Portal Modals & Confirmation Dialogs
 
-Backdrop-blurred modals for application rejections, entity edits, and destructive logout confirmations.
+Backdrop-blurred modals for application rejections, entity approvals, edits, and destructive confirmations. Follows the **Standard Card** visual container specification for consistency across portals.
 
 ```html
+<!-- 1. Logout Confirmation Dialog -->
+<dialog class="logout-dialog">
+  <form method="dialog">
+    <h2>Log out?</h2>
+    <p>Are you sure you want to end your current session?</p>
+    <div class="actions">
+      <button type="submit" value="cancel" class="ui-btn ui-btn-outline">Cancel</button>
+      <button type="submit" value="confirm" class="ui-btn ui-btn-primary">Log out</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 2. Application Action Modal (Standard Card Specification) -->
 <!-- Modal Overlay Backdrop & Container -->
 <div class="modal-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000;">
   
-  <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="background: #444746; border: 1px solid #D97251; border-radius: 15px; padding: 20px 24px; max-width: 480px; width: 90%; box-shadow: 0 12px 32px rgba(0,0,0,0.3); color: #fff;">
+  <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="background: var(--card, #21201E); border: 1px solid var(--border, #3E3D39); border-radius: var(--radius-lg, 16px); padding: 24px 28px; max-width: 480px; width: 90%; box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6); color: var(--foreground, #FFFFFF);">
     
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-      <h4 id="modal-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #fff;">Reject Application Proposal</h4>
-      <button type="button" class="modal-close-btn" aria-label="Close modal" style="background: transparent; border: none; color: #fff; font-size: 18px; cursor: pointer; opacity: 0.7;">&times;</button>
+      <h4 id="modal-title" style="margin: 0; font-size: 18px; font-weight: 700; color: #FFFFFF; font-family: var(--font-sans, 'Outfit');">Reject Application Proposal</h4>
+      <button type="button" class="modal-close-btn" aria-label="Close modal" style="background: transparent; border: none; color: #FFFFFF; font-size: 18px; cursor: pointer; opacity: 0.7;">&times;</button>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 12px;">
+    <!-- Accidental Action Safeguard Banner -->
+    <div class="ui-alert ui-alert--warning" role="alert" style="margin-bottom: 16px;">
+      <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <div class="ui-alert-content">
+        <span class="ui-alert-title">Confirm Rejection Decision</span>
+        <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+      </div>
+    </div>
+
+    <form class="modal-form" style="display: flex; flex-direction: column; gap: 14px;">
       <div>
-        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #fff;">Selected Application</label>
-        <div style="padding: 8px 12px; background: var(--muted); border: 1px solid var(--input); border-radius: 10px; font-size: 13px; color: #fff;">
+        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: #FFFFFF;">Selected Application</label>
+        <div style="padding: 10px 14px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: var(--radius-md, 10px); font-size: 13px; color: #FFFFFF;">
           Dr. Eleanor Vance (Faculty Application)
         </div>
       </div>
 
       <div>
-        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #fff;">Reason for Rejection</label>
-        <textarea style="width: 100%; min-height: 70px; padding: 8px 12px; background: var(--muted); border: 1px solid var(--input); border-radius: 10px; font-size: 12px; color: var(--foreground); box-sizing: border-box; outline: none;" placeholder="Provide justification for proposal rejection..."></textarea>
+        <label style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: #FFFFFF;">
+          <span>Reason for rejection <span style="color: var(--destructive); font-weight: 700;">*</span></span>
+          <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
+        </label>
+        <textarea required style="width: 100%; min-height: 90px; max-height: 260px; resize: vertical; padding: 10px 14px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: var(--radius-md, 10px); font-size: 13px; color: var(--foreground, #FFFFFF); box-sizing: border-box; outline: none; line-height: 1.5;" placeholder="Provide specific justification or deficiency details for rejection..."></textarea>
       </div>
 
-      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
-        <button type="button" class="ui-btn ui-btn-outline" style="height: 36px; font-size: 13px;">Cancel</button>
-        <button type="button" class="modal-submit" style="height: 36px; font-size: 13px; background: #D97251; color: #000000; font-weight: 700; border: none; border-radius: 10px; padding: 0 16px; cursor: pointer;">Confirm Rejection</button>
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px;">
+        <button type="button" class="ui-btn ui-btn-outline" style="height: 42px; font-size: 13px; border-radius: var(--radius-md, 10px); padding: 0 18px;">Cancel</button>
+        <button type="submit" class="modal-submit" style="height: 42px; font-size: 13px; background: var(--primary, #D97251); color: #000000; font-weight: 700; border: none; border-radius: var(--radius-md, 10px); padding: 0 20px; cursor: pointer;">Confirm Rejection</button>
       </div>
-    </div>
+    </form>
 
   </div>
 </div>
 ```
 
 #### Behavioral & Accessibility Contract:
-- **Escape Key Dismissal:** Pressing `Esc` immediately closes active modals without executing destructive mutations.
-- **Backdrop Click:** Clicking the darkened background outside `.modal-container` safely dismisses the modal.
-- **Surface Specifications:** Background is warm charcoal `#444746`, border is terracotta `#D97251`, and radius is 15px.
+- **Surface Specifications (Standard Card):** Modals follow the Standard Card spec (`background: var(--card, #21201E)`, `border: 1px solid var(--border, #3E3D39)`, border-radius `var(--radius-lg, 16px)`, elevated shadow `0 20px 48px -10px rgba(0, 0, 0, 0.6)`). Out-of-place lighter grey backgrounds and terracotta outer borders are strictly forbidden.
+- **Uniform Form Controls:** Input fields, dropdowns, and textareas use standard form control styling with a thin lighter-shade border (`border: 1px solid var(--input, #43362B)`), muted background (`var(--muted, #21201E)`), and 10px border radius.
+- **Expandable Long Inputs:** Rejection reason textareas support manual vertical expansion (`resize: vertical; min-height: 90px`) and dynamic auto-expansion on keystroke (`scrollHeight` constrained up to 260px) to comfortably cater to long explanations.
+- **Mandatory Rejection Reason:** "Reason for rejection" is marked mandatory with an asterisk (`*`), has the HTML `required` attribute, and client-side validation enforces non-empty input before confirming submission.
+- **Primary Action Color:** "Confirm Rejection" uses the primary CTA color (`background: var(--primary, #D97251)`, black text `#000000`, `font-weight: 700`, `border-radius: var(--radius-md, 10px)`).
+- **Accidental Click Prevention Safeguard:** All actionable modals include an action confirmation banner (`.ui-alert--warning` for rejections, `.ui-alert--info` for approvals) explicitly summarizing the irreversible decision and requiring affirmative user confirmation before mutation.
+- **Escape Key & Backdrop Dismissal:** Pressing `Esc` or clicking the darkened backdrop safely dismisses the modal without triggering actions. Scroll lock (`document.body.style.overflow = 'hidden'`) is enforced while modals are open.
 
 ---
 
@@ -528,10 +594,10 @@ Two-column conversational workspace designed for faculty student review evaluati
 
 ```html
 <div class="ui-chat-prompts">
-  <button type="button" class="ui-chat-prompt-btn" data-prompt="...">
+  <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have research experience?">
     <span>Research experience</span>
-    <small>Explore faculty assessments &rarr;</small>
-  </button>
+    <small>Explore faculty assessments</small>
+  </div>
 </div>
 
 <!-- Two-Column Chat Workspace -->
@@ -602,10 +668,16 @@ Two-column conversational workspace designed for faculty student review evaluati
       <span class="ui-chat-context-dd">Good Standing</span>
     </div>
     
-    <a href="#" class="ui-btn ui-btn-outline" style="width: 100%; justify-content: center;">View Full Profile</a>
+    <a href="#" class="ui-btn ui-btn-outline view-profile-btn" style="width: 100%; justify-content: center;">
+      View Full Profile <span class="arrow">&rarr;</span>
+    </a>
   </div>
 </div>
 ```
+
+- **Interactive Topic Cards (`.ui-chat-prompt-card`):** Formatted with `var(--card)` background, `var(--border)` border, and `cursor: pointer`. On hover, features an interactive terracotta orange border (`var(--primary, #D97251)`), subtle warm background tint (`color-mix(in srgb, var(--primary) 8%, var(--card))`), -2px vertical lift, and soft elevation shadow (`0 4px 14px rgba(0, 0, 0, 0.25)`). Clicking or activating via keyboard (`Enter` / `Space`) automatically dispatches the prompt into the conversation and triggers automated AI response generation.
+- **View Full Profile Action Button (`.view-profile-btn` / `.ui-chat-context-card .ui-btn-outline`):** Features neutral outline styling at rest and smoothly transitions its text, border, and animated trailing arrow (`&rarr;`) to terracotta orange (`var(--primary, #D97251)`) on hover.
+
 
 ---
 
@@ -682,17 +754,18 @@ Unified layout primitives anchoring the full-screen portal viewport: the persist
   <span style="font-size: 13px; font-weight: 500; color: #FAF9F5;">Record updated successfully</span>
 </div>
 
-<!-- 3. Pinned Viewport Workspace Footer (.workspace-footer) -->
-<footer class="workspace-footer" style="flex: none !important; height: auto !important; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #42423F; font-size: 11px; color: #9C948B; background: #141413;">
-  <span>&copy; 2026 Academic Management System. All rights reserved.</span>
-  <span>System Version 2.4.0 &middot; AY 2026-2027</span>
+<!-- 3. Pinned Viewport Workspace Footer (.admin-footer / .workspace-footer) -->
+<footer class="admin-footer" style="flex: none !important; height: auto !important; margin-top: auto; padding-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #42423F; font-size: 11px; color: #A0988E; width: 100%; background: transparent;">
+  <span>&copy; 2026 Admin Portal. All rights reserved.</span>
+  <span>System Version 2.4.0</span>
 </footer>
 ```
 
 #### Workspace Frame Architecture:
-- **Top Header Bar:** Anchored at the top of the main content column. The terracotta dot anchors the workspace context while the pulsing green indicator confirms live operational health.
+- **Top Header Bar (`.admin-top-header`):** Anchored at the top of `<main class="section-container">`. Uses `border-bottom: 1px solid #42423F`, an uppercase contextual breadcrumb with a terracotta dot (`#D97251`), and a pulsing green indicator confirming live system status (`#10B981`).
 - **Floating Toast System:** Fixed bottom-right notification element with subtle blur, auto-dismissing after 3 seconds, accessible via `aria-live="polite"`.
-- **Pinned Workspace Footer:** Uses `flex: none` inside the outer vertical flex column, ensuring it stays neatly pinned at the bottom of the viewport without pushing the page into outer scrolling.
+- **Pinned Workspace Footer (`.admin-footer`):** Placed directly at the end of `<main class="section-container">` with `margin-top: auto` and `border-top: 1px solid #42423F`. Because `.section-container` is styled with `display: flex; flex-direction: column; justify-content: space-between; height: 100%; overflow-y: auto;`, the footer stays neatly pinned at the bottom of the viewport without pushing the page into outer window scrolling or overflowing off-screen.
+- **Divider Color Uniformity:** The top header bottom border, bottom footer top border, and sidebar user card divider (`.sidebar-divider`) all strictly use `#42423F`, eliminating misplaced orange lines and creating a cohesive horizontal rhythm across the interface.
 
 ---
 
@@ -708,7 +781,7 @@ For any standalone page under `mockup/pages/`, include the stylesheets in the `<
 ### Rules of Engagement
 
 1. **Never use ad hoc hex color literals** in page markup or inline styles. Always reference `var(--...)` custom properties or documented tokens.
-2. **Preserve full-screen framing:** The outer container must be bordered with `1px solid #D97251` and never produce outer viewport scrollbars (`overflow: hidden` on viewport roots).
+2. **Preserve full-screen framing:** The outer container must be borderless (`border: none`) and never produce outer viewport scrollbars (`overflow: hidden` on viewport roots).
 3. **Primary Action Consistency:** All primary Add buttons (`.add-button`) must use the terracotta background (`#D97251`), bold black text (`#000000`, `font-weight: 700`), 38px height, and the standard SVG plus icon.
 4. **Sidebar Palette Conformity:** Docked sidebars must use `#1F1E1D` background with `#181716` right border, terracotta `#D97251` active navigation items with `#000000` text/icon, and `#98938D` inactive items with `rgba(255,255,255,0.05)` hover background.
 5. **Zero-Blink Transitions:** Include `view-transition-name: portal-sidebar;` on persistent layout elements and leverage link hover prefetching.
