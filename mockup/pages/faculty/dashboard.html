@@ -946,6 +946,21 @@
       font-size: 12px;
       text-decoration: none;
       white-space: nowrap;
+      color: var(--foreground) !important;
+      transition: color 150ms ease;
+    }
+
+    .dashboard-layout .between a:hover {
+      color: var(--primary) !important;
+    }
+
+    .dashboard-layout .between a .arrow {
+      display: inline-block;
+      transition: transform 0.25s ease;
+    }
+
+    .dashboard-layout .between a:hover .arrow {
+      transform: translateX(4px);
     }
 
     
@@ -1297,7 +1312,7 @@
         <section class="ui-card">
           <div class="between">
             <h2>Your pending applications</h2>
-            <a href="applications.html">View all applications <span class="arrow">&rarr;</span></a>
+            <a href="applications.html" class="ui-link-neutral">View all applications <span class="arrow">&rarr;</span></a>
           </div>
           <div id="pending-applications"></div>
         </section>

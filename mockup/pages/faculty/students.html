@@ -1603,6 +1603,55 @@ const programs = [
             "Business Administration"
         ];
         const getColor = (t) => ({ research: "purple", robotics: "rose", teamwork: "amber", communication: "cyan", algorithms: "cyan", leadership: "amber" }[t.toLowerCase()] || "neutral");
+        function renderTagsCluster(tags) {
+            if (!tags || tags.length === 0) {
+                return '<span class="ui-badge ui-badge--neutral">No active reviews</span>';
+            }
+            if (tags.length <= 2) {
+                return `<div class="ui-tags-cluster">${tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div>`;
+            }
+            const visibleTags = tags.slice(0, 2);
+            const hiddenTags = tags.slice(2);
+            return `<div class="ui-tags-cluster">
+                ${visibleTags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}
+                <div class="ui-tags-more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="${hiddenTags.length} more tags: ${hiddenTags.map(esc).join(', ')}">
+                    <span class="ui-badge ui-badge--neutral ui-tags-more-btn">+${hiddenTags.length}</span>
+                    <div class="ui-tags-popover" role="tooltip">
+                        <div class="ui-tags-popover-title">More Tags (+${hiddenTags.length})</div>
+                        <div class="ui-tags-popover-list">
+                            ${hiddenTags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+        document.addEventListener("click", (e) => {
+            const moreBtn = e.target.closest(".ui-tags-more");
+            document.querySelectorAll(".ui-tags-more.is-open").forEach((el) => {
+                if (el !== moreBtn) {
+                    el.classList.remove("is-open");
+                    el.setAttribute("aria-expanded", "false");
+                }
+            });
+            if (moreBtn) {
+                e.stopPropagation();
+                const isOpen = moreBtn.classList.toggle("is-open");
+                moreBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            }
+        });
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                document.querySelectorAll(".ui-tags-more.is-open").forEach((el) => {
+                    el.classList.remove("is-open");
+                    el.setAttribute("aria-expanded", "false");
+                });
+            }
+            if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("ui-tags-more")) {
+                e.preventDefault();
+                const isOpen = e.target.classList.toggle("is-open");
+                e.target.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            }
+        });
         const full = (s) =>
             `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
         const badge = (s) => `<span class="ui-badge ui-badge--${s === 'approved' ? 'success' : s === 'pending' ? 'warning' : s === 'rejected' ? 'destructive' : 'neutral'}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
@@ -1699,8 +1748,10 @@ const programs = [
                     ? `<div class="table-wrap"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th>Action</th></tr></thead><tbody>${matches
                         .slice((current - 1) * size, current * size)
                         .map(
-                            (s) =>
-                                `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}" class="ui-link-neutral">${esc(full(s))}</a></td><td>${s.program}</td><td style="color: var(--primary); font-weight: 500;">${[...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))].map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ") || '<span class="ui-badge ui-badge--neutral">No active reviews</span>'}</td><td><a href="new-review.html?id=${s.id}" class="ui-link-neutral">Write review <span class="arrow">&rarr;</span></a></td></tr>`,
+                            (s) => {
+                                const studentTags = [...new Set(state.reviews.filter((r) => r.student === s.id && r.status === "active").flatMap((r) => r.tags))];
+                                return `<tr><td>${s.id}</td><td><a href="student-detail.html?id=${s.id}" class="ui-link-neutral">${esc(full(s))}</a></td><td>${s.program}</td><td style="color: var(--primary); font-weight: 500;">${renderTagsCluster(studentTags)}</td><td><a href="new-review.html?id=${s.id}" class="ui-link-neutral">Write review <span class="arrow">&rarr;</span></a></td></tr>`;
+                            }
                         )
                         .join("")}</tbody></table></div>`
                     : '<div class="ui-card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
