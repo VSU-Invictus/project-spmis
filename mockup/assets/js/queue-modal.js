@@ -166,6 +166,15 @@
       });
     });
 
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const expanded = document.querySelector('.queue-rejection-row.is-expanded');
+      if (expanded) {
+        event.preventDefault();
+        expanded.classList.remove('is-expanded');
+      }
+    });
+
     document.addEventListener('click', (event) => {
       const close = event.target.closest('.queue-rejection-row .modal-cancel');
       if (close) close.closest('.queue-rejection-row')?.classList.remove('is-expanded');
