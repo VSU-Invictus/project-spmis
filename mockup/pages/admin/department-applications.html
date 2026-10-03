@@ -598,30 +598,7 @@
     
     <!-- Toast Notification -->
     <div id="toast" class="toast">Notification</div>
-
-    <!-- Reject Modal -->
-    <div class="modal-overlay" id="rejectModal">
-      <div class="modal-container">
-        <button class="modal-close" id="closeReject">
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-            <path d="M1 13L13 1M1 1L13 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <h3 class="modal-title">Reject Application</h3>
-        <form class="modal-form" id="rejectForm">
-          <div class="modal-select-wrapper" style="margin-bottom: 8px;">
-            <label>Application:</label>
-            <select id="rejectAppSelect" style="width: 100%; height: 40px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 12px; font-family: var(--font-sans); font-size: 14px; color: var(--foreground, #FFFFFF); padding: 0 10px; outline: none;"></select>
-          </div>
-          <div>
-            <label>Reason for rejection:</label>
-            <textarea placeholder="Enter reason here..." id="rejectReason"></textarea>
-          </div>
-          <button type="submit" class="modal-submit">Confirm Rejection</button>
-        </form>
-      </div>
-    </div>
-    
+    <!-- Shared queue behavior is provided by queue-modal.js. -->
     <!-- Admin Sidebar Component -->
     <iframe src="../../components/navigation/sidebar-admin.html" class="sidebar-frame" title="Admin Sidebar"></iframe>
 
@@ -823,114 +800,7 @@
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
       }
-
-      const rejectModal = document.getElementById('rejectModal');
-      const rejectForm = document.getElementById('rejectForm');
-      const closeReject = document.getElementById('closeReject');
-
-      function openModal(modal) { if (modal) modal.classList.add('active'); }
-      function closeModal(modal) { if (modal) modal.classList.remove('active'); }
-
-      if (closeReject) closeReject.addEventListener('click', () => closeModal(rejectModal));
-      if (rejectModal) {
-        rejectModal.addEventListener('click', e => {
-          if (e.target === rejectModal) closeModal(rejectModal);
-        });
-      }
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeModal(rejectModal);
-      });
-
-      let rejectReasons = {};
-      let currentAppId = null;
-
-      const rejectAppSelect = document.getElementById('rejectAppSelect');
-      const rejectReason = document.getElementById('rejectReason');
-
-      if (rejectAppSelect && rejectReason) {
-        rejectAppSelect.addEventListener('change', (e) => {
-          if (currentAppId) {
-            rejectReasons[currentAppId] = rejectReason.value;
-          }
-          currentAppId = e.target.value;
-          rejectReason.value = rejectReasons[currentAppId] || '';
-        });
-      }
-
-      if (rejectForm) {
-        rejectForm.addEventListener('submit', e => {
-          e.preventDefault();
-          if (currentAppId) {
-            rejectReasons[currentAppId] = rejectReason.value;
-          }
-
-          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
-          let allFilled = true;
-          checked.forEach((cb) => {
-            const id = cb.dataset.appId;
-            if (!rejectReasons[id] || rejectReasons[id].trim() === '') {
-              allFilled = false;
-            }
-          });
-
-          if (!allFilled) {
-            showToast('Please provide a reason for all selected applications');
-            return;
-          }
-
-          closeModal(rejectModal);
-          window.setTimeout(() => showToast('Applications Rejected Successfully'), 120);
-        });
-      }
-
-      const acceptBtn = document.querySelector('.pill-btn.accept');
-      const rejectBtn = document.querySelector('.pill-btn.reject');
-
-      if (acceptBtn) {
-        acceptBtn.addEventListener('click', () => {
-          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
-          if (checked.length > 0) {
-            showToast('Application Approved');
-          } else {
-            showToast('Please select at least one application');
-          }
-        });
-      }
-
-      if (rejectBtn) {
-        rejectBtn.addEventListener('click', () => {
-          const checked = document.querySelectorAll('.table-body .custom-checkbox:checked');
-          if (checked.length > 0) {
-            rejectReasons = {};
-            if (rejectAppSelect) rejectAppSelect.innerHTML = '';
-            
-            checked.forEach((cb, index) => {
-              const row = cb.closest('.table-row');
-              const nameEl = row.querySelector('.col-name') || row.querySelector('.col-program');
-              const name = nameEl ? nameEl.textContent.trim() : 'Application ' + (index + 1);
-              const id = 'app_' + index;
-              cb.dataset.appId = id;
-              
-              if (rejectAppSelect) {
-                const option = document.createElement('option');
-                option.value = id;
-                option.textContent = name;
-                rejectAppSelect.appendChild(option);
-              }
-            });
-
-            if (rejectAppSelect) {
-              currentAppId = rejectAppSelect.value;
-            }
-            if (rejectReason) {
-              rejectReason.value = '';
-            }
-            openModal(rejectModal);
-          } else {
-            showToast('Please select at least one application');
-          }
-        });
-      }
+      // Inline rejection is handled by the shared queue-modal.js behavior.
     </script>
   </div>
 </body>
