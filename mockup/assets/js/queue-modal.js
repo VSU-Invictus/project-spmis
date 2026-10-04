@@ -186,10 +186,10 @@
       return row?.nextElementSibling;
     }
     const rejection = document.createElement('div');
-    rejection.className = 'queue-rejection-row';
+    rejection.className = 'table-row queue-rejection-row';
     rejection.setAttribute('role', 'row');
     rejection.innerHTML = `
-      <div class="queue-rejection-cell" role="cell">
+      <div class="td-cell queue-rejection-cell" role="cell" colspan="5" aria-colspan="5">
         ${count > 1 ? `<p>This reason will be sent to all ${count} submitters.</p>` : ''}
         <label for="queue-rejection-${Math.random().toString(36).slice(2)}">Reason for rejection</label>
         <textarea placeholder="Enter reason here..." required></textarea>
