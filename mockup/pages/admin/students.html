@@ -488,6 +488,7 @@
       background: #2a2a2a;
     }
 
+    #toast { display: none !important; }
     .toast {
       position: fixed;
       top: 22px;
@@ -924,217 +925,29 @@
     }
 
     function showToast(message) {
-      if (!toast) return;
-      toast.textContent = message;
-      toast.classList.add('show');
-      window.setTimeout(() => toast.classList.remove('show'), 2200);
-    }
-
-    function filterRows() {
-      if (!tableBody) return;
-      const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-      const program = programFilter ? programFilter.value : 'all';
-      let visibleCount = 0;
-
-      [...tableBody.querySelectorAll('tr')].forEach(row => {
-        if (row.classList.contains('skeleton-row')) return;
-        const matchesText =
-          (row.dataset.id || '').toLowerCase().includes(query) ||
-          (row.dataset.fname || '').toLowerCase().includes(query) ||
-          (row.dataset.mname || '').toLowerCase().includes(query) ||
-          (row.dataset.lname || '').toLowerCase().includes(query);
-
-        const matchesProgram =
-          program === 'all' || (row.dataset.program || '').trim().toLowerCase() === program.trim().toLowerCase();
-
-        const visible = matchesText && matchesProgram;
-        row.style.display = visible ? '' : 'none';
-        if (visible) visibleCount++;
-      });
-
-      if (emptyState) emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-    }
-
-    // Add Student button
-    const addButton = document.getElementById('addButton');
-    if (addButton) {
-      addButton.addEventListener('click', () => {
-        mode = 'create';
-        selectedRow = null;
-        studentModalTitle.textContent = 'Create Student';
-        studentId.value = '';
-        studentFname.value = '';
-        studentMname.value = '';
-        studentLname.value = '';
-        studentProgram.selectedIndex = 0;
-        openModal(studentModal);
-      });
-    }
-
-    // Edit / Remove via delegation
-    if (tableBody) {
-      tableBody.addEventListener('click', event => {
-        const row = event.target.closest('tr');
-        if (!row) return;
-
-        if (event.target.classList.contains('edit-btn') || event.target.classList.contains('edit')) {
-          mode = 'edit';
-          selectedRow = row;
-          studentModalTitle.textContent = 'Edit Student';
-          const cells = row.querySelectorAll('td');
-          studentId.value = cells[0].textContent.trim();
-          studentFname.value = cells[1].textContent.trim();
-          studentMname.value = cells[2].textContent.trim();
-          studentLname.value = cells[3].textContent.trim();
-          studentProgram.value = cells[4].textContent.trim();
-          openModal(studentModal);
+        if (typeof showSuccessToast === 'function') {
+          showSuccessToast(message);
+          return;
         }
-
-        if (event.target.classList.contains('remove-btn') || event.target.classList.contains('remove')) {
-          selectedRow = row;
-          openModal(removeModal);
+        const globalToast = document.getElementById('global-success-toast');
+        const msgEl = document.getElementById('toast-message');
+        if (globalToast && msgEl) {
+          msgEl.textContent = message || 'Action successful!';
+          globalToast.classList.add('show');
+          setTimeout(() => globalToast.classList.remove('show'), 3000);
+          return;
         }
-      });
-    }
-
-    // Submit student form
-    if (studentForm) {
-      studentForm.addEventListener('submit', event => {
-        event.preventDefault();
-
-        const id = studentId.value.trim();
-        const fname = studentFname.value.trim();
-        const mname = studentMname.value.trim();
-        const lname = studentLname.value.trim();
-        const program = studentProgram.value;
-
-        if (mode === 'edit' && selectedRow) {
-          selectedRow.dataset.id = id;
-          selectedRow.dataset.fname = fname.toLowerCase();
-          selectedRow.dataset.mname = mname.toLowerCase();
-          selectedRow.dataset.lname = lname.toLowerCase();
-          selectedRow.dataset.program = program;
-
-          const cells = selectedRow.querySelectorAll('td');
-          cells[0].textContent = id;
-          cells[1].textContent = fname;
-          cells[2].textContent = mname;
-          cells[3].textContent = lname;
-          cells[4].textContent = program;
-
-          closeModal(studentModal);
-          window.setTimeout(() => showToast('Student Updated Successfully'), 120);
-        } else if (tableBody) {
-          const row = document.createElement('tr');
-          
-          row.dataset.id = id;
-          row.dataset.fname = fname.toLowerCase();
-          row.dataset.mname = mname.toLowerCase();
-          row.dataset.lname = lname.toLowerCase();
-          row.dataset.program = program;
-
-          row.innerHTML = `
-            <td style="text-align: left;">` + id + `</td>
-            <td style="text-align: left;">` + fname + `</td>
-            <td style="text-align: left;">` + mname + `</td>
-            <td style="text-align: left;">` + lname + `</td>
-            <td style="text-align: left;">` + program + `</td>
-            <td style="text-align: right;">
-              <div class="action-group">
-                <button class="pill-btn edit-btn" type="button">Edit</button>
-                <button class="pill-btn remove-btn" type="button">Remove</button>
-              </div>
-            </td>`;
-          tableBody.prepend(row);
-          closeModal(studentModal);
-          window.setTimeout(() => showToast('Student Created Successfully'), 120);
-        }
-
-        if (typeof adminTable !== 'undefined' && adminTable) adminTable.reload();
-        else filterRows();
-      });
-    }
-
-    // Confirm remove
-    const confirmRemove = document.getElementById('confirmRemove');
-    if (confirmRemove) {
-      confirmRemove.addEventListener('click', () => {
-        if (!selectedRow) return;
-        selectedRow.remove();
-        selectedRow = null;
-        closeModal(removeModal);
-        window.setTimeout(() => showToast('Student Removed Successfully'), 120);
-        if (typeof adminTable !== 'undefined' && adminTable) adminTable.reload();
-        else filterRows();
-      });
-    }
-
-    // Cancel remove
-    const cancelRemove = document.getElementById('cancelRemove');
-    if (cancelRemove) cancelRemove.addEventListener('click', () => closeModal(removeModal));
-
-    // Close buttons
-    const closeStudent = document.getElementById('closeStudent');
-    if (closeStudent) closeStudent.addEventListener('click', () => closeModal(studentModal));
-    const closeRemove = document.getElementById('closeRemove');
-    if (closeRemove) closeRemove.addEventListener('click', () => closeModal(removeModal));
-    
-    // Table controller for skeleton loading, dynamic pagination, and filter
-    const adminTable = window.initAdminTable({
-      tableBody: '#tableBody',
-      searchInput: '#searchInput',
-      filterElements: ['#programFilter'],
-      emptyState: '#emptyState',
-      rowsPerPage: '.ui-select-pill',
-      prevBtn: '.ui-table-page-btn:first-of-type',
-      nextBtn: '.ui-table-page-btn:last-of-type',
-      entityName: 'students',
-      searchFields: (row, query) => {
-        return (row.dataset.id || '').toLowerCase().includes(query) ||
-               (row.dataset.fname || '').toLowerCase().includes(query) ||
-               (row.dataset.mname || '').toLowerCase().includes(query) ||
-               (row.dataset.lname || '').toLowerCase().includes(query);
-      },
-      filterMatches: (row) => {
-        const program = programFilter ? programFilter.value : 'all';
-        return program === 'all' || (row.dataset.program || '').trim().toLowerCase() === program.trim().toLowerCase();
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
       }
-    });
-
-    // Click outside modal to close
-    [studentModal, removeModal].filter(Boolean).forEach(modal => {
-      modal.addEventListener('click', event => {
-        if (event.target === modal) closeModal(modal);
-      });
-    });
-
-    // Escape key to close
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        closeModal(studentModal);
-        closeModal(removeModal);
-      }
-    });
-  </script>
-
-  <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        <span id="toast-message">Action successful!</span>
-    </div>
-    <script>
-        function showSuccessToast(message) {
-            const toast = document.getElementById('global-success-toast');
-            const msgEl = document.getElementById('toast-message');
-            if(toast && msgEl) {
-                msgEl.textContent = message || 'Action successful!';
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-            }
         }
         
         // Auto-wire forms and add buttons for the mockup
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('form').forEach(f => {
+                if (f.id === 'acceptForm' || f.id === 'rejectForm' || f.closest('#acceptModal, #rejectModal')) return; // specific toast handled by page script
                 f.addEventListener('submit', (e) => {
                     e.preventDefault();
                     showSuccessToast('Successfully submitted!');
@@ -1143,6 +956,7 @@
             
             // For admin tables or faculty modals
             document.querySelectorAll('button').forEach(b => {
+                if (b.closest('#acceptModal, #rejectModal')) return;
                 if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
                     b.addEventListener('click', (e) => {
                         if(b.type !== 'submit') {

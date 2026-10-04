@@ -487,6 +487,7 @@
       background: #2a2a2a;
     }
 
+    #toast { display: none !important; }
     .toast {
       position: fixed;
       top: 22px;
@@ -879,155 +880,29 @@
       }
 
       function showToast(message) {
+        if (typeof showSuccessToast === 'function') {
+          showSuccessToast(message);
+          return;
+        }
+        const globalToast = document.getElementById('global-success-toast');
+        const msgEl = document.getElementById('toast-message');
+        if (globalToast && msgEl) {
+          msgEl.textContent = message || 'Action successful!';
+          globalToast.classList.add('show');
+          setTimeout(() => globalToast.classList.remove('show'), 3000);
+          return;
+        }
+        if (!toast) return;
         toast.textContent = message;
         toast.classList.add('show');
-        window.setTimeout(() => toast.classList.remove('show'), 2200);
+        setTimeout(() => toast.classList.remove('show'), 3000);
       }
-
-      function filterRows() {
-        const query = searchInput.value.trim().toLowerCase();
-        const status = statusFilter.value;
-        let visibleCount = 0;
-
-        [...tableBody.rows].forEach(row => {
-          const visible =
-            row.dataset.name.includes(query) &&
-            (status === 'all' || row.dataset.status === status);
-
-          row.style.display = visible ? '' : 'none';
-          if (visible) visibleCount++;
-        });
-
-        emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
-      }
-
-      document.getElementById('addButton').addEventListener('click', () => {
-        mode = 'create';
-        selectedRow = null;
-        entityModalTitle.textContent = 'Create Program';
-        entityName.value = '';
-        openModal(entityModal);
-      });
-
-      tableBody.addEventListener('click', event => {
-        const row = event.target.closest('tr');
-        if (!row) return;
-
-        if (event.target.classList.contains('edit-btn')) {
-          mode = 'edit';
-          selectedRow = row;
-          entityModalTitle.textContent = 'Edit Program';
-          entityName.value = row.children[0].textContent.trim();
-          openModal(entityModal);
-        }
-
-        if (event.target.classList.contains('remove-btn')) {
-          selectedRow = row;
-          openModal(removeModal);
-        }
-      });
-
-      entityForm.addEventListener('submit', event => {
-        event.preventDefault();
-        const value = entityName.value.trim();
-        if (!value) return;
-
-        if (mode === 'edit' && selectedRow) {
-          selectedRow.children[0].textContent = value;
-          selectedRow.dataset.name = value.toLowerCase();
-          closeModal(entityModal);
-          window.setTimeout(() => showToast('Program Updated Successfully'), 120);
-        } else {
-          const row = document.createElement('tr');
-          row.dataset.name = value.toLowerCase();
-          row.dataset.status = 'approved';
-          row.innerHTML = `
-            <td>${value}</td>
-            <td class="text-center"><span class="ui-badge ui-badge--success">Approved</span></td>
-            <td class="text-right">
-              <div class="action-group">
-                <button class="pill-btn edit-btn" type="button">Edit</button>
-                <button class="pill-btn remove-btn" type="button">Remove</button>
-              </div>
-            </td>`;
-          tableBody.prepend(row);
-          closeModal(entityModal);
-          window.setTimeout(() => showToast('Program Created Successfully'), 120);
-        }
-
-        if (typeof adminTable !== 'undefined' && adminTable) adminTable.reload();
-        else filterRows();
-      });
-
-      document.getElementById('confirmRemove').addEventListener('click', () => {
-        if (!selectedRow) return;
-        selectedRow.remove();
-        selectedRow = null;
-        closeModal(removeModal);
-        window.setTimeout(() => showToast('Program Removed Successfully'), 120);
-        if (typeof adminTable !== 'undefined' && adminTable) adminTable.reload();
-        else filterRows();
-      });
-
-      document.getElementById('cancelRemove').addEventListener('click', () => closeModal(removeModal));
-
-      document.getElementById('closeEntity').addEventListener('click', () => closeModal(entityModal));
-      document.getElementById('closeRemove').addEventListener('click', () => closeModal(removeModal));
-      
-      const adminTable = window.initAdminTable({
-        tableBody: '#tableBody',
-        searchInput: '#searchInput',
-        filterElements: ['#statusFilter'],
-        emptyState: '#emptyState',
-        rowsPerPage: '.ui-select-pill',
-        prevBtn: '.ui-table-page-btn:first-of-type',
-        nextBtn: '.ui-table-page-btn:last-of-type',
-        entityName: 'programs',
-        searchFields: (row, query) => {
-          return (row.dataset.name || '').toLowerCase().includes(query) ||
-                 (row.dataset.dept || '').toLowerCase().includes(query);
-        },
-        filterMatches: (row) => {
-          const status = statusFilter ? statusFilter.value : 'all';
-          return status === 'all' || (row.dataset.status || '').toLowerCase() === status.toLowerCase();
-        }
-      });
-
-      [entityModal, removeModal].forEach(modal => {
-        modal.addEventListener('click', event => {
-          if (event.target === modal) closeModal(modal);
-        });
-      });
-
-      document.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
-          closeModal(entityModal);
-          closeModal(removeModal);
-        }
-      });
-    </script>
-
-  </div>
-
-
-    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        <span id="toast-message">Action successful!</span>
-    </div>
-    <script>
-        function showSuccessToast(message) {
-            const toast = document.getElementById('global-success-toast');
-            const msgEl = document.getElementById('toast-message');
-            if(toast && msgEl) {
-                msgEl.textContent = message || 'Action successful!';
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-            }
         }
         
         // Auto-wire forms and add buttons for the mockup
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('form').forEach(f => {
+                if (f.id === 'acceptForm' || f.id === 'rejectForm' || f.closest('#acceptModal, #rejectModal')) return; // specific toast handled by page script
                 f.addEventListener('submit', (e) => {
                     e.preventDefault();
                     showSuccessToast('Successfully submitted!');
@@ -1036,6 +911,7 @@
             
             // For admin tables or faculty modals
             document.querySelectorAll('button').forEach(b => {
+                if (b.closest('#acceptModal, #rejectModal')) return;
                 if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
                     b.addEventListener('click', (e) => {
                         if(b.type !== 'submit') {

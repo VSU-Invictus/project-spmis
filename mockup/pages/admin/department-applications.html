@@ -467,6 +467,7 @@
     }
 
     /* Toast */
+    #toast { display: none !important; }
     .toast {
       position: fixed;
       top: 22px;
@@ -629,7 +630,6 @@
           <div>
             <label for="rejectReason">
               <span>Reason for rejection <span style="color: var(--destructive); font-weight: 700;">*</span></span>
-              <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
             </label>
             <textarea placeholder="Enter specific deficiency or prerequisites reason..." id="rejectReason" required></textarea>
           </div>
@@ -868,6 +868,18 @@
       // Toast and Modal Logic
       const toast = document.getElementById('toast');
       function showToast(message) {
+        if (typeof showSuccessToast === 'function') {
+          showSuccessToast(message);
+          return;
+        }
+        const globalToast = document.getElementById('global-success-toast');
+        const msgEl = document.getElementById('toast-message');
+        if (globalToast && msgEl) {
+          msgEl.textContent = message || 'Action successful!';
+          globalToast.classList.add('show');
+          setTimeout(() => globalToast.classList.remove('show'), 3000);
+          return;
+        }
         if (!toast) return;
         toast.textContent = message;
         toast.classList.add('show');
@@ -1068,6 +1080,7 @@
         // Auto-wire forms and add buttons for the mockup
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('form').forEach(f => {
+                if (f.id === 'acceptForm' || f.id === 'rejectForm' || f.closest('#acceptModal, #rejectModal')) return; // specific toast handled by page script
                 f.addEventListener('submit', (e) => {
                     e.preventDefault();
                     showSuccessToast('Successfully submitted!');
@@ -1076,6 +1089,7 @@
             
             // For admin tables or faculty modals
             document.querySelectorAll('button').forEach(b => {
+                if (b.closest('#acceptModal, #rejectModal')) return;
                 if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
                     b.addEventListener('click', (e) => {
                         if(b.type !== 'submit') {

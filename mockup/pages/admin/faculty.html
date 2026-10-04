@@ -505,6 +505,7 @@
       background: #2a2a2a;
     }
 
+    #toast { display: none !important; }
     .toast {
       position: fixed;
       top: 22px;
@@ -933,188 +934,29 @@
       }
 
       function showToast(message) {
+        if (typeof showSuccessToast === 'function') {
+          showSuccessToast(message);
+          return;
+        }
+        const globalToast = document.getElementById('global-success-toast');
+        const msgEl = document.getElementById('toast-message');
+        if (globalToast && msgEl) {
+          msgEl.textContent = message || 'Action successful!';
+          globalToast.classList.add('show');
+          setTimeout(() => globalToast.classList.remove('show'), 3000);
+          return;
+        }
+        if (!toast) return;
         toast.textContent = message;
         toast.classList.add('show');
-        window.setTimeout(() => toast.classList.remove('show'), 2200);
+        setTimeout(() => toast.classList.remove('show'), 3000);
       }
-
-      function roleBadge(role) {
-        const cls = role === 'admin' ? 'ui-badge ui-badge--destructive' : 'ui-badge ui-badge--info';
-        return `<span class="${cls}">${role}</span>`;
-      }
-
-      function filterRows() {
-        const query = searchInput.value.trim().toLowerCase();
-        const department = departmentFilter.value;
-        let visibleCount = 0;
-
-        [...tableBody.rows].forEach(row => {
-          const matchesText =
-            row.dataset.name.includes(query) ||
-            row.dataset.email.includes(query);
-
-          const matchesDepartment =
-            department === 'all' || row.dataset.department === department;
-
-          const visible = matchesText && matchesDepartment;
-          row.style.display = visible ? '' : 'none';
-          if (visible) visibleCount++;
-        });
-
-        emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
-      }
-
-      document.getElementById('addButton').addEventListener('click', () => {
-        mode = 'create';
-        selectedRow = null;
-        facultyModalTitle.textContent = 'Add Faculty';
-        facultyName.value = '';
-        facultyEmail.value = '';
-        facultyDepartment.selectedIndex = 0;
-        facultyRole.value = 'faculty';
-        openModal(facultyModal);
-      });
-
-      tableBody.addEventListener('click', event => {
-        const row = event.target.closest('tr');
-        if (!row) return;
-
-        if (event.target.classList.contains('edit-btn')) {
-          mode = 'edit';
-          selectedRow = row;
-          facultyModalTitle.textContent = 'Edit Faculty';
-          facultyName.value = row.children[0].textContent.trim();
-          facultyEmail.value = row.children[1].textContent.trim();
-          facultyDepartment.value = row.dataset.department;
-          facultyRole.value = row.dataset.role;
-          openModal(facultyModal);
-        }
-
-        if (event.target.classList.contains('remove-btn')) {
-          selectedRow = row;
-          openModal(removeModal);
-        }
-      });
-
-      facultyForm.addEventListener('submit', event => {
-        event.preventDefault();
-
-        const name = facultyName.value.trim();
-        const email = facultyEmail.value.trim();
-        const department = facultyDepartment.value;
-        const role = facultyRole.value;
-
-        if (!name || !email) return;
-
-        if (mode === 'edit' && selectedRow) {
-          selectedRow.dataset.name = name.toLowerCase();
-          selectedRow.dataset.email = email.toLowerCase();
-          selectedRow.dataset.department = department;
-          selectedRow.dataset.role = role;
-
-          selectedRow.children[0].textContent = name;
-          selectedRow.children[1].textContent = email;
-          selectedRow.children[2].textContent = department;
-          selectedRow.children[3].innerHTML = roleBadge(role);
-
-          closeModal(facultyModal);
-          window.setTimeout(() => showToast('Faculty Updated Successfully'), 120);
-        } else {
-          const row = document.createElement('tr');
-          row.dataset.name = name.toLowerCase();
-          row.dataset.email = email.toLowerCase();
-          row.dataset.department = department;
-          row.dataset.role = role;
-
-          row.innerHTML = `
-            <td>${name}</td>
-            <td>${email}</td>
-            <td>${department}</td>
-            <td class="text-center">${roleBadge(role)}</td>
-            <td class="text-right">
-              <div class="action-group">
-                <button class="pill-btn edit-btn" type="button">Edit</button>
-                <button class="pill-btn remove-btn" type="button">Remove</button>
-              </div>
-            </td>`;
-
-          tableBody.prepend(row);
-          closeModal(facultyModal);
-          window.setTimeout(() => showToast('Faculty Added Successfully'), 120);
-        }
-
-        if (typeof adminTable !== 'undefined' && adminTable) adminTable.reload();
-        else filterRows();
-      });
-
-      document.getElementById('confirmRemove').addEventListener('click', () => {
-        if (!selectedRow) return;
-        selectedRow.remove();
-        selectedRow = null;
-        closeModal(removeModal);
-        window.setTimeout(() => showToast('Faculty Removed Successfully'), 120);
-        if (typeof adminTable !== 'undefined' && adminTable) adminTable.reload();
-        else filterRows();
-      });
-
-      document.getElementById('cancelRemove').addEventListener('click', () => closeModal(removeModal));
-
-      document.getElementById('closeFaculty').addEventListener('click', () => closeModal(facultyModal));
-      document.getElementById('closeRemove').addEventListener('click', () => closeModal(removeModal));
-      
-      const adminTable = window.initAdminTable({
-        tableBody: '#tableBody',
-        searchInput: '#searchInput',
-        filterElements: ['#departmentFilter'],
-        emptyState: '#emptyState',
-        rowsPerPage: '.ui-select-pill',
-        prevBtn: '.ui-table-page-btn:first-of-type',
-        nextBtn: '.ui-table-page-btn:last-of-type',
-        entityName: 'faculty',
-        searchFields: (row, query) => {
-          return (row.dataset.name || '').toLowerCase().includes(query) ||
-                 (row.dataset.email || '').toLowerCase().includes(query) ||
-                 (row.dataset.department || '').toLowerCase().includes(query);
-        },
-        filterMatches: (row) => {
-          const dept = departmentFilter ? departmentFilter.value : 'all';
-          return dept === 'all' || (row.dataset.department || '').toLowerCase().includes(dept.toLowerCase());
-        }
-      });
-
-      [facultyModal, removeModal].forEach(modal => {
-        modal.addEventListener('click', event => {
-          if (event.target === modal) closeModal(modal);
-        });
-      });
-
-      document.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
-          closeModal(facultyModal);
-          closeModal(removeModal);
-        }
-      });
-    </script>
-  </div>
-
-    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        <span id="toast-message">Action successful!</span>
-    </div>
-    <script>
-        function showSuccessToast(message) {
-            const toast = document.getElementById('global-success-toast');
-            const msgEl = document.getElementById('toast-message');
-            if(toast && msgEl) {
-                msgEl.textContent = message || 'Action successful!';
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-            }
         }
         
         // Auto-wire forms and add buttons for the mockup
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('form').forEach(f => {
+                if (f.id === 'acceptForm' || f.id === 'rejectForm' || f.closest('#acceptModal, #rejectModal')) return; // specific toast handled by page script
                 f.addEventListener('submit', (e) => {
                     e.preventDefault();
                     showSuccessToast('Successfully submitted!');
@@ -1123,6 +965,7 @@
             
             // For admin tables or faculty modals
             document.querySelectorAll('button').forEach(b => {
+                if (b.closest('#acceptModal, #rejectModal')) return;
                 if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
                     b.addEventListener('click', (e) => {
                         if(b.type !== 'submit') {
