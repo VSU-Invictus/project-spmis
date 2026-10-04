@@ -457,3 +457,6 @@ html:not(.dark) .logo-light-only { display: block !important; }
         min-width: 680px !important;
     }
 }
+
+/* Light-mode logo: SPMIS_LM.png was removed; reuse SPMIS.png inverted for light backgrounds */
+html:not(.dark) img.logo-light-only { filter: invert(1) hue-rotate(180deg); }
