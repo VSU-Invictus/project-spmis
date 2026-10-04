@@ -498,64 +498,6 @@
         .auth-card .ui-auth-form { gap: 0.75rem; }
 
         /* ==========================================================
-           Footer row — OUTSIDE the card
-           ========================================================== */
-        .auth-footer-outside {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            column-gap: 0.75rem;
-            font-size: 0.9375rem;
-            color: #ffffff;
-        }
-
-        .auth-footer-outside .legal {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.625rem;
-            font-size: 0.9375rem;
-            color: #ffffff;
-        }
-
-        .auth-footer-outside a {
-            color: #ffffff;
-            text-decoration: none;
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            padding-bottom: 2px;
-            transition: transform .2s ease;
-        }
-
-        .auth-footer-outside a::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 1px;
-            background: currentColor;
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform .25s ease;
-        }
-
-        .auth-footer-outside a:hover {
-            color: #ffffff;
-            transform: translateY(-1px);
-        }
-
-        .auth-footer-outside a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .auth-footer-outside .sep {
-            opacity: 0.55;
-        }
-
-        /* ==========================================================
            Validation message — inside the input
            ========================================================== */
         .ui-input-wrap {
@@ -1263,13 +1205,6 @@
 
             .auth-card-title { font-size: 2rem; }
             .auth-card-sub   { margin-bottom: 1.5rem; }
-
-            .auth-footer-outside {
-                width: 100%;
-                padding-left: 0;
-                padding-inline: 0.25rem;
-                justify-content: center;
-            }
         }
 
         @media (max-height: 720px) {
@@ -1287,8 +1222,6 @@
             body::before { animation: none; }
             .ui-field-popup, .ui-auth-field { transition: none; }
             .ui-auth-field.is-shaking { animation: none; }
-            .auth-footer-outside a,
-            .auth-footer-outside a::after,
             .auth-card-signup a,
             .auth-card-signup .arrow { transition: none; }
         }
@@ -1423,15 +1356,8 @@
             </section>
         </div>
 
-        <div class="auth-footer-outside">
-            <span class="legal">
-                <a href="about.html">Contact</a>
-                <span class="sep">·</span>
-                <a href="terms.html">Terms</a>
-                <span class="sep">·</span>
-                <a href="privacy%20policy.html">Privacy</a>
-            </span>
-        </div>
+        <!-- Footer component (Modular) -->
+        <div data-include="../../components/navigation/footer-nav.html"></div>
     </div>
 
     <!-- ==========================================================
@@ -1825,17 +1751,49 @@
         });
 
         // ==========================================================
-        // PAGE TRANSITION FOR LINKS
+        // MODULAR FOOTER LOADING & PAGE TRANSITIONS
         // ==========================================================
-        document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(link => {
-            link.addEventListener('click', event => {
-                const href = link.getAttribute('href');
-                if (!href || href.startsWith('javascript:')) return;
-                event.preventDefault();
-                document.body.classList.add('page-exit');
-                setTimeout(() => { window.location.href = href; }, 300);
+        (async () => {
+            // 1. Load the footer component
+            const slot = document.querySelector('[data-include]');
+            if (slot) {
+                try {
+                    const res = await fetch(slot.getAttribute('data-include'), { cache: 'no-cache' });
+                    if (res.ok) {
+                        slot.innerHTML = await res.text();
+                    } else {
+                        console.error('Failed to load footer:', res.status, res.statusText);
+                    }
+                } catch (err) {
+                    console.error('Footer include error:', err);
+                }
+            }
+
+            // 2. Determine the current page and apply the 'active' class
+            let currentPage = decodeURIComponent(window.location.pathname.split('/').pop()).toLowerCase().trim() || 'about.html';
+            
+            document.querySelectorAll('.footer-nav a').forEach(a => {
+                let href = decodeURIComponent(a.getAttribute('href')).toLowerCase().trim().split('/').pop();
+                if (href === currentPage) {
+                    a.classList.add('active');
+                }
             });
-        });
+
+            // 3. Page Exit Transition
+            document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(link => {
+                link.addEventListener('click', event => {
+                    const href = link.getAttribute('href');
+                    if (!href || href.startsWith('javascript:') || link.classList.contains('active')) return;
+                    
+                    event.preventDefault();
+                    document.body.classList.add('page-exit');
+                    
+                    setTimeout(() => { 
+                        window.location.href = href; 
+                    }, 300);
+                });
+            });
+        })();
     </script>
 </body>
 </html>

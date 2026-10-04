@@ -655,6 +655,11 @@
             opacity: 0.9;
         }
 
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+        }
+
         .stat strong,
         .eyebrow,
         th {
@@ -1313,7 +1318,7 @@
                     <h1>Students</h1>
                     <p>Browse students and search the text of active reviews.</p>
                 </div>
-                <a class="ui-btn" href="register-student.html">+ Register student</a>
+                <button type="button" class="ui-btn" id="open-register-modal">+ Register student</button>
             </div>
             <div class="filters">
                 <label><span class="sr-only">Search students or review text</span><div class="search-wrapper">
@@ -1363,6 +1368,60 @@
         <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
+
+      <!-- Route-backed Register Student Modal Overlay -->
+      <dialog id="register-student-modal" style="width: min(600px, calc(100% - 32px)); padding: 0; background: var(--ui-surface, #232321); border: 1px solid var(--ui-surface-border, #3d3d3a); border-radius: 14px; color: var(--foreground); box-shadow: 0 16px 40px rgba(0,0,0,0.6);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 20px 24px; border-bottom: 1px solid var(--ui-surface-border, #3d3d3a);">
+          <div>
+            <h2 style="margin: 0; font-size: 18px; font-weight: 650; color: var(--ui-surface-text);">Register a student</h2>
+            <p class="muted" style="margin: 4px 0 0; font-size: 13px;">Apply to add a new student to the independent SPMIS roster.</p>
+          </div>
+          <button type="button" id="close-register-modal" class="secondary" style="border: none; padding: 6px; cursor: pointer; color: var(--muted-foreground); border-radius: 6px; display: inline-flex;" aria-label="Close modal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div id="register-modal-body" style="padding: 24px;">
+          <div class="notice" style="margin-bottom: 18px; font-size: 13px;">
+            Registration requires physical verification by an administrator outside the system. Your application stays pending until the admin approves it.
+          </div>
+          <form id="registration-form">
+            <label style="margin-bottom: 14px;">Student ID number
+              <input id="student-id" required maxlength="40" placeholder="e.g. 24-1-00006" />
+            </label>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+              <label style="margin-bottom: 0;">First name
+                <input id="first-name" required maxlength="80" autocomplete="off" />
+              </label>
+              <label style="margin-bottom: 0;">Last name
+                <input id="last-name" required maxlength="80" autocomplete="off" />
+              </label>
+            </div>
+            <label style="margin-bottom: 14px;">Middle name (optional)
+              <input id="middle-name" maxlength="80" autocomplete="off" />
+            </label>
+            <label style="margin-bottom: 16px;">Program
+              <select id="program" required></select>
+              <small class="muted" style="margin-top: 4px; display: block;">Choose an approved program. A missing program can be proposed from the Programs page.</small>
+            </label>
+            <p id="registration-status" role="status" style="color: var(--destructive); margin: 8px 0; font-size: 13px;"></p>
+            <div class="actions" style="margin-top: 20px;">
+              <button type="submit" style="background-color: white; color: black;">Submit application</button>
+              <button type="button" class="secondary" id="cancel-register-btn">Cancel</button>
+            </div>
+          </form>
+          <section id="registration-success" hidden style="text-align: center; padding: 16px 0;">
+            <span class="ui-badge ui-badge--warning" style="margin-bottom: 12px;">Pending</span>
+            <h3 style="margin: 8px 0; font-size: 18px;">Registration application submitted</h3>
+            <p class="muted" style="font-size: 13px; max-width: 440px; margin: 0 auto 20px;">
+              The student will appear in the roster after admin approval. You can track this in your applications.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+              <a class="button" href="applications.html" style="background: white; color: black;">View my applications</a>
+              <button type="button" class="button secondary" id="modal-done-btn">Back to students</button>
+            </div>
+          </section>
+        </div>
+      </dialog>
     </main>
     </div>
     <script>
@@ -1805,6 +1864,147 @@ const programs = [
                 '<option value="">All tags</option>' +
                 tags.map((t) => `<option>${esc(t)}</option>`).join("");
             loadStudents();
+
+            // Register Student Modal Controls
+            const registerModal = document.getElementById("register-student-modal");
+            const openRegisterBtn = document.getElementById("open-register-modal");
+            const closeRegisterBtn = document.getElementById("close-register-modal");
+
+            // Populate programs in modal
+            const programSelect = document.getElementById("program");
+            if (programSelect) {
+                programSelect.innerHTML = programs.map(p => `<option>${p}</option>`).join("");
+            }
+
+            const regForm = document.getElementById("registration-form");
+            const regSuccess = document.getElementById("registration-success");
+            const cancelBtn = document.getElementById("cancel-register-btn");
+            const modalDoneBtn = document.getElementById("modal-done-btn");
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => registerModal.close());
+            }
+            if (modalDoneBtn) {
+                modalDoneBtn.addEventListener("click", () => {
+                    registerModal.close();
+                    if (regForm) regForm.hidden = false;
+                    if (regSuccess) regSuccess.hidden = true;
+                });
+            }
+
+            if (regForm) {
+                regForm.onsubmit = (e) => {
+                    e.preventDefault();
+                    const fields = ["student-id", "first-name", "last-name"];
+                    const regStatus = document.getElementById("registration-status");
+                    if (fields.some((id) => !$("#" + id).value.trim())) {
+                        if (regStatus) regStatus.textContent = "Enter the required student ID, first name, and last name.";
+                        return;
+                    }
+                    const id = $("#student-id").value.trim();
+                    if (
+                        students.some((s) => s.id.toLowerCase() === id.toLowerCase()) ||
+                        state.applications.some(
+                            (a) =>
+                                a.type === "Student registration" &&
+                                a.status === "pending" &&
+                                a.payload?.id?.toLowerCase() === id.toLowerCase(),
+                        )
+                    ) {
+                        if (regStatus) regStatus.textContent = "This student ID already exists or has a pending registration.";
+                        return;
+                    }
+                    const payload = {
+                        id,
+                        first: $("#first-name").value.trim(),
+                        middle: $("#middle-name").value.trim(),
+                        last: $("#last-name").value.trim(),
+                        program: $("#program").value,
+                    };
+                    addApplication("Student registration", full(payload), payload);
+                    regForm.hidden = true;
+                    if (regSuccess) regSuccess.hidden = false;
+                };
+            }
+
+            function isRegisterRoute() {
+                const params = new URLSearchParams(window.location.search);
+                return params.has("register") || params.get("modal") === "register" || window.location.hash === "#register";
+            }
+
+            function openModal(updateRoute = true) {
+                if (!registerModal.open) {
+                    registerModal.showModal();
+                }
+                if (updateRoute) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set("register", "true");
+                    history.pushState({ modal: "register" }, "", url.toString());
+                }
+            }
+
+            function closeModal(updateRoute = true) {
+                if (registerModal.open) {
+                    registerModal.close();
+                }
+                if (updateRoute) {
+                    const url = new URL(window.location.href);
+                    if (url.searchParams.has("register") || url.searchParams.get("modal") === "register" || url.hash === "#register") {
+                        url.searchParams.delete("register");
+                        url.searchParams.delete("modal");
+                        if (url.hash === "#register") url.hash = "";
+                        history.pushState({}, "", url.toString());
+                    }
+                }
+            }
+
+            if (openRegisterBtn && registerModal) {
+                openRegisterBtn.addEventListener("click", () => {
+                    openModal(true);
+                });
+            }
+            if (closeRegisterBtn && registerModal) {
+                closeRegisterBtn.addEventListener("click", () => {
+                    closeModal(true);
+                });
+            }
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => closeModal(true));
+            }
+            if (modalDoneBtn) {
+                modalDoneBtn.addEventListener("click", () => {
+                    closeModal(true);
+                    if (regForm) regForm.hidden = false;
+                    if (regSuccess) regSuccess.hidden = true;
+                });
+            }
+            if (registerModal) {
+                registerModal.addEventListener("click", (e) => {
+                    const rect = registerModal.getBoundingClientRect();
+                    const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+                    if (!isInDialog) {
+                        closeModal(true);
+                    }
+                });
+                registerModal.addEventListener("cancel", (e) => {
+                    e.preventDefault();
+                    closeModal(true);
+                });
+            }
+
+            // Sync with browser back/forward buttons
+            window.addEventListener("popstate", () => {
+                if (isRegisterRoute()) {
+                    openModal(false);
+                } else {
+                    closeModal(false);
+                }
+            });
+
+            // Auto-open if navigating directly with register route or query parameter
+            if (isRegisterRoute()) {
+                openModal(false);
+            }
         }
         const selected =
             students.find(
@@ -1895,7 +2095,7 @@ const programs = [
                             );
                             if (editing) {
                                 $("#edit-body").value = editing.body;
-                                $("#edit-tags").value = editing.tags.join(" ");
+                                $("#edit-tags").value = editing.tags.join(", ");
                                 $("#edit-dialog").showModal();
                             }
                         }
@@ -1939,8 +2139,15 @@ const programs = [
             }
         }
         function normalizeTags(value) {
+            if (Array.isArray(value)) return value;
+            if (!value || typeof value !== "string") return [];
             return [
-                ...new Set(value.trim().toLowerCase().split(/\s+/).filter(Boolean)),
+                ...new Set(
+                    value
+                        .split(",")
+                        .map((t) => t.trim().toLowerCase())
+                        .filter(Boolean)
+                ),
             ];
         }
         if (page === "register-student") {

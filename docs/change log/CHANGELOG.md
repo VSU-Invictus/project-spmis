@@ -14,6 +14,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Added empty-state recovery container (`.empty-state`, `.empty-state-btn`) with one-click filter reset across data tables (`fba6ebb`).
 - **UI:** Added live row selection counter ("X of Y row(s) selected") and custom checkbox management to Admin portal tables (`fba6ebb`).
 - **Docs:** Synchronized `DESIGN_SYSTEM.md` with living style guide `design-system.html`, adding comprehensive documentation for the 12 UI sections including Table Controls Toolbar, Skeleton Shimmers, Empty States, Docked Sidebar Navigation, Modals/Dialogs, and Workspace Frame (`3fe9e65`).
+- **UI:** Converted the Register Student page into an accessible route-backed modal overlay on the Students roster.
+- **UI:** Implemented Gmail/Outlook-style live visual formatting in the review editor with toolbar icons (bold, italic, bullet list, numbered list).
+- **UI:** Added toolbar paperclip attachment trigger with removable file chips and batch clear support in reviews.
+- **UI:** Implemented autocomplete suggestions and removable chips for review tags.
+- **UI:** Added live word and character counters to the review editor.
 - **UI:** Added Shadcn-style "Rows per page" dropdown pill to table pagination.
 - **UI:** Added client-side static JavaScript pagination engine to `design-system.html` for interactive mockups.
 - **UI:** Row click selection for data tables (`242e95c`).
@@ -42,6 +47,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Generalized design system badges and chips into 4 portal-agnostic semantic groups (Operational & Lifecycle, Entity Classification & Origin, Audit Activity & Mutation Events, Domain & Competency Assessment) (`4e5e61b`).
 - **UI:** Merged Workspace Frame section in the design system to unify the top header status bar, toast feedback notifications, and pinned viewport footer (`.workspace-footer`) (`4e5e61b`).
 - **UI:** Standardized dashboard and table action links with right arrows across Admin and Faculty portals to use `.ui-link-neutral` with smooth 4px animated glide (`96f3c46`, `f55cc9d`, `028c16b`).
+- **UI:** Enforced strictly comma-separated inputs for review tags.
+- **UI:** Replaced the markdown Write/Preview tabbed interface with inline live visual formatting.
+- **UI:** Routed standalone register student links directly into the student table modal overlay.
 - **UI:** Standardized data table pagination limits to 5, 10, and 20, defaulting to 5 rows per page globally.
 - **UI:** Streamlined the Design System tables showcase by removing redundant Program and Department mockups.
 - **UI:** Standardized interactive cards and extracted global arrow animations (`70da99c`).
@@ -87,6 +95,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Fixed text truncation on Department filter dropdowns by expanding width to `195px` so "Department of..." displays fully without clipping ("Departmen...") (`f55cc9d`, `028c16b`).
 - **UI:** Fixed page switching blink and flickering in the Admin portal by pre-rendering persistent sidebar markup and integrating client-side prefetching (`bd915b5`, `f55cc9d`).
 - **UI:** Fixed `.nav-btn-active` font and icon color overrides in `components.css` to enforce high-contrast black text (`#000000 !important`) (`96f3c46`).
+- **UI:** Fixed review editor placeholder text persisting over newly inserted bulleted or numbered list items.
 - **UI:** Fixed table pagination chevron vertical alignment by enforcing `min-width: 4rem` and restoring flexbox positioning.
 - **Bug:** Resolved severe Javascript `SyntaxError` in the Faculty portal rendering engine caused by string literal newlines, restoring all tables.
 - **UI:** Removed outdated quick action buttons from the Faculty Applications page.

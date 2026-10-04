@@ -354,10 +354,6 @@
             color: color-mix(in srgb, var(--primary) 80%, #ffffff);
         }
 
-        
-
-        
-
         /* ---------- Reuse .ui-auth-* primitives ---------- */
         .auth-card .ui-auth-wrapper { width: 100%; max-width: none; }
 
@@ -405,9 +401,67 @@
             padding-right: 12.5rem;
         }
 
+        /* Password input with toggle needs extra right padding */
+        .ui-auth-field[data-field="password"] .ui-input {
+            padding-right: 3rem;
+        }
+
         .auth-card .ui-input:focus {
             border-color: var(--ring);
             box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 25%, transparent);
+        }
+
+        /* ==========================================================
+           PASSWORD TOGGLE (show / hide) — copied from signup
+           ========================================================== */
+        .ui-pwd-toggle {
+            position: absolute;
+            top: 50%;
+            right: 0.875rem;
+            transform: translateY(-50%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: color .15s ease, background-color .15s ease;
+            z-index: 4;
+        }
+
+        .ui-pwd-toggle:hover {
+            color: var(--foreground);
+            background: color-mix(in srgb, var(--foreground) 8%, transparent);
+        }
+
+        .ui-pwd-toggle:focus-visible {
+            outline: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
+            outline-offset: 2px;
+        }
+
+        .ui-pwd-toggle svg {
+            width: 16px;
+            height: 16px;
+            display: block;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.75;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .ui-pwd-toggle .icon-eye-off { display: none; }
+        .ui-pwd-toggle.is-visible .icon-eye { display: none; }
+        .ui-pwd-toggle.is-visible .icon-eye-off { display: block; }
+
+        /* When a field has an error popup visible, hide the toggle so it doesn't overlap */
+        .ui-auth-field:has(.ui-field-popup.is-visible) .ui-pwd-toggle {
+            display: none;
         }
 
         .auth-card .ui-auth-btn-submit {
@@ -436,65 +490,6 @@
         }
 
         .auth-card .ui-auth-form { gap: 0.75rem; }
-
-        /* ==========================================================
-           Footer row — OUTSIDE the card, white, larger text.
-           Hover: underline only, no color change.
-           ========================================================== */
-        .auth-footer-outside {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            column-gap: 0.75rem;
-            font-size: 0.9375rem;
-            color: #ffffff;
-        }
-
-        .auth-footer-outside .legal {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.625rem;
-            font-size: 0.9375rem;
-            color: #ffffff;
-        }
-
-        .auth-footer-outside a {
-            color: #ffffff;
-            text-decoration: none;
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            padding-bottom: 2px;
-            transition: transform .2s ease;
-        }
-
-        .auth-footer-outside a::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 1px;
-            background: currentColor;
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform .25s ease;
-        }
-
-        .auth-footer-outside a:hover {
-            color: #ffffff;
-            transform: translateY(-1px);
-        }
-
-        .auth-footer-outside a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .auth-footer-outside .sep {
-            opacity: 0.55;
-        }
 
         /* ==========================================================
            Validation message — sits INSIDE the input, right-aligned.
@@ -1057,13 +1052,6 @@
 
             .auth-card-title { font-size: 2rem; }
             .auth-card-sub   { margin-bottom: 1.5rem; }
-
-            .auth-footer-outside {
-                width: 100%;
-                padding-left: 0;
-                padding-inline: 0.25rem;
-                justify-content: center;
-            }
         }
 
         @media (max-height: 720px) {
@@ -1081,11 +1069,7 @@
             body::before { animation: none; }
             .ui-field-popup, .ui-auth-field { transition: none; }
             .ui-auth-field.is-shaking { animation: none; }
-            .auth-footer-outside a,
-            .auth-footer-outside a::after,
-            .auth-card-signup a {
-                transition: none;
-            }
+            .auth-card-signup a { transition: none; }
         }
     
         /* Light Mode overrides for brand card */
@@ -1120,16 +1104,9 @@
             color: var(--muted-foreground) !important;
         }
 
-    
         html:not(.dark) .brand-features li {
             color: var(--muted-foreground) !important;
         }
-        html:not(.dark) .auth-footer-outside,
-        html:not(.dark) .auth-footer-outside .legal,
-        html:not(.dark) .auth-footer-outside a {
-            color: var(--muted-foreground) !important;
-        }
-
     </style>
 </head>
 <body>
@@ -1205,6 +1182,18 @@
                                     </div>
                                     <div class="ui-input-wrap">
                                         <input type="password" id="auth-pwd" class="ui-input" placeholder="••••••••••••" required />
+                                        <button type="button" class="ui-pwd-toggle" data-pwd-toggle="auth-pwd" aria-label="Show password" aria-pressed="false">
+                                            <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                                <circle cx="12" cy="12" r="3"/>
+                                            </svg>
+                                            <svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                                                <line x1="1" y1="1" x2="23" y2="23"/>
+                                            </svg>
+                                        </button>
                                         <div class="ui-field-popup" role="alert" aria-live="polite">
                                             <span class="ui-field-popup-icon" aria-hidden="true">!</span>
                                             <span class="ui-field-popup-text">Please fill in this field.</span>
@@ -1239,16 +1228,8 @@
             </section>
         </div>
 
-        <!-- Footer OUTSIDE the card, white, no color change on hover -->
-        <div class="auth-footer-outside">
-            <span class="legal">
-                <a href="about.html">Contact</a>
-                <span class="sep">&middot;</span>
-                <a href="terms.html">Terms</a>
-                <span class="sep">&middot;</span>
-                <a href="privacy%20policy.html">Privacy</a>
-            </span>
-        </div>
+        <!-- Footer component (Modular) -->
+        <div data-include="../../components/navigation/footer-nav.html"></div>
     </div>
 
     <!-- Google Account Chooser Overlay -->
@@ -1342,6 +1323,24 @@
     </div>
 
     <script>
+        // ==========================================================
+        // PASSWORD VISIBILITY TOGGLE (added to signin)
+        // ==========================================================
+        document.querySelectorAll('.ui-pwd-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = document.getElementById(btn.dataset.pwdToggle);
+                if (!input) return;
+                const show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                btn.classList.toggle('is-visible', show);
+                btn.setAttribute('aria-pressed', String(show));
+                btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+                // Keep the cursor at the end of the value
+                const len = input.value.length;
+                try { input.setSelectionRange(len, len); } catch (_) {}
+            });
+        });
+
         const overlay = document.getElementById('google-overlay');
         const googleSteps = [...document.querySelectorAll('[data-google-step]')];
         const googleEmailForm = document.getElementById('google-email-form');
@@ -1478,15 +1477,50 @@
             window.location.href = '../faculty/dashboard.html';
         });
 
-        document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(link => {
-            link.addEventListener('click', event => {
-                const href = link.getAttribute('href');
-                if (!href || href.startsWith('javascript:')) return;
-                event.preventDefault();
-                document.body.classList.add('page-exit');
-                setTimeout(() => { window.location.href = href; }, 300);
+        // ==========================================================
+        // MODULAR FOOTER LOADING & PAGE TRANSITIONS
+        // ==========================================================
+        (async () => {
+            // 1. Load the footer component
+            const slot = document.querySelector('[data-include]');
+            if (slot) {
+                try {
+                    const res = await fetch(slot.getAttribute('data-include'), { cache: 'no-cache' });
+                    if (res.ok) {
+                        slot.innerHTML = await res.text();
+                    } else {
+                        console.error('Failed to load footer:', res.status, res.statusText);
+                    }
+                } catch (err) {
+                    console.error('Footer include error:', err);
+                }
+            }
+
+            // 2. Determine the current page and apply the 'active' class
+            let currentPage = decodeURIComponent(window.location.pathname.split('/').pop()).toLowerCase().trim() || 'about.html';
+            
+            document.querySelectorAll('.footer-nav a').forEach(a => {
+                let href = decodeURIComponent(a.getAttribute('href')).toLowerCase().trim().split('/').pop();
+                if (href === currentPage) {
+                    a.classList.add('active');
+                }
             });
-        });
+
+            // 3. Page Exit Transition
+            document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(link => {
+                link.addEventListener('click', event => {
+                    const href = link.getAttribute('href');
+                    if (!href || href.startsWith('javascript:') || link.classList.contains('active')) return;
+                    
+                    event.preventDefault();
+                    document.body.classList.add('page-exit');
+                    
+                    setTimeout(() => { 
+                        window.location.href = href; 
+                    }, 300);
+                });
+            });
+        })();
     </script>
 </body>
 </html>
