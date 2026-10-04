@@ -2128,6 +2128,9 @@ button:hover .arrow,
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    align-self: flex-start;
+    width: fit-content;
+    max-width: max-content;
     gap: 4px;
     transition: color 150ms ease;
 }
