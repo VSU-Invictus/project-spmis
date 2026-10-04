@@ -883,20 +883,6 @@
         });
       });
 
-      const tableRows = document.querySelectorAll('.table-body .table-row');
-      tableRows.forEach(row => {
-        row.addEventListener('click', (e) => {
-          if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'button') {
-            return;
-          }
-          const cb = row.querySelector('.custom-checkbox');
-          if (cb) {
-            cb.checked = !cb.checked;
-            cb.dispatchEvent(new Event('change'));
-          }
-        });
-      });
-
       // Toast and Modal Logic
       const toast = document.getElementById('toast');
       function showToast(message) {
