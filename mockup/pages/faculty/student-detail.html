@@ -1141,6 +1141,130 @@
             white-space: nowrap;
             font-weight: 400;
         }
+        /* Interactive Back link with animated arrow */
+        .back-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            align-self: flex-start !important;
+            width: fit-content !important;
+            max-width: max-content !important;
+            gap: 6px !important;
+            color: #FFFFFF !important;
+            text-decoration: none !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            margin-bottom: 12px !important;
+            transition: color 150ms ease !important;
+        }
+        .back-link:hover {
+            color: var(--primary) !important;
+            text-decoration: none !important;
+        }
+        .back-link .arrow-left {
+            display: inline-block;
+            transition: transform 0.25s ease;
+        }
+        .back-link:hover .arrow-left {
+            transform: translateX(-4px);
+        }
+
+        /* Basic Information Card (matches design system specifications) */
+        .basic-info-card {
+            padding: 20px 24px !important;
+            border-radius: 12px !important;
+            background: var(--card, #1F1E1D) !important;
+            border: 1px solid var(--border, #2E2D2A) !important;
+            margin-bottom: 24px !important;
+        }
+        .basic-info-header {
+            border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .basic-info-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--muted-foreground, #9C948B);
+            display: block;
+        }
+        .basic-info-grid {
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 16px 24px;
+            margin: 0;
+            padding: 0;
+        }
+        .basic-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+        .basic-info-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--muted-foreground, #8E877F);
+            margin: 0;
+        }
+        .basic-info-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--foreground, #FFFFFF);
+            margin: 0;
+            overflow-wrap: anywhere;
+        }
+        @media (max-width: 639px) {
+            .basic-info-grid {
+                grid-template-columns: 1fr !important;
+                gap: 14px;
+            }
+        }
+
+        /* Outline & Destructive Buttons for Review Actions */
+        .review .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 18px;
+        }
+        :is(.actions, dialog) .ui-btn-outline {
+            background: transparent !important;
+            border: 1px solid var(--border) !important;
+            color: var(--foreground) !important;
+            border-radius: var(--radius-sm, 8px) !important;
+            font-size: 12px !important;
+            padding: 6px 14px !important;
+            min-height: 32px !important;
+            font-weight: 500 !important;
+            cursor: pointer;
+            transition: all 150ms ease !important;
+        }
+        :is(.actions, dialog) .ui-btn-outline:hover {
+            background: var(--accent, rgba(255, 255, 255, 0.08)) !important;
+            color: var(--accent-foreground, #FFFFFF) !important;
+            border-color: var(--border) !important;
+        }
+        :is(.actions, dialog) .ui-btn-destructive {
+            background: var(--destructive, #E5484D) !important;
+            color: var(--destructive-foreground, #FFFFFF) !important;
+            border: 1px solid transparent !important;
+            border-radius: var(--radius-sm, 8px) !important;
+            font-size: 12px !important;
+            padding: 6px 14px !important;
+            min-height: 32px !important;
+            font-weight: 500 !important;
+            cursor: pointer;
+            transition: all 150ms ease !important;
+        }
+        :is(.actions, dialog) .ui-btn-destructive:hover {
+            background: color-mix(in srgb, var(--destructive) 85%, #000) !important;
+            opacity: 0.95;
+        }
+
     html:not(.dark) .status-live-pill { background: #F1EEE8 !important; border-color: #E2DDD4 !important; color: #6C655D !important; }
   </style>
 </head>
@@ -1228,25 +1352,32 @@
           <span style="font-size: 11px; color: #A0988E;">AY 2026-2027</span>
         </div>
       </div>
-            <a href="students.html">← Back to students</a>
+            <a href="students.html" class="ui-link-neutral back-link">
+                <span class="arrow-left">&larr;</span> Back to students
+            </a>
             <div class="header">
                 <div>
                     <p>Student information and attributed faculty reviews.</p>
                 </div>
-                <a class="button" id="new-review-link" href="new-review.html">+ Write review <span class="arrow">&rarr;</span></a>
+                <a class="button" id="new-review-link" href="new-review.html">Write review <span class="arrow">&rarr;</span></a>
             </div>
-            <section class="ui-card">
-                <h2>Basic information</h2>
-                <style>
-                    .basic-info-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 16px 24px; margin: 0; }
-                    .basic-info-grid > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-                    .basic-info-grid dt, .basic-info-grid dd { margin: 0; overflow-wrap: anywhere; }
-                    @media (max-width: 639px) { .basic-info-grid { grid-template-columns: 1fr !important; } }
-                </style>
+            <section class="ui-card basic-info-card">
+                <div class="basic-info-header">
+                    <span class="basic-info-title">BASIC INFORMATION</span>
+                </div>
                 <dl class="basic-info-grid">
-                    <div><dt>Student ID</dt><dd data-student-id>24-1-00001</dd></div>
-                    <div><dt>Full name</dt><dd data-student-name>Sam Lee Parker</dd></div>
-                    <div><dt>Program</dt><dd data-student-program>BS Computer Science</dd></div>
+                    <div class="basic-info-col">
+                        <dt class="basic-info-label">FULL NAME</dt>
+                        <dd class="basic-info-value" data-student-name>Sam Lee Parker</dd>
+                    </div>
+                    <div class="basic-info-col">
+                        <dt class="basic-info-label">STUDENT ID</dt>
+                        <dd class="basic-info-value" data-student-id>24-1-00001</dd>
+                    </div>
+                    <div class="basic-info-col">
+                        <dt class="basic-info-label">PROGRAM</dt>
+                        <dd class="basic-info-value" data-student-program>BS Computer Science</dd>
+                    </div>
                 </dl>
             </section>
             <div class="between">
@@ -1271,8 +1402,8 @@
                         <input id="edit-tags" />
                     </label>
                     <div class="actions">
-                        <button>Save changes</button>
-                        <button class="secondary" type="button" data-close>Cancel</button>
+                        <button class="ui-btn ui-btn-primary">Save changes</button>
+                        <button class="ui-btn ui-btn-outline" type="button" data-close>Cancel</button>
                     </div>
                 </form>
             </dialog>
@@ -1284,8 +1415,8 @@
                     visibility later.
                 </p>
                 <div class="actions">
-                    <button class="danger" id="confirm-delete">Delete review</button>
-                    <button class="secondary" data-close>Keep review</button>
+                    <button class="ui-btn ui-btn-destructive" id="confirm-delete">Delete review</button>
+                    <button class="ui-btn ui-btn-outline" type="button" data-close>Keep review</button>
                 </div>
             </dialog>
             <noscript>
@@ -1761,7 +1892,7 @@ const programs = [
                             visible
                                 .map(
                                     (r) =>
-                                        `<article class="ui-card review ${r.status ==="hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                                        `<article class="ui-card review ${r.status ==="hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions" style="margin-top:18px"><button class="ui-btn ui-btn-outline" data-edit="${r.id}">Edit</button><button class="ui-btn ui-btn-outline" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="ui-btn ui-btn-destructive" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
                                 )
                                 .join("") ||
                             '<div class="ui-card empty">No visible reviews yet. Be the first to write one.</div>';
