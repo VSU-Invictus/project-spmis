@@ -49,14 +49,18 @@
 
 .queue-rejection-row {
   display: none;
-  grid-column: 1 / -1;
-  padding: 0.75rem 1rem 1rem;
-  background: var(--muted);
-  border-top: 1px solid var(--border);
+  width: 100%;
 }
 
 .queue-rejection-row.is-expanded {
   display: block;
+}
+
+.queue-rejection-cell {
+  width: 100%;
+  padding: 0.75rem 1rem 1rem;
+  background: var(--muted);
+  border-top: 1px solid var(--border);
 }
 
 .queue-rejection-row label,
@@ -109,6 +113,36 @@
 
 .queue-row-actions .pill-btn {
   min-height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.action-btn-group .pill-btn.approve,
+.action-btn-group .pill-btn.reject {
+  background: transparent;
+  font-weight: 600;
+}
+
+.action-btn-group .pill-btn.approve {
+  border-color: #3f9b55;
+  color: #75d989;
+}
+
+.action-btn-group .pill-btn.reject {
+  border-color: #f05b5f;
+  color: #ff8b8e;
+}
+
+.action-btn-group .pill-btn.approve.has-selection {
+  background: #3f9b55;
+  color: #fff;
+}
+
+.action-btn-group .pill-btn.reject.has-selection {
+  background: #f05b5f;
+  color: #fff;
 }
 
 @media (max-width: 700px) {

@@ -112,18 +112,24 @@
   }
 
   function addInlineRejection(row, count) {
-    if (!row || row.querySelector('.queue-rejection-row')) return;
+    if (!row || row.nextElementSibling?.classList.contains('queue-rejection-row')) {
+      return row?.nextElementSibling;
+    }
     const rejection = document.createElement('div');
     rejection.className = 'queue-rejection-row';
+    rejection.setAttribute('role', 'row');
     rejection.innerHTML = `
-      <p>This reason will be sent to all ${count} submitter${count === 1 ? '' : 's'}.</p>
-      <label for="queue-rejection-${Math.random().toString(36).slice(2)}">Reason for rejection</label>
-      <textarea placeholder="Enter reason here..." required></textarea>
-      <div class="queue-rejection-actions">
-        <button type="button" class="pill-btn modal-cancel">Close</button>
-        <button type="button" class="pill-btn queue-confirm-reject">Reject</button>
+      <div class="queue-rejection-cell" role="cell">
+        ${count > 1 ? `<p>This reason will be sent to all ${count} submitters.</p>` : ''}
+        <label for="queue-rejection-${Math.random().toString(36).slice(2)}">Reason for rejection</label>
+        <textarea placeholder="Enter reason here..." required></textarea>
+        <div class="queue-rejection-actions">
+          <button type="button" class="pill-btn modal-cancel">Close</button>
+          <button type="button" class="pill-btn queue-confirm-reject">Reject</button>
+        </div>
       </div>`;
-    row.appendChild(rejection);
+    row.parentElement?.insertBefore(rejection, row.nextElementSibling);
+    rejection.__queueRow = row;
     return rejection;
   }
 
@@ -131,6 +137,14 @@
     document.getElementById('rejectModal')?.remove();
     const rows = [...document.querySelectorAll('.table-body .table-row')];
     const selected = () => selectedRows().length;
+    const bulkApprove = document.querySelector('.action-btn-group .pill-btn.approve');
+    const bulkReject = document.querySelector('.action-btn-group .pill-btn.reject');
+    const updateBulkButtons = () => {
+      const hasSelection = selected() > 0;
+      [bulkApprove, bulkReject].forEach((button) => {
+        button?.classList.toggle('has-selection', hasSelection);
+      });
+    };
 
     rows.forEach((row) => {
       const checkbox = row.querySelector('.custom-checkbox');
@@ -151,6 +165,11 @@
         showToast('Application Approved');
       });
 
+      checkbox.addEventListener('change', () => {
+        row.classList.toggle('checked', checkbox.checked);
+        updateBulkButtons();
+      });
+
       row.querySelector('.queue-reject')?.addEventListener('click', () => {
         const count = selected() || 1;
         const rejection = addInlineRejection(row, count);
@@ -165,6 +184,8 @@
         checkbox.dispatchEvent(new Event('change', { bubbles: true }));
       });
     });
+
+    updateBulkButtons();
 
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
@@ -186,7 +207,7 @@
         textarea?.focus();
         return;
       }
-      const row = panel.closest('.table-row');
+      const row = panel.__queueRow || panel.previousElementSibling;
       if (row) row.dataset.queueStatus = 'rejected';
       panel.classList.remove('is-expanded');
       showToast('Application Rejected');
