@@ -836,7 +836,7 @@ html:not(.dark) .brand-footer {
             </button>
           </div>
           <p class="ui-text-caption">
-            Unified primary action across all portals: Terracotta background (<code>#D97251</code>), bold black text (<code>#000000</code>), consistent SVG plus icon, and <code>height: 38px</code>.
+            Unified primary action across all portals: Terracotta background (<code>#D97251</code>), white text (<code>#FFFFFF</code>) in light mode, consistent SVG plus icon, and <code>height: 38px</code>.
           </p>
         </div>
 
@@ -1035,11 +1035,11 @@ html:not(.dark) .brand-footer {
             <tr>
               <th style="width: 40px;"><input type="checkbox" aria-label="Select all rows"></th>
               <th>Student</th>
-              <th>Student ID</th>
+              <th class="col-id">Student ID</th>
               <th>Program</th>
               <th>Year Level</th>
               <th>Status</th>
-              <th style="text-align: right;">Action</th>
+              <th class="col-action">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -1055,7 +1055,7 @@ html:not(.dark) .brand-footer {
               <td>BS Computer Science</td>
               <td>3rd Year</td>
               <td><span class="ui-badge ui-badge--success">Approved</span></td>
-              <td style="text-align: right;">
+              <td class="col-action">
                 <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button>
               </td>
             </tr>
@@ -1071,7 +1071,7 @@ html:not(.dark) .brand-footer {
               <td>BS Information Systems</td>
               <td>2nd Year</td>
               <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
-              <td style="text-align: right;">
+              <td class="col-action">
                 <a href="#data-tables" class="ui-link-neutral" style="font-size: 13px; font-weight: 500;">Review <span class="arrow">&rarr;</span></a>
               </td>
             </tr>
@@ -1087,7 +1087,7 @@ html:not(.dark) .brand-footer {
               <td>BS Information Technology</td>
               <td>4th Year</td>
               <td><span class="ui-badge ui-badge--info">In Progress</span></td>
-              <td style="text-align: right;">
+              <td class="col-action">
                 <a href="#data-tables" class="ui-link-neutral" style="font-size: 13px; font-weight: 500;">Write review <span class="arrow">&rarr;</span></a>
               </td>
             </tr>
@@ -1103,7 +1103,7 @@ html:not(.dark) .brand-footer {
               <td>BS Computer Science</td>
               <td>3rd Year</td>
               <td><span class="ui-badge ui-badge--success">Approved</span></td>
-              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
             </tr>
             <tr>
               <td><input type="checkbox" aria-label="Select row"></td>
@@ -1117,7 +1117,7 @@ html:not(.dark) .brand-footer {
               <td>BS Information Systems</td>
               <td>1st Year</td>
               <td><span class="ui-badge ui-badge--info">In Progress</span></td>
-              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
             </tr>
             <tr>
               <td><input type="checkbox" aria-label="Select row"></td>
@@ -1131,7 +1131,7 @@ html:not(.dark) .brand-footer {
               <td>BS Computer Engineering</td>
               <td>4th Year</td>
               <td><span class="ui-badge ui-badge--success">Approved</span></td>
-              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
             </tr>
             <tr>
               <td><input type="checkbox" aria-label="Select row"></td>
@@ -1145,7 +1145,7 @@ html:not(.dark) .brand-footer {
               <td>BS Computer Science</td>
               <td>2nd Year</td>
               <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
-              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
             </tr>
             <tr>
               <td><input type="checkbox" aria-label="Select row"></td>
@@ -1159,7 +1159,7 @@ html:not(.dark) .brand-footer {
               <td>BS Data Science</td>
               <td>1st Year</td>
               <td><span class="ui-badge ui-badge--success">Approved</span></td>
-              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
             </tr>
             <tr>
               <td><input type="checkbox" aria-label="Select row"></td>
@@ -1173,7 +1173,7 @@ html:not(.dark) .brand-footer {
               <td>BS Artificial Intelligence</td>
               <td>3rd Year</td>
               <td><span class="ui-badge ui-badge--success">Approved</span></td>
-              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
             </tr>
             <tr>
               <td><input type="checkbox" aria-label="Select row"></td>
@@ -1187,10 +1187,13 @@ html:not(.dark) .brand-footer {
               <td>BS Computer Science</td>
               <td>4th Year</td>
               <td><span class="ui-badge ui-badge--success">Approved</span></td>
-              <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
             </tr>
           </tbody>
         </table>
+        <p class="ui-text-muted" style="font-size: 0.8125rem; margin: 0.75rem 0 0;">
+          <strong>Column ratio helpers:</strong> <code>.col-id</code> (tight, nowrap), <code>.col-action</code> (tight, left-aligned, nowrap; links/buttons never wrap), <code>.col-60</code> / <code>.col-20</code> for Name/Status/Action tables (60/20/20), <code>.col-flex</code> for columns sharing remaining width equally (Student Name, Program). First and last columns hug the table edges.
+        </p>
         <!-- Table Pagination Footer -->
           </div> <!-- Closes ui-table-wrap -->
           <div class="ui-table-pagination" style="border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;">
@@ -1262,40 +1265,40 @@ html:not(.dark) .brand-footer {
           <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); margin-bottom: 0.75rem; padding-left: 0.25rem;">
             Standard Portal Sidebar Navigation
           </div>
-          <div id="demo-sidebar-container" style="width: 100%; max-width: 260px; background: #1F1E1D; border: 1px solid #181716; border-radius: 16px; padding: 14px 10px; display: flex; flex-direction: column; gap: 8px;">
-            <div class="brand-header" style="padding: 4px 10px;"><h1 class="brand-title" style="font-size: 16px; font-weight: 700; color: #FAF9F5;">Academic Portal</h1></div>
+          <div id="demo-sidebar-container" style="width: 100%; max-width: 260px; background: var(--sidebar, #1F1E1D); border: 1px solid var(--sidebar-border, #181716); border-radius: 16px; padding: 14px 10px; display: flex; flex-direction: column; gap: 8px;">
+            <div class="brand-header" style="padding: 4px 10px;"><h1 class="brand-title" style="font-size: 16px; font-weight: 700; color: var(--foreground, #FAF9F5);">Academic Portal</h1></div>
             <nav class="nav" id="demo-sidebar-nav" style="display: flex; flex-direction: column; gap: 4px;">
-              <a href="#portal-sidebars" class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold" style="text-decoration: none; background: #D97251 !important; color: #000000 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.2);" aria-current="page">
-                <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: #000000;"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg>
-                <span style="color: #000000 !important; font-weight: 700;">Dashboard</span>
+              <a href="#portal-sidebars" class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold" style="text-decoration: none; background: #D97251 !important; color: #FFFFFF !important; box-shadow: 0 1px 3px rgba(0,0,0,0.2);" aria-current="page">
+                <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: #FFFFFF;"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg>
+                <span style="color: #FFFFFF !important; font-weight: 700;">Dashboard</span>
               </a>
-              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: #98938D;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg>
-                <span style="color: #98938D;">Faculty Applications</span>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: var(--muted-foreground, #98938D); transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: var(--muted-foreground, #98938D);"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg>
+                <span style="color: var(--muted-foreground, #98938D);">Faculty Applications</span>
               </a>
-              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/></svg>
-                <span style="color: #98938D;">Student Applications</span>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: var(--muted-foreground, #98938D); transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--muted-foreground, #98938D);"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/></svg>
+                <span style="color: var(--muted-foreground, #98938D);">Student Applications</span>
               </a>
-              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg>
-                <span style="color: #98938D;">Program Applications</span>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: var(--muted-foreground, #98938D); transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--muted-foreground, #98938D);"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg>
+                <span style="color: var(--muted-foreground, #98938D);">Program Applications</span>
               </a>
-              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                <span style="color: #98938D;">Dept. Applications</span>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: var(--muted-foreground, #98938D); transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--muted-foreground, #98938D);"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <span style="color: var(--muted-foreground, #98938D);">Dept. Applications</span>
               </a>
-              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                <span style="color: #98938D;">Students</span>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: var(--muted-foreground, #98938D); transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--muted-foreground, #98938D);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <span style="color: var(--muted-foreground, #98938D);">Students</span>
               </a>
-              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: #98938D; transition: all 150ms ease;">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: #98938D;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span style="color: #98938D;">Audit Log</span>
+              <a href="#portal-sidebars" class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold" style="text-decoration: none; color: var(--muted-foreground, #98938D); transition: all 150ms ease;">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--muted-foreground, #98938D);"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span style="color: var(--muted-foreground, #98938D);">Audit Log</span>
               </a>
             </nav>
             <div style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 10px;">
-              <div class="sidebar-account-card" style="display: flex; align-items: center; justify-content: space-between; padding: 0 14px; height: 58px; border-radius: 18px; background: #2B2A27; border: 1px solid #383734;">
+              <div class="sidebar-account-card" style="display: flex; align-items: center; justify-content: space-between; padding: 0 14px; height: 58px; border-radius: 18px; background: var(--muted, #2B2A27); border: 1px solid var(--border, #383734);">
                 <div style="display: flex; align-items: center; gap: 10px;">
                   <div class="sidebar-avatar" style="width: 34px; height: 34px; border-radius: 50%; background-color: #F7E2D6; color: #A35233; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px;">U</div>
                   <div style="display: flex; flex-direction: column;">
@@ -1351,7 +1354,9 @@ html:not(.dark) .brand-footer {
           <div style="background: var(--card, #21201E); border: 1px solid var(--border, #3E3D39); border-radius: 16px; padding: 22px 26px; position: relative; box-shadow: 0 20px 48px -10px rgba(0,0,0,0.6), 0 8px 16px -4px rgba(0,0,0,0.4); color: var(--foreground, #FFFFFF);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
               <h4 style="margin: 0; font-size: 16px; font-weight: 700; color: var(--foreground, #FFFFFF);">Reject Application Proposal</h4>
-              <span style="font-size: 18px; opacity: 0.7; cursor: pointer; color: var(--muted-foreground);">&times;</span>
+              <button type="button" class="modal-close" style="position: static; width: 28px; height: 28px; cursor: pointer;" aria-label="Close modal">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M1 1L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
             </div>
             <div style="display: flex; flex-direction: column; gap: 12px;">
               <!-- Contextual Action Confirmation Alert -->
@@ -1376,7 +1381,6 @@ html:not(.dark) .brand-footer {
               <div>
                 <label style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--foreground, #FFFFFF);">
                   <span>Reason for Rejection <span style="color: var(--destructive, #EF4444); font-weight: 700;">*</span></span>
-                  <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
                 </label>
                 <div style="padding: 9px 12px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: 10px; font-size: 13px; color: var(--muted-foreground); min-height: 60px; line-height: 1.45;">
                   Incomplete accreditation documentation for curriculum prerequisites.
@@ -1387,7 +1391,7 @@ html:not(.dark) .brand-footer {
           </div>
 
           <p class="ui-text-caption">
-            Conforms strictly to the <strong>Standard Card</strong> architecture (<code>background: var(--card)</code>, <code>border: 1px solid var(--border)</code>, 16px radius) with standard lighter-bordered form controls (<code>var(--input)</code>), an expandable rejection textarea, required reason validation, primary terracotta submission button (<code>var(--primary)</code>), and embedded alert confirmation banners (<code>.ui-alert</code>).
+            Conforms strictly to the <strong>Standard Card</strong> architecture (<code>background: var(--card)</code>, <code>border: 1px solid var(--border)</code>, 16px radius) with standard lighter-bordered form controls (<code>var(--input)</code>), a resizable rejection textarea, required reason validation, primary terracotta submission button (<code>var(--primary)</code>), and embedded alert confirmation banners (<code>.ui-alert</code>).
           </p>
         </div>
 
@@ -2305,7 +2309,7 @@ html:not(.dark) .brand-footer {
             <aside class="brand-card">
                 <a href="#" class="brand-logo" aria-label="SPMIS">
                     <img class="logo-dark-only" src="../assets/icons/SPMIS.png" alt="SPMIS" />
-<img class="logo-light-only" src="../assets/icons/SPMIS_LM.png" alt="SPMIS" />
+<img class="logo-light-only" src="../assets/icons/SPMIS.png" alt="SPMIS" />
                 </a>
 
                 <div class="brand-hero">
@@ -2426,18 +2430,18 @@ html:not(.dark) .brand-footer {
         <!-- Portal Top Header Bar Preview -->
         <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
           <span class="ui-btn-label">Portal Status Header Bar</span>
-          <div class="ui-workspace-surface" style="padding: 1.25rem; border: 1px solid var(--border); border-radius: 12px; background: #141413;">
-            <div class="admin-top-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #42423F; padding-bottom: 0.75rem; margin-bottom: 0.75rem; width: 100%;">
+          <div class="ui-workspace-surface" style="padding: 1.25rem; border: 1px solid var(--border); border-radius: 12px; background: var(--muted, #F5F3EE);">
+            <div class="admin-top-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border, #E8E5DE); padding-bottom: 0.75rem; margin-bottom: 0.75rem; width: 100%;">
               <div style="display: flex; align-items: center; gap: 10px;">
                 <div class="red-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #D97251;"></div>
-                <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #9C948B;">Workspace / Overview</span>
+                <span class="breadcrumb-text">Workspace / Overview</span>
               </div>
               <div style="display: flex; align-items: center; gap: 12px;">
-                <span class="status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844; font-size: 11px; color: #9C948B;">
+                <span class="status-badge">
                   <span class="green-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;"></span>
                   System Live
                 </span>
-                <span style="font-size: 11px; color: #9C948B;">AY 2026-2027</span>
+                <span class="ay-text">AY 2026-2027</span>
               </div>
             </div>
             <div style="text-align: center; font-size: 12px; color: var(--muted-foreground); padding: 8px 0;">
@@ -2771,7 +2775,7 @@ html:not(.dark) .brand-footer {
   <div class="modal-overlay" id="demoRejectModal">
     <div class="modal-container">
       <button class="modal-close" id="demoCloseRejectModal" aria-label="Close modal">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M1 1L13 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M1 1L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <h3 class="modal-title">Reject Application</h3>
       <form class="modal-form" id="demoRejectForm">
@@ -2799,7 +2803,6 @@ html:not(.dark) .brand-footer {
         <div>
           <label for="demoRejectReason">
             <span>Reason for rejection <span style="color: var(--destructive); font-weight: 700;">*</span></span>
-            <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
           </label>
           <textarea id="demoRejectReason" required placeholder="Enter specific deficiency or prerequisites reason..."></textarea>
         </div>

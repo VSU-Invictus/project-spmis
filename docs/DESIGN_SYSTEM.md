@@ -208,7 +208,7 @@ Interactive button primitives conforming to the unified `.ui-btn` specification,
 ```
 
 #### Specifications:
-- **Primary Entity Add (`.add-button`):** Terracotta background (`#D97251`), bold black text (`#000000`, `font-weight: 700`), 38px height (`height: 38px`), consistent SVG plus icon (`14x14`, `stroke-width="2"`, `stroke-linecap="round"`), and 12px border radius.
+- **Primary Entity Add (`.add-button`):** Terracotta background (`#D97251`), white text (`#FFFFFF`, `font-weight: 600`) in light mode / high-contrast primary variant, 38px height (`height: 38px`), consistent SVG plus icon (`14x14`, `stroke-width="2"`, `stroke-linecap="round"`), and 12px border radius.
 - **Action Link (`.ui-link-neutral`):** High-contrast neutral text (`#FAF9F5`) transitioning to terracotta (`#D97251`) on hover, with the `.arrow` smoothly gliding 4px rightward via `transform: translateX(4px)`.
 - **Decision Pills (`.pill-btn`):** Full 9999px radius; Accept uses forest green (`#2c7e39`), Reject uses crimson (`#f9464a`).
 
@@ -782,8 +782,24 @@ For any standalone page under `mockup/pages/`, include the stylesheets in the `<
 
 1. **Never use ad hoc hex color literals** in page markup or inline styles. Always reference `var(--...)` custom properties or documented tokens.
 2. **Preserve full-screen framing:** The outer container must be borderless (`border: none`) and never produce outer viewport scrollbars (`overflow: hidden` on viewport roots).
-3. **Primary Action Consistency:** All primary Add buttons (`.add-button`) must use the terracotta background (`#D97251`), bold black text (`#000000`, `font-weight: 700`), 38px height, and the standard SVG plus icon.
-4. **Sidebar Palette Conformity:** Docked sidebars must use `#1F1E1D` background with `#181716` right border, terracotta `#D97251` active navigation items with `#000000` text/icon, and `#98938D` inactive items with `rgba(255,255,255,0.05)` hover background.
+3. **Primary Action Consistency:** All primary Add buttons (`.add-button`) must use the terracotta background (`#D97251`), white text (`#FFFFFF`) in light mode, 38px height, and the standard SVG plus icon.
+4. **Sidebar Palette Conformity:** Docked sidebars use `#1F1E1D` in dark mode and warm `#FAF9F6` in light mode with subtle `#E8E5DE` border, terracotta `#D97251` active navigation items, and readable inactive items with gentle hover feedback.
 5. **Zero-Blink Transitions:** Include `view-transition-name: portal-sidebar;` on persistent layout elements and leverage link hover prefetching.
 6. **Respect contrast in both modes:** Ensure text uses `var(--foreground)`, `var(--card-foreground)`, or `var(--muted-foreground)` so content remains completely legible in both Light and Dark modes.
 7. **Inspect with Living Style Guide:** Always check new primitives against [`mockup/pages/design-system.html`](file:///c:/Users/monarch/Desktop/project-spmis/mockup/pages/design-system.html) before deploying to production.
+
+## Table Column Helpers
+
+- `.col-id` - tight, nowrap (Student ID).
+- `.col-action` - tight, left-aligned header and cells, nowrap; links/buttons (View, Review ->, Write review ->) never wrap.
+- `.col-60` / `.col-20` - Name / Status / Action tables use 60/20/20.
+- `.col-flex` - Student Name and Program share remaining width equally; Review Tags keep current ratio.
+- First and last columns hug table edges.
+
+## Light Mode Notes
+
+- Primary action buttons (`.btn-add`, `.add-button`, `.ui-btn-primary`) use white text/icons.
+- Sidebar and status header use a light warm surface (#FAF9F6 / #F5F3EE); active nav stays terracotta.
+- Indeterminate header checkbox shows a black check; fully checked stays primary with white check.
+- Modal close button uses muted-foreground with tinted hover background.
+
