@@ -6,6 +6,7 @@
     <title>Admin Dashboard - System Metrics & Approvals</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -163,7 +164,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
                         <!-- Card 1: Pending Student Applications -->
-                        <a href="student-applications.html" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                        <a href="dashboard.html?queue=student" data-queue-open="student" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
                             <span class="flex flex-col gap-0.5">
                                 <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Students</span>
                                 <span class="text-[11px] text-flint leading-4">Requires Review</span>
@@ -172,7 +173,7 @@
                         </a>
 
                         <!-- Card 2: Pending Department Applications -->
-                        <a href="department-applications.html" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                        <a href="dashboard.html?queue=department" data-queue-open="department" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
                             <span class="flex flex-col gap-0.5">
                                 <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Departments</span>
                                 <span class="text-[11px] text-flint leading-4">Requires Review</span>
@@ -181,7 +182,7 @@
                         </a>
 
                         <!-- Card 3: Pending Program Applications -->
-                        <a href="program-applications.html" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                        <a href="dashboard.html?queue=program" data-queue-open="program" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
                             <span class="flex flex-col gap-0.5">
                                 <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Programs</span>
                                 <span class="text-[11px] text-flint leading-4">Requires Review</span>
@@ -190,7 +191,7 @@
                         </a>
 
                         <!-- Card 4: Pending Faculty Applications -->
-                        <a href="faculty-applications.html" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                        <a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
                             <span class="flex flex-col gap-0.5">
                                 <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Faculty</span>
                                 <span class="text-[11px] text-flint leading-4">Requires Review</span>
@@ -384,5 +385,6 @@
             }, 3000);
         }
     </script>
+    <script src="../../assets/js/queue-modal.js"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
   <title>Admin Portal - Departments</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -633,7 +634,7 @@
         </div>
 
         <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
-          <a href="../../pages/admin/department-applications.html" class="queue-button" aria-label="Open department applications queue">
+          <a href="departments.html?queue=department" class="queue-button" data-queue-open="department" aria-label="Open department applications queue">
             Queue
             <span class="queue-counter">2</span>
           </a>
@@ -926,5 +927,6 @@
 
   </div>
 
+  <script src="../../assets/js/queue-modal.js"></script>
 </body>
 </html>

@@ -8,8 +8,21 @@
     'program-applications.html': 'program',
     'department-applications.html': 'department'
   };
+  const queueToPage = {
+    faculty: 'faculty-applications.html',
+    student: 'student-applications.html',
+    program: 'program-applications.html',
+    department: 'department-applications.html'
+  };
+  const queueTitles = {
+    faculty: 'Faculty Proposals',
+    student: 'Student Proposals',
+    program: 'Program Proposals',
+    department: 'Department Proposals'
+  };
 
   const pageQueue = pageToQueue[window.location.pathname.split('/').pop()] || null;
+  const isEmbeddedQueue = new URLSearchParams(window.location.search).has('embedded');
 
   function selectedRows(root = document) {
     return [...root.querySelectorAll('.table-body .custom-checkbox:checked')]
@@ -31,17 +44,65 @@
     window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
   }
 
-  function closeQueueModal(modal) {
+  function ensureModalShell() {
+    let modal = document.querySelector('[data-queue-modal]');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.dataset.queueModal = '';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.setAttribute('aria-labelledby', 'queue-modal-title');
+    modal.innerHTML = `
+      <section class="modal-container queue-modal-container" role="document">
+        <header class="modal-header">
+          <h2 id="queue-modal-title" class="modal-title" data-queue-modal-title>Pending applications</h2>
+          <button type="button" class="modal-close modal-cancel" data-queue-close aria-label="Close queue modal">&times;</button>
+        </header>
+        <div class="queue-modal-body" data-queue-modal-body></div>
+      </section>`;
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function setQueueModalContent(modal, queue) {
+    if (!modal || !queueTypes.has(queue)) return;
+
+    const title = modal.querySelector('[data-queue-modal-title]');
+    const body = modal.querySelector('[data-queue-modal-body]');
+    if (title) title.textContent = queueTitles[queue] || 'Pending applications';
+    if (!body) return;
+
+    const page = queueToPage[queue];
+    let frame = body.querySelector('iframe');
+    if (!frame) {
+      frame = document.createElement('iframe');
+      frame.className = 'queue-modal-frame';
+      frame.title = 'Approval queue';
+      body.replaceChildren(frame);
+    }
+
+    const nextSrc = `${page}?embedded=1`;
+    if (!frame.getAttribute('src')?.endsWith(nextSrc)) {
+      frame.src = nextSrc;
+    }
+  }
+
+  function closeQueueModal(modal, options = {}) {
     if (!modal) return;
     modal.classList.remove('active');
     modal.setAttribute('aria-hidden', 'true');
-    removeQueueParameter();
+    if (!options.preserveUrl) removeQueueParameter();
     const restoreTarget = modal.__restoreFocus;
     if (restoreTarget && typeof restoreTarget.focus === 'function') restoreTarget.focus();
   }
 
   function openQueueModal(modal, trigger) {
     if (!modal) return;
+    const queue = modal.dataset.queueType;
+    if (queueTypes.has(queue)) setQueueModalContent(modal, queue);
     modal.__restoreFocus = trigger || document.activeElement;
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
@@ -50,13 +111,13 @@
   }
 
   function installModalContract() {
-    const modal = document.querySelector('[data-queue-modal]');
-    if (!modal) return;
-
+    const triggers = document.querySelectorAll('[data-queue-open]');
     const params = new URLSearchParams(window.location.search);
     const requestedQueue = params.get('queue');
+    if (!triggers.length && !queueTypes.has(requestedQueue)) return;
+
+    const modal = ensureModalShell();
     const modalQueue = modal.dataset.queueType;
-    const triggers = document.querySelectorAll('[data-queue-open]');
 
     triggers.forEach((trigger) => {
       trigger.addEventListener('click', (event) => {
@@ -72,6 +133,7 @@
     });
 
     if (queueTypes.has(requestedQueue) && (!modalQueue || modalQueue === requestedQueue)) {
+      modal.dataset.queueType = requestedQueue;
       openQueueModal(modal);
     }
 
@@ -85,8 +147,16 @@
 
     window.addEventListener('popstate', () => {
       const queue = new URLSearchParams(window.location.search).get('queue');
-      if (queueTypes.has(queue)) openQueueModal(modal);
-      else closeQueueModal(modal);
+      if (queueTypes.has(queue)) {
+        modal.dataset.queueType = queue;
+        openQueueModal(modal);
+      }
+      else closeQueueModal(modal, { preserveUrl: true });
+    });
+
+    window.addEventListener('message', (event) => {
+      if (event.source !== modal.querySelector('iframe')?.contentWindow) return;
+      if (event.data === 'queue-modal-close') closeQueueModal(modal);
     });
 
     modal.addEventListener('keydown', (event) => {
@@ -193,6 +263,11 @@
       if (expanded) {
         event.preventDefault();
         expanded.classList.remove('is-expanded');
+        return;
+      }
+      if (isEmbeddedQueue && window.parent !== window) {
+        event.preventDefault();
+        window.parent.postMessage('queue-modal-close', window.location.origin);
       }
     });
 
@@ -238,6 +313,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    if (isEmbeddedQueue) document.body.classList.add('queue-embedded');
     installModalContract();
     if (pageQueue) installQueueRows();
   });

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
   <title>Admin Portal - Students</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -697,7 +698,7 @@
         </div>
 
         <div class="controls-actions">
-          <a href="../../pages/admin/student-applications.html" class="queue-button" aria-label="Open student applications queue">
+          <a href="students.html?queue=student" class="queue-button" data-queue-open="student" aria-label="Open student applications queue">
             Queue
             <span class="queue-counter">3</span>
           </a>
@@ -1076,6 +1077,7 @@
       }
     });
   </script>
+  <script src="../../assets/js/queue-modal.js"></script>
 </body>
 </html>
 
