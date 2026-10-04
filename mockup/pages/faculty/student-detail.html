@@ -1141,7 +1141,8 @@
             white-space: nowrap;
             font-weight: 400;
         }
-    </style>
+    html:not(.dark) .status-live-pill { background: #F1EEE8 !important; border-color: #E2DDD4 !important; color: #6C655D !important; }
+  </style>
 </head>
 
 <body data-page="student-detail">
@@ -1220,7 +1221,7 @@
           <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #A0988E;">FACULTY PORTAL / STUDENT DETAIL</span>
         </div>
         <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; color: #A0988E;">
-          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844;">
+          <span class="status-live-pill" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844;">
             <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
             System Live
           </span>
@@ -1230,23 +1231,22 @@
             <a href="students.html">← Back to students</a>
             <div class="header">
                 <div>
-
-                    <h1>
-                        <span data-student-name>Sam Lee Parker</span>
-                    </h1>
                     <p>Student information and attributed faculty reviews.</p>
                 </div>
                 <a class="button" id="new-review-link" href="new-review.html">+ Write review <span class="arrow">&rarr;</span></a>
             </div>
             <section class="ui-card">
                 <h2>Basic information</h2>
-                <dl>
-                    <dt>Student ID</dt>
-                    <dd data-student-id>24-1-00001</dd>
-                    <dt>Full name</dt>
-                    <dd data-student-name>Sam Lee Parker</dd>
-                    <dt>Program</dt>
-                    <dd data-student-program>BS Computer Science</dd>
+                <style>
+                    .basic-info-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 16px 24px; margin: 0; }
+                    .basic-info-grid > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+                    .basic-info-grid dt, .basic-info-grid dd { margin: 0; overflow-wrap: anywhere; }
+                    @media (max-width: 639px) { .basic-info-grid { grid-template-columns: 1fr !important; } }
+                </style>
+                <dl class="basic-info-grid">
+                    <div><dt>Student ID</dt><dd data-student-id>24-1-00001</dd></div>
+                    <div><dt>Full name</dt><dd data-student-name>Sam Lee Parker</dd></div>
+                    <div><dt>Program</dt><dd data-student-program>BS Computer Science</dd></div>
                 </dl>
             </section>
             <div class="between">

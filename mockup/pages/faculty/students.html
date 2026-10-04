@@ -1226,7 +1226,18 @@
         .filters select#department {
             margin-left: auto !important;
         }
-      </style>
+      /* Roster table: tight ID/Action columns, Name & Program share remaining width equally, Review Tags current ratio */
+    #roster-results table { table-layout: fixed; width: 100%; }
+    #roster-results th:nth-child(1), #roster-results td:nth-child(1) { width: 110px; white-space: nowrap; padding-left: 4px; }
+    #roster-results th:nth-child(2), #roster-results td:nth-child(2) { width: calc((100% - 250px - 22%) / 2); }
+    #roster-results th:nth-child(3), #roster-results td:nth-child(3) { width: calc((100% - 250px - 22%) / 2); }
+    #roster-results th:nth-child(4), #roster-results td:nth-child(4) { width: 22%; }
+    #roster-results th:nth-child(5), #roster-results td:nth-child(5) { width: 140px; white-space: nowrap; text-align: left; padding-right: 4px; }
+    #roster-results td:nth-child(5) a { white-space: nowrap; }
+    #roster-results th:first-child, #roster-results td:first-child { padding-left: 4px; }
+    #roster-results th:last-child, #roster-results td:last-child { padding-right: 4px; }
+  html:not(.dark) .status-live-pill { background: #F1EEE8 !important; border-color: #E2DDD4 !important; color: #6C655D !important; }
+  </style>
 </head>
 
 <body data-page="students">
@@ -1305,7 +1316,7 @@
           <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #A0988E;">FACULTY PORTAL / STUDENTS</span>
         </div>
         <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; color: #A0988E;">
-          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844;">
+          <span class="status-live-pill" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844;">
             <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
             System Live
           </span>
