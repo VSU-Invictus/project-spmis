@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **UI:** Converted the Register Student page into an accessible route-backed modal overlay on the Students roster.
+- **UI:** Implemented Gmail/Outlook-style live visual formatting in the review editor with toolbar icons (bold, italic, bullet list, numbered list).
+- **UI:** Added toolbar paperclip attachment trigger with removable file chips and batch clear support in reviews.
+- **UI:** Implemented autocomplete suggestions and removable chips for review tags.
+- **UI:** Added live word and character counters to the review editor.
 - **UI:** Added route-backed approval queue modals for student, faculty, program, and department proposals with deep-link support (`1aa9cf7`).
 - **UI:** Added inline row rejection and bulk rejection flows with accessible close, Escape, and confirmation behavior (`2bf5185`, `07d6cf5`).
 - **UI:** Added Shadcn-style "Rows per page" dropdown pill to table pagination.
@@ -26,6 +31,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Added "see/unsee" password visibility toggle on password and confirm-password inputs in the sign-up form (`d95578d`).
 
 ### Changed
+- **UI:** Enforced strictly comma-separated inputs for review tags.
+- **UI:** Replaced the markdown Write/Preview tabbed interface with inline live visual formatting.
+- **UI:** Routed standalone register student links directly into the student table modal overlay.
 - **UI:** Unified all four admin proposal tables with the design-system table layout, spacing, typography, action buttons, status chips, checked-row state, and responsive widths (`2e07cc7`).
 - **UI:** Applied design-system chip styling to proposal registration, request-type, role, and status badges (`a36c2e7`).
 - **UI:** Standardized approval and rejection controls, including side-by-side row actions and selection-aware bulk actions (`2bf5185`).
@@ -48,6 +56,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Merged `dev` into `mockup-public/auth-signin`, reconciling sign-in and sign-up page changes and removing the unused `SPMIS_LM.png` icon (`0e0658a`).
 
 ### Fixed
+- **UI:** Fixed review editor placeholder text persisting over newly inserted bulleted or numbered list items.
 - **Bug:** Fixed inline rejection panels so they span the full queue table, remain unique, close correctly, and clear when the queue modal closes (`b342595`, `2e07cc7`).
 - **Bug:** Fixed proposal search, row selection highlighting, duplicate rejection panels, and horizontal table overflow (`2e07cc7`).
 - **Bug:** Fixed queue table alignment and missing faculty status cells across the four proposal views (`2e07cc7`).

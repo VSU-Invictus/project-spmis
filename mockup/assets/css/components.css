@@ -1271,8 +1271,8 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     box-sizing: border-box;
 }
 
-.ui-chat-msg--ai {
-}
+/* .ui-chat-msg--ai {
+} */
 
 .ui-chat-msg--user {
     justify-content: flex-end;
@@ -1946,4 +1946,98 @@ button:hover .arrow,
 .ui-select-pill:hover,
 .ui-select-pill:focus {
     background-color: var(--accent) !important;
+}
+
+/* Footer navigation styling */
+.footer-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    font-family: var(--font-mono, monospace);
+}
+
+.footer-nav a {
+    color: var(--muted, rgba(250, 249, 245, 0.7));
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 0.3s ease;
+}
+
+/* The animated underline */
+.footer-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    font-family: var(--font-mono, monospace);
+}
+
+.footer-nav a {
+    /* Muted grey — hardcoded, not using --muted */
+    color: rgba(250, 249, 245, 0.55);
+    text-decoration: none;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding-bottom: 2px;
+    transition: color 0.3s ease;
+}
+
+/* Animated underline */
+.footer-nav a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: #d97757;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+}
+
+.footer-nav a:hover {
+    color: #d97757;
+}
+
+.footer-nav a:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* ACTIVE STATE */
+.footer-nav a.active {
+    color: #d97757 !important;
+    font-weight: 600;
+}
+
+.footer-nav a.active::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Separator dots */
+.footer-nav .dot {
+    color: rgba(250, 249, 245, 0.35);
+    font-size: 0.75rem;
+    user-select: none;
+}
+
+/* Light-mode: swap to dark muted grey */
+html:not(.dark) .footer-nav a {
+    color: rgba(20, 19, 17, 0.55);
+}
+html:not(.dark) .footer-nav a:hover,
+html:not(.dark) .footer-nav a.active {
+    color: #d97757 !important;
+}
+html:not(.dark) .footer-nav .dot {
+    color: rgba(20, 19, 17, 0.35);
 }
