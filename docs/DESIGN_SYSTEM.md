@@ -437,9 +437,9 @@ Data tables support clean typography profiles (no circular avatars), live row se
 #### Specifications:
 - **Interactive Row Selection:** Clicking anywhere on a table row (excluding interactive links, buttons, or inputs) toggles the row's checkbox and applies the `.checked` highlight (`background-color: var(--muted)`).
 - **Select-All Checkbox States:**
-  - *All Rows Checked:* Header checkbox is `:checked:not(:indeterminate)` with solid terracotta background (`var(--primary, #D97251)`) and crisp white checkmark.
-  - *Partial Selection (Indeterminate):* Header checkbox is `:indeterminate` with neutral transparent background (`background-color: transparent`, `border-color: var(--border)`), preserving the crisp white checkmark (`::after`) without turning orange.
-  - *No Rows Checked:* Header checkbox is unchecked and empty.
+  - *All Rows Checked:* Header checkbox is `:checked:not(:indeterminate)` with solid terracotta background (`var(--primary, #D97251)`). In light mode, it displays a crisp white checkmark; in dark mode, it displays a crisp black checkmark.
+  - *Partial Selection (Indeterminate):* Header checkbox is `:indeterminate` with muted surface background (`var(--muted)`: `#30302E` in dark mode, `#DBD7CB` / `#E5E0D8` in light mode) and subtle border (`var(--border)`). Checkmark icon is white in dark mode and black in light mode for optimal contrast.
+  - *No Rows Checked:* Header checkbox is unchecked and empty with transparent background.
 - **Mobile Responsiveness (<768px):** Table container enforces `overflow-x: auto` and `-webkit-overflow-scrolling: touch` with a minimum table width of 680px, preventing layout breakage on mobile screens.
 
 ---
@@ -800,6 +800,6 @@ For any standalone page under `mockup/pages/`, include the stylesheets in the `<
 
 - Primary action buttons (`.btn-add`, `.add-button`, `.ui-btn-primary`) use white text/icons.
 - Sidebar and status header use a light warm surface (#FAF9F6 / #F5F3EE); active nav stays terracotta.
-- Indeterminate header checkbox shows a black check; fully checked stays primary with white check.
+- Checkbox theming: In light mode, checked boxes display a white checkmark on terracotta, while indeterminate header checkbox displays a black checkmark on muted taupe background (`#DBD7CB`). In dark mode, checked boxes display a black checkmark on terracotta, while indeterminate header checkbox displays a white checkmark on dark muted background (`#30302E`).
 - Modal close button uses muted-foreground with tinted hover background.
 
