@@ -2979,6 +2979,16 @@ html:not(.dark) :is(.sidebar, #demo-sidebar-container) .sidebar-account-card {
 html:not(.dark) :is(.sidebar, #demo-sidebar-container) .sidebar-account-card span {
     color: #2B2A27 !important;
 }
+html:not(.dark) :is(.sidebar-logout-btn, .logout-btn) {
+    color: #706B65 !important;
+}
+html:not(.dark) :is(.sidebar-logout-btn, .logout-btn):hover {
+    color: #1A1918 !important;
+    background-color: rgba(0, 0, 0, 0.08) !important;
+}
+html:not(.dark) :is(.sidebar-logout-btn, .logout-btn) svg {
+    stroke: currentColor !important;
+}
 
 /* Status header bar: light in light mode, lighter in dark mode */
 .admin-top-header .status-badge {

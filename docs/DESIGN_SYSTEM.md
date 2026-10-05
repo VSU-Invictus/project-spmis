@@ -802,4 +802,5 @@ For any standalone page under `mockup/pages/`, include the stylesheets in the `<
 - Sidebar and status header use a light warm surface (#FAF9F6 / #F5F3EE); active nav stays terracotta.
 - Checkbox theming: In light mode, checked boxes display a white checkmark on terracotta, while indeterminate header checkbox displays a black checkmark on muted taupe background (`#DBD7CB`). In dark mode, checked boxes display a black checkmark on terracotta, while indeterminate header checkbox displays a white checkmark on dark muted background (`#30302E`).
 - Modal close button uses muted-foreground with tinted hover background.
+- Sidebar logout button in light mode uses muted neutral (#706B65) on idle and dark foreground (#1A1918) on hover with subtle tinted background, preventing it from turning white.
 
