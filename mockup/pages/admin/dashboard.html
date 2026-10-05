@@ -6,6 +6,7 @@
     <title>Admin Dashboard - System Metrics & Approvals</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -201,7 +202,7 @@
     </aside>
     <script src="../../assets/js/admin-sidebar.js"></script>
 
-    <!-- Right Main Content Panel Container -->
+<!-- Right Main Content Panel Container -->
     <main class="section-container">
       <div>
         <!-- Admin Top Header -->
@@ -229,73 +230,56 @@
                     </p>
                 </header>
 
-                <!-- Top Stats Grid Row -->
-                  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                      
-                      <!-- Card 1: Pending Faculty -->
-                      <div class="ui-card p-5 flex flex-col gap-3">
-                          <div class="flex items-center justify-between">
-                              <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Faculty</span>
-                              <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
-                          </div>
-                          <div class="flex items-end justify-between">
-                              <span class="font-intel-mono text-[30px] font-semibold text-white leading-none">12</span>
-                              <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
-                                  +4 this week
-                              </span>
-                          </div>
-                      </div>
+<!-- Pending Approval Queue Summary -->
+                <section class="mb-4">
+                    <h2 class="mb-3 text-[15px] font-bold text-white leading-6">Pending Approval Queue</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
-                      <!-- Card 2: Pending Students -->
-                      <div class="ui-card p-5 flex flex-col gap-3">
-                          <div class="flex items-center justify-between">
-                              <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Pending Students</span>
-                              <span class="w-[9px] h-[9px] rounded-full bg-[#D97251] shrink-0"></span>
-                          </div>
-                          <div class="flex items-end justify-between">
-                              <span class="font-intel-mono text-[30px] font-semibold text-white leading-none">48</span>
-                              <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
-                                  +18 today
-                              </span>
-                          </div>
-                      </div>
+                        <!-- Card 1: Pending Student Applications -->
+                        <a href="dashboard.html?queue=student" data-queue-open="student" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                            <span class="flex flex-col gap-0.5">
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Students</span>
+                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
+                            </span>
+                            <span class="text-[28px] font-bold text-[#F0D35A] leading-8">4</span>
+                        </a>
 
-                      <!-- Card 3: Active Faculty -->
-                      <div class="ui-card p-5 flex flex-col gap-3">
-                          <div class="flex items-center justify-between">
-                              <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Active Faculty</span>
-                              <span class="w-[9px] h-[9px] rounded-full bg-[#2E7D32] shrink-0"></span>
-                          </div>
-                          <div class="flex items-end justify-between">
-                              <span class="font-intel-mono text-[30px] font-semibold text-white leading-none">142</span>
-                              <span class="bg-panache px-2 py-0.5 rounded-full text-[10px] font-medium text-[#2E7D32] leading-4">
-                                  Active
-                              </span>
-                          </div>
-                      </div>
+                        <!-- Card 2: Pending Department Applications -->
+                        <a href="dashboard.html?queue=department" data-queue-open="department" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                            <span class="flex flex-col gap-0.5">
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Departments</span>
+                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
+                            </span>
+                            <span class="text-[28px] font-bold text-[#F0D35A] leading-8">5</span>
+                        </a>
 
-                      <!-- Card 4: Total Enrolled -->
-                      <div class="ui-card p-5 flex flex-col gap-3">
-                          <div class="flex items-center justify-between">
-                              <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Total Enrolled</span>
-                              <span class="w-[9px] h-[9px] rounded-full bg-[#1A73E8] shrink-0"></span>
-                          </div>
-                          <div class="flex items-end justify-between">
-                              <span class="font-intel-mono text-[30px] font-semibold text-white leading-none">2,850</span>
-                              <span class="bg-zumthor px-2 py-0.5 rounded-full text-[10px] font-medium text-[#1A73E8] leading-4">
-                                  AY 2026-2027
-                              </span>
-                          </div>
-                      </div>
+                        <!-- Card 3: Pending Program Applications -->
+                        <a href="dashboard.html?queue=program" data-queue-open="program" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                            <span class="flex flex-col gap-0.5">
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Programs</span>
+                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
+                            </span>
+                            <span class="text-[28px] font-bold text-[#C94A4A] leading-8">5</span>
+                        </a>
 
-                  </section>
+                        <!-- Card 4: Pending Faculty Applications -->
+                        <a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
+                            <span class="flex flex-col gap-0.5">
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Faculty</span>
+                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
+                            </span>
+                            <span class="text-[28px] font-bold text-[#C94A4A] leading-8">4</span>
+                        </a>
+
+                    </div>
+                </section>
 
                 <!-- Split View Content Section -->
                 <section class="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch">
                     
                     <!-- Pending Approval Queue Table (Spans 2 Columns) -->
                     <div class="lg:col-span-2 flex flex-col h-full">
-                        <section class="ui-card flex flex-col h-full gap-4">
+                        <section class="ui-card p-5 flex flex-col h-full gap-4">
                             <div class="flex items-center justify-between mb-2">
                                 <h2 class="text-lg font-bold text-white m-0 leading-none">Pending Approval Queue</h2>
                                 <span class="text-[11px] text-zorba">Requires System-Admin Action</span>
@@ -467,8 +451,7 @@
             }
         })();
     </script>
-
-    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+<div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
         <span id="toast-message">Action successful!</span>
     </div>
@@ -507,5 +490,6 @@
         });
     </script>
 
+    <script src="../../assets/js/queue-modal.js"></script>
 </body>
 </html>

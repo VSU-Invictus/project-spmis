@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
   <title>Admin Portal - Faculty Applications</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -15,7 +16,7 @@
       margin: 0;
       padding: 0;
     }
-    body {
+body {
       font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
       color: #fff;
     }
@@ -347,13 +348,6 @@
       height: 20px;
     }
 
-    .status-pending {
-      background: #fcece5;
-      color: #c65d3d;
-      width: 75px;
-      height: 20px;
-    }
-
     .status-active {
       background: #eaf7ee;
       color: #2f7b4d;
@@ -430,7 +424,7 @@
       line-height: 16px;
     }
     button, input, select, textarea {
-      font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
+font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
       font-weight: 500;
     }
 
@@ -491,7 +485,7 @@
       align-items: center;
       gap: 12px;
     }
-    .red-dot {
+.red-dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
@@ -538,7 +532,7 @@
       padding-top: 0.75rem;
       border-top: 1px solid #42423F;
       display: flex;
-      align-items: center;
+align-items: center;
       justify-content: space-between;
       font-size: 11px;
       color: #A0988E;
@@ -570,8 +564,7 @@
     
     <!-- Toast Notification -->
     <div id="toast" class="toast">Notification</div>
-
-    <!-- Reject Modal -->
+<!-- Reject Modal -->
     <div class="modal-overlay" id="rejectModal">
       <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="rejectModalTitle">
         <button class="modal-close" id="closeReject" aria-label="Close modal">
@@ -726,7 +719,7 @@
         </div>
       </div>
 
-      <div class="table-margin-container" style="padding-top: 0;">
+<div class="table-margin-container" style="padding-top: 0;">
         <div class="ui-table-wrap" style="margin-top: 16px;">
           <table class="ui-table">
             <thead>
@@ -806,15 +799,17 @@
                   <button class="ui-table-page-btn" disabled style="width: auto; padding: 6px 16px; border-radius: 99px; background: transparent; color: #6C655D; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Previous</button>
                   <button class="ui-table-page-btn" style="width: auto; padding: 6px 20px; border-radius: 99px; background: transparent; color: #FFFFFF; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Next</button>
             </div>
+
         </div>
       </div> <!-- End table-margin-container -->
 
-      <!-- Footer indicator -->
+<!-- Footer indicator -->
       <footer class="admin-footer" style="margin-top: auto; width: 100%;">
         <span>&copy; 2026 Admin Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
     </main>
+    <script src="../../assets/js/queue-modal.js"></script>
     <script>
       // Search, Filter and Admin Table initialization
       const searchInput = document.getElementById('searchInput');
@@ -840,6 +835,7 @@
           const type = typeFilter ? typeFilter.value.toLowerCase() : 'all';
           return type.includes('all') || row.textContent.toLowerCase().includes(type);
         }
+
       });
 
       // Toast and Modal Logic
@@ -862,8 +858,7 @@
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
       }
-
-      const rejectModal = document.getElementById('rejectModal');
+const rejectModal = document.getElementById('rejectModal');
       const rejectForm = document.getElementById('rejectForm');
       const closeReject = document.getElementById('closeReject');
 

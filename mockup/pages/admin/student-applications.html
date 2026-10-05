@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
   <title>Admin Portal - Student Applications</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -16,6 +17,7 @@
       padding: 0;
     }
     body {
+
       height: 100vh;
       margin: 0;
       padding: 0;
@@ -86,7 +88,7 @@
 
     .heading-title {
       margin: 8px 0 16px;
-      font-family: var(--font-sans, 'Outfit');
+font-family: var(--font-sans, 'Outfit');
       font-style: normal;
       font-weight: 700;
       font-size: 30px;
@@ -221,7 +223,7 @@
     /* Table Header */
     
 
-    
+
 
     
 
@@ -251,7 +253,7 @@
 
     
 
-    
+
 
     
 
@@ -298,8 +300,7 @@
       color: var(--ui-surface-text, #FFFFFF);
     }
 
-    
-    button, input, select, textarea {
+button, input, select, textarea {
       font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
       font-weight: 500;
     }
@@ -361,7 +362,7 @@
       align-items: center;
       gap: 12px;
     }
-    .red-dot {
+.red-dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
@@ -408,7 +409,7 @@
       padding-top: 0.75rem;
       border-top: 1px solid #42423F;
       display: flex;
-      align-items: center;
+align-items: center;
       justify-content: space-between;
       font-size: 11px;
       color: #A0988E;
@@ -442,8 +443,7 @@
     
     <!-- Toast Notification -->
     <div id="toast" class="toast">Notification</div>
-
-    <!-- Reject Modal -->
+<!-- Reject Modal -->
     <div class="modal-overlay" id="rejectModal">
       <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="rejectModalTitle">
         <button class="modal-close" id="closeReject" aria-label="Close modal">
@@ -681,6 +681,7 @@
                 <button class="ui-table-page-btn" disabled style="width: auto; padding: 6px 16px; border-radius: 99px; background: transparent; color: #6C655D; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Previous</button>
                 <button class="ui-table-page-btn" style="width: auto; padding: 6px 20px; border-radius: 99px; background: transparent; color: #FFFFFF; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Next</button>
             </div>
+
         </div>
 
 
@@ -693,6 +694,7 @@
         </footer>
 </main>
 
+    <script src="../../assets/js/queue-modal.js"></script>
     <script>
       // Search, Filter and Admin Table initialization
       const searchInput = document.getElementById('searchInput');
@@ -718,6 +720,7 @@
           const type = typeFilter ? typeFilter.value.toLowerCase() : 'all';
           return type.includes('all') || row.textContent.toLowerCase().includes(type);
         }
+
       });
 
       // Toast and Modal Logic
@@ -740,8 +743,7 @@
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
       }
-
-      const rejectModal = document.getElementById('rejectModal');
+const rejectModal = document.getElementById('rejectModal');
       const rejectForm = document.getElementById('rejectForm');
       const closeReject = document.getElementById('closeReject');
       const acceptModal = document.getElementById('acceptModal');

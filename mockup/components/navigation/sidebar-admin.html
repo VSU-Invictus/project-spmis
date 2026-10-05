@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,8 @@
     <title>Admin Sidebar Navigation</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,6 +57,11 @@
             color: #FFFFFF;
         }
 
+        #sidebar-nav a.nav-btn-active svg {
+            color: var(--primary-foreground, #141413);
+            stroke: currentColor;
+        }
+
         /* Bottom Account Profile Card Styling */
         .bg-account-card {
             background-color: #2B2A27;
@@ -92,7 +99,7 @@
 
     <!-- ========================= STANDALONE ADMIN SIDEBAR ========================= -->
     <aside id="sidebar-menu"
-        class="fixed top-0 left-0 bottom-0 w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50">
+        class="app-sidebar fixed top-0 left-0 bottom-0 w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50">
 
         <div class="flex flex-col gap-1">
             <!-- Brand Title Header -->
@@ -101,10 +108,10 @@
             </div>
 
             <!-- Navigation Links Stream -->
-            <nav class="flex flex-col gap-[3px]" id="sidebar-nav">
+            <nav class="nav flex flex-col gap-[3px]" id="sidebar-nav" aria-label="Admin navigation">
 
                 <!-- 1. Dashboard -->
-                <a href="../../pages/admin/dashboard.html"
+                <a href="../../pages/admin/dashboard.html" data-nav-key="dashboard" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" width="18" height="18" style="width: 18px; height: 18px;" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
@@ -116,7 +123,7 @@
                 </a>
 
                 <!-- 2. Faculty Applications -->
-                <a href="../../pages/admin/faculty-applications.html"
+                <a href="../../pages/admin/faculty-applications.html" data-nav-key="faculty-applications" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
@@ -129,7 +136,7 @@
                 </a>
 
                 <!-- 3. Student Applications -->
-                <a href="../../pages/admin/student-applications.html"
+                <a href="../../pages/admin/student-applications.html" data-nav-key="student-applications" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
@@ -139,7 +146,7 @@
                 </a>
 
                 <!-- 4. Program Applications -->
-                <a href="../../pages/admin/program-applications.html"
+                <a href="../../pages/admin/program-applications.html" data-nav-key="program-applications" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
@@ -150,7 +157,7 @@
                 </a>
 
                 <!-- 5. Department Application -->
-                <a href="../../pages/admin/department-applications.html"
+                <a href="../../pages/admin/department-applications.html" data-nav-key="department-applications" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
@@ -160,7 +167,7 @@
                 </a>
 
                 <!-- 6. Students -->
-                <a href="../../pages/admin/students.html"
+                <a href="../../pages/admin/students.html" data-nav-key="students" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -172,7 +179,7 @@
                 </a>
 
                 <!-- 7. Departments -->
-                <a href="../../pages/admin/departments.html"
+                <a href="../../pages/admin/departments.html" data-nav-key="departments" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="21" x2="21" y2="21"></line>
@@ -186,7 +193,7 @@
                 </a>
 
                 <!-- 8. Programs -->
-                <a href="../../pages/admin/programs.html"
+                <a href="../../pages/admin/programs.html" data-nav-key="programs" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -196,7 +203,7 @@
                 </a>
 
                 <!-- 9. Faculty -->
-                <a href="../../pages/admin/faculty.html"
+                <a href="../../pages/admin/faculty.html" data-nav-key="faculty" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -206,7 +213,7 @@
                 </a>
 
                 <!-- 10. Audit Log -->
-                <a href="../../pages/admin/audit-log.html"
+                <a href="../../pages/admin/audit-log.html" data-nav-key="audit-log" onclick="setActiveNav(this)"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -251,47 +258,49 @@
     <script>
         // Set active class on a nav link
         function setActiveNav(element) {
-            var INACTIVE = 'nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all';
-            var ACTIVE   = 'nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm';
-
             document.querySelectorAll('#sidebar-nav a').forEach(function(nav) {
-                nav.className = INACTIVE;
+                nav.classList.remove('nav-btn-active');
+                nav.classList.add('nav-btn-inactive');
+                nav.removeAttribute('aria-current');
             });
-            element.className = ACTIVE;
+
+            element.classList.remove('nav-btn-inactive');
+            element.classList.add('nav-btn-active');
+            element.setAttribute('aria-current', 'page');
         }
 
-        // Auto-detect current active page from parent URL on load
+        // Auto-detect current active page from query string or parent URL
         (function() {
+            var params = new URLSearchParams(window.location.search || '');
+            var activeKey = (params.get('active') || '').toLowerCase();
+
             try {
                 var currentPath = (window.parent.location.pathname || window.location.pathname).toLowerCase();
             } catch (e) {
                 var currentPath = window.location.pathname.toLowerCase();
             }
-
-            // Extract the filename from the current URL
-            var currentPage = currentPath.split('/').pop() || '';
+            var currentPage = (currentPath.split('/').pop() || '').replace('.html', '');
 
             var links = document.querySelectorAll('#sidebar-nav a');
             var matched = false;
 
             links.forEach(function(link) {
+                var key = (link.dataset.navKey || '').toLowerCase();
                 var href = (link.getAttribute('href') || '').toLowerCase();
-                var linkPage = href.split('/').pop() || '';
+                var linkPage = (href.split('/').pop() || '').replace('.html', '');
 
-                if (linkPage && currentPage === linkPage) {
+                if ((activeKey && key === activeKey) || (currentPage && (key === currentPage || linkPage === currentPage))) {
                     setActiveNav(link);
                     matched = true;
                 }
             });
 
-            // If no match found (e.g. index or root), default to dashboard
             if (!matched && links.length > 0) {
                 setActiveNav(links[0]);
             }
 
             document.body.classList.add('sidebar-ready');
 
-            // Let the active-state transition finish before the parent page reloads.
             links.forEach(function(link) {
                 link.addEventListener('click', function(event) {
                     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
@@ -301,7 +310,11 @@
                     event.preventDefault();
                     setActiveNav(link);
                     window.setTimeout(function() {
-                        window.parent.location.href = link.href;
+                        if (window.parent && window.parent !== window) {
+                            window.parent.location.href = link.href;
+                        } else {
+                            window.location.href = link.href;
+                        }
                     }, 150);
                 });
             });
