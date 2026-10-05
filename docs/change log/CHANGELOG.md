@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Added toolbar paperclip attachment trigger with removable file chips and batch clear support in reviews.
 - **UI:** Implemented autocomplete suggestions and removable chips for review tags.
 - **UI:** Added live word and character counters to the review editor.
+- **UI:** Added route-backed approval queue modals for student, faculty, program, and department proposals with deep-link support (`1aa9cf7`).
+- **UI:** Added inline row rejection and bulk rejection flows with accessible close, Escape, and confirmation behavior (`2bf5185`, `07d6cf5`).
 - **UI:** Added Shadcn-style "Rows per page" dropdown pill to table pagination.
 - **UI:** Added client-side static JavaScript pagination engine to `design-system.html` for interactive mockups.
 - **UI:** Row click selection for data tables (`242e95c`).
@@ -32,6 +34,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Enforced strictly comma-separated inputs for review tags.
 - **UI:** Replaced the markdown Write/Preview tabbed interface with inline live visual formatting.
 - **UI:** Routed standalone register student links directly into the student table modal overlay.
+- **UI:** Unified all four admin proposal tables with the design-system table layout, spacing, typography, action buttons, status chips, checked-row state, and responsive widths (`2e07cc7`).
+- **UI:** Applied design-system chip styling to proposal registration, request-type, role, and status badges (`a36c2e7`).
+- **UI:** Standardized approval and rejection controls, including side-by-side row actions and selection-aware bulk actions (`2bf5185`).
+- **UI:** Aligned dashboard pending-queue counts with the proposal rows shown in each queue (`2e07cc7`).
 - **UI:** Standardized data table pagination limits to 5, 10, and 20, defaulting to 5 rows per page globally.
 - **UI:** Streamlined the Design System tables showcase by removing redundant Program and Department mockups.
 - **UI:** Standardized interactive cards and extracted global arrow animations (`70da99c`).
@@ -51,6 +57,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - **UI:** Fixed review editor placeholder text persisting over newly inserted bulleted or numbered list items.
+- **Bug:** Fixed inline rejection panels so they span the full queue table, remain unique, close correctly, and clear when the queue modal closes (`b342595`, `2e07cc7`).
+- **Bug:** Fixed proposal search, row selection highlighting, duplicate rejection panels, and horizontal table overflow (`2e07cc7`).
+- **Bug:** Fixed queue table alignment and missing faculty status cells across the four proposal views (`2e07cc7`).
 - **UI:** Fixed table pagination chevron vertical alignment by enforcing `min-width: 4rem` and restoring flexbox positioning.
 - **Bug:** Resolved severe Javascript `SyntaxError` in the Faculty portal rendering engine caused by string literal newlines, restoring all tables.
 - **UI:** Removed outdated quick action buttons from the Faculty Applications page.

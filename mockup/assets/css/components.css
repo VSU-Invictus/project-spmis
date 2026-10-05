@@ -519,6 +519,59 @@ table tbody tr:has(input[type="checkbox"]:checked) {
     background: var(--muted);
 }
 
+/* Reusable pending-queue summary card */
+.queue-summary-card {
+    border-radius: 4px;
+    box-shadow: inset 4px 0 0 #77736D, 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+.queue-summary-card--yellow {
+    box-shadow: inset 4px 0 0 #F0D35A, 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+.queue-summary-card--zero {
+    box-shadow: inset 4px 0 0 #77736D, 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+.queue-summary-card__count--zero {
+    color: #77736D;
+}
+
+.modal-description {
+    margin: 0 0 1.25rem;
+    color: var(--muted-foreground, #A0988E);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.modal-actions .modal-submit {
+    flex: 1;
+    margin: 0;
+}
+
+.modal-cancel {
+    min-height: 39px;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid var(--border, #3E3D39);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--foreground, #FFFFFF);
+    font: inherit;
+    cursor: pointer;
+}
+
+.queue-summary-card--red {
+    box-shadow: inset 4px 0 0 #C94A4A, 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
 :is(.ui-card-sm, .ui-card--sm) {
     padding: 1rem !important;
 }

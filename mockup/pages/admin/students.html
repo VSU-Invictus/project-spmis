@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
   <title>Admin Portal - Students</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -120,6 +121,43 @@
     .btn-add:hover {
       background: #C45F3E;
       transform: translateY(-1px);
+    }
+
+    .queue-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(217, 114, 81, 0.45);
+      background: rgba(217, 114, 81, 0.12);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background .15s ease, transform .15s ease, border-color .15s ease;
+    }
+
+    .queue-button:hover {
+      background: rgba(217, 114, 81, 0.18);
+      border-color: rgba(217, 114, 81, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .queue-counter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #D97251;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
     }
 
     .controls-container {
@@ -641,7 +679,7 @@
 <body>
   <div class="app-canvas">
     <!-- Admin Sidebar Component -->
-    <iframe src="../../components/navigation/sidebar-admin.html" id="sidebar-frame" class="sidebar-frame" title="Admin Sidebar"></iframe>
+    <iframe src="../../components/navigation/sidebar-admin.html?active=students" id="sidebar-frame" class="sidebar-frame" title="Admin Sidebar"></iframe>
 
     <main class="section-container">
       <header class="header-container">
@@ -660,6 +698,10 @@
         </div>
 
         <div class="controls-actions">
+          <a href="students.html?queue=student" class="queue-button" data-queue-open="student" aria-label="Open student applications queue">
+            Queue
+            <span class="queue-counter">3</span>
+          </a>
           <div class="dropdown-container program">
             <select id="programFilter" class="dropdown-select">
               <option value="all">Program: All</option>
@@ -1035,6 +1077,7 @@
       }
     });
   </script>
+  <script src="../../assets/js/queue-modal.js"></script>
 </body>
 </html>
 

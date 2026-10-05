@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
   <title>Admin Portal - Departments</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -189,6 +190,43 @@
     .add-button:hover {
       background: #C45F3E;
       transform: translateY(-1px);
+    }
+
+    .queue-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(217, 114, 81, 0.45);
+      background: rgba(217, 114, 81, 0.12);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background .15s ease, transform .15s ease, border-color .15s ease;
+    }
+
+    .queue-button:hover {
+      background: rgba(217, 114, 81, 0.18);
+      border-color: rgba(217, 114, 81, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .queue-counter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #D97251;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
     }
 
     .table-margin-container {
@@ -573,7 +611,7 @@
 <body>
   <div class="app-canvas">
     <iframe
-      src="../../components/navigation/sidebar-admin.html"
+      src="../../components/navigation/sidebar-admin.html?active=departments"
       id="sidebar-frame"
       class="sidebar-frame"
       title="Admin Sidebar">
@@ -596,6 +634,10 @@
         </div>
 
         <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+          <a href="departments.html?queue=department" class="queue-button" data-queue-open="department" aria-label="Open department applications queue">
+            Queue
+            <span class="queue-counter">2</span>
+          </a>
           <div class="dropdown-container status">
             <select id="statusFilter" class="dropdown-select">
               <option value="all">Status: All</option>
@@ -885,5 +927,6 @@
 
   </div>
 
+  <script src="../../assets/js/queue-modal.js"></script>
 </body>
 </html>
