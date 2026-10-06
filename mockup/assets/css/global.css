@@ -3,7 +3,7 @@
    ========================================= */
 
 /* --- 1. FONTS --- */
-@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;500;600;700&family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
 
 /* --- 2. VARIABLES (Claude+ theme from tweakcn) --- */
 :root {
@@ -37,7 +37,8 @@
 
     --font-sans: 'Outfit', sans-serif;
     --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --font-mono: 'Intel One Mono', 'Geist Mono', ui-monospace, monospace;
+    --font-number: 'Intel One Mono', monospace;
     --tracking-normal: 0em;
     --spacing: 0.25rem;
     --radius: 1rem;
@@ -120,6 +121,13 @@ dialog,
 [role="alert"],
 [role="status"] {
     font-family: var(--font-sans, 'Outfit', sans-serif);
+}
+
+.font-intel-mono,
+.font-mono,
+.tabular-nums,
+.number-font {
+    font-family: 'Intel One Mono', monospace !important;
 }
 
 body {

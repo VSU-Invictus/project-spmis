@@ -5,705 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css?v=3">
   <title>Admin Portal - Faculty</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
-      color: #fff;
-    }
-
-    body {
-      overflow: hidden;
-    }
-
-    button, input, select, textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .app-canvas {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background: #141413;
-      border: none;
-      overflow: hidden;
-    }
-
-    .sidebar-frame {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 260px;
-      height: 100%;
-      border: none;
-      z-index: 50;
-    }
-
-    .section-container {
-      position: absolute;
-      left: 260px;
-      top: 0;
-      width: calc(100% - 260px);
-      height: 100%;
-      padding: 16px 24px;
-      display: flex;
-      overflow-y: auto;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .header-container {
-      display: flex;
-      align-items: flex-start;
-      width: 100%;
-      margin-left: 0;
-    }
-
-    .heading-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 322px;
-      min-height: 60px;
-      height: auto;
-    }
-
-    .heading-title {
-      margin: 8px 0 16px;
-      font-size: 30px;
-      line-height: 36px;
-      font-weight: 700;
-      letter-spacing: -0.75px;
-      color: #fff;
-    }
-
-    .controls-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      min-height: 52px;
-      margin-left: 0;
-      padding-top: 0;
-    }
-
-    .search-wrapper {
-      position: relative;
-      width: 320px;
-      height: 38px;
-    }
-
-    .search-input {
-      width: 100%;
-      height: 38px;
-      padding: 8px 16px 8px 40px;
-      background: var(--muted, #21201E);
-      border: 1px solid var(--input, #43362B);
-      border-radius: 12px;
-      font-size: 14px;
-      color: var(--foreground, #FFFFFF);
-      outline: none;
-    }
-
-    .search-input::placeholder {
-      color: var(--muted-foreground, #A0988E);
-    }
-
-    .search-input:focus,
-    .dropdown-select:focus {
-      border-color: #D97251;
-      box-shadow: 0 0 0 1px #D97251;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 11px;
-      width: 16px;
-      height: 16px;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .dropdown-container {
-      position: relative;
-      height: 38px;
-      flex: 0 0 auto;
-    }
-
-    .dropdown-container.status { width: 120px; }
-    .dropdown-container.department { width: 195px; }
-    .dropdown-container.audit { width: 120px; }
-
-    .dropdown-select {
-      width: 100%;
-      height: 38px;
-      padding: 0 30px 0 14px;
-      background: var(--muted, #21201E);
-      border: 1px solid var(--input, #43362B);
-      border-radius: 12px;
-      color: var(--foreground, #FFFFFF);
-      font-size: 12px;
-      appearance: none;
-      outline: none;
-    }
-
-    .dropdown-chevron {
-      position: absolute;
-      right: 11px;
-      top: 12px;
-      width: 14px;
-      height: 14px;
-      pointer-events: none;
-    }
-
-    .add-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      height: 38px;
-      padding: 0 18px;
-      border: 1px solid var(--primary, #D97251);
-      border-radius: 12px;
-      background: var(--primary, #D97251);
-      color: #000000;
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-      cursor: pointer;
-      transform: none;
-      transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
-    }
-
-    .add-button:hover {
-      background: color-mix(in srgb, var(--primary) 88%, var(--foreground));
-      color: #000000;
-      border-color: color-mix(in srgb, var(--primary) 88%, var(--foreground));
-      transform: none;
-      box-shadow: none;
-    }
-
-    .queue-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      height: 38px;
-      padding: 0 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(217, 114, 81, 0.45);
-      background: rgba(217, 114, 81, 0.12);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background .15s ease, transform .15s ease, border-color .15s ease;
-    }
-
-    .queue-button:hover {
-      background: rgba(217, 114, 81, 0.18);
-      border-color: rgba(217, 114, 81, 0.7);
-      transform: translateY(-1px);
-    }
-
-    .queue-counter {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 20px;
-      height: 20px;
-      padding: 0 6px;
-      border-radius: 999px;
-      background: #D97251;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .table-margin-container {
-      padding: 10px 0 0;
-      width: 100%;
-      margin-left: 0;
-      flex: 0 0 auto;
-    }
-
-    .table-container {
-      width: 100%;
-      background: var(--ui-surface, #2B2A27);
-      border: none;
-      border-radius: 0;
-      overflow: hidden;
-      box-shadow: none;
-    }
-
-    .table-scroll {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 720px;
-      table-layout: fixed;
-      background: var(--ui-surface, #2B2A27);
-    }
-
-    thead {
-      background: var(--ui-surface-muted, #21201E);
-    }
-
-    tbody tr:hover {
-      background: color-mix(in srgb, var(--primary) 8%, var(--ui-surface, #2B2A27));
-    }
-
-    .text-center { text-align: center; }
-    .text-right { text-align: right; }
-
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 72px;
-      height: 23px;
-      padding: 0 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    
-
-    
-
-    
-
-    .action-group {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    .pill-btn {
-      height: 30px;
-      min-width: 72px;
-      padding: 0 14px;
-      border-radius: 999px;
-      font-size: 12px;
-      transition: transform .15s ease, background .15s ease;
-    }
-
-    .pill-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .edit-btn {
-      border: 1px solid var(--border, #383734);
-      background: var(--secondary, #21201E);
-      color: var(--foreground, #FFFFFF);
-    }
-
-    .edit-btn:hover {
-      background: var(--accent, #33322E);
-    }
-
-    .remove-btn {
-      border: 0;
-      background: #F05A5F;
-      color: #fff;
-    }
-
-    .bottom-bar-container {
-      width: calc(100% - 24px);
-      margin-left: 0;
-      padding-top: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-
-    .pagination-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .pagination {
-      border: 1px solid var(--border, #383734);
-      background: var(--secondary, #21201E);
-      color: var(--foreground, #FFFFFF);
-    }
-
-    .pagination:hover {
-      background: var(--accent, #33322E);
-    }
-
-    .page-text {
-      color: #D1CBC2;
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    .empty-state {
-      display: none;
-      width: 100%;
-      height: 145px;
-      align-items: center;
-      justify-content: center;
-      color: var(--ui-surface-muted-text, #A0988E);
-      font-size: 12px;
-      background: var(--ui-surface, #2B2A27);
-    }
-
-    /* Modal interaction matches the recorded prototype:
-       background dims, centered modal, then success toast after close. */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: rgba(0,0,0,.58);
-      backdrop-filter: blur(1px);
-    }
-
-    .modal-overlay.show {
-      display: flex;
-      animation: overlayIn .16s ease-out;
-    }
-
-    .modal-card {
-      position: relative;
-      width: 365px;
-      background: #444746;
-      border: 1px solid #D97251;
-      border-radius: 15px;
-      box-shadow: 0 22px 55px rgba(0,0,0,.4);
-      animation: modalIn .18s ease-out;
-      padding: 17px 55px 28px;
-    }
-
-    .modal-card.compact {
-      width: 365px;
-      padding: 20px 42px 24px;
-    }
-
-    .modal-card.faculty {
-      width: 365px;
-      padding: 17px 55px 28px;
-    }
-
-    .modal-title {
-      font-family: 'Intel One Mono', monospace;
-      font-weight: 600;
-      font-size: 20px;
-      line-height: 28px;
-      text-align: center;
-      color: #FFFFFF;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 14px;
-      right: 16px;
-      width: 26px;
-      height: 28px;
-      border: 1px solid #000000;
-      background: transparent;
-      color: #fff;
-      font-size: 18px;
-      line-height: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .modal-close:hover {
-      background: rgba(255,255,255,.1);
-    }
-
-    .modal-form {
-      display: flex;
-      flex-direction: column;
-      margin-top: 14px;
-    }
-
-    .modal-card.compact .modal-form {
-      margin-top: 14px;
-    }
-
-    .modal-card.faculty .modal-form {
-      margin-top: 14px;
-    }
-
-    .modal-form label {
-      font-family: 'Intel One Mono', monospace;
-      font-weight: 600;
-      font-size: 15px;
-      line-height: 21px;
-      color: #FFFFFF;
-      margin-top: 12px;
-      margin-bottom: 6px;
-    }
-
-    .modal-card.compact .modal-form label {
-      margin-top: 12px;
-    }
-
-    .modal-card.faculty .modal-form label {
-      margin-top: 12px;
-      margin-bottom: 6px;
-    }
-
-    .modal-card.faculty .modal-form label:first-of-type {
-      margin-top: 16px;
-    }
-
-    .modal-form input,
-    .modal-form select {
-      width: 100%;
-      height: 31px;
-      padding: 8px 16px;
-      background: var(--muted, #21201E);
-      border: 1px solid var(--input, #43362B);
-      border-radius: 12px;
-      font-family: var(--font-sans, 'Outfit'), sans-serif;
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 17px;
-      color: var(--foreground, #FFFFFF);
-      outline: none;
-      appearance: none;
-    }
-
-    .modal-form textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 10px;
-      background: var(--muted, #21201E);
-      border: 1px solid var(--input, #43362B);
-      border-radius: 12px;
-      font-family: var(--font-sans, 'Outfit'), sans-serif;
-      font-weight: 400;
-      font-size: 14px;
-      color: var(--foreground, #FFFFFF);
-      outline: none;
-      resize: none;
-    }
-
-    .modal-form input::placeholder {
-      color: var(--muted-foreground, #A0988E);
-    }
-
-    .modal-form input:focus,
-    .modal-form select:focus,
-    .modal-form textarea:focus {
-      box-shadow: 0 0 0 2px #D97251;
-    }
-
-    .modal-submit {
-      width: 224px;
-      height: 39px;
-      margin: 24px auto 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #343434;
-      border: 1px solid #3D3D3A;
-      border-radius: 10px;
-      font-family: var(--font-sans, 'Outfit'), sans-serif;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 17px;
-      color: #FFFFFF;
-      cursor: pointer;
-      transition: background .15s ease;
-    }
-
-    .modal-submit:hover {
-      background: #2a2a2a;
-    }
-
-    #toast { display: none !important; }
-    .toast {
-      position: fixed;
-      top: 22px;
-      right: 22px;
-      z-index: 120;
-      display: none;
-      min-width: 210px;
-      padding: 13px 16px;
-      border-radius: 10px;
-      background: #D97251;
-      color: #fff;
-      box-shadow: 0 10px 28px rgba(0,0,0,.22);
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .toast.show {
-      display: block;
-      animation: toastIn .2s ease-out;
-    }
-
-    .masked-review {
-      width: 128px;
-      height: 12px;
-      margin: 0 auto;
-      border-radius: 2px;
-      background: #625D55;
-    }
-
-    @keyframes overlayIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes modalIn {
-      from { opacity: 0; transform: translateY(8px) scale(.985); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 900px) {
-      body {
-        overflow: auto;
-      }
-
-      .app-canvas {
-        width: 100%;
-        min-width: 0;
-        overflow: auto;
-      }
-    }
-    button, input, select, textarea {
-      font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
-      font-weight: 500;
-    }
-  
-    @media (max-width: 768px) {
-      .sidebar { width: 60px !important; }
-      .sidebar .nav-text { display: none !important; }
-      .section-container { left: 60px !important; width: calc(100% - 60px) !important; padding: 10px !important; }
-      .header-container { flex-direction: column !important; align-items: flex-start !important; min-height: auto !important; height: auto !important; gap: 8px !important; }
-      .search-wrapper { width: 100% !important; margin-top: 8px !important; }
-      .dropdown-container { width: 100% !important; margin-left: 0 !important; margin-top: 8px !important; }
-      .controls-row { flex-direction: column !important; align-items: flex-start !important; height: auto !important; }
-      .table-margin-container { width: 100% !important; margin-left: 0 !important; }
-      :is(.ui-table-wrap, .table-wrap, .table-container, .table-scroll) { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; width: 100% !important; display: block !important; }
-      :is(.ui-table, table.ui-table, table) { min-width: 680px !important; }
-    }
-    
-  
-    /* Header & Footer Custom Styling */
-    .admin-top-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #42423F;
-      padding-bottom: 0.75rem;
-      margin-bottom: 1rem;
-      width: 100%;
-    }
-    .header-left, .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .red-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #D97251;
-    }
-    .breadcrumb-text {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: #9C948B;
-      text-transform: uppercase;
-    }
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      background: #3d3d3a;
-      border: 1px solid #484844;
-      font-size: 11px;
-      color: #9C948B;
-    }
-    .green-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10B981;
-      
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .5; }
-    }
-    .ay-text {
-      font-size: 11px;
-      color: #9C948B;
-    }
-    .admin-footer {
-      flex: none !important;
-      height: auto !important;
-      flex-shrink: 0;
-      margin-top: auto;
-      padding-top: 0.75rem;
-      border-top: 1px solid #42423F;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #A0988E;
-      width: 100%;
-    }
-    @media (max-width: 768px) {
-      .admin-top-header, .admin-footer {
-      flex: none !important;
-      height: auto !important;
-      flex-shrink: 0;
-      margin-top: auto;
-      padding-top: 0.75rem;
-      border-top: 1px solid #42423F;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #A0988E;
-      width: 100%;
-    }
-    }
-
-  </style>
+  <link rel="stylesheet" href="../../assets/css/pages/admin/faculty.css" />
 </head>
 <body>
   <div class="app-canvas">
@@ -727,7 +35,7 @@
       <div class="sidebar-footer">
         <div class="sidebar-divider"></div>
         <div class="sidebar-account-card">
-          <div style="display:flex;align-items:center;gap:10px;"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
+          <div class="is-54a40d7"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
           <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg></button>
         </div>
       </div>
@@ -766,9 +74,9 @@
           <input id="searchInput" class="search-input" type="search" placeholder="Search by faculty name or email...">
         </div>
 
-        <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
-          <a href="faculty.html?queue=faculty" class="queue-button" data-queue-open="faculty" aria-label="Open faculty applications queue">
-            Queue
+        <div class="is-b5d8940">
+          <a href="faculty.html?queue=faculty" class="ui-btn ui-btn-outline queue-button" data-queue-open="faculty" aria-label="Open faculty applications queue">
+            <span>Queue</span>
             <span class="queue-counter">5</span>
           </a>
           <div class="dropdown-container department">
@@ -788,25 +96,25 @@
         </div>
       </div>
 
-      <div class="table-margin-container" style="padding-top: 0; width: 100%;">
-        <div class="ui-table-wrap" style="margin-top: 16px;">
+      <div class="table-margin-container is-da6f07d">
+        <div class="ui-table-wrap is-a812934">
           <table class="ui-table">
             <thead>
-              <tr style="text-transform: uppercase;">
-                <th style="width: 22%; text-align: left;">Name</th>
-                <th style="width: 26%; text-align: left;">Email Address</th>
-                <th style="width: 28%; text-align: left;">Department</th>
-                <th style="width: 12%; text-align: left;">Role</th>
-                <th style="width: 12%; text-align: right;">Actions</th>
+              <tr class="is-90fefe9">
+                <th class="is-ce25157">Name</th>
+                <th class="is-fdb3bbd">Email Address</th>
+                <th class="is-268be0d">Department</th>
+                <th class="is-fce05da">Role</th>
+                <th class="is-35df0d7">Actions</th>
               </tr>
             </thead>
             <tbody id="tableBody">
               <tr data-name="dr. eleanor vance" data-email="e.vance@university.edu" data-department="Department of Computer Science" data-role="faculty">
-                <td style="text-align: left;">Dr. Eleanor Vance</td>
-                <td style="text-align: left;">e.vance@university.edu</td>
-                <td style="text-align: left;">Department of Computer Science</td>
-                <td style="text-align: left;"><span class="ui-badge ui-badge--info">faculty</span></td>
-                <td style="text-align: right;">
+                <td class="is-102b7f8">Dr. Eleanor Vance</td>
+                <td class="is-102b7f8">e.vance@university.edu</td>
+                <td class="is-102b7f8">Department of Computer Science</td>
+                <td class="is-102b7f8"><span class="ui-badge ui-badge--info">faculty</span></td>
+                <td class="is-102b7f8">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
@@ -814,11 +122,11 @@
                 </td>
               </tr>
               <tr data-name="prof. marcus thorne" data-email="m.thorne@university.edu" data-department="Department of Computer Engineering" data-role="faculty">
-                <td style="text-align: left;">Prof. Marcus Thorne</td>
-                <td style="text-align: left;">m.thorne@university.edu</td>
-                <td style="text-align: left;">Department of Computer Engineering</td>
-                <td style="text-align: left;"><span class="ui-badge ui-badge--info">faculty</span></td>
-                <td style="text-align: right;">
+                <td class="is-102b7f8">Prof. Marcus Thorne</td>
+                <td class="is-102b7f8">m.thorne@university.edu</td>
+                <td class="is-102b7f8">Department of Computer Engineering</td>
+                <td class="is-102b7f8"><span class="ui-badge ui-badge--info">faculty</span></td>
+                <td class="is-102b7f8">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
@@ -826,11 +134,11 @@
                 </td>
               </tr>
               <tr data-name="dr. sarah lin" data-email="s.lin@university.edu" data-department="Department of Medical Technology" data-role="faculty">
-                <td style="text-align: left;">Dr. Sarah Lin</td>
-                <td style="text-align: left;">s.lin@university.edu</td>
-                <td style="text-align: left;">Department of Medical Technology</td>
-                <td style="text-align: left;"><span class="ui-badge ui-badge--info">faculty</span></td>
-                <td style="text-align: right;">
+                <td class="is-102b7f8">Dr. Sarah Lin</td>
+                <td class="is-102b7f8">s.lin@university.edu</td>
+                <td class="is-102b7f8">Department of Medical Technology</td>
+                <td class="is-102b7f8"><span class="ui-badge ui-badge--info">faculty</span></td>
+                <td class="is-102b7f8">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
@@ -838,11 +146,11 @@
                 </td>
               </tr>
               <tr data-name="dr. victor morales" data-email="v.morales@university.edu" data-department="Department of Information System" data-role="faculty">
-                <td style="text-align: left;">Dr. Victor Morales</td>
-                <td style="text-align: left;">v.morales@university.edu</td>
-                <td style="text-align: left;">Department of Information System</td>
-                <td style="text-align: left;"><span class="ui-badge ui-badge--info">faculty</span></td>
-                <td style="text-align: right;">
+                <td class="is-102b7f8">Dr. Victor Morales</td>
+                <td class="is-102b7f8">v.morales@university.edu</td>
+                <td class="is-102b7f8">Department of Information System</td>
+                <td class="is-102b7f8"><span class="ui-badge ui-badge--info">faculty</span></td>
+                <td class="is-102b7f8">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
@@ -850,11 +158,11 @@
                 </td>
               </tr>
               <tr data-name="admin user" data-email="admin@university.edu" data-department="Department of Applied Mathematics" data-role="admin">
-                <td style="text-align: left;">Admin User</td>
-                <td style="text-align: left;">admin@university.edu</td>
-                <td style="text-align: left;">Department of Applied Mathematics</td>
-                <td style="text-align: left;"><span class="ui-badge ui-badge--destructive">admin</span></td>
-                <td style="text-align: right;">
+                <td class="is-102b7f8">Admin User</td>
+                <td class="is-102b7f8">admin@university.edu</td>
+                <td class="is-102b7f8">Department of Applied Mathematics</td>
+                <td class="is-102b7f8"><span class="ui-badge ui-badge--destructive">admin</span></td>
+                <td class="is-102b7f8">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
@@ -863,35 +171,35 @@
               </tr>
             </tbody>
           </table>
-          <div id="emptyState" class="empty-state" style="display: none; padding: 24px; text-align: center; color: var(--muted-foreground);">No faculty members found.</div>
+          <div id="emptyState" class="empty-state is-f19ae44">No faculty members found.</div>
         </div>
 
-        <div class="ui-table-pagination" style="background: transparent; border: none; padding-left: 4px; padding-right: 4px; margin-top: 8px; width: 100%;">
-            <div style="display: flex; align-items: center; gap: 16px;">
+        <div class="ui-table-pagination is-c5a1a55">
+            <div class="is-47c5200">
                 <!-- No bulk actions on this page -->
             </div>
-            <div class="ui-table-pagination-nav" style="margin-left: auto;">
-                <span style="display: flex; align-items: center; gap: 12px;">
-                    <span style="color: var(--muted-foreground);">Rows per page</span>
-                    <div style="position: relative; display: flex; align-items: center;">
-                        <select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem; cursor: pointer; outline: none;">
+            <div class="ui-table-pagination-nav is-dc310e0">
+                <span class="is-1c20bbe">
+                    <span class="is-2882578">Rows per page</span>
+                    <div class="is-e0dd7f8">
+                        <select class="ui-select-pill is-755d712" aria-label="Rows per page">
                             <option>5</option>
                             <option>10</option>
                         </select>
-                        <svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m6 9 6 6 6-6"/>
                         </svg>
                     </div>
                 </span>
-                <span style="margin: 0 16px; color: var(--muted-foreground); font-weight: 500; font-size: 13px;">Page 1 of 3</span>
-                <button class="ui-table-page-btn" disabled style="width: auto; padding: 6px 16px; border-radius: 99px; background: transparent; color: #6C655D; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Previous</button>
-                <button class="ui-table-page-btn" style="width: auto; padding: 6px 20px; border-radius: 99px; background: transparent; color: #FFFFFF; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Next</button>
+                <span class="is-2651671">Page 1 of 3</span>
+                <button class="ui-table-page-btn is-9f84822" disabled>Previous</button>
+                <button class="ui-table-page-btn is-8d6e082">Next</button>
             </div>
         </div>
       </div>
       
       <!-- Footer indicator -->
-      <footer class="admin-footer" style="margin-top: auto; width: 100%;">
+      <footer class="admin-footer is-c425574">
         <span>&copy; 2026 Admin Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
@@ -933,13 +241,13 @@
         <button id="closeRemove" class="modal-close" type="button" aria-label="Close">✕</button>
         <h2 class="modal-title">Remove Faculty</h2>
 
-        <div class="modal-form" style="align-items:center;">
-          <p style="color:#fff; font-family:'Intel One Mono',monospace; font-size:14px; text-align:center; margin-top:24px; line-height:1.5;">
+        <div class="modal-form is-bde75a3">
+          <p class="is-b67bbab">
             Are you sure you want to remove this faculty member? This action cannot be undone.
           </p>
-          <div style="display:flex; gap:12px; margin-top:28px; width:100%; justify-content:center;">
-            <button id="cancelRemove" type="button" class="modal-submit" style="background:#555; border-color:#666;">Cancel</button>
-            <button id="confirmRemove" type="button" class="modal-submit" style="background:#f9464a; border-color:#f9464a;">Confirm</button>
+          <div class="is-6be4113">
+            <button id="cancelRemove" type="button" class="modal-submit is-47acd3f">Cancel</button>
+            <button id="confirmRemove" type="button" class="modal-submit is-444fc6c">Confirm</button>
           </div>
         </div>
       </section>
@@ -948,77 +256,8 @@
     <div id="toast" class="toast">Faculty Added Successfully</div>
 
 
-    <script>
+    <script src="../../assets/js/pages/admin/faculty.js"></script>
 
-      const tableBody = document.getElementById('tableBody');
-      const searchInput = document.getElementById('searchInput');
-      const departmentFilter = document.getElementById('departmentFilter');
-      const emptyState = document.getElementById('emptyState');
-      const facultyModal = document.getElementById('facultyModal');
-      const removeModal = document.getElementById('removeModal');
-      const facultyForm = document.getElementById('facultyForm');
-      const facultyName = document.getElementById('facultyName');
-      const facultyEmail = document.getElementById('facultyEmail');
-      const facultyDepartment = document.getElementById('facultyDepartment');
-      const facultyRole = document.getElementById('facultyRole');
-      const facultyModalTitle = document.getElementById('facultyModalTitle');
-      const toast = document.getElementById('toast');
-
-      let mode = 'create';
-      let selectedRow = null;
-
-      function openModal(modal) {
-        modal.classList.add('show');
-      }
-
-      function closeModal(modal) {
-        modal.classList.remove('show');
-      }
-
-      function showToast(message) {
-        if (typeof showSuccessToast === 'function') {
-          showSuccessToast(message);
-          return;
-        }
-        const globalToast = document.getElementById('global-success-toast');
-        const msgEl = document.getElementById('toast-message');
-        if (globalToast && msgEl) {
-          msgEl.textContent = message || 'Action successful!';
-          globalToast.classList.add('show');
-          setTimeout(() => globalToast.classList.remove('show'), 3000);
-          return;
-        }
-        if (!toast) return;
-        toast.textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-      }
-        }
-        
-        // Auto-wire forms and add buttons for the mockup
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('form').forEach(f => {
-                if (f.id === 'acceptForm' || f.id === 'rejectForm' || f.closest('#acceptModal, #rejectModal')) return; // specific toast handled by page script
-                f.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    showSuccessToast('Successfully submitted!');
-                });
-            });
-            
-            // For admin tables or faculty modals
-            document.querySelectorAll('button').forEach(b => {
-                if (b.closest('#acceptModal, #rejectModal')) return;
-                if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
-                    b.addEventListener('click', (e) => {
-                        if(b.type !== 'submit') {
-                            showSuccessToast('Action completed successfully!');
-                        }
-                    });
-                }
-            });
-        });
-    </script>
-
-  <script src="../../assets/js/queue-modal.js"></script>
+  <script src="../../assets/js/queue-modal.js?v=3"></script>
 </body>
 </html>

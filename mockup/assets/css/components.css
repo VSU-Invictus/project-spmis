@@ -844,6 +844,107 @@ table tbody tr.checked {
     box-shadow: none !important;
 }
 
+/* Standardized Admin Header Queue Button (Outline Action Primitive) */
+:is(.queue-button, .ui-btn.queue-button) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    background: transparent !important;
+    color: var(--foreground) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    font-family: var(--font-sans, 'Outfit', sans-serif) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    transform: none !important;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease !important;
+}
+
+:is(.queue-button, .ui-btn.queue-button):hover {
+    background: var(--accent) !important;
+    color: var(--accent-foreground) !important;
+    border-color: var(--border) !important;
+    transform: translateY(-1px) !important;
+}
+
+:is(.queue-button, .ui-btn.queue-button) .queue-counter {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    padding: 0 6px !important;
+    border-radius: 999px !important;
+    background: var(--muted) !important;
+    color: var(--foreground) !important;
+    border: 1px solid var(--border) !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    font-family: 'Intel One Mono', monospace !important;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease !important;
+}
+
+:is(.queue-button, .ui-btn.queue-button):hover .queue-counter {
+    background: var(--card) !important;
+    border-color: var(--border) !important;
+}
+
+/* Monospace Number & Identifier Primitives ('Intel One Mono' Standard) */
+:is(.font-intel-mono, .number-font, .tabular-nums) {
+    font-family: 'Intel One Mono', monospace !important;
+}
+
+:is(
+    [data-student-id],
+    .student-id,
+    .student-number,
+    #student-id,
+    #studentId,
+    input#student-id,
+    input#studentId,
+    .table-student-id,
+    [data-col="id"],
+    .col-student-id,
+    #roster-results td:nth-child(1),
+    #roster-results th:nth-child(1)
+) {
+    font-family: 'Intel One Mono', monospace !important;
+}
+
+:is(
+    .queue-counter,
+    .ui-tags-more-btn,
+    .queue-summary-card__count,
+    .queue-summary-card__number,
+    .badge-counter,
+    .badge-count,
+    .tag-count
+) {
+    font-family: 'Intel One Mono', monospace !important;
+}
+
+:is(
+    .stat strong,
+    .stats strong,
+    .stat-value,
+    .metric-card-value,
+    .metric-value,
+    #student-count,
+    #review-count,
+    #pending-count,
+    #programs-stat strong
+) {
+    font-family: 'Intel One Mono', monospace !important;
+}
+
 .ui-input:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
@@ -2387,16 +2488,27 @@ button:hover .arrow,
 .ui-tags-more-btn {
     cursor: pointer;
     font-weight: 700 !important;
+    font-family: 'Intel One Mono', monospace !important;
     user-select: none;
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .ui-tags-more:hover .ui-tags-more-btn,
 .ui-tags-more:focus-visible .ui-tags-more-btn,
-.ui-tags-more.is-open .ui-tags-more-btn {
+.ui-tags-more.is-open .ui-tags-more-btn,
+.table-wrap .ui-tags-cluster .ui-tags-more:hover .ui-tags-more-btn,
+.table-wrap .ui-tags-cluster .ui-tags-more:focus-visible .ui-tags-more-btn,
+.table-wrap .ui-tags-cluster .ui-tags-more.is-open .ui-tags-more-btn {
     background: color-mix(in srgb, var(--primary, #D97251) 20%, var(--card, #21201E)) !important;
     border-color: var(--primary, #D97251) !important;
     color: var(--primary, #D97251) !important;
+}
+
+/* Keep tag clusters (2 tags + "+N") on a single line */
+.ui-tags-cluster,
+.table-wrap .ui-tags-cluster {
+    flex-wrap: nowrap !important;
+    white-space: nowrap;
 }
 
 .ui-tags-popover {
@@ -3002,8 +3114,426 @@ table :is(th, td).col-id { white-space: nowrap !important; width: 110px; }
 table :is(th, td).col-60 { width: 60%; }
 table :is(th, td).col-20 { width: 20%; }
 table :is(th, td).col-flex { width: auto; }
-table :is(th, td):first-child { padding-left: 4px !important; }
-table :is(th, td):last-child { padding-right: 4px !important; }
+/* Table column ratio helpers (scoped to tables with column helper classes, excluding formal tables) */
+table:not(.table-wrap table):has(.col-60, .col-id, .col-action, .col-flex) :is(th, td):first-child,
+table.table-hug :is(th, td):first-child { padding-left: 4px !important; }
+table:not(.table-wrap table):has(.col-60, .col-id, .col-action, .col-flex) :is(th, td):last-child,
+table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
+
+/* ==========================================================================
+/* ==========================================================================
+   Admin Portal Formal Data Table Spacing & Presentation (Standalone Pages)
+   Matches official Figma design guidelines for presentable, formal tables
+   ========================================================================== */
+.section-container .table-container {
+    border-radius: 12px !important;
+    border: 1px solid var(--border, #2E2D2A) !important;
+    background: var(--card, #1A1918) !important;
+    overflow-x: auto !important;
+    box-shadow: none !important;
+}
+
+.section-container .table-container table {
+    width: 100% !important;
+    border-collapse: collapse;
+    background: transparent;
+    table-layout: fixed;
+}
+
+.section-container .table-container table thead tr {
+    background: transparent !important;
+}
+
+.section-container .table-container table th {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    background: transparent !important;
+    color: #FFFFFF !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    line-height: 1.2 !important;
+    border-bottom: 1px solid var(--border, #2E2D2A) !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+}
+
+.section-container .table-container table td {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    font-size: 13px !important;
+    color: var(--card-foreground, #FFFFFF) !important;
+    border-bottom: 1px solid var(--border, #2E2D2A) !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    line-height: 1.4 !important;
+}
+
+.section-container .table-container table :is(th, td):first-child {
+    padding-left: 24px !important;
+}
+
+.section-container .table-container table :is(th, td):last-child {
+    padding-right: 24px !important;
+}
+
+.section-container .table-container table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Checkbox column positioning & spacing */
+.section-container .table-container table :is(th, td):first-child:has(input[type="checkbox"]),
+.section-container .table-container table :is(th, td):has(.select-all-checkbox),
+.section-container .table-container table :is(th, td):has(.row-checkbox) {
+    width: 56px !important;
+    min-width: 56px !important;
+    max-width: 56px !important;
+    padding-left: 24px !important;
+    padding-right: 8px !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+}
+
+/* Column directly following a checkbox has well-balanced spacing */
+.section-container .table-container table :is(th, td):first-child:has(input[type="checkbox"]) + :is(th, td),
+.section-container .table-container table :is(th, td):has(.select-all-checkbox) + :is(th, td),
+.section-container .table-container table :is(th, td):has(.row-checkbox) + :is(th, td) {
+    padding-left: 12px !important;
+}
+
+/* Actions Column Alignment & Buttons: left-align ACTIONS header with action buttons */
+.section-container .table-container table:has(.action-group) :is(th, td):last-child,
+.section-container .table-container table :is(th, td):has(.action-group) {
+    text-align: left !important;
+}
+
+.section-container .action-group {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+}
+
+.section-container .pill-btn.edit-btn {
+    border: 1px solid var(--border, #383734) !important;
+    background: var(--secondary, #21201E) !important;
+    color: #FFFFFF !important;
+    height: 30px !important;
+    padding: 0 14px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 0.15s ease, transform 0.15s ease !important;
+}
+
+.section-container .pill-btn.edit-btn:hover {
+    background: var(--accent, #33322E) !important;
+    transform: translateY(-1px) !important;
+}
+
+.section-container .pill-btn.remove-btn {
+    border: none !important;
+    background: #F05A5F !important;
+    color: #FFFFFF !important;
+    height: 30px !important;
+    padding: 0 14px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 0.15s ease, transform 0.15s ease !important;
+}
+
+.section-container .pill-btn.remove-btn:hover {
+    background: #E0484D !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Subtle, formal hover row transition */
+.section-container .table-container table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.025) !important;
+}
+
+/* Light mode support for admin tables */
+html:not(.dark) .section-container .table-container {
+    background: #FAF9F6 !important;
+    border-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .section-container .table-container table th {
+    color: #2B2A27 !important;
+    border-bottom-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .section-container .table-container table td {
+    color: #2B2A27 !important;
+    border-bottom-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .section-container .table-container table tbody tr:hover {
+    background: rgba(0, 0, 0, 0.02) !important;
+}
+
+html:not(.dark) .section-container .pill-btn.edit-btn {
+    background: #FFFFFF !important;
+    border: 1px solid #D8D0C4 !important;
+    color: #2B2A27 !important;
+}
+
+html:not(.dark) .section-container .pill-btn.edit-btn:hover {
+    background: #F4F1EA !important;
+    border-color: #C8C0B4 !important;
+}
+
+/* ==========================================================================
+   Faculty Portal Formal Data Table Spacing & Presentation
+   Matches official Figma mockups for programs, departments, students, applications
+   ========================================================================== */
+.table-wrap {
+    border-radius: 12px !important;
+    border: 1px solid var(--border, #2E2D2A) !important;
+    background: var(--card, #1A1918) !important;
+    overflow-x: auto !important;
+    box-shadow: none !important;
+    margin-bottom: 20px !important;
+}
+
+.table-wrap table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    background: transparent !important;
+    table-layout: fixed !important;
+}
+
+.table-wrap table thead tr {
+    background: transparent !important;
+}
+
+.table-wrap table th {
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    background: transparent !important;
+    color: #FFFFFF !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    line-height: 1.2 !important;
+    border-bottom: 1px solid var(--border, #2E2D2A) !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    text-align: left !important;
+}
+
+.table-wrap table td {
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    font-size: 13px !important;
+    color: var(--card-foreground, #FFFFFF) !important;
+    border-bottom: 1px solid var(--border, #2E2D2A) !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    line-height: 1.4 !important;
+    text-align: left !important;
+}
+
+.table-wrap table :is(th, td):first-child {
+    padding-left: 24px !important;
+}
+
+.table-wrap table :is(th, td):last-child {
+    padding-right: 24px !important;
+}
+
+.table-wrap table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+.table-wrap table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.025) !important;
+}
+
+/* Faculty Action Buttons (e.g. Apply to edit) */
+.table-wrap [data-propose-edit],
+.table-wrap button.ui-btn-outline {
+    border-radius: 9999px !important;
+    background: var(--secondary, #21201E) !important;
+    border: 1px solid var(--border, #383734) !important;
+    color: #FFFFFF !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 0 16px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease, transform 0.15s ease !important;
+}
+
+.table-wrap [data-propose-edit]:hover,
+.table-wrap button.ui-btn-outline:hover {
+    background: var(--accent, #33322E) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Faculty Action Links (e.g. Write review →) */
+.table-wrap td:last-child a.ui-link-neutral,
+.table-wrap td:last-child a {
+    color: #FFFFFF !important;
+    font-weight: 500 !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    text-decoration: none !important;
+    transition: color 0.15s ease !important;
+}
+
+.table-wrap td:last-child a.ui-link-neutral:hover,
+.table-wrap td:last-child a:hover {
+    color: var(--primary, #D97251) !important;
+}
+
+/* Faculty Status Pills & Badges */
+.table-wrap .ui-badge,
+.table-wrap .badge {
+    border-radius: 9999px !important;
+    padding: 4px 14px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+}
+
+.table-wrap :is(.ui-badge--success, .badge.approved) {
+    background: #142E1F !important;
+    border: 1px solid #1E5C38 !important;
+    color: #4ADE80 !important;
+}
+
+.table-wrap :is(.ui-badge--warning, .badge.pending) {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border: 1px solid rgba(245, 158, 11, 0.4) !important;
+    color: #FBBF24 !important;
+}
+
+.table-wrap :is(.ui-badge--destructive, .badge.rejected) {
+    background: rgba(239, 68, 68, 0.12) !important;
+    border: 1px solid rgba(239, 68, 68, 0.4) !important;
+    color: #F87171 !important;
+}
+
+/* Faculty Student Tags in Table */
+.table-wrap .ui-tags-cluster {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+}
+
+.ui-tags-cluster .ui-tags-popover {
+    white-space: normal;
+}
+
+.table-wrap .ui-tags-cluster .ui-badge {
+    border-radius: 9999px !important;
+    padding: 3px 10px !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+}
+
+.table-wrap .ui-tags-cluster .ui-badge--purple {
+    background: rgba(139, 92, 246, 0.15) !important;
+    border: 1px solid rgba(139, 92, 246, 0.35) !important;
+    color: #A78BFA !important;
+}
+
+.table-wrap .ui-tags-cluster .ui-badge--amber {
+    background: rgba(245, 158, 11, 0.15) !important;
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+    color: #FBBF24 !important;
+}
+
+.table-wrap .ui-tags-cluster .ui-badge--rose {
+    background: rgba(239, 68, 68, 0.15) !important;
+    border: 1px solid rgba(239, 68, 68, 0.35) !important;
+    color: #F87171 !important;
+}
+
+.table-wrap .ui-tags-cluster .ui-badge--cyan {
+    background: rgba(6, 182, 212, 0.15) !important;
+    border: 1px solid rgba(6, 182, 212, 0.35) !important;
+    color: #22D3EE !important;
+}
+
+.table-wrap .ui-tags-cluster .ui-badge--neutral {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #A0988E !important;
+}
+
+/* Light mode for Faculty Tables */
+html:not(.dark) .table-wrap {
+    background: #FAF9F6 !important;
+    border-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .table-wrap table th {
+    color: #2B2A27 !important;
+    border-bottom-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .table-wrap table td {
+    color: #2B2A27 !important;
+    border-bottom-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .table-wrap table tbody tr:hover {
+    background: rgba(0, 0, 0, 0.02) !important;
+}
+
+html:not(.dark) .table-wrap [data-propose-edit],
+html:not(.dark) .table-wrap button.ui-btn-outline {
+    background: #FFFFFF !important;
+    border: 1px solid #D8D0C4 !important;
+    color: #2B2A27 !important;
+}
+
+html:not(.dark) .table-wrap [data-propose-edit]:hover,
+html:not(.dark) .table-wrap button.ui-btn-outline:hover {
+    background: #F4F1EA !important;
+    border-color: #C8C0B4 !important;
+}
+
+html:not(.dark) .table-wrap td:last-child a.ui-link-neutral,
+html:not(.dark) .table-wrap td:last-child a {
+    color: #2B2A27 !important;
+}
 
 /* Light mode sidebar: lighter warm surface */
 html:not(.dark) :is(.sidebar, .app-sidebar, [class*="sidebar-container"], .sidebar-frame, #demo-sidebar-container) {

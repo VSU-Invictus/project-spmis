@@ -6,170 +6,13 @@
     <title>Admin Dashboard - System Metrics & Approvals</title>
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css?v=3">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <style>
-        body {
-            font-family: var(--font-sans, 'Outfit'), sans-serif;
-            background-color: #1e1e1d;
-            color: #FFFFFF;
-            min-height: 100vh;
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        /* Color Tokens from Figma Specification */
-        .bg-dashboard-outer { background-color: #141413; }
-        .bg-sidebar { background-color: #21201E; }
-        .border-sidebar { border-color: #141413; }
-        .bg-account-card { background-color: #3A3832; }
-        .bg-avatar { background-color: #FBE7DE; }
-        .text-avatar { color: #B84E32; }
-        .border-divider { background-color: #D97757; }
-        
-        /* Active & Inactive Nav Buttons */
-        .nav-btn-active {
-            background-color: #FAF9F5;
-            color: #B4552D;
-        }
-        .nav-btn-inactive {
-            background-color: transparent;
-            color: #FFFFFF;
-        }
-        .nav-btn-inactive:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Custom typography font for brand */
-        .font-intel-mono {
-            font-family: 'Intel One Mono', monospace;
-        }
-
-        /* Text Colors */
-        .text-zorba { color: #A0988E; }
-        .text-flint { color: #A0988E; }
-        .text-cod-gray { color: #FAF9F5; }
-        .text-soya-bean { color: #A0988E; }
-        .text-fuscous-gray { color: #FAF9F5; }
-        .text-crail { color: #D97757; }
-        .text-shingle-fawn { color: #D5B97B; }
-        .text-red-damask { color: #D97251; }
-        .text-role { color: #929292; }
-        
-        /* Background Colors */
-        .bg-romance { background-color: #2B2A27; }
-        .bg-old-lace { background-color: #362923; }
-        .bg-panache { background-color: #1e3324; }
-        .bg-zumthor { background-color: #1e2838; }
-        .bg-aths-special { background-color: #21201E; }
-        .bg-parchment { background-color: #322F26; }
-        
-        /* Borders */
-        .border-pearl-bush { border-color: #3E3D39; }
-        .border-ecru-white { border-color: #383734; }
-
-        /* Custom Scrollbar for containers */
-        .custom-scrollbar::-webkit-scrollbar {
-            height: 6px;
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #21201E;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #D97251;
-            border-radius: 4px;
-        }
-
-        /* Hover animation effects */
-        .card-hover {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .ui-link-neutral {
-            color: var(--foreground, #FAF9F5) !important;
-            text-decoration: none !important;
-            transition: color 150ms ease;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .ui-link-neutral:hover {
-            color: var(--primary, #D97251) !important;
-            text-decoration: none !important;
-        }
-        .ui-link-neutral .arrow {
-            display: inline-block;
-            transition: transform 0.25s ease;
-        }
-        .ui-link-neutral:hover .arrow {
-            transform: translateX(4px);
-        }
-    button, input, select, textarea {
-      font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
-      font-weight: 500;
-    }
-    
-    .app-canvas {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background: #141413;
-      border: none;
-      overflow: hidden;
-    }
-
-    .sidebar-frame {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 260px;
-      height: 100%;
-      border: none;
-      z-index: 50;
-    }
-
-    .section-container {
-      position: absolute;
-      left: 260px;
-      top: 0;
-      width: calc(100% - 260px);
-      height: 100%;
-      padding: 16px 24px;
-      display: flex;
-      overflow-y: auto;
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar { width: 60px !important; }
-      .sidebar .nav-text { display: none !important; }
-      .section-container { left: 60px !important; width: calc(100% - 60px) !important; padding: 10px !important; }
-      .header-container { flex-direction: column !important; align-items: flex-start !important; min-height: auto !important; height: auto !important; gap: 8px !important; }
-      .search-wrapper { width: 100% !important; margin-top: 8px !important; }
-      .dropdown-container { width: 100% !important; margin-left: 0 !important; margin-top: 8px !important; }
-      .controls-row { flex-direction: column !important; align-items: flex-start !important; height: auto !important; }
-      .table-margin-container { width: 100% !important; margin-left: 0 !important; }
-      .table-scroll { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
-    }
-    
-  </style>
+    <link rel="stylesheet" href="../../assets/css/pages/admin/dashboard.css" />
 </head>
 <body>
 
@@ -195,7 +38,7 @@
       <div class="sidebar-footer">
         <div class="sidebar-divider"></div>
         <div class="sidebar-account-card">
-          <div style="display:flex;align-items:center;gap:10px;"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
+          <div class="is-54a40d7"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
           <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg></button>
         </div>
       </div>
@@ -236,39 +79,59 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
                         <!-- Card 1: Pending Student Applications -->
-                        <a href="dashboard.html?queue=student" data-queue-open="student" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
-                            <span class="flex flex-col gap-0.5">
-                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Students</span>
-                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
-                            </span>
-                            <span class="text-[28px] font-bold text-[#F0D35A] leading-8">4</span>
+                        <a href="dashboard.html?queue=student" data-queue-open="student" class="ui-card p-5 flex flex-col gap-3 text-inherit no-underline transition-colors hover:border-[#D97251]/60 is-09a36b0">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Students</span>
+                                <span class="w-[9px] h-[9px] rounded-full bg-[#F59E0B] shrink-0"></span>
+                            </div>
+                            <div class="flex items-end justify-between">
+                                <span class="font-intel-mono text-[30px] font-semibold text-white leading-none">4</span>
+                                <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
+                                    Requires Review
+                                </span>
+                            </div>
                         </a>
 
                         <!-- Card 2: Pending Department Applications -->
-                        <a href="dashboard.html?queue=department" data-queue-open="department" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--yellow bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
-                            <span class="flex flex-col gap-0.5">
-                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Departments</span>
-                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
-                            </span>
-                            <span class="text-[28px] font-bold text-[#F0D35A] leading-8">5</span>
+                        <a href="dashboard.html?queue=department" data-queue-open="department" class="ui-card p-5 flex flex-col gap-3 text-inherit no-underline transition-colors hover:border-[#D97251]/60 is-09a36b0">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Departments</span>
+                                <span class="w-[9px] h-[9px] rounded-full bg-[#8B5CF6] shrink-0"></span>
+                            </div>
+                            <div class="flex items-end justify-between">
+                                <span class="font-intel-mono text-[30px] font-semibold text-white leading-none">5</span>
+                                <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
+                                    Requires Review
+                                </span>
+                            </div>
                         </a>
 
                         <!-- Card 3: Pending Program Applications -->
-                        <a href="dashboard.html?queue=program" data-queue-open="program" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
-                            <span class="flex flex-col gap-0.5">
-                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Programs</span>
-                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
-                            </span>
-                            <span class="text-[28px] font-bold text-[#C94A4A] leading-8">5</span>
+                        <a href="dashboard.html?queue=program" data-queue-open="program" class="ui-card p-5 flex flex-col gap-3 text-inherit no-underline transition-colors hover:border-[#D97251]/60 is-09a36b0">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Programs</span>
+                                <span class="w-[9px] h-[9px] rounded-full bg-[#06B6D4] shrink-0"></span>
+                            </div>
+                            <div class="flex items-end justify-between">
+                                <span class="font-intel-mono text-[30px] font-semibold text-white leading-none">5</span>
+                                <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
+                                    Requires Review
+                                </span>
+                            </div>
                         </a>
 
                         <!-- Card 4: Pending Faculty Applications -->
-                        <a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="ui-card ui-card--interactive queue-summary-card queue-summary-card--red bg-[#211F1D] px-4 py-3 flex items-center justify-between min-h-[68px]">
-                            <span class="flex flex-col gap-0.5">
-                                <span class="text-[11px] font-semibold uppercase tracking-[0.7px] text-soya-bean leading-4">Faculty</span>
-                                <span class="text-[11px] text-flint leading-4">Requires Review</span>
-                            </span>
-                            <span class="text-[28px] font-bold text-[#C94A4A] leading-8">4</span>
+                        <a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="ui-card p-5 flex flex-col gap-3 text-inherit no-underline transition-colors hover:border-[#D97251]/60 is-09a36b0">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-semibold uppercase tracking-[0.6px] text-flint leading-4">Faculty</span>
+                                <span class="w-[9px] h-[9px] rounded-full bg-[#3B82F6] shrink-0"></span>
+                            </div>
+                            <div class="flex items-end justify-between">
+                                <span class="font-intel-mono text-[30px] font-semibold text-white leading-none">4</span>
+                                <span class="bg-old-lace px-2 py-0.5 rounded-full text-[10px] font-medium text-crail leading-4">
+                                    Requires Review
+                                </span>
+                            </div>
                         </a>
 
                     </div>
@@ -279,7 +142,7 @@
                     
                     <!-- Pending Approval Queue Table (Spans 2 Columns) -->
                     <div class="lg:col-span-2 flex flex-col h-full">
-                        <section class="ui-card p-5 flex flex-col h-full gap-4">
+                        <section class="ui-card flex flex-col h-full gap-4">
                             <div class="flex items-center justify-between mb-2">
                                 <h2 class="text-lg font-bold text-white m-0 leading-none">Pending Approval Queue</h2>
                                 <span class="text-[11px] text-zorba">Requires System-Admin Action</span>
@@ -289,11 +152,11 @@
                                 <table class="ui-table">
                                     <thead>
                                         <tr>
-                                            <th style="width: 100px; text-align: left;">Type</th>
-                                            <th style="width: 30%; text-align: left;">Applicant / Title</th>
-                                            <th style="width: 30%; text-align: left;">Department / Context</th>
-                                            <th style="width: 140px; text-align: left;">Submitted</th>
-                                            <th style="width: 120px; text-align: right;">Action</th>
+                                            <th class="is-fce05da">Type</th>
+                                            <th class="is-bbdbcfa">Applicant / Title</th>
+                                            <th class="is-bbdbcfa">Department / Context</th>
+                                            <th class="is-b10fa68">Submitted</th>
+                                            <th class="is-e9eb1ce">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -302,8 +165,8 @@
                                             <td class="font-medium text-white">Dr. Eleanor Vance</td>
                                             <td>Computer Science</td>
                                             <td>2026-09-10</td>
-                                            <td style="text-align: right;">
-                                                <button onclick="handleReview('Dr. Eleanor Vance')" class="ui-link-neutral font-medium text-xs inline-flex items-center justify-end gap-1">
+                                            <td class="is-7851dbc">
+                                                <button data-review="Dr. Eleanor Vance" class="ui-link-neutral font-medium text-xs inline-flex items-center justify-end gap-1">
                                                     Review <span class="arrow">&rarr;</span>
                                                 </button>
                                             </td>
@@ -313,8 +176,8 @@
                                             <td class="font-medium text-white">Radz Ponce Moreno</td>
                                             <td>BS Computer Science</td>
                                             <td>2026-09-10</td>
-                                            <td style="text-align: right;">
-                                                <button onclick="handleReview('Radz Ponce Moreno')" class="ui-link-neutral font-medium text-xs inline-flex items-center justify-end gap-1">
+                                            <td class="is-7851dbc">
+                                                <button data-review="Radz Ponce Moreno" class="ui-link-neutral font-medium text-xs inline-flex items-center justify-end gap-1">
                                                     Review <span class="arrow">&rarr;</span>
                                                 </button>
                                             </td>
@@ -324,8 +187,8 @@
                                             <td class="font-medium text-white">BS Data Science</td>
                                             <td>New Addition</td>
                                             <td>2026-09-09</td>
-                                            <td style="text-align: right;">
-                                                <button onclick="handleReview('BS Data Science')" class="ui-link-neutral font-medium text-xs inline-flex items-center justify-end gap-1">
+                                            <td class="is-7851dbc">
+                                                <button data-review="BS Data Science" class="ui-link-neutral font-medium text-xs inline-flex items-center justify-end gap-1">
                                                     Review <span class="arrow">&rarr;</span>
                                                 </button>
                                             </td>
@@ -335,8 +198,8 @@
                                             <td class="font-medium text-white">Dr. Sophia Al-Mansoor</td>
                                             <td>Applied Mathematics</td>
                                             <td>2026-09-08</td>
-                                            <td style="text-align: right;">
-                                                <button onclick="handleReview('Dr. Sophia Al-Mansoor')" class="ui-link-neutral font-medium text-xs inline-flex items-center justify-end gap-1">
+                                            <td class="is-7851dbc">
+                                                <button data-review="Dr. Sophia Al-Mansoor" class="ui-link-neutral font-medium text-xs inline-flex items-center justify-end gap-1">
                                                     Review <span class="arrow">&rarr;</span>
                                                 </button>
                                             </td>
@@ -396,7 +259,7 @@
             </div>
 
         <!-- Footer indicator -->
-        <footer class="admin-footer" style="margin-top: auto; width: 100%;">
+        <footer class="admin-footer is-c425574">
           <span>&copy; 2026 Admin Portal. All rights reserved.</span>
           <span>System Version 2.4.0</span>
         </footer>
@@ -413,83 +276,13 @@
 
     </div>
 
-    <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('sidebar-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        function handleReview(name) {
-            const toast = document.getElementById('toast-modal');
-            const toastMsg = document.getElementById('toast-message');
-            
-            toastMsg.textContent = `Opening review panel for: ${name}`;
-            
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-            
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        // Initial skeleton loading for dashboard approval queue table
-        (() => {
-            const queueBody = document.querySelector('.ui-table tbody');
-            if (queueBody) {
-                const rows = Array.from(queueBody.querySelectorAll('tr'));
-                rows.forEach(r => r.style.display = 'none');
-                const skel = document.createElement('tr');
-                skel.className = 'skeleton-row';
-                skel.innerHTML = '<td colspan="5"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></td>';
-                queueBody.appendChild(skel);
-                setTimeout(() => {
-                    skel.remove();
-                    rows.forEach(r => r.style.display = '');
-                }, 250);
-            }
-        })();
-    </script>
+    <script src="../../assets/js/pages/admin/dashboard.js"></script>
 <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
         <span id="toast-message">Action successful!</span>
     </div>
-    <script>
-        function showSuccessToast(message) {
-            const toast = document.getElementById('global-success-toast');
-            const msgEl = document.getElementById('toast-message');
-            if(toast && msgEl) {
-                msgEl.textContent = message || 'Action successful!';
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-            }
-        }
-        
-        // Auto-wire forms and add buttons for the mockup
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('form').forEach(f => {
-                if (f.id === 'acceptForm' || f.id === 'rejectForm' || f.closest('#acceptModal, #rejectModal')) return; // specific toast handled by page script
-                f.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    showSuccessToast('Successfully submitted!');
-                });
-            });
-            
-            // For admin tables or faculty modals
-            document.querySelectorAll('button').forEach(b => {
-                if (b.closest('#acceptModal, #rejectModal')) return;
-                if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
-                    b.addEventListener('click', (e) => {
-                        if(b.type !== 'submit') {
-                            showSuccessToast('Action completed successfully!');
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+    <script src="../../assets/js/pages/admin/dashboard-2.js"></script>
 
-    <script src="../../assets/js/queue-modal.js"></script>
+    <script src="../../assets/js/queue-modal.js?v=3"></script>
 </body>
 </html>

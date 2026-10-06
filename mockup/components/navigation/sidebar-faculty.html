@@ -14,70 +14,7 @@
     <!-- Navigate parent window when used in an iframe -->
     <base target="_parent">
 
-    <style>
-        body {
-            font-family: var(--font-sans, 'Outfit'), sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #141413;
-        }
-
-        .bg-sidebar {
-            background-color: #21201E;
-        }
-
-        .border-sidebar-right {
-            border-right: 1px solid #3E3D39 !important;
-        }
-
-        /* Active Navigation Item State */
-        .nav-btn-active {
-            background-color: var(--primary, #D97251);
-            color: var(--primary-foreground, #FFFFFF);
-        }
-
-        /* Inactive Navigation Item State */
-        .nav-btn-inactive {
-            background-color: transparent;
-            color: #98938D;
-        }
-
-        .nav-btn-inactive:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: #FFFFFF;
-        }
-
-        /* Bottom Account Profile Card Styling */
-        .bg-account-card {
-            background-color: #2B2A27;
-        }
-
-        .bg-avatar {
-            background-color: #F7E2D6;
-        }
-
-        .text-avatar {
-            color: #A35233;
-        }
-
-        .border-divider {
-            border-color: #8C4328;
-        }
-
-        /* Dark Theme Scrollbar for Sidebar Navigation */
-        .dark-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .dark-scrollbar::-webkit-scrollbar-track {
-            background: #21201E;
-        }
-
-        .dark-scrollbar::-webkit-scrollbar-thumb {
-            background: #3E3D39;
-            border-radius: 4px;
-        }
-    </style>
+    <link rel="stylesheet" href="../../assets/css/components/navigation/sidebar-faculty.css" />
 </head>
 
 <body class="bg-[#141413] min-h-screen">
@@ -98,7 +35,7 @@
                 <!-- 1. Dashboard -->
                 <a href="../../pages/faculty/dashboard.html"
                     class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm">
-                    <svg class="w-[18px] h-[18px] shrink-0" width="18" height="18" style="width: 18px; height: 18px;" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg class="w-[18px] h-[18px] shrink-0 is-052ff0c" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
                         <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
                         <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />

@@ -23,6 +23,10 @@
 
   const pageQueue = pageToQueue[window.location.pathname.split('/').pop()] || null;
   const isEmbeddedQueue = new URLSearchParams(window.location.search).has('embedded');
+  if (isEmbeddedQueue) {
+    document.documentElement.classList.add('queue-embedded');
+    if (document.body) document.body.classList.add('queue-embedded');
+  }
 
   function selectedRows(root = document) {
     return [...root.querySelectorAll('.table-body .custom-checkbox:checked')]
@@ -39,9 +43,11 @@
   }
 
   function removeQueueParameter() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('queue');
-    window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('queue');
+      window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch (_) {}
   }
 
   function ensureModalShell() {
@@ -92,12 +98,21 @@
 
   function closeQueueModal(modal, options = {}) {
     if (!modal) return;
-    modal.querySelector('iframe')?.contentWindow?.postMessage('queue-modal-reset', window.location.origin);
+    try {
+      const targetOrigin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : '*';
+      modal.querySelector('iframe')?.contentWindow?.postMessage('queue-modal-reset', targetOrigin);
+    } catch (_) {}
+
     modal.classList.remove('active');
+    modal.classList.remove('show');
+    modal.style.display = 'none';
     modal.setAttribute('aria-hidden', 'true');
+
     if (!options.preserveUrl) removeQueueParameter();
-    const restoreTarget = modal.__restoreFocus;
-    if (restoreTarget && typeof restoreTarget.focus === 'function') restoreTarget.focus();
+    try {
+      const restoreTarget = modal.__restoreFocus;
+      if (restoreTarget && typeof restoreTarget.focus === 'function') restoreTarget.focus();
+    } catch (_) {}
   }
 
   function openQueueModal(modal, trigger) {
@@ -106,6 +121,7 @@
     if (queueTypes.has(queue)) setQueueModalContent(modal, queue);
     modal.__restoreFocus = trigger || document.activeElement;
     modal.classList.add('active');
+    modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
     const firstFocusable = modal.querySelector('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
     if (firstFocusable) firstFocusable.focus();
@@ -125,9 +141,11 @@
         event.preventDefault();
         const queue = trigger.dataset.queueOpen;
         if (!queueTypes.has(queue)) return;
-        const url = new URL(window.location.href);
-        url.searchParams.set('queue', queue);
-        window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set('queue', queue);
+          window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
+        } catch (_) {}
         modal.dataset.queueType = queue;
         openQueueModal(modal, trigger);
       });
@@ -138,12 +156,20 @@
       openQueueModal(modal);
     }
 
-    modal.querySelectorAll('[data-queue-close], .modal-cancel, .modal-close').forEach((button) => {
-      button.addEventListener('click', () => closeQueueModal(modal));
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal || event.target.closest('[data-queue-close], .modal-close, .modal-cancel')) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeQueueModal(modal);
+      }
     });
 
-    modal.addEventListener('click', (event) => {
-      if (event.target === modal) closeQueueModal(modal);
+    document.addEventListener('click', (event) => {
+      const closeBtn = event.target.closest('[data-queue-close], [data-queue-modal] .modal-close');
+      if (closeBtn) {
+        event.preventDefault();
+        closeQueueModal(modal);
+      }
     });
 
     window.addEventListener('popstate', () => {
@@ -156,7 +182,6 @@
     });
 
     window.addEventListener('message', (event) => {
-      if (event.source !== modal.querySelector('iframe')?.contentWindow) return;
       if (event.data === 'queue-modal-close') closeQueueModal(modal);
     });
 
@@ -395,9 +420,17 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    if (isEmbeddedQueue) document.body.classList.add('queue-embedded');
+  function initQueue() {
+    if (isEmbeddedQueue && document.body) document.body.classList.add('queue-embedded');
     installModalContract();
-    if (pageQueue) installQueueRows();
-  });
+    // Legacy row logic only applies to the old div-based table markup.
+    // Current pages use <table> + #acceptModal/#rejectModal handled by the page script.
+    if (pageQueue && document.querySelector('.table-body .table-row')) installQueueRows();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initQueue);
+  } else {
+    initQueue();
+  }
 })();

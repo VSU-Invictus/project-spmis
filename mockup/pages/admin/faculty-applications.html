@@ -5,559 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css?v=2">
   <title>Admin Portal - Faculty Applications</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-body {
-      font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
-      color: #fff;
-    }
-
-    body {
-      overflow: hidden;
-    }
-
-    .app-canvas {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background: #141413;
-      border: none;
-      overflow: hidden;
-    }
-
-    /* Reusable Sidebar Component Frame */
-    .sidebar-frame {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 260px;
-      height: 100%;
-      border: none;
-      z-index: 50;
-    }
-
-    .section-container {
-      position: absolute;
-      left: 260px;
-      top: 0;
-      width: calc(100% - 260px);
-      height: 100%;
-      padding: 16px 24px;
-      display: flex;
-      overflow-y: auto;
-      flex-direction: column;
-      align-items: flex-start;
-      box-sizing: border-box;
-    }
-
-    .header-container {
-      display: flex;
-      align-items: flex-start;
-      width: 100%;
-      margin-left: 0;
-    }
-
-    .heading-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 322px;
-      min-height: 60px;
-      height: auto;
-    }
-
-    .heading-title {
-      margin: 8px 0 16px;
-      font-size: 30px;
-      line-height: 36px;
-      font-weight: 700;
-      letter-spacing: -0.75px;
-      color: #fff;
-    }
-
-    .controls-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      height: 52px;
-      margin-left: 0;
-      padding-top: 0;
-    }
-
-    .search-wrapper {
-      position: relative;
-      width: 320px;
-      height: 38px;
-    }
-
-    .search-input {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 38px;
-      padding: 8px 16px 8px 40px;
-      background: var(--muted, #21201E);
-      border: 1px solid var(--input, #43362B);
-      border-radius: 12px;
-      font-size: 14px;
-      color: var(--foreground, #FFFFFF);
-      outline: none;
-    }
-
-    .search-input::placeholder {
-      color: var(--muted-foreground, #A0988E);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 11px;
-      width: 16px;
-      height: 16px;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .dropdown-container {
-      position: relative;
-      height: 38px;
-    }
-
-    .dropdown-container.type {
-      width: 120px;
-    }
-
-    .dropdown-container.sort {
-      width: 120px;
-    }
-
-    .dropdown-select {
-      width: 100%;
-      height: 38px;
-      padding: 0 28px 0 14px;
-      background: var(--muted, #21201E);
-      border: 1px solid var(--input, #43362B);
-      border-radius: 12px;
-      color: var(--foreground, #FFFFFF);
-      font-size: 12px;
-      appearance: none;
-      outline: none;
-    }
-
-    .dropdown-chevron {
-      position: absolute;
-      right: 10px;
-      top: 12px;
-      width: 14px;
-      height: 14px;
-      pointer-events: none;
-    }
-
-    .table-margin-container {
-      padding: 10px 0 0;
-      width: 100%;
-      margin-left: 0;
-    }
-
-    .table-container {
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 0;
-      width: 100%;
-      max-width: none;
-      background: var(--ui-surface, #2B2A27);
-      border: none;
-      border-radius: 0;
-      overflow: hidden;
-      box-shadow: none;
-      margin-left: 0;
-    }
-
-    .table-header-row {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: stretch;
-      width: 100%;
-      min-height: 43.5px;
-      background: var(--ui-surface-muted, #21201E);
-    }
-
-    .th-cell {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 13px 12px;
-      min-height: 43.5px;
-      min-width: 0;
-      color: var(--ui-surface-text, #FFFFFF);
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 16px;
-      box-sizing: border-box;
-    }
-
-    .th-cell.checkbox-cell {
-      width: 54px;
-      height: 43.5px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .th-cell.checkbox-cell .custom-checkbox {
-      display: none;
-    }
-
-    .th-cell.col-name { width: auto; flex: 200 1 0; }
-    .th-cell.col-email { width: auto; flex: 200 1 0; }
-    .th-cell.col-dept { width: auto; flex: 250 1 0; }
-    .th-cell.col-role { width: auto; flex: 120 1 0; }
-    .th-cell.col-status { width: auto; flex: 140 1 0; }
-    .th-cell.col-date { width: auto; flex: 160 1 0; }
-
-    .custom-checkbox {
-      position: relative;
-      box-sizing: border-box;
-      width: 14px;
-      height: 14px;
-      border: 2px solid #D97251;
-      border-radius: 2px;
-      appearance: none;
-      -webkit-appearance: none;
-      background-color: transparent;
-      cursor: pointer;
-      outline: none;
-      display: inline-block;
-      vertical-align: middle;
-      margin: 0;
-      overflow: visible;
-      transition: background-color 0.15s ease, border-color 0.15s ease;
-    }
-
-    .custom-checkbox:hover {
-      border-color: #BF5E3E;
-    }
-
-    .custom-checkbox:checked {
-      background-color: #D97251;
-      border-color: #D97251;
-    }
-
-    .custom-checkbox:checked::after {
-      content: '';
-      position: absolute;
-      top: -5px;
-      left: -1px;
-      width: 20px;
-      height: 20px;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.5 10.5L7.5 15L17.5 3.5' stroke='%23000000' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 10.5L7.5 15L17.5 3.5' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      pointer-events: none;
-    }
-
-    .table-body {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 0;
-      width: 100%;
-    }
-
-    
-
-    tr:hover {
-      background-color: rgba(217, 114, 81, 0.05);
-    }
-
-    tr.checked {
-      background-color: rgba(217, 114, 81, 0.15);
-    }
-
-    .td-cell {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 16px 12px 17px;
-      min-width: 0;
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 16px;
-      box-sizing: border-box;
-    }
-
-    .td-cell.checkbox-cell {
-      width: 54px;
-      justify-content: center;
-      align-items: center;
-      padding: 0;
-      height: 49px;
-      display: flex;
-    }
-
-    .td-cell.col-name { width: auto; flex: 200 1 0; font-weight: 500; color: var(--ui-surface-muted-text, #D1CBC2); }
-    .td-cell.col-email { width: auto; flex: 200 1 0; font-weight: 500; color: var(--ui-surface-text, #FFFFFF); }
-    .td-cell.col-dept { width: auto; flex: 250 1 0; font-weight: 500; color: var(--ui-surface-text, #FFFFFF); }
-    .td-cell.col-role { width: auto; flex: 120 1 0; padding: 14.5px 12px; }
-    .td-cell.col-status { width: auto; flex: 140 1 0; padding: 14.5px 12px; }
-    .td-cell.col-date { width: auto; flex: 160 1 0; font-weight: 500; color: var(--ui-surface-muted-text, #D1CBC2); }
-
-    .badge-pill {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 2px 10px;
-      border-radius: 9999px;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 16px;
-      box-sizing: border-box;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    .role-faculty {
-      background: #f0f4ff;
-      color: #3a5cc7;
-      width: 74px;
-      height: 20px;
-    }
-
-    .role-admin {
-      background: #f8e8d6;
-      color: #8a5e1f;
-      width: 74px;
-      height: 20px;
-    }
-
-    .status-active {
-      background: #eaf7ee;
-      color: #2f7b4d;
-      width: 75px;
-      height: 20px;
-    }
-
-    .bottom-bar-container {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 10px 0 0;
-      gap: 12px;
-      width: calc(100% - 24px);
-      max-width: none;
-      height: auto;
-      margin-top: 0;
-      margin-left: 0;
-    }
-
-    .action-btn-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-right: auto;
-    }
-
-    .pagination-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .pill-btn {
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 30px;
-      padding: 7px 20px;
-      border-radius: 999px;
-      border: 1px solid var(--ui-surface-border, #3E3D39);
-      background: var(--ui-surface-muted, #21201E);
-      color: var(--ui-surface-text, #FFFFFF);
-      font-size: 12px;
-      line-height: 16px;
-      cursor: pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-
-    .pill-btn.pagination {
-      padding: 6px 16px;
-    }
-
-    .pill-btn.accept {
-      background: #2c7e39;
-      border-color: #2c7e39;
-      color: #fff;
-    }
-
-    .pill-btn.reject {
-      background: #f9464a;
-      border-color: #f9464a;
-      color: #fff;
-    }
-
-    .page-text {
-      color: #a39d96;
-      font-size: 12px;
-      font-weight: 400;
-      line-height: 16px;
-    }
-    button, input, select, textarea {
-font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
-      font-weight: 500;
-    }
-
-    /* Toast */
-    #toast { display: none !important; }
-    .toast {
-      position: fixed;
-      top: 22px;
-      right: 22px;
-      z-index: 120;
-      display: none;
-      min-width: 210px;
-      padding: 13px 16px;
-      border-radius: 10px;
-      background: #D97251;
-      color: #fff;
-      box-shadow: 0 10px 28px rgba(0,0,0,.22);
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .toast.show {
-      display: block;
-      animation: toastIn .2s ease-out;
-    }
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-
-  
-    @media (max-width: 768px) {
-      .sidebar { width: 60px !important; }
-      .sidebar .nav-text { display: none !important; }
-      .section-container { left: 60px !important; width: calc(100% - 60px) !important; padding: 10px !important; }
-      .header-container { flex-direction: column !important; align-items: flex-start !important; min-height: auto !important; height: auto !important; gap: 8px !important; }
-      .search-wrapper { width: 100% !important; margin-top: 8px !important; }
-      .dropdown-container { width: 100% !important; margin-left: 0 !important; margin-top: 8px !important; }
-      .controls-row { flex-direction: column !important; align-items: flex-start !important; height: auto !important; }
-      .table-margin-container { width: 100% !important; margin-left: 0 !important; }
-      :is(.ui-table-wrap, .table-wrap, .table-container, .table-scroll) { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; width: 100% !important; display: block !important; }
-      :is(.ui-table, table.ui-table, table) { min-width: 680px !important; }
-    }
-    
-  
-    /* Header & Footer Custom Styling */
-    .admin-top-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #42423F;
-      padding-bottom: 0.75rem;
-      margin-bottom: 1rem;
-      width: 100%;
-    }
-    .header-left, .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-.red-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #D97251;
-    }
-    .breadcrumb-text {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: #9C948B;
-      text-transform: uppercase;
-    }
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      background: #3d3d3a;
-      border: 1px solid #484844;
-      font-size: 11px;
-      color: #9C948B;
-    }
-    .green-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10B981;
-      
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .5; }
-    }
-    .ay-text {
-      font-size: 11px;
-      color: #9C948B;
-    }
-    .admin-footer {
-      flex: none !important;
-      height: auto !important;
-      flex-shrink: 0;
-      margin-top: auto;
-      padding-top: 0.75rem;
-      border-top: 1px solid #42423F;
-      display: flex;
-align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #A0988E;
-      width: 100%;
-    
-        margin-top: auto;}
-    @media (max-width: 768px) {
-      .admin-top-header, .admin-footer {
-      flex: none !important;
-      height: auto !important;
-      flex-shrink: 0;
-      margin-top: auto;
-      padding-top: 0.75rem;
-      border-top: 1px solid #42423F;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #A0988E;
-      width: 100%;
-    
-        margin-top: auto;}
-    }
-
-  </style>
+  <link rel="stylesheet" href="../../assets/css/pages/admin/faculty-applications.css" />
 </head>
 <body>
   <div class="app-canvas">
@@ -593,7 +46,7 @@ align-items: center;
           </div>
           <div>
             <label for="rejectReason">
-              <span>Reason for rejection <span style="color: var(--destructive); font-weight: 700;">*</span></span>
+              <span>Reason for rejection <span class="is-9790b6e">*</span></span>
             </label>
             <textarea placeholder="Enter specific deficiency or prerequisites reason..." id="rejectReason" required></textarea>
           </div>
@@ -626,11 +79,11 @@ align-items: center;
           </div>
           <div>
             <label>Selected Application(s):</label>
-            <div id="acceptSummary" style="padding: 10px 14px; background: var(--muted); border: 1px solid var(--input); border-radius: var(--radius-md); font-size: 13px; color: var(--foreground); line-height: 1.45;"></div>
+            <div class="is-c6e11f9" id="acceptSummary"></div>
           </div>
-          <div style="display: flex; gap: 10px; margin-top: 4px;">
-            <button type="button" class="ui-btn ui-btn-outline" id="cancelAcceptBtn" style="flex: 1; height: 42px; border-radius: 10px;">Cancel</button>
-            <button type="submit" class="modal-submit" style="flex: 1; margin-top: 0; height: 42px;">Confirm Approval</button>
+          <div class="is-afa50e8">
+            <button type="button" class="ui-btn ui-btn-outline is-3f160fb" id="cancelAcceptBtn">Cancel</button>
+            <button type="submit" class="modal-submit is-1331a1d">Confirm Approval</button>
           </div>
         </form>
       </div>
@@ -656,7 +109,7 @@ align-items: center;
       <div class="sidebar-footer">
         <div class="sidebar-divider"></div>
         <div class="sidebar-account-card">
-          <div style="display:flex;align-items:center;gap:10px;"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
+          <div class="is-54a40d7"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
           <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg></button>
         </div>
       </div>
@@ -695,7 +148,7 @@ align-items: center;
           <input type="text" id="searchInput" class="search-input" placeholder="Search by faculty name or keyword...">
         </div>
 
-        <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+        <div class="is-b5d8940">
           <div class="dropdown-container type">
             <select id="typeFilter" class="dropdown-select">
               <option value="all">Type: All</option>
@@ -719,23 +172,23 @@ align-items: center;
         </div>
       </div>
 
-<div class="table-margin-container" style="padding-top: 0;">
-        <div class="ui-table-wrap" style="margin-top: 16px;">
+<div class="table-margin-container is-25e5217">
+        <div class="ui-table-wrap is-a812934">
           <table class="ui-table">
             <thead>
-                <tr style="text-transform: uppercase;">
-                  <th style="width: 48px; text-align: center;"><input type="checkbox" aria-label="Select all rows" class="select-all-checkbox"></th>
-                  <th style="width: 20%; text-align: left;">Name</th>
-                  <th style="width: 24%; text-align: left;">Email Address</th>
-                  <th style="width: 24%; text-align: left;">Department</th>
-                  <th style="width: 110px; text-align: left;">Role</th>
-                  <th style="width: 120px; text-align: left;">Status</th>
-                  <th style="width: 140px; text-align: left;">Registered Date</th>
+                <tr class="is-90fefe9">
+                  <th class="is-7e4398f"><input type="checkbox" aria-label="Select all rows" class="select-all-checkbox"></th>
+                  <th class="is-b819624">Name</th>
+                  <th class="is-fdb3bbd">Email Address</th>
+                  <th class="is-fdb3bbd">Department</th>
+                  <th class="is-0c80d75">Role</th>
+                  <th class="is-feccc20">Status</th>
+                  <th class="is-b10fa68">Registered Date</th>
                 </tr>
               </thead>
             <tbody id="tableBody">
               <tr>
-                <td style="text-align: center;"><input type="checkbox" aria-label="Select row" class="row-checkbox"></td>
+                <td class="is-cdd8ca0"><input type="checkbox" aria-label="Select row" class="row-checkbox"></td>
                 <td>Dr. Eleanor Vance</td>
                 <td>e.vance@university.edu</td>
                 <td>Department of Computer Science</td>
@@ -744,7 +197,7 @@ align-items: center;
                 <td>2026-09-10</td>
                 </tr>
               <tr>
-                <td style="text-align: center;"><input type="checkbox" aria-label="Select row" class="row-checkbox"></td>
+                <td class="is-cdd8ca0"><input type="checkbox" aria-label="Select row" class="row-checkbox"></td>
                 <td>Prof. Marcus Brody</td>
                 <td>m.brody@university.edu</td>
                 <td>Department of Information Technology</td>
@@ -753,7 +206,7 @@ align-items: center;
                 <td>2026-09-09</td>
                 </tr>
               <tr>
-                <td style="text-align: center;"><input type="checkbox" aria-label="Select row" class="row-checkbox"></td>
+                <td class="is-cdd8ca0"><input type="checkbox" aria-label="Select row" class="row-checkbox"></td>
                 <td>Dr. Sophia Al-Mansoor</td>
                 <td>s.almansoor@university.edu</td>
                 <td>Department of Applied Mathematics</td>
@@ -762,7 +215,7 @@ align-items: center;
                 <td>2026-09-08</td>
                 </tr>
               <tr>
-                <td style="text-align: center;"><input type="checkbox" aria-label="Select row" class="row-checkbox"></td>
+                <td class="is-cdd8ca0"><input type="checkbox" aria-label="Select row" class="row-checkbox"></td>
                 <td>Prof. Arthur Pendelton</td>
                 <td>a.pendelton@university.edu</td>
                 <td>Department of Biological Sciences</td>
@@ -772,283 +225,52 @@ align-items: center;
                 </tr>
             </tbody>
           </table>
-          <div id="emptyState" class="empty-state" style="display: none; padding: 24px; text-align: center; color: var(--muted-foreground);">No applications found.</div>
+          <div id="emptyState" class="empty-state is-f19ae44">No applications found.</div>
         </div> <!-- End ui-table-wrap -->
-        <div class="ui-table-pagination" style="background: transparent; border: none; padding-left: 4px; padding-right: 4px; margin-top: 8px;">
-            <div style="display: flex; align-items: center; gap: 16px;">
+        <div class="ui-table-pagination is-dde7f86">
+            <div class="is-47c5200">
                 <span id="selection-count">0 of 4 row(s) selected.</span>
-                <div style="display: flex; gap: 8px;">
+                <div class="is-13262f5">
                     <button class="pill-btn accept">Accept</button>
                     <button class="pill-btn reject">Reject</button>
                 </div>
             </div>
             <div class="ui-table-pagination-nav">
-                <span style="display: flex; align-items: center; gap: 12px;">
-                      <span style="color: var(--muted-foreground);">Rows per page</span>
-                      <div style="position: relative; display: flex; align-items: center;">
-                          <select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem; cursor: pointer; outline: none;">
+                <span class="is-1c20bbe">
+                      <span class="is-2882578">Rows per page</span>
+                      <div class="is-e0dd7f8">
+                          <select class="ui-select-pill is-755d712" aria-label="Rows per page">
                                 <option>5</option>
                                 <option>10</option>
                             </select>
-                            <svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m6 9 6 6 6-6"/>
                             </svg>
                       </div>
                   </span>
-                <span style="margin: 0 16px; color: var(--muted-foreground); font-weight: 500; font-size: 13px;">Page 1 of 1 &middot; 4 entries</span>
-                  <button class="ui-table-page-btn" disabled style="width: auto; padding: 6px 16px; border-radius: 99px; background: transparent; color: #6C655D; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Previous</button>
-                  <button class="ui-table-page-btn" style="width: auto; padding: 6px 20px; border-radius: 99px; background: transparent; color: #FFFFFF; font-weight: 600; border-color: #3E3D39; min-height: 32px;">Next</button>
+                <span class="is-2651671">Page 1 of 1 &middot; 4 entries</span>
+                  <button class="ui-table-page-btn is-9f84822" disabled>Previous</button>
+                  <button class="ui-table-page-btn is-8d6e082">Next</button>
             </div>
 
         </div>
       </div> <!-- End table-margin-container -->
 
 <!-- Footer indicator -->
-      <footer class="admin-footer" style="margin-top: auto; width: 100%;">
+      <footer class="admin-footer is-c425574">
         <span>&copy; 2026 Admin Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
     </main>
-    <script src="../../assets/js/queue-modal.js"></script>
-    <script>
-      // Search, Filter and Admin Table initialization
-      const searchInput = document.getElementById('searchInput');
-      const typeFilter = document.getElementById('typeFilter');
-      const sortFilter = document.getElementById('sortFilter');
-
-      const adminTable = window.initAdminTable({
-        tableBody: '#tableBody',
-        searchInput: '#searchInput',
-        filterElements: ['#typeFilter', '#sortFilter'],
-        emptyState: '#emptyState',
-        rowsPerPage: '.ui-select-pill',
-        prevBtn: '.ui-table-page-btn:first-of-type',
-        nextBtn: '.ui-table-page-btn:last-of-type',
-        selectAllCheckbox: '.select-all-checkbox',
-        rowCheckbox: '.row-checkbox',
-        selectionCount: '#selection-count',
-        entityName: 'applications',
-        searchFields: (row, query) => {
-          return row.textContent.toLowerCase().includes(query);
-        },
-        filterMatches: (row) => {
-          const type = typeFilter ? typeFilter.value.toLowerCase() : 'all';
-          return type.includes('all') || row.textContent.toLowerCase().includes(type);
-        }
-
-      });
-
-      // Toast and Modal Logic
-      const toast = document.getElementById('toast');
-      function showToast(message) {
-        if (typeof showSuccessToast === 'function') {
-          showSuccessToast(message);
-          return;
-        }
-        const globalToast = document.getElementById('global-success-toast');
-        const msgEl = document.getElementById('toast-message');
-        if (globalToast && msgEl) {
-          msgEl.textContent = message || 'Action successful!';
-          globalToast.classList.add('show');
-          setTimeout(() => globalToast.classList.remove('show'), 3000);
-          return;
-        }
-        if (!toast) return;
-        toast.textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-      }
-const rejectModal = document.getElementById('rejectModal');
-      const rejectForm = document.getElementById('rejectForm');
-      const closeReject = document.getElementById('closeReject');
-
-      const acceptModal = document.getElementById('acceptModal');
-      const acceptForm = document.getElementById('acceptForm');
-      const closeAccept = document.getElementById('closeAccept');
-      const cancelAcceptBtn = document.getElementById('cancelAcceptBtn');
-      const acceptSummary = document.getElementById('acceptSummary');
-
-      function openModal(modal) { if (modal) modal.classList.add('active'); }
-      function closeModal(modal) { if (modal) modal.classList.remove('active'); }
-
-      if (closeReject) closeReject.addEventListener('click', () => closeModal(rejectModal));
-      if (closeAccept) closeAccept.addEventListener('click', () => closeModal(acceptModal));
-      if (cancelAcceptBtn) cancelAcceptBtn.addEventListener('click', () => closeModal(acceptModal));
-
-      [rejectModal, acceptModal].forEach(modal => {
-        if (modal) {
-          modal.addEventListener('click', e => {
-            if (e.target === modal) closeModal(modal);
-          });
-        }
-      });
-
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
-          closeModal(rejectModal);
-          closeModal(acceptModal);
-        }
-      });
-
-      let rejectReasons = {};
-      let currentAppId = null;
-
-      const rejectAppSelect = document.getElementById('rejectAppSelect');
-      const rejectReason = document.getElementById('rejectReason');
-
-      if (rejectReason) {
-        // Auto-expand textarea on typing to cater long inputs
-        rejectReason.addEventListener('input', () => {
-          rejectReason.style.height = 'auto';
-          rejectReason.style.height = Math.max(90, Math.min(260, rejectReason.scrollHeight)) + 'px';
-        });
-      }
-
-      if (rejectAppSelect && rejectReason) {
-        rejectAppSelect.addEventListener('change', (e) => {
-          if (currentAppId) {
-            rejectReasons[currentAppId] = rejectReason.value;
-          }
-          currentAppId = e.target.value;
-          rejectReason.value = rejectReasons[currentAppId] || '';
-          rejectReason.style.height = 'auto';
-          rejectReason.style.height = Math.max(90, Math.min(260, rejectReason.scrollHeight)) + 'px';
-        });
-      }
-
-      if (rejectForm) {
-        rejectForm.addEventListener('submit', e => {
-          e.preventDefault();
-          if (currentAppId) {
-            rejectReasons[currentAppId] = rejectReason.value;
-          }
-
-          const checked = document.querySelectorAll(".ui-table tbody input[type='checkbox']:checked");
-          let allFilled = true;
-          checked.forEach((cb) => {
-            const id = cb.dataset.appId;
-            if (!rejectReasons[id] || rejectReasons[id].trim() === '') {
-              allFilled = false;
-            }
-          });
-
-          if (!allFilled || (rejectReason && !rejectReason.value.trim())) {
-            showToast('Please provide a reason for rejection before confirming.');
-            if (rejectReason) rejectReason.focus();
-            return;
-          }
-
-          closeModal(rejectModal);
-          window.setTimeout(() => showToast('Application Rejected Successfully'), 120);
-        });
-      }
-
-      const acceptBtn = document.querySelector('.pill-btn.accept');
-      const rejectBtn = document.querySelector('.pill-btn.reject');
-
-      if (acceptBtn) {
-        acceptBtn.addEventListener('click', () => {
-          const checked = document.querySelectorAll(".ui-table tbody input[type='checkbox']:checked");
-          if (checked.length > 0) {
-            if (acceptSummary) {
-              const names = Array.from(checked).map((cb, idx) => {
-                const row = cb.closest('tr');
-                const nameEl = row ? row.querySelectorAll('td')[1] : null;
-                return nameEl ? nameEl.textContent.trim() : `Application #${idx + 1}`;
-              });
-              acceptSummary.innerHTML = `<strong>${checked.length} applicant(s):</strong> ${names.join(', ')}`;
-            }
-            openModal(acceptModal);
-          } else {
-            showToast('Please select at least one application');
-          }
-        });
-      }
-
-      if (acceptForm) {
-        acceptForm.addEventListener('submit', e => {
-          e.preventDefault();
-          closeModal(acceptModal);
-          window.setTimeout(() => showToast('Application Accepted Successfully'), 120);
-        });
-      }
-
-      if (rejectBtn) {
-        rejectBtn.addEventListener('click', () => {
-          const checked = document.querySelectorAll(".ui-table tbody input[type='checkbox']:checked");
-          if (checked.length > 0) {
-            rejectReasons = {};
-            if (rejectAppSelect) rejectAppSelect.innerHTML = '';
-            
-            checked.forEach((cb, index) => {
-              const row = cb.closest('tr');
-              const nameEl = row.querySelectorAll('td')[1];
-              const name = nameEl ? nameEl.textContent.trim() : 'Application ' + (index + 1);
-              const id = 'app_' + index;
-              cb.dataset.appId = id;
-              
-              if (rejectAppSelect) {
-                const option = document.createElement('option');
-                option.value = id;
-                option.textContent = name;
-                rejectAppSelect.appendChild(option);
-              }
-            });
-
-            if (rejectAppSelect) {
-              currentAppId = rejectAppSelect.value;
-            }
-            if (rejectReason) {
-              rejectReason.value = '';
-              rejectReason.style.height = 'auto';
-            }
-            openModal(rejectModal);
-          } else {
-            showToast('Please select at least one application');
-          }
-        });
-      }
-    </script>
+    <script src="../../assets/js/queue-modal.js?v=2"></script>
+    <script src="../../assets/js/pages/admin/faculty-applications.js"></script>
   </div>
 
     <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
         <span id="toast-message">Action successful!</span>
     </div>
-    <script>
-        function showSuccessToast(message) {
-            const toast = document.getElementById('global-success-toast');
-            const msgEl = document.getElementById('toast-message');
-            if(toast && msgEl) {
-                msgEl.textContent = message || 'Action successful!';
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-            }
-        }
-        
-        // Auto-wire forms and add buttons for the mockup
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('form').forEach(f => {
-                if (f.id === 'acceptForm' || f.id === 'rejectForm' || f.closest('#acceptModal, #rejectModal')) return; // specific toast handled by page script
-                f.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    showSuccessToast('Successfully submitted!');
-                });
-            });
-            
-            // For admin tables or faculty modals
-            document.querySelectorAll('button').forEach(b => {
-                if (b.closest('#acceptModal, #rejectModal')) return;
-                if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
-                    b.addEventListener('click', (e) => {
-                        if(b.type !== 'submit') {
-                            showSuccessToast('Action completed successfully!');
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+    <script src="../../assets/js/pages/admin/faculty-applications-2.js"></script>
 
 </body>
 </html>
