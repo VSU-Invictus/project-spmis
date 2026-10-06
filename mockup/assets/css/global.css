@@ -408,6 +408,70 @@ dialog.logout-dialog .actions {
   }
 }
 
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.back-link-text {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px;
+  line-height: 1.2;
+}
+
+.back-link-text::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.back-link:hover .back-link-text::after {
+  transform: scaleX(1);
+}
+
+.arrow-nudge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  transform: translateY(-1px);   /
+}
+
+.back-link .arrow {
+  display: inline-block;
+  line-height: 1;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.back-link:hover .arrow {
+  transform: translateX(-4px);     
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-link .arrow,
+  .back-link:hover .arrow,
+  .back-link-text::after {
+    transition: none;
+    transform: none;
+  }
+}
+
 @media (min-width: 701px) {
     body .app > .sidebar {
         width: 250px;
