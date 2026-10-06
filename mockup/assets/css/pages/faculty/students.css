@@ -1208,8 +1208,40 @@
     #roster-results th:nth-child(4), #roster-results td:nth-child(4) { width: 26%; }
     #roster-results th:nth-child(5), #roster-results td:nth-child(5) { width: 140px; white-space: nowrap; text-align: left; padding-right: 24px !important; }
     #roster-results td:nth-child(5) a { white-space: nowrap; }
-    #roster-results th:first-child, #roster-results td:first-child { padding-left: 24px !important; }
-    #roster-results th:last-child, #roster-results td:last-child { padding-right: 24px !important; }
+    #roster-results th:nth-child(1):first-child,
+    #roster-results td:nth-child(1):first-child {
+        padding-left: 24px !important;
+        padding-right: 16px !important;
+        padding-top: 18px !important;
+        padding-bottom: 18px !important;
+        width: 140px;
+        white-space: nowrap;
+        font-family: 'Intel One Mono', monospace !important;
+        vertical-align: middle;
+    }
+
+    #roster-results th:nth-child(5):last-child,
+    #roster-results td:nth-child(5):last-child {
+        padding-left: 16px !important;
+        padding-right: 24px !important;
+        padding-top: 18px !important;
+        padding-bottom: 18px !important;
+        width: 140px;
+        white-space: nowrap;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    #roster-results th:nth-child(2),
+    #roster-results td:nth-child(2),
+    #roster-results th:nth-child(3),
+    #roster-results td:nth-child(3),
+    #roster-results th:nth-child(4),
+    #roster-results td:nth-child(4) {
+        padding-top: 18px !important;
+        padding-bottom: 18px !important;
+        vertical-align: middle;
+    }
   html:not(.dark) .status-live-pill { background: #F1EEE8 !important; border-color: #E2DDD4 !important; color: #6C655D !important; }
   
 
