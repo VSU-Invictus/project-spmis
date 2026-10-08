@@ -259,3 +259,556 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
 }
+
+/* ==========================================================================
+   MODAL CLOSE BUTTON COMPONENT (.ui-modal-close, .modal-close)
+   Standard squircle icon-based dismiss button following the design system specs.
+   Matches the faculty portal register student modal close button.
+   ========================================================================== */
+.ui-modal-close,
+.modal-close {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  padding: 0 !important;
+  border: 1px solid var(--color-border-main, #3E3D39) !important;
+  border-radius: var(--radius-md, 8px) !important;
+  background: var(--color-card, #21201E) !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  cursor: pointer !important;
+  outline: none !important;
+  transition: all var(--duration-fast, 150ms) var(--ease-default, ease) !important;
+  box-sizing: border-box !important;
+}
+
+.ui-modal-close:hover,
+.modal-close:hover {
+  color: var(--color-text-main, #FFFFFF) !important;
+  background: var(--color-muted, #2E2D2A) !important;
+  border-color: var(--color-border-card-hover, #4E4D48) !important;
+  transform: scale(1.05);
+}
+
+.ui-modal-close:active,
+.modal-close:active {
+  transform: scale(0.95);
+}
+
+.ui-modal-close svg,
+.modal-close svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  pointer-events: none !important;
+  display: block !important;
+}
+
+/* ==========================================================================
+   QUEUE DECISION PILL BUTTONS (.pill-btn.approve, .pill-btn.reject)
+   Outlined status pill actions matching the approval queue specification.
+   ========================================================================== */
+.pill-btn.approve,
+.pill-btn.accept {
+  background: transparent !important;
+  color: #10B981 !important;
+  border: 1px solid #10B981 !important;
+  border-radius: 9999px !important;
+  font-weight: 500 !important;
+  transition: all var(--duration-fast, 150ms) ease !important;
+}
+
+.pill-btn.approve:hover,
+.pill-btn.accept:hover {
+  background: rgba(16, 185, 129, 0.14) !important;
+  color: #10B981 !important;
+  border-color: #10B981 !important;
+}
+
+.pill-btn.reject {
+  background: transparent !important;
+  color: #EF4444 !important;
+  border: 1px solid #EF4444 !important;
+  border-radius: 9999px !important;
+  font-weight: 500 !important;
+  transition: all var(--duration-fast, 150ms) ease !important;
+}
+
+.pill-btn.reject:hover {
+  background: rgba(239, 68, 68, 0.14) !important;
+  color: #EF4444 !important;
+  border-color: #EF4444 !important;
+}
+
+/* ==========================================================================
+   STANDARD CUSTOM CHECKBOX PRIMITIVE (.custom-checkbox, .ui-checkbox)
+   Equal-sized (1:1 square, 20px x 20px) squircle checkbox.
+   - Header (Select All): Charcoal squircle (#30302E) with white checkmark (#FFFFFF).
+   - Table rows (Checked): Terracotta squircle (#D97251) with black checkmark (#000000).
+   - Auth Card: Terracotta squircle (#D97251) with white checkmark (#FFFFFF).
+   Guarantees equal vertical and horizontal dimensions across tables and cards.
+   ========================================================================== */
+.custom-checkbox,
+.ui-checkbox,
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) input[type="checkbox"] {
+  position: relative !important;
+  box-sizing: border-box !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  aspect-ratio: 1 / 1 !important;
+  border: 1.5px solid var(--border, #3E3D39) !important;
+  border-radius: 6px !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+  outline: none !important;
+  display: inline-block !important;
+  margin: 0 auto !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+  transition: background-color var(--duration-fast, 150ms) ease, border-color var(--duration-fast, 150ms) ease, box-shadow var(--duration-fast, 150ms) ease !important;
+}
+
+.custom-checkbox:hover:not(:checked),
+.ui-checkbox:hover:not(:checked),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) input[type="checkbox"]:hover:not(:checked) {
+  border-color: #55524D !important;
+}
+
+.custom-checkbox:focus-visible,
+.ui-checkbox:focus-visible,
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--ring, #D97251) !important;
+  outline-offset: 2px !important;
+}
+
+/* Base custom checkbox checked state (terracotta with white checkmark) */
+.custom-checkbox:checked,
+.ui-checkbox:checked {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+.custom-checkbox:checked::after,
+.ui-checkbox:checked::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  margin: auto !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Table Header Select-All Checkbox when partially selected (indeterminate): Dark Charcoal Squircle (#30302E) with WHITE Checkmark */
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:indeterminate,
+.select-all-checkbox:indeterminate {
+  background-color: #30302E !important;
+  border-color: #3E3D39 !important;
+}
+
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:indeterminate::after,
+.select-all-checkbox:indeterminate::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  margin: auto !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Table Header Select-All Checkbox when ALL rows selected: Terracotta/Orange Squircle (#D97251) with BLACK Checkmark */
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:checked:not(:indeterminate),
+.select-all-checkbox:checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:checked:not(:indeterminate)::after,
+.select-all-checkbox:checked:not(:indeterminate)::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  margin: auto !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #000000 !important;
+}
+
+/* Table Body Row Checkboxes: Terracotta Squircle (#D97251) with BLACK Checkmark */
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(tbody, .table-body) input[type="checkbox"]:checked,
+.row-checkbox:checked {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(tbody, .table-body) input[type="checkbox"]:checked::after,
+.row-checkbox:checked::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  margin: auto !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #000000 !important;
+}
+
+/* Auth Card "Keep me signed in on this device" Row Checkbox */
+.keep-signed-in input[type="checkbox"]:checked,
+.ui-checkbox-label.keep-signed-in input[type="checkbox"]:checked {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+.keep-signed-in input[type="checkbox"]:checked::after,
+.ui-checkbox-label.keep-signed-in input[type="checkbox"]:checked::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  margin: auto !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Auth Card "Keep me signed in on this device" Row */
+.keep-signed-in,
+.ui-checkbox-label.keep-signed-in {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  margin-top: 4px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  text-align: left !important;
+}
+
+.keep-signed-in input[type="checkbox"],
+.ui-checkbox-label.keep-signed-in input[type="checkbox"] {
+  margin: 0 !important;
+  display: inline-flex !important;
+}
+
+.keep-signed-in span,
+.keep-signed-in-text,
+.ui-checkbox-label.keep-signed-in span {
+  font-size: 0.8125rem !important;
+  line-height: 1.35 !important;
+  font-weight: 400 !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  white-space: nowrap !important;
+}
+
+html:not(.dark) .keep-signed-in span,
+html:not(.dark) .keep-signed-in-text,
+html:not(.dark) .ui-checkbox-label.keep-signed-in span {
+  color: var(--color-text-muted, #6C655D) !important;
+}
+
+/* Table Checkbox Cell Alignment */
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td):first-child:has(input[type="checkbox"]),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td).checkbox-cell {
+  width: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  padding: 0 !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* ==========================================================================
+   PORTAL SIDEBAR NAVIGATION SPECIFICATION (.nav-btn-active, .nav-btn-inactive)
+   Standard navigation item styles matching faculty and admin portal sidebars.
+   ========================================================================== */
+#demo-sidebar-container,
+.demo-sidebar-showcase {
+  width: 100% !important;
+  max-width: 260px !important;
+  background: var(--sidebar, #1F1E1D) !important;
+  border: 1px solid var(--sidebar-border, #181716) !important;
+  border-radius: 16px !important;
+  padding: 1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+}
+
+#demo-sidebar-container .brand-header {
+  height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+#demo-sidebar-container .brand-title {
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  line-height: 26px !important;
+  letter-spacing: -0.025em !important;
+  color: #FFFFFF !important;
+  margin: 0 !important;
+}
+
+#demo-sidebar-container .nav {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive,
+#demo-sidebar-container .nav-btn-active {
+  min-height: 40px !important;
+  height: 40px !important;
+  max-height: 40px !important;
+  padding: 0 14px !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  font-size: 13px !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive {
+  background: transparent !important;
+  color: #98938D !important;
+  font-weight: 600 !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive svg {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+  color: #98938D !important;
+  stroke: currentColor !important;
+  transition: color 0.15s ease !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive span {
+  color: #98938D !important;
+  font-weight: 600 !important;
+  transition: color 0.15s ease !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #FFFFFF !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive:hover svg,
+#demo-sidebar-container .nav-btn-inactive:hover span {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Active navigation item: primary terracotta background with black text/icon */
+#demo-sidebar-container .nav-btn-active,
+#demo-sidebar-container [aria-current="page"] {
+  background-color: #D97251 !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+#demo-sidebar-container .nav-btn-active svg,
+#demo-sidebar-container [aria-current="page"] svg {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+  color: #000000 !important;
+  stroke: #000000 !important;
+  stroke-width: 2 !important;
+}
+
+#demo-sidebar-container .nav-btn-active span,
+#demo-sidebar-container [aria-current="page"] span {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+#demo-sidebar-container .sidebar-footer {
+  margin-top: auto !important;
+  padding-top: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+#demo-sidebar-container .sidebar-divider {
+  height: 1px !important;
+  width: 100% !important;
+  background-color: #42423F !important;
+}
+
+#demo-sidebar-container .sidebar-account-card {
+  background: var(--account-card, #252422) !important;
+  border: 1px solid var(--sidebar-card-border, #2E2D2A) !important;
+  border-radius: 18px !important;
+  height: 58px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+}
+
+#demo-sidebar-container .sidebar-avatar {
+  background: #D97251 !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  font-size: 17px !important;
+  flex-shrink: 0 !important;
+}
+
+#demo-sidebar-container .sidebar-account-name {
+  color: #FFFFFF !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+#demo-sidebar-container .sidebar-account-role {
+  color: #929292 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+}
+
+#demo-sidebar-container .sidebar-logout-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #929292 !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.15s ease !important;
+}
+
+#demo-sidebar-container .sidebar-logout-btn:hover {
+  color: #FFFFFF !important;
+}
+
+/* Light mode overrides for Standard Portal Sidebar Navigation */
+html:not(.dark) #demo-sidebar-container {
+  background: #FAF9F6 !important;
+  border: 1px solid #E8E5DE !important;
+}
+
+html:not(.dark) #demo-sidebar-container .brand-title {
+  color: #141413 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive {
+  color: #4A4740 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive svg {
+  color: #4A4740 !important;
+  stroke: #4A4740 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive span {
+  color: #4A4740 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive:hover {
+  background-color: #EFECE6 !important;
+  color: #141413 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive:hover svg,
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive:hover span {
+  color: #141413 !important;
+  stroke: #141413 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-active,
+html:not(.dark) #demo-sidebar-container [aria-current="page"] {
+  background-color: #D97251 !important;
+  color: #FFFFFF !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-active svg,
+html:not(.dark) #demo-sidebar-container [aria-current="page"] svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-active span,
+html:not(.dark) #demo-sidebar-container [aria-current="page"] span {
+  color: #FFFFFF !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-divider {
+  background-color: #E2DDD4 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-account-card {
+  background: #F0EDE6 !important;
+  border: 1px solid #E2DDD4 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-account-name {
+  color: #141413 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-account-role {
+  color: #706B65 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-logout-btn {
+  color: #706B65 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-logout-btn:hover {
+  color: #141413 !important;
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Portal Status Header Bar Surface */
+.admin-top-header {
+  background: transparent !important;
+}
+
+
+

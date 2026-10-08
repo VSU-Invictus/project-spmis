@@ -131,6 +131,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const total = rowCheckboxes.length;
     const checked = Array.from(rowCheckboxes).filter(cb => cb.checked).length;
     
+    rowCheckboxes.forEach(cb => {
+      const tr = cb.closest('tr');
+      if (tr) {
+        tr.classList.toggle('checked', cb.checked);
+      }
+    });
+    
     if (checked === 0) {
       headerCheckbox.checked = false;
       headerCheckbox.indeterminate = false;
@@ -262,3 +269,26 @@ document.addEventListener('DOMContentLoaded', () => {
     updateView();
   });
 });
+
+// Interactive Demo Sidebar Navigation Switcher
+document.addEventListener('DOMContentLoaded', () => {
+  const demoSidebarNav = document.getElementById('demo-sidebar-nav');
+  if (!demoSidebarNav) return;
+
+  demoSidebarNav.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+    e.preventDefault();
+
+    demoSidebarNav.querySelectorAll('a').forEach((nav) => {
+      nav.classList.remove('nav-btn-active');
+      nav.classList.add('nav-btn-inactive');
+      nav.removeAttribute('aria-current');
+    });
+
+    link.classList.remove('nav-btn-inactive');
+    link.classList.add('nav-btn-active');
+    link.setAttribute('aria-current', 'page');
+  });
+});
+
