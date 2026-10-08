@@ -28,48 +28,6 @@ body.page-exit {
     to   { opacity: 1; }
 }
 
-/* ── Background layers ────────────────────────────────────── */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image:
-        linear-gradient(color-mix(in srgb, var(--foreground) 9%, transparent) 1px, transparent 1px),
-        linear-gradient(90deg, color-mix(in srgb, var(--foreground) 9%, transparent) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 25%, transparent 92%);
-    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 25%, transparent 92%);
-    pointer-events: none;
-    z-index: 0;
-    animation: grid-drift 6s linear infinite;
-    will-change: background-position;
-}
-
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background:
-        radial-gradient(ellipse 55% 65% at 18% 25%,
-            color-mix(in srgb, var(--primary) 22%, transparent) 0%,
-            color-mix(in srgb, var(--primary) 8%, transparent) 40%,
-            transparent 70%),
-        radial-gradient(ellipse 55% 65% at 85% 80%,
-            color-mix(in srgb, var(--primary) 16%, transparent) 0%,
-            color-mix(in srgb, var(--primary) 6%, transparent) 42%,
-            transparent 72%),
-        radial-gradient(ellipse 90% 90% at 50% 50%,
-            color-mix(in srgb, var(--primary) 5%, transparent) 0%,
-            transparent 75%);
-}
-
-@keyframes grid-drift {
-    from { background-position: 0 0; }
-    to   { background-position: 48px 48px; }
-}
-
 /* ── Auth shell / split ───────────────────────────────────── */
 .auth-shell {
     position: relative;
@@ -1011,7 +969,6 @@ body::after {
     box-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
-
 /* footer render */
 [data-include] {
     min-height: 48px;
@@ -1019,7 +976,6 @@ body::after {
     transition: opacity .2s ease;
 }
 
-/* Fade in once loaded */
 [data-include].is-loaded {
     opacity: 1;
 }
@@ -1109,7 +1065,6 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
     body, .auth-shell { animation: none; }
-    body::before { animation: none; }
     .ui-field-popup, .ui-auth-field { transition: none; }
     .ui-auth-field.is-shaking { animation: none; }
     .auth-card-signup a,

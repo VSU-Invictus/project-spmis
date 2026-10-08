@@ -1,0 +1,76 @@
+body.bg-grid::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(color-mix(in srgb, var(--foreground) 9%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--foreground) 9%, transparent) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 25%, transparent 92%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 25%, transparent 92%);
+    pointer-events: none;
+    z-index: 0;
+    animation: bg-grid-drift 6s linear infinite;
+    will-change: background-position;
+}
+
+body.bg-grid::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(ellipse 55% 65% at 18% 25%,
+            color-mix(in srgb, var(--primary) 22%, transparent) 0%,
+            color-mix(in srgb, var(--primary) 8%, transparent) 40%,
+            transparent 70%),
+        radial-gradient(ellipse 55% 65% at 85% 80%,
+            color-mix(in srgb, var(--primary) 16%, transparent) 0%,
+            color-mix(in srgb, var(--primary) 6%, transparent) 42%,
+            transparent 72%),
+        radial-gradient(ellipse 90% 90% at 50% 50%,
+            color-mix(in srgb, var(--primary) 5%, transparent) 0%,
+            transparent 75%);
+}
+
+@keyframes bg-grid-drift {
+    from { background-position: 0 0; }
+    to   { background-position: 48px 48px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VARIANT 2 · Pixel matrix
+   Used on: about, terms, privacy policy, pending-verification
+   ═══════════════════════════════════════════════════════════ */
+
+body.bg-pixel::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='3' height='3' x='6' y='6' fill='%23d97757' fill-opacity='0.55'/></svg>");
+    background-size: 16px 16px;
+    mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 90%);
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+    animation: bg-pixel-drift 8s linear infinite;
+    will-change: background-position;
+}
+
+@keyframes bg-pixel-drift {
+    from { background-position: 0 0; }
+    to   { background-position: 16px 16px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Reduced motion — disable both animations
+   ═══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+    body.bg-grid::before,
+    body.bg-pixel::before {
+        animation: none !important;
+    }
+}
