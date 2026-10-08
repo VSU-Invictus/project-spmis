@@ -1,168 +1,46 @@
-/* Extracted from pages/admin/dashboard.html */
-        body {
-            font-family: var(--font-sans, 'Outfit'), sans-serif;
-            background-color: #1e1e1d;
-            color: #FFFFFF;
-            min-height: 100vh;
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+/* Admin Dashboard Specific Styles */
+.dashboard-panel {
+  background-color: var(--color-card-subtle, #1F1E1D);
+  border: 1px solid var(--color-border-divider, #42423F);
+  border-radius: var(--radius-xl, 14px);
+}
 
-        /* Color Tokens from Figma Specification */
-        .bg-dashboard-outer { background-color: #141413; }
-        .bg-sidebar { background-color: #21201E; }
-        .border-sidebar { border-color: #141413; }
-        .bg-account-card { background-color: #3A3832; }
-        .bg-avatar { background-color: #FBE7DE; }
-        .text-avatar { color: #B84E32; }
-        .border-divider { background-color: #D97757; }
-        
-        /* Active & Inactive Nav Buttons */
-        .nav-btn-active {
-            background-color: #FAF9F5;
-            color: #B4552D;
-        }
-        .nav-btn-inactive {
-            background-color: transparent;
-            color: #FFFFFF;
-        }
-        .nav-btn-inactive:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
+.dashboard-panel :is(.border-b, .border-t) {
+  border-color: #42423F !important;
+}
 
-        /* Custom typography font for brand */
-        .font-intel-mono {
-            font-family: 'Intel One Mono', monospace;
-        }
+.metric-card {
+  background-color: var(--color-card-subtle, #1F1E1D);
+  border: 1px solid var(--color-border-subtle, #2E2D2A);
+  border-radius: var(--radius-xl, 14px);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
+}
 
-        /* Text Colors */
-        .text-zorba { color: #A0988E; }
-        .text-flint { color: #A0988E; }
-        .text-cod-gray { color: #FAF9F5; }
-        .text-soya-bean { color: #A0988E; }
-        .text-fuscous-gray { color: #FAF9F5; }
-        .text-crail { color: #D97757; }
-        .text-shingle-fawn { color: #D5B97B; }
-        .text-red-damask { color: #D97251; }
-        .text-role { color: #929292; }
-        
-        /* Background Colors */
-        .bg-romance { background-color: #2B2A27; }
-        .bg-old-lace { background-color: #362923; }
-        .bg-panache { background-color: #1e3324; }
-        .bg-zumthor { background-color: #1e2838; }
-        .bg-aths-special { background-color: #21201E; }
-        .bg-parchment { background-color: #322F26; }
-        
-        /* Borders */
-        .border-pearl-bush { border-color: #3E3D39; }
-        .border-ecru-white { border-color: #383734; }
+.metric-card:hover {
+  border-color: var(--color-border-card-hover, #44423E);
+  background-color: var(--color-card-hover, #232220);
+  transform: translateY(-1px);
+}
 
-        /* Custom Scrollbar for containers */
-        .custom-scrollbar::-webkit-scrollbar {
-            height: 6px;
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #21201E;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #D97251;
-            border-radius: 4px;
-        }
+.table-inner-container {
+  background-color: var(--color-card, var(--card, #2B2A27));
+  border: 1px solid var(--color-border-main, var(--border, #383734));
+  border-radius: var(--radius-lg, 12px);
+  overflow: hidden;
+}
 
-        /* Hover animation effects */
-        .card-hover {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .ui-link-neutral {
-            color: var(--foreground, #FAF9F5) !important;
-            text-decoration: none !important;
-            transition: color 150ms ease;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .ui-link-neutral:hover {
-            color: var(--primary, #D97251) !important;
-            text-decoration: none !important;
-        }
-        .ui-link-neutral .arrow {
-            display: inline-block;
-            transition: transform 0.25s ease;
-        }
-        .ui-link-neutral:hover .arrow {
-            transform: translateX(4px);
-        }
-    button, input, select, textarea {
-      font-family: var(--font-sans, 'Outfit'), -apple-system, BlinkMacSystemFont, sans-serif;
-      font-weight: 500;
-    }
-    
-    .app-canvas {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background: #141413;
-      border: none;
-      overflow: hidden;
-    }
-
-    .sidebar-frame {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 260px;
-      height: 100%;
-      border: none;
-      z-index: 50;
-    }
-
-    .section-container {
-      position: absolute;
-      left: 260px;
-      top: 0;
-      width: calc(100% - 260px);
-      height: 100%;
-      padding: 16px 24px;
-      display: flex;
-      overflow-y: auto;
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar { width: 60px !important; }
-      .sidebar .nav-text { display: none !important; }
-      .section-container { left: 60px !important; width: calc(100% - 60px) !important; padding: 10px !important; }
-      .header-container { flex-direction: column !important; align-items: flex-start !important; min-height: auto !important; height: auto !important; gap: 8px !important; }
-      .search-wrapper { width: 100% !important; margin-top: 8px !important; }
-      .dropdown-container { width: 100% !important; margin-left: 0 !important; margin-top: 8px !important; }
-      .controls-row { flex-direction: column !important; align-items: flex-start !important; height: auto !important; }
-      .table-margin-container { width: 100% !important; margin-left: 0 !important; }
-      .table-scroll { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
-    }
-    
-  
-
-/* ---- Former inline styles (specificity boosted to match inline priority) ---- */
-.is-54a40d7:not(#\#):not(#\#) { display:flex; align-items:center; gap:10px; }
-.is-09a36b0:not(#\#):not(#\#) { text-decoration: none; color: inherit; }
-.is-fce05da:not(#\#):not(#\#) { width: 100px; text-align: left; }
-.is-bbdbcfa:not(#\#):not(#\#) { width: 30%; text-align: left; }
-.is-b10fa68:not(#\#):not(#\#) { width: 140px; text-align: left; }
-.is-e9eb1ce:not(#\#):not(#\#) { width: 120px; text-align: right; }
-.is-7851dbc:not(#\#):not(#\#) { text-align: right; }
-.is-c425574:not(#\#):not(#\#) { margin-top: auto; width: 100%; }
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-surface-well, #171615);
+  border-radius: var(--radius-xs, 4px);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb, #3E3D39);
+  border-radius: var(--radius-xs, 4px);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-base, #D97251);
+}

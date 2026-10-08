@@ -1,223 +1,204 @@
-/* Extracted from pages/admin/students.html */
-const tableBody = document.getElementById('tableBody');
-const searchInput = document.getElementById('searchInput');
-const programFilter = document.getElementById('programFilter');
-const emptyState = document.getElementById('emptyState');
-const studentModal = document.getElementById('studentModal');
-const removeModal = document.getElementById('removeModal');
-const studentForm = document.getElementById('studentForm');
-const studentId = document.getElementById('studentId');
-const studentFname = document.getElementById('studentFname');
-const studentMname = document.getElementById('studentMname');
-const studentLname = document.getElementById('studentLname');
-const studentProgram = document.getElementById('studentProgram');
-const studentModalTitle = document.getElementById('studentModalTitle');
-const toast = document.getElementById('toast');
+(() => {
+  'use strict';
 
-let mode = 'create';
-let selectedRow = null;
+  function initStudentsPage() {
+    const tableBody = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchInput');
+    const programFilter = document.getElementById('programFilter');
+    const emptyState = document.getElementById('emptyState');
+    const studentModal = document.getElementById('studentModal');
+    const removeModal = document.getElementById('removeModal');
+    const studentForm = document.getElementById('studentForm');
+    const studentId = document.getElementById('studentId');
+    const studentFname = document.getElementById('studentFname');
+    const studentMname = document.getElementById('studentMname');
+    const studentLname = document.getElementById('studentLname');
+    const studentProgram = document.getElementById('studentProgram');
+    const studentModalTitle = document.getElementById('studentModalTitle');
+    const toast = document.getElementById('toast');
 
-function openModal(modal) {
-  if (modal) modal.classList.add('show');
-}
+    if (!tableBody) return;
 
-function closeModal(modal) {
-  if (modal) modal.classList.remove('show');
-}
+    let mode = 'create';
+    let selectedRow = null;
 
-function showToast(message) {
-  if (typeof showSuccessToast === 'function') {
-    showSuccessToast(message);
-    return;
-  }
-  const globalToast = document.getElementById('global-success-toast');
-  const msgEl = document.getElementById('toast-message');
-  if (globalToast && msgEl) {
-    msgEl.textContent = message || 'Action successful!';
-    globalToast.classList.add('show');
-    setTimeout(() => globalToast.classList.remove('show'), 3000);
-    return;
-  }
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
-}
+    function openModal(modal) {
+      if (modal) modal.classList.add('show');
+    }
 
-function filterRows() {
-  const query = (searchInput.value || '').trim().toLowerCase();
-  const program = programFilter ? programFilter.value : 'all';
-  let visibleCount = 0;
+    function closeModal(modal) {
+      if (modal) modal.classList.remove('show');
+    }
 
-  [...tableBody.rows].forEach(row => {
-    const id = (row.dataset.id || row.children[0].textContent || '').toLowerCase();
-    const fname = (row.dataset.fname || row.children[1].textContent || '').toLowerCase();
-    const mname = (row.dataset.mname || row.children[2].textContent || '').toLowerCase();
-    const lname = (row.dataset.lname || row.children[3].textContent || '').toLowerCase();
-    const rowProgram = row.dataset.program || row.children[4].textContent.trim();
+    function showToast(message) {
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.setTimeout(() => toast.classList.remove('show'), 2200);
+    }
 
-    const matchesText =
-      id.includes(query) ||
-      fname.includes(query) ||
-      mname.includes(query) ||
-      lname.includes(query);
+    function filterRows() {
+      const controller = tableBody?.__tableController || window.adminTableController;
+      if (controller) {
+        controller.render();
+        return;
+      }
+      const query = (searchInput?.value || '').trim().toLowerCase();
+      const program = programFilter?.value || 'all';
+      let visibleCount = 0;
 
-    const matchesProgram =
-      program === 'all' || rowProgram.toLowerCase() === program.toLowerCase();
+      [...tableBody.children].forEach((row) => {
+        if (!row.classList.contains('table-row')) return;
+        const matchesText =
+          !query ||
+          (row.dataset.id || '').includes(query) ||
+          (row.dataset.fname || '').includes(query) ||
+          (row.dataset.mname || '').includes(query) ||
+          (row.dataset.lname || '').includes(query);
 
-    const visible = matchesText && matchesProgram;
-    row.style.display = visible ? '' : 'none';
-    if (visible) visibleCount++;
-  });
+        const matchesProgram =
+          program === 'all' || row.dataset.program === program;
 
-  if (emptyState) emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
-}
+        const visible = matchesText && matchesProgram;
+        row.style.display = visible ? '' : 'none';
+        if (visible) visibleCount++;
+      });
 
-const addButton = document.getElementById('addButton');
-if (addButton) {
-  addButton.addEventListener('click', () => {
-    mode = 'create';
-    selectedRow = null;
-    studentModalTitle.textContent = 'Create Student';
-    studentId.value = '';
-    studentFname.value = '';
-    studentMname.value = '';
-    studentLname.value = '';
-    studentProgram.selectedIndex = 0;
-    openModal(studentModal);
-  });
-}
+      if (emptyState) {
+        emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
+      }
+    }
 
-tableBody.addEventListener('click', event => {
-  const row = event.target.closest('tr');
-  if (!row) return;
+    // Add Student button
+    document.getElementById('addButton')?.addEventListener('click', () => {
+      mode = 'create';
+      selectedRow = null;
+      if (studentModalTitle) studentModalTitle.textContent = 'Create Student';
+      if (studentId) studentId.value = '';
+      if (studentFname) studentFname.value = '';
+      if (studentMname) studentMname.value = '';
+      if (studentLname) studentLname.value = '';
+      if (studentProgram) studentProgram.selectedIndex = 0;
+      openModal(studentModal);
+    });
 
-  if (event.target.classList.contains('edit-btn')) {
-    mode = 'edit';
-    selectedRow = row;
-    studentModalTitle.textContent = 'Edit Student';
-    studentId.value = row.children[0].textContent.trim();
-    studentFname.value = row.children[1].textContent.trim();
-    studentMname.value = row.children[2].textContent.trim();
-    studentLname.value = row.children[3].textContent.trim();
-    studentProgram.value = row.children[4].textContent.trim();
-    openModal(studentModal);
-  }
+    // Edit / Remove via delegation
+    tableBody.addEventListener('click', (event) => {
+      const row = event.target.closest('.table-row');
+      if (!row) return;
 
-  if (event.target.classList.contains('remove-btn')) {
-    selectedRow = row;
-    openModal(removeModal);
-  }
-});
+      if (event.target.classList.contains('edit')) {
+        mode = 'edit';
+        selectedRow = row;
+        if (studentModalTitle) studentModalTitle.textContent = 'Edit Student';
+        const cells = row.querySelectorAll('.td-cell');
+        if (studentId) studentId.value = cells[0]?.textContent.trim() || '';
+        if (studentFname) studentFname.value = cells[1]?.textContent.trim() || '';
+        if (studentMname) studentMname.value = cells[2]?.textContent.trim() || '';
+        if (studentLname) studentLname.value = cells[3]?.textContent.trim() || '';
+        if (studentProgram) studentProgram.value = cells[4]?.textContent.trim() || '';
+        openModal(studentModal);
+      }
 
-studentForm.addEventListener('submit', event => {
-  event.preventDefault();
-
-  const id = studentId.value.trim();
-  const fname = studentFname.value.trim();
-  const mname = studentMname.value.trim();
-  const lname = studentLname.value.trim();
-  const program = studentProgram.value;
-
-  if (!id || !fname || !lname) return;
-
-  if (mode === 'edit' && selectedRow) {
-    selectedRow.children[0].textContent = id;
-    selectedRow.children[1].textContent = fname;
-    selectedRow.children[2].textContent = mname;
-    selectedRow.children[3].textContent = lname;
-    selectedRow.children[4].textContent = program;
-    selectedRow.dataset.id = id.toLowerCase();
-    selectedRow.dataset.fname = fname.toLowerCase();
-    selectedRow.dataset.mname = mname.toLowerCase();
-    selectedRow.dataset.lname = lname.toLowerCase();
-    selectedRow.dataset.program = program;
-    closeModal(studentModal);
-    window.setTimeout(() => showToast('Student Updated Successfully'), 120);
-  } else {
-    const row = document.createElement('tr');
-    row.dataset.id = id.toLowerCase();
-    row.dataset.fname = fname.toLowerCase();
-    row.dataset.mname = mname.toLowerCase();
-    row.dataset.lname = lname.toLowerCase();
-    row.dataset.program = program;
-    row.innerHTML = `
-      <td class="is-102b7f8">${id}</td>
-      <td class="is-102b7f8">${fname}</td>
-      <td class="is-102b7f8">${mname}</td>
-      <td class="is-102b7f8">${lname}</td>
-      <td class="is-102b7f8">${program}</td>
-      <td class="is-102b7f8">
-        <div class="action-group">
-          <button class="pill-btn edit-btn" type="button">Edit</button>
-          <button class="pill-btn remove-btn" type="button">Remove</button>
-        </div>
-      </td>`;
-    tableBody.prepend(row);
-    closeModal(studentModal);
-    window.setTimeout(() => showToast('Student Created Successfully'), 120);
-  }
-
-  filterRows();
-});
-
-const confirmRemove = document.getElementById('confirmRemove');
-if (confirmRemove) {
-  confirmRemove.addEventListener('click', () => {
-    if (!selectedRow) return;
-    selectedRow.remove();
-    selectedRow = null;
-    closeModal(removeModal);
-    window.setTimeout(() => showToast('Student Removed Successfully'), 120);
-    filterRows();
-  });
-}
-
-const cancelRemove = document.getElementById('cancelRemove');
-if (cancelRemove) cancelRemove.addEventListener('click', () => closeModal(removeModal));
-
-const closeStudent = document.getElementById('closeStudent');
-if (closeStudent) closeStudent.addEventListener('click', () => closeModal(studentModal));
-const closeRemove = document.getElementById('closeRemove');
-if (closeRemove) closeRemove.addEventListener('click', () => closeModal(removeModal));
-
-if (searchInput) searchInput.addEventListener('input', filterRows);
-if (programFilter) programFilter.addEventListener('change', filterRows);
-
-[studentModal, removeModal].forEach(modal => {
-  if (!modal) return;
-  modal.addEventListener('click', event => {
-    if (event.target === modal) closeModal(modal);
-  });
-});
-
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') {
-    closeModal(studentModal);
-    closeModal(removeModal);
-  }
-});
-
-// Auto-wire forms and add buttons for the mockup
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('form').forEach(f => {
-    if (f.id === 'acceptForm' || f.id === 'rejectForm' || f.id === 'studentForm' || f.closest('#acceptModal, #rejectModal, #studentModal, #removeModal')) return;
-    f.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (typeof showSuccessToast === 'function') {
-        showSuccessToast('Successfully submitted!');
+      if (event.target.classList.contains('remove')) {
+        selectedRow = row;
+        openModal(removeModal);
       }
     });
-  });
 
-  document.querySelectorAll('button').forEach(b => {
-    if (b.closest('#acceptModal, #rejectModal, #studentModal, #removeModal') || b.classList.contains('edit-btn') || b.classList.contains('remove-btn') || b.id === 'addButton') return;
-    if (b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
-      b.addEventListener('click', (e) => {
-        if (b.type !== 'submit' && typeof showSuccessToast === 'function') {
-          showSuccessToast('Action completed successfully!');
-        }
-      });
+    // Submit student form
+    studentForm?.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const id = studentId?.value.trim() || '';
+      const fname = studentFname?.value.trim() || '';
+      const mname = studentMname?.value.trim() || '';
+      const lname = studentLname?.value.trim() || '';
+      const program = studentProgram?.value || '';
+
+      if (!id || !fname || !lname) return;
+
+      if (mode === 'edit' && selectedRow) {
+        const cells = selectedRow.querySelectorAll('.td-cell');
+        if (cells[0]) cells[0].textContent = id;
+        if (cells[1]) cells[1].textContent = fname;
+        if (cells[2]) cells[2].textContent = mname;
+        if (cells[3]) cells[3].textContent = lname;
+        if (cells[4]) cells[4].textContent = program;
+        selectedRow.dataset.id = id.toLowerCase();
+        selectedRow.dataset.fname = fname.toLowerCase();
+        selectedRow.dataset.mname = mname.toLowerCase();
+        selectedRow.dataset.lname = lname.toLowerCase();
+        selectedRow.dataset.program = program;
+        closeModal(studentModal);
+        window.setTimeout(() => showToast('Student Updated Successfully'), 120);
+      } else {
+        const row = document.createElement('div');
+        row.className = 'table-row';
+        row.dataset.id = id.toLowerCase();
+        row.dataset.fname = fname.toLowerCase();
+        row.dataset.mname = mname.toLowerCase();
+        row.dataset.lname = lname.toLowerCase();
+        row.dataset.program = program;
+        row.innerHTML = `
+          <div class="td-cell col-id">${id}</div>
+          <div class="td-cell col-fname">${fname}</div>
+          <div class="td-cell col-mname">${mname}</div>
+          <div class="td-cell col-lname">${lname}</div>
+          <div class="td-cell col-program">${program}</div>
+          <div class="td-cell col-action">
+            <button class="pill-btn-sm edit" type="button">Edit</button>
+            <button class="pill-btn-sm remove" type="button">Remove</button>
+          </div>`;
+        tableBody.prepend(row);
+        closeModal(studentModal);
+        window.setTimeout(() => showToast('Student Created Successfully'), 120);
+      }
+
+      filterRows();
+    });
+
+    // Confirm remove
+    document.getElementById('confirmRemove')?.addEventListener('click', () => {
+      if (!selectedRow) return;
+      selectedRow.remove();
+      selectedRow = null;
+      closeModal(removeModal);
+      window.setTimeout(() => showToast('Student Removed Successfully'), 120);
+      filterRows();
+    });
+
+    // Cancel remove
+    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
+
+    // Close buttons
+    document.getElementById('closeStudent')?.addEventListener('click', () => closeModal(studentModal));
+    document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
+    if (!window.adminTableController && !tableBody?.__tableController) {
+      searchInput?.addEventListener('input', filterRows);
+      programFilter?.addEventListener('change', filterRows);
     }
-  });
-});
+
+    // Click outside modal to close
+    [studentModal, removeModal].forEach((modal) => {
+      modal?.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal(modal);
+      });
+    });
+
+    // Escape key to close
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeModal(studentModal);
+        closeModal(removeModal);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStudentsPage);
+  } else {
+    initStudentsPage();
+  }
+})();
+

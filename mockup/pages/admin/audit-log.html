@@ -4,58 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Portal - Audit Log</title>
-  <link rel="stylesheet" href="../../assets/css/global.css">
+  <link rel="stylesheet" href="../../assets/css/design-system.css">
+    <link rel="stylesheet" href="../../assets/css/global.css">
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/pages/admin/audit-log.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/pages/admin/admin-common.css">
+  <link rel="stylesheet" href="../../assets/css/pages/admin/audit-log.css">
 </head>
 <body>
   <div class="app-canvas">
-<!-- Admin Sidebar Component -->
-    <aside id="sidebar-menu" class="sidebar sidebar-frame">
-      <div class="flex flex-col gap-1">
-        <div class="brand-header"><h1 class="brand-title">Admin Portal</h1></div>
-        <nav class="nav" id="sidebar-nav" aria-label="Admin navigation">
-          <a href="../../pages/admin/dashboard.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg><span>Dashboard</span></a>
-          <a href="../../pages/admin/faculty-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg><span>Faculty Applications</span></a>
-          <a href="../../pages/admin/student-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/></svg><span>Student Applications</span></a>
-          <a href="../../pages/admin/program-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg><span>Program Applications</span></a>
-          <a href="../../pages/admin/department-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Dept. Applications</span></a>
-          <a href="../../pages/admin/students.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
-          <a href="../../pages/admin/departments.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M12 2 3 10h18L12 2ZM7 21V10M12 21V10M17 21V10"/></svg><span>Departments</span></a>
-          <a href="../../pages/admin/programs.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>Programs</span></a>
-          <a href="../../pages/admin/faculty.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Faculty</span></a>
-          <a href="../../pages/admin/audit-log.html" class="nav-btn-active min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm" aria-current="page"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Audit Log</span></a>
-        </nav>
-      </div>
-      <div class="sidebar-footer">
-        <div class="sidebar-divider"></div>
-        <div class="sidebar-account-card">
-          <div class="is-54a40d7"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
-          <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg></button>
-        </div>
-      </div>
-    </aside>
-    <script src="../../assets/js/admin-sidebar.js"></script>
-    <script src="../../assets/js/admin-table.js"></script>
+    <iframe
+      src="../../components/navigation/sidebar-admin.html?active=audit-log"
+      id="sidebar-frame"
+      class="sidebar-frame"
+      title="Admin Sidebar">
+    </iframe>
 
     <main class="section-container">
-        <!-- Admin Top Header -->
-        <div class="admin-top-header">
-          <div class="header-left">
-            <div class="red-dot"></div>
-            <span class="breadcrumb-text">Admin Portal / Audit Log</span>
-          </div>
-          <div class="header-right">
-            <span class="status-badge">
-              <span class="green-dot"></span>
-              System Live
-            </span>
-            <span class="ay-text">AY 2026-2027</span>
-          </div>
+      <!-- Admin Top Header -->
+      <div class="admin-top-header">
+        <div class="header-left">
+          <div class="red-dot"></div>
+          <span class="breadcrumb-text">Admin Portal / Audit Log</span>
         </div>
+        <div class="header-right">
+          <span class="status-badge">
+            <span class="green-dot"></span>
+            System Live
+          </span>
+          <span class="ay-text">AY 2026-2027</span>
+        </div>
+      </div>
 
       <div class="header-container">
         <div class="heading-wrapper">
@@ -72,7 +53,7 @@
           <input id="searchInput" class="search-input" type="search" placeholder="Search audit logs...">
         </div>
 
-        <div class="is-b5d8940">
+        <div class="controls-actions">
           <div class="dropdown-container audit">
             <select id="userFilter" class="dropdown-select">
               <option value="all">User: All</option>
@@ -112,99 +93,91 @@
         </div>
       </div>
 
-      <div class="table-margin-container is-da6f07d">
-        <div class="ui-table-wrap is-a812934">
-          <table class="ui-table">
-            <thead>
-              <tr class="is-90fefe9">
-                <th class="is-b819624">Date &amp; Time</th>
-                <th class="is-ce25157">Performed By</th>
-                <th class="is-c85ddc6">Action</th>
-                <th class="is-c85ddc6">Entity</th>
-                <th class="is-268be0d">Target</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody">
-              <tr data-search="sep 10, 10:42 am admin user created faculty dr. eleanor vance" data-user="Admin" data-date="Sep 10" data-action="Created">
-                <td class="is-102b7f8">Sep 10, 10:42 AM</td>
-                <td class="is-102b7f8">Admin User</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--success">Created</span></td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--info">Faculty</span></td>
-                <td class="is-102b7f8">Dr. Eleanor Vance</td>
-              </tr>
-              <tr data-search="sep 09, 03:15 pm admin user updated department computer science" data-user="Admin" data-date="Sep 09" data-action="Updated">
-                <td class="is-102b7f8">Sep 09, 03:15 PM</td>
-                <td class="is-102b7f8">Admin User</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--info">Updated</span></td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--purple">Department</span></td>
-                <td class="is-102b7f8">Computer Science</td>
-              </tr>
-              <tr data-search="sep 08, 01:20 pm admin user created program bs in data science" data-user="Admin" data-date="Sep 08" data-action="Created">
-                <td class="is-102b7f8">Sep 08, 01:20 PM</td>
-                <td class="is-102b7f8">Admin User</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--success">Created</span></td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--cyan">Program</span></td>
-                <td class="is-102b7f8">BS in Data Science</td>
-              </tr>
-              <tr data-search="sep 07, 11:05 am admin user removed faculty dr. robert lang" data-user="Admin" data-date="Sep 07" data-action="Removed">
-                <td class="is-102b7f8">Sep 07, 11:05 AM</td>
-                <td class="is-102b7f8">Admin User</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--destructive">Removed</span></td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--info">Faculty</span></td>
-                <td class="is-102b7f8">Dr. Robert Lang</td>
-              </tr>
-              <tr data-search="sep 05, 09:30 am admin user approved review review #103" data-user="Admin" data-date="Sep 05" data-action="Approved">
-                <td class="is-102b7f8">Sep 05, 09:30 AM</td>
-                <td class="is-102b7f8">Admin User</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--success">Review</span></td>
-                <td class="is-102b7f8">Review #103</td>
-              </tr>
-            </tbody>
-          </table>
-          <div id="emptyState" class="empty-state is-f19ae44">No audit log entries found.</div>
+      <div class="table-margin-container">
+        <div class="table-container ui-table-wrap">
+          <div class="table-scroll">
+            <div class="table-header-row">
+              <div class="th-cell col-date">Date &amp; Time</div>
+              <div class="th-cell col-user text-center">Performed By</div>
+              <div class="th-cell col-action-type text-center">Action</div>
+              <div class="th-cell col-entity text-center">Entity</div>
+              <div class="th-cell col-target text-center">Target</div>
+            </div>
+
+            <div id="tableBody" class="table-body">
+              <div class="table-row" data-search="sep 10, 10:42 am admin user created faculty dr. eleanor vance" data-user="Admin" data-date="Sep 10" data-action="Created">
+                <div class="td-cell col-date">Sep 10, 10:42 AM</div>
+                <div class="td-cell col-user text-center">Admin User</div>
+                <div class="td-cell col-action-type text-center">Created</div>
+                <div class="td-cell col-entity text-center"><span class="badge-pill badge-faculty">Faculty</span></div>
+                <div class="td-cell col-target text-center">Dr. Eleanor Vance</div>
+              </div>
+              <div class="table-row" data-search="sep 10, 09:18 am admin user updated department computer science" data-user="Admin" data-date="Sep 10" data-action="Updated">
+                <div class="td-cell col-date">Sep 10, 09:18 AM</div>
+                <div class="td-cell col-user text-center">Admin User</div>
+                <div class="td-cell col-action-type text-center">Updated</div>
+                <div class="td-cell col-entity text-center"><span class="badge-pill badge-department">Department</span></div>
+                <div class="td-cell col-target text-center">Computer Science</div>
+              </div>
+              <div class="table-row" data-search="sep 09, 04:35 pm admin user removed program bs information systems" data-user="Admin" data-date="Sep 09" data-action="Removed">
+                <div class="td-cell col-date">Sep 09, 04:35 PM</div>
+                <div class="td-cell col-user text-center">Admin User</div>
+                <div class="td-cell col-action-type text-center">Removed</div>
+                <div class="td-cell col-entity text-center"><span class="badge-pill badge-program">Program</span></div>
+                <div class="td-cell col-target text-center">BS Information Systems</div>
+              </div>
+              <div class="table-row" data-search="sep 09, 02:11 pm dr. eleanor vance hid review review 104" data-user="Faculty" data-date="Sep 09" data-action="Hidden">
+                <div class="td-cell col-date">Sep 09, 02:11 PM</div>
+                <div class="td-cell col-user text-center">Dr. Eleanor Vance</div>
+                <div class="td-cell col-action-type text-center">Hidden</div>
+                <div class="td-cell col-entity text-center"><span class="badge-pill ui-badge--purple">Review</span></div>
+                <div class="td-cell col-target text-center">Review #104</div>
+              </div>
+              <div class="table-row" data-search="sep 08, 11:26 am dr. eleanor vance deleted review review 103" data-user="Faculty" data-date="Sep 08" data-action="Deleted">
+                <div class="td-cell col-date">Sep 08, 11:26 AM</div>
+                <div class="td-cell col-user text-center">Dr. Eleanor Vance</div>
+                <div class="td-cell col-action-type text-center">Deleted</div>
+                <div class="td-cell col-entity text-center"><span class="badge-pill ui-badge--purple">Review</span></div>
+                <div class="td-cell col-target text-center">Review #103</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="ui-table-pagination is-c5a1a55">
-            <div class="is-47c5200">
-                <!-- No bulk actions on this page -->
+        <div class="ui-table-pagination is-0272b5f">
+          <span class="pagination-selection-status is-7fbae58" role="status"></span>
+          <div class="pagination-controls-group is-31de0eb">
+            <div class="pagination-rows-per-page is-b57eafe">
+              <span>Rows per page</span>
+              <div class="pagination-select-wrapper is-e0dd7f8">
+                <select class="ui-select-pill is-daab64f" aria-label="Rows per page">
+                  <option value="5" selected>5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                </select>
+                <svg class="pagination-select-chevron is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
             </div>
-            <div class="ui-table-pagination-nav is-dc310e0">
-                <span class="is-1c20bbe">
-                    <span class="is-2882578">Rows per page</span>
-                    <div class="is-e0dd7f8">
-                        <select class="ui-select-pill is-755d712" aria-label="Rows per page">
-                            <option>5</option>
-                            <option>10</option>
-                        </select>
-                        <svg class="is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m6 9 6 6 6-6"/>
-                        </svg>
-                    </div>
-                </span>
-                <span class="is-2651671">Page 1 of 3</span>
-                <button class="ui-table-page-btn is-9f84822" disabled>Previous</button>
-                <button class="ui-table-page-btn is-8d6e082">Next</button>
+            <span class="pagination-page-info is-12b4142" role="status">Page 1 of 1 · 5 entries</span>
+            <div class="ui-table-pagination-nav is-49e15c7">
+              <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Previous</button>
+              <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Next</button>
             </div>
+          </div>
         </div>
       </div>
-      
+
       <!-- Footer indicator -->
-      <footer class="admin-footer is-c425574">
+      <footer class="admin-footer">
         <span>&copy; 2026 Admin Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
-</main>
+    </main>
 
 
+    <script src="../../assets/js/admin-sidebar.js"></script>
+    <script src="../../assets/js/admin-table.js"></script>
     <script src="../../assets/js/pages/admin/audit-log.js"></script>
   </div>
-
-    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        <span id="toast-message">Action successful!</span>
-    </div>
-    <script src="../../assets/js/pages/admin/audit-log-2.js"></script>
-
 </body>
 </html>

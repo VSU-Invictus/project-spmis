@@ -3,61 +3,42 @@
 <head>
   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/design-system.css">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="../../assets/css/queue-modal.css?v=3">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
   <title>Admin Portal - Programs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/pages/admin/programs.css" />
+    <link rel="stylesheet" href="../../assets/css/pages/admin/admin-common.css">
+  <link rel="stylesheet" href="../../assets/css/pages/admin/programs.css">
 </head>
 <body>
   <div class="app-canvas">
-<!-- Admin Sidebar Component -->
-    <aside id="sidebar-menu" class="sidebar sidebar-frame">
-      <div class="flex flex-col gap-1">
-        <div class="brand-header"><h1 class="brand-title">Admin Portal</h1></div>
-        <nav class="nav" id="sidebar-nav" aria-label="Admin navigation">
-          <a href="../../pages/admin/dashboard.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg><span>Dashboard</span></a>
-          <a href="../../pages/admin/faculty-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg><span>Faculty Applications</span></a>
-          <a href="../../pages/admin/student-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/></svg><span>Student Applications</span></a>
-          <a href="../../pages/admin/program-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg><span>Program Applications</span></a>
-          <a href="../../pages/admin/department-applications.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Dept. Applications</span></a>
-          <a href="../../pages/admin/students.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Students</span></a>
-          <a href="../../pages/admin/departments.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M12 2 3 10h18L12 2ZM7 21V10M12 21V10M17 21V10"/></svg><span>Departments</span></a>
-          <a href="../../pages/admin/programs.html" class="nav-btn-active min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm" aria-current="page"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>Programs</span></a>
-          <a href="../../pages/admin/faculty.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Faculty</span></a>
-          <a href="../../pages/admin/audit-log.html" class="nav-btn-inactive min-h-[40px] h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Audit Log</span></a>
-        </nav>
-      </div>
-      <div class="sidebar-footer">
-        <div class="sidebar-divider"></div>
-        <div class="sidebar-account-card">
-          <div class="is-54a40d7"><div class="sidebar-avatar"><span>A</span></div><div class="sidebar-account-details"><span class="sidebar-account-name">Admin User</span><span class="sidebar-account-role">System Admin</span></div></div>
-          <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg></button>
-        </div>
-      </div>
-    </aside>
-    <script src="../../assets/js/admin-sidebar.js"></script>
-    <script src="../../assets/js/admin-table.js"></script>
+    <iframe
+      src="../../components/navigation/sidebar-admin.html?active=programs"
+      id="sidebar-frame"
+      class="sidebar-frame"
+      title="Admin Sidebar">
+    </iframe>
 
     <main class="section-container">
-        <!-- Admin Top Header -->
-        <div class="admin-top-header">
-          <div class="header-left">
-            <div class="red-dot"></div>
-            <span class="breadcrumb-text">Admin Portal / Programs</span>
-          </div>
-          <div class="header-right">
-            <span class="status-badge">
-              <span class="green-dot"></span>
-              System Live
-            </span>
-            <span class="ay-text">AY 2026-2027</span>
-          </div>
+      <!-- Admin Top Header -->
+      <div class="admin-top-header">
+        <div class="header-left">
+          <div class="red-dot"></div>
+          <span class="breadcrumb-text">Admin Portal / Programs</span>
         </div>
+        <div class="header-right">
+          <span class="status-badge">
+            <span class="green-dot"></span>
+            System Live
+          </span>
+          <span class="ay-text">AY 2026-2027</span>
+        </div>
+      </div>
 
       <div class="header-container">
         <div class="heading-wrapper">
@@ -74,9 +55,9 @@
           <input id="searchInput" class="search-input" type="search" placeholder="Search by program name...">
         </div>
 
-        <div class="is-b5d8940">
-          <a href="programs.html?queue=program" class="ui-btn ui-btn-outline queue-button" data-queue-open="program" aria-label="Open program applications queue">
-            <span>Queue</span>
+        <div class="controls-actions">
+          <a href="programs.html?queue=program" class="queue-button" data-queue-open="program" aria-label="Open program applications queue">
+            Queue
             <span class="queue-counter">4</span>
           </a>
           <div class="dropdown-container status">
@@ -89,106 +70,108 @@
 </svg>
           </div>
 
-          <button id="addButton" type="button" class="ui-btn add-button">+ Add Program</button>
+          <button id="addButton" type="button" class="btn-add">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Add Program</span>
+          </button>
         </div>
       </div>
 
-      <div class="table-margin-container is-da6f07d">
-        <div class="ui-table-wrap is-a812934">
-          <table class="ui-table">
-            <thead>
-              <tr class="is-90fefe9">
-                <th class="is-0ff39c7">Program</th>
-                <th class="is-a031afd">Status</th>
-                <th class="is-b819624">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody">
-              <tr data-name="bachelor of science in computer science" data-status="approved">
-                <td class="is-102b7f8">Bachelor of Science in Computer Science</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td class="is-102b7f8">
+      <div class="table-margin-container">
+        <div class="table-container ui-table-wrap">
+          <div class="table-scroll">
+            <div class="table-header-row">
+              <div class="th-cell col-program">Program</div>
+              <div class="th-cell col-status text-center">Status</div>
+              <div class="th-cell col-action text-right">Actions</div>
+            </div>
+
+            <div id="tableBody" class="table-body">
+              <div class="table-row" data-name="bachelor of science in computer science" data-status="approved">
+                <div class="td-cell col-program">Bachelor of Science in Computer Science</div>
+                <div class="td-cell col-status text-center"><span class="badge-pill badge-approved">Approved</span></div>
+                <div class="td-cell col-action text-right">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
                   </div>
-                </td>
-              </tr>
-              <tr data-name="bachelor of science in computer engineering" data-status="approved">
-                <td class="is-102b7f8">Bachelor of Science in Computer Engineering</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td class="is-102b7f8">
+                </div>
+              </div>
+              <div class="table-row" data-name="bachelor of science in computer engineering" data-status="approved">
+                <div class="td-cell col-program">Bachelor of Science in Computer Engineering</div>
+                <div class="td-cell col-status text-center"><span class="badge-pill badge-approved">Approved</span></div>
+                <div class="td-cell col-action text-right">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
                   </div>
-                </td>
-              </tr>
-              <tr data-name="bachelor of science in medical technology" data-status="approved">
-                <td class="is-102b7f8">Bachelor of Science in Medical Technology</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td class="is-102b7f8">
+                </div>
+              </div>
+              <div class="table-row" data-name="bachelor of science in medical technology" data-status="approved">
+                <div class="td-cell col-program">Bachelor of Science in Medical Technology</div>
+                <div class="td-cell col-status text-center"><span class="badge-pill badge-approved">Approved</span></div>
+                <div class="td-cell col-action text-right">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
                   </div>
-                </td>
-              </tr>
-              <tr data-name="bachelor of science in information system" data-status="approved">
-                <td class="is-102b7f8">Bachelor of Science in Information System</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td class="is-102b7f8">
+                </div>
+              </div>
+              <div class="table-row" data-name="bachelor of science in information systems" data-status="approved">
+                <div class="td-cell col-program">Bachelor of Science in Information Systems</div>
+                <div class="td-cell col-status text-center"><span class="badge-pill badge-approved">Approved</span></div>
+                <div class="td-cell col-action text-right">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
                   </div>
-                </td>
-              </tr>
-              <tr data-name="bachelor of science in applied mathematics" data-status="approved">
-                <td class="is-102b7f8">Bachelor of Science in Applied Mathematics</td>
-                <td class="is-102b7f8"><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td class="is-102b7f8">
+                </div>
+              </div>
+              <div class="table-row" data-name="bachelor of science in applied mathematics" data-status="approved">
+                <div class="td-cell col-program">Bachelor of Science in Applied Mathematics</div>
+                <div class="td-cell col-status text-center"><span class="badge-pill badge-approved">Approved</span></div>
+                <div class="td-cell col-action text-right">
                   <div class="action-group">
                     <button class="pill-btn edit-btn" type="button">Edit</button>
                     <button class="pill-btn remove-btn" type="button">Remove</button>
                   </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div id="emptyState" class="empty-state is-f19ae44">No programs found.</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="ui-table-pagination is-c5a1a55">
-            <div class="is-47c5200">
-                <!-- No bulk actions on this page -->
+        <div class="ui-table-pagination is-0272b5f">
+          <span class="pagination-selection-status is-7fbae58" role="status"></span>
+          <div class="pagination-controls-group is-31de0eb">
+            <div class="pagination-rows-per-page is-b57eafe">
+              <span>Rows per page</span>
+              <div class="pagination-select-wrapper is-e0dd7f8">
+                <select class="ui-select-pill is-daab64f" aria-label="Rows per page">
+                  <option value="5" selected>5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                </select>
+                <svg class="pagination-select-chevron is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
             </div>
-            <div class="ui-table-pagination-nav is-dc310e0">
-                <span class="is-1c20bbe">
-                    <span class="is-2882578">Rows per page</span>
-                    <div class="is-e0dd7f8">
-                        <select class="ui-select-pill is-755d712" aria-label="Rows per page">
-                            <option>5</option>
-                            <option>10</option>
-                        </select>
-                        <svg class="is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m6 9 6 6 6-6"/>
-                        </svg>
-                    </div>
-                </span>
-                <span class="is-2651671">Page 1 of 3</span>
-                <button class="ui-table-page-btn is-9f84822" disabled>Previous</button>
-                <button class="ui-table-page-btn is-8d6e082">Next</button>
+            <span class="pagination-page-info is-12b4142" role="status">Page 1 of 1 · 5 entries</span>
+            <div class="ui-table-pagination-nav is-49e15c7">
+              <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Previous</button>
+              <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Next</button>
             </div>
+          </div>
         </div>
       </div>
-      
+
       <!-- Footer indicator -->
-      <footer class="admin-footer is-c425574">
+      <footer class="admin-footer">
         <span>&copy; 2026 Admin Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
-</main>
+    </main>
 
     <div id="entityModal" class="modal-overlay">
       <section class="modal-card">
@@ -208,24 +191,26 @@
         <button id="closeRemove" class="modal-close" type="button" aria-label="Close">✕</button>
         <h2 class="modal-title">Remove Program</h2>
 
-        <div class="modal-form is-bde75a3">
-          <p class="is-b67bbab">
+        <div class="modal-form modal-form-center">
+          <p class="modal-confirm-msg">
             Are you sure you want to remove this program? This action cannot be undone.
           </p>
-          <div class="is-6be4113">
-            <button id="cancelRemove" type="button" class="modal-submit is-47acd3f">Cancel</button>
-            <button id="confirmRemove" type="button" class="modal-submit is-444fc6c">Confirm</button>
+          <div class="modal-confirm-actions">
+            <button id="cancelRemove" type="button" class="modal-submit modal-btn-cancel">Cancel</button>
+            <button id="confirmRemove" type="button" class="modal-submit modal-btn-danger">Confirm</button>
           </div>
         </div>
       </section>
     </div>
 
-    <div id="toast" class="toast">Program Created Successfully</div>
+    <div id="toast" class="toast"></div>
 
+  </div>
 
+  <script src="../../assets/js/queue-modal.js"></script>
+
+    <script src="../../assets/js/admin-sidebar.js"></script>
+    <script src="../../assets/js/admin-table.js"></script>
     <script src="../../assets/js/pages/admin/programs.js"></script>
-
-
-  <script src="../../assets/js/queue-modal.js?v=3"></script>
 </body>
 </html>

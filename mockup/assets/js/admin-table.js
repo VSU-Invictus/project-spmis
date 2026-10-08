@@ -1,312 +1,405 @@
 /**
- * Admin Table Controller (Shared for SPMIS Admin Portal)
- * Replicates the robust table behavior of page/faculty/student:
- * - Immediate skeleton shimmer animation on initial page load / navigation
- * - Status indicator "Loading [name]…" during loads
- * - Disabled Previous & Next buttons while loading
- * - Dynamic pagination: "Page X of Y · N entries"
- * - Dynamic Previous / Next pagination button states
- * - Selectable Rows per page (5, 10, etc.) with paging slice
- * - Filter & search with debounce and skeleton shimmer
- * - Empty state with "Clear filters" button
- * - Select-all checkbox & selection counter ("X of Y row(s) selected")
+ * Universal Portal Table Controller (SPMIS Admin & Faculty Portals)
+ * Replicates the robust table behavior of the Design System and Faculty Portal:
+ * - Immediate skeleton shimmer animation on initial page load / filter / page switch
+ * - Dynamic pagination: "Rows per page" (5, 10, 20), "Page X of Y · N entries"
+ * - Dynamic Previous / Next pagination button states (disabled when at boundary)
+ * - Real-time live filtering and search with debounced skeleton feedback
+ * - Select-all checkbox & live selection counter ("X of Y row(s) selected")
+ * - Row hover and selection highlighting
+ * - MutationObserver to automatically re-slice when records are added/edited/removed via modals
+ * - Self-initializes on DOMContentLoaded for all portal tables
  */
 
-window.initAdminTable = function (config) {
-  const tableBody = typeof config.tableBody === 'string' ? document.querySelector(config.tableBody) : config.tableBody;
-  if (!tableBody) return null;
+(function () {
+  'use strict';
 
-  const table = tableBody.closest('table');
-  const thead = table ? table.querySelector('thead') : null;
-  const colCount = thead ? thead.querySelectorAll('th').length : (config.colCount || 6);
+  window.initAdminTable = function (config = {}) {
+    let container = config.container;
+    if (typeof container === 'string') container = document.querySelector(container);
 
-  const searchInput = config.searchInput ? document.querySelector(config.searchInput) : document.querySelector('#searchInput');
-  const emptyState = config.emptyState ? document.querySelector(config.emptyState) : document.querySelector('#emptyState');
-  const pageInfo = config.pageInfo ? document.querySelector(config.pageInfo) : document.querySelector('.ui-table-pagination-nav > span:not([style*="display: flex"]):not([style*="display:flex"])') || document.querySelector('#pageInfo');
-  const rowsPerPageSelect = config.rowsPerPage ? document.querySelector(config.rowsPerPage) : document.querySelector('.ui-select-pill');
-  const prevBtn = config.prevBtn ? document.querySelector(config.prevBtn) : document.querySelector('.ui-table-page-btn:first-of-type');
-  const nextBtn = config.nextBtn ? document.querySelector(config.nextBtn) : document.querySelector('.ui-table-page-btn:last-of-type');
+    let tableBody = config.tableBody;
+    if (typeof tableBody === 'string') tableBody = document.querySelector(tableBody);
+    if (!tableBody && container) {
+      tableBody = container.querySelector('tbody, .table-body, table') || container;
+    }
+    if (!tableBody) {
+      tableBody = document.querySelector('#tableBody, .table-container tbody, .table-container .table-body, .ui-table tbody, .ui-table-wrap tbody, .ui-table-wrap .table-body, table tbody');
+    }
+    if (!tableBody) return null;
 
-  const selectAllCb = typeof config.selectAllCheckbox === 'string' ? document.querySelector(config.selectAllCheckbox) : (config.selectAllCheckbox || document.querySelector('.select-all-checkbox'));
-  const selectionCountEl = typeof config.selectionCount === 'string' ? document.querySelector(config.selectionCount) : (config.selectionCount || document.querySelector('#selection-count'));
+    if (!container) {
+      container = tableBody.closest('.table-container, .ui-table-wrap, .table-margin-container, .section-container') || tableBody.parentElement;
+    }
 
-  const entityName = config.entityName || 'entries';
-  let currentPage = 1;
-  let pageSize = rowsPerPageSelect ? parseInt(rowsPerPageSelect.value, 10) || 5 : 5;
-  let filterTimer = null;
+    const isTable = tableBody.tagName.toLowerCase() === 'tbody' || tableBody.tagName.toLowerCase() === 'table';
+    const thead = container.querySelector('thead, .table-header-row');
+    const colCount = thead ? (thead.querySelectorAll('th, .th-cell').length || 6) : (config.colCount || 6);
 
-  // Ensure empty state has clear filters button
-  if (emptyState && !emptyState.querySelector('.empty-state-btn')) {
-    let clearBtn = document.createElement('button');
-    clearBtn.type = 'button';
-    clearBtn.className = 'empty-state-btn';
-    clearBtn.textContent = 'Clear filters';
-    clearBtn.addEventListener('click', clearFilters);
-    emptyState.appendChild(clearBtn);
-  }
+    const searchInput = config.searchInput 
+      ? (typeof config.searchInput === 'string' ? document.querySelector(config.searchInput) : config.searchInput)
+      : document.querySelector('#searchInput, #search, #entity-search, #application-search, .search-input');
 
-  function getRows() {
-    const rows = Array.from(tableBody.querySelectorAll('tr')).filter(tr => !tr.classList.contains('skeleton-row'));
-    rows.forEach(r => {
-      if (r.querySelector('input[type="checkbox"]')) r.style.cursor = 'pointer';
-    });
-    return rows;
-  }
+    const paginationEl = config.pagination
+      ? (typeof config.pagination === 'string' ? document.querySelector(config.pagination) : config.pagination)
+      : (container.parentElement ? container.parentElement.querySelector('.ui-table-pagination') : null) || document.querySelector('.ui-table-pagination');
 
-  function getVisibleRowCheckboxes() {
-    return Array.from(tableBody.querySelectorAll('tr:not([style*="display: none"]):not([style*="display:none"]):not(.skeleton-row) input[type="checkbox"]'));
-  }
+    const rowsPerPageSelect = config.rowsPerPage
+      ? (typeof config.rowsPerPage === 'string' ? document.querySelector(config.rowsPerPage) : config.rowsPerPage)
+      : (paginationEl ? paginationEl.querySelector('.ui-select-pill, select') : document.querySelector('.ui-table-pagination select, #rows-per-page'));
 
-  function updateCheckboxes() {
-    const visibleRowCheckboxes = getVisibleRowCheckboxes();
-    const total = visibleRowCheckboxes.length;
-    const checked = visibleRowCheckboxes.filter(cb => cb.checked).length;
+    const pageInfo = config.pageInfo
+      ? (typeof config.pageInfo === 'string' ? document.querySelector(config.pageInfo) : config.pageInfo)
+      : (paginationEl ? paginationEl.querySelector('.pagination-page-info, #page-label, [role="status"]:not(.pagination-selection-status):not(.is-7fbae58)') : null);
 
-    if (selectAllCb) {
-      if (checked === 0 || total === 0) {
-        selectAllCb.checked = false;
-        selectAllCb.indeterminate = false;
-      } else if (checked === total) {
-        selectAllCb.checked = true;
-        selectAllCb.indeterminate = false;
-      } else {
-        selectAllCb.checked = false;
-        selectAllCb.indeterminate = true;
+    const prevBtn = config.prevBtn
+      ? (typeof config.prevBtn === 'string' ? document.querySelector(config.prevBtn) : config.prevBtn)
+      : (paginationEl ? paginationEl.querySelector('.ui-table-pagination-nav button:first-of-type, #previous') : null);
+
+    const nextBtn = config.nextBtn
+      ? (typeof config.nextBtn === 'string' ? document.querySelector(config.nextBtn) : config.nextBtn)
+      : (paginationEl ? paginationEl.querySelector('.ui-table-pagination-nav button:last-of-type, #next') : null);
+
+    const selectAllCb = config.selectAllCheckbox
+      ? (typeof config.selectAllCheckbox === 'string' ? document.querySelector(config.selectAllCheckbox) : config.selectAllCheckbox)
+      : document.querySelector('thead input[type="checkbox"], .table-header-row input[type="checkbox"], .select-all-checkbox');
+
+    const selectAllBtn = document.querySelector('.pill-btn.select-all, button.select-all');
+
+    const selectionCountEl = config.selectionCount
+      ? (typeof config.selectionCount === 'string' ? document.querySelector(config.selectionCount) : config.selectionCount)
+      : (paginationEl ? paginationEl.querySelector('.pagination-selection-status, .is-7fbae58') : document.querySelector('#selection-count'));
+
+    const emptyState = config.emptyState
+      ? (typeof config.emptyState === 'string' ? document.querySelector(config.emptyState) : config.emptyState)
+      : document.querySelector('#emptyState, .empty-state');
+
+    const filterElements = config.filterElements
+      ? config.filterElements.map(el => typeof el === 'string' ? document.querySelector(el) : el).filter(Boolean)
+      : Array.from(document.querySelectorAll('.controls-actions select:not(.ui-select-pill), .controls-container select:not(.ui-select-pill), .filters select:not(.ui-select-pill), .dropdown-select:not(.ui-select-pill)'))
+          .filter(sel => !sel.closest('.modal-overlay, .modal-card, dialog, form:not(.filter-form)'));
+
+    const entityName = config.entityName || 'entries';
+    let currentPage = 1;
+    let pageSize = rowsPerPageSelect ? parseInt(rowsPerPageSelect.value, 10) || 5 : 5;
+    let filterTimer = null;
+    let isInitialLoad = true;
+
+    function getRows() {
+      const rows = Array.from(tableBody.querySelectorAll('tr, .table-row')).filter(
+        r => !r.classList.contains('skeleton-row') && r.parentElement === tableBody
+      );
+      rows.forEach(r => {
+        if (r.querySelector('input[type="checkbox"]')) {
+          r.style.cursor = 'pointer';
+        }
+      });
+      return rows;
+    }
+
+    function getVisibleRowCheckboxes() {
+      return Array.from(tableBody.querySelectorAll('tr:not([style*="display: none"]):not([style*="display:none"]):not(.skeleton-row) input[type="checkbox"], .table-row:not([style*="display: none"]):not([style*="display:none"]):not(.skeleton-row) input[type="checkbox"]'));
+    }
+
+    function updateCheckboxes() {
+      const visibleRowCheckboxes = getVisibleRowCheckboxes();
+      const total = visibleRowCheckboxes.length;
+      const checked = visibleRowCheckboxes.filter(cb => cb.checked).length;
+
+      if (selectAllCb) {
+        if (checked === 0 || total === 0) {
+          selectAllCb.checked = false;
+          selectAllCb.indeterminate = false;
+        } else if (checked === total) {
+          selectAllCb.checked = true;
+          selectAllCb.indeterminate = false;
+        } else {
+          selectAllCb.checked = false;
+          selectAllCb.indeterminate = true;
+        }
+      }
+
+      if (selectionCountEl) {
+        selectionCountEl.textContent = checked > 0 ? `${checked} of ${total} row(s) selected.` : '';
       }
     }
 
-    if (selectionCountEl) {
-      selectionCountEl.textContent = `${checked} of ${total} row(s) selected.`;
+    if (selectAllCb) {
+      selectAllCb.addEventListener('change', (e) => {
+        const visibleRowCheckboxes = getVisibleRowCheckboxes();
+        visibleRowCheckboxes.forEach(cb => {
+          cb.checked = e.target.checked;
+          const row = cb.closest('tr, .table-row');
+          if (row) {
+            if (e.target.checked) row.classList.add('checked');
+            else row.classList.remove('checked');
+          }
+        });
+        updateCheckboxes();
+      });
     }
-  }
 
-  if (selectAllCb) {
-    selectAllCb.addEventListener('change', (e) => {
-      const visibleRowCheckboxes = getVisibleRowCheckboxes();
-      visibleRowCheckboxes.forEach(cb => {
-        cb.checked = e.target.checked;
-        const row = cb.closest('tr');
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('click', () => {
+        const visibleRowCheckboxes = getVisibleRowCheckboxes();
+        const allChecked = visibleRowCheckboxes.length > 0 && visibleRowCheckboxes.every(cb => cb.checked);
+        visibleRowCheckboxes.forEach(cb => {
+          cb.checked = !allChecked;
+          const row = cb.closest('tr, .table-row');
+          if (row) {
+            if (!allChecked) row.classList.add('checked');
+            else row.classList.remove('checked');
+          }
+        });
+        updateCheckboxes();
+      });
+    }
+
+    tableBody.addEventListener('change', (e) => {
+      if (e.target && (e.target.classList.contains('row-checkbox') || e.target.type === 'checkbox')) {
+        const row = e.target.closest('tr, .table-row');
         if (row) {
           if (e.target.checked) row.classList.add('checked');
           else row.classList.remove('checked');
         }
-      });
-      updateCheckboxes();
+        updateCheckboxes();
+      }
     });
-  }
 
-  tableBody.addEventListener('change', (e) => {
-    if (e.target && (e.target.classList.contains('row-checkbox') || e.target.type === 'checkbox')) {
-      const row = e.target.closest('tr');
-      if (row) {
-        if (e.target.checked) row.classList.add('checked');
+    tableBody.addEventListener('click', (e) => {
+      const row = e.target.closest('tr, .table-row');
+      if (!row || row.classList.contains('skeleton-row')) return;
+      if (e.target.tagName === 'INPUT' || e.target.closest('button, a, select, textarea, label')) return;
+      const cb = row.querySelector('.row-checkbox, input[type="checkbox"]');
+      if (cb) {
+        cb.checked = !cb.checked;
+        if (cb.checked) row.classList.add('checked');
         else row.classList.remove('checked');
+        updateCheckboxes();
       }
+    });
+
+    function renderRows() {
+      const allRows = getRows();
+      const query = searchInput ? (searchInput.value || '').trim().toLowerCase() : '';
+
+      const activeFilters = filterElements.map(sel => ({
+        id: (sel.id || '').toLowerCase(),
+        val: (sel.value || '').toLowerCase()
+      }));
+
+      const matchedRows = allRows.filter(row => {
+        let matchesSearch = true;
+        if (query) {
+          if (config.searchFields) {
+            matchesSearch = config.searchFields(row, query);
+          } else {
+            const rowText = (row.textContent || '').toLowerCase();
+            const dataText = Object.values(row.dataset || {}).join(' ').toLowerCase();
+            matchesSearch = rowText.includes(query) || dataText.includes(query);
+          }
+        }
+
+        let matchesFilter = true;
+        if (config.filterMatches) {
+          matchesFilter = config.filterMatches(row);
+        } else {
+          for (const { val } of activeFilters) {
+            if (!val || val === 'all' || val === '' || val.includes('all') || val === 'oldest' || val === 'newest') continue;
+            let found = false;
+            for (const v of Object.values(row.dataset || {})) {
+              if (v.toLowerCase() === val || v.toLowerCase().includes(val)) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              if (!row.textContent.toLowerCase().includes(val)) {
+                matchesFilter = false;
+                break;
+              }
+            }
+          }
+        }
+
+        return matchesSearch && matchesFilter;
+      });
+
+      const totalMatches = matchedRows.length;
+      const totalPages = Math.max(1, Math.ceil(totalMatches / pageSize));
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+
+      allRows.forEach(row => {
+        row.style.display = 'none';
+      });
+
+      matchedRows.forEach((row, index) => {
+        if (index >= startIndex && index < endIndex) {
+          row.style.display = '';
+          row.classList.add('table-fade-in');
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      if (emptyState) {
+        emptyState.style.display = totalMatches === 0 ? 'flex' : 'none';
+      }
+
+      if (pageInfo) {
+        pageInfo.innerHTML = totalMatches > 0
+          ? `Page ${currentPage} of ${totalPages} &middot; ${totalMatches} ${entityName}`
+          : `0 ${entityName}`;
+      }
+
+      if (prevBtn) {
+        prevBtn.disabled = currentPage <= 1;
+      }
+      if (nextBtn) {
+        nextBtn.disabled = currentPage >= totalPages || totalMatches === 0;
+      }
+
       updateCheckboxes();
     }
-  });
 
-  tableBody.addEventListener('click', (e) => {
-    const tr = e.target.closest('tr');
-    if (!tr || tr.classList.contains('skeleton-row')) return;
-    if (e.target.tagName === 'INPUT' || e.target.closest('button, a, select, textarea, label')) return;
-    const cb = tr.querySelector('.row-checkbox, input[type="checkbox"]');
-    if (cb) {
-      cb.checked = !cb.checked;
-      if (cb.checked) tr.classList.add('checked');
-      else tr.classList.remove('checked');
-      updateCheckboxes();
+    function loadTableWithSkeleton(delay = 250) {
+      clearTimeout(filterTimer);
+
+      const rows = Array.from(tableBody.children);
+      rows.forEach(r => {
+        if (r.classList.contains('skeleton-row')) {
+          r.remove();
+        } else {
+          r.style.display = 'none';
+        }
+      });
+
+      if (emptyState) emptyState.style.display = 'none';
+
+      // Insert 3 skeleton shimmer rows matching table structure
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < 3; i++) {
+        if (isTable) {
+          const skelRow = document.createElement('tr');
+          skelRow.className = 'skeleton-row';
+          skelRow.innerHTML = `<td colspan="${colCount}"><div class="skeleton"></div></td>`;
+          frag.appendChild(skelRow);
+        } else {
+          const skelRow = document.createElement('div');
+          skelRow.className = 'table-row skeleton-row';
+          skelRow.innerHTML = `<div class="td-cell" style="width: 100%; flex: 1 1 100%; display: flex; flex-direction: column; gap: 8px; border: none !important;"><div class="skeleton"></div></div>`;
+          frag.appendChild(skelRow);
+        }
+      }
+      tableBody.appendChild(frag);
+
+      if (pageInfo) {
+        pageInfo.textContent = `Loading ${entityName}…`;
+      }
+
+      if (prevBtn) prevBtn.disabled = true;
+      if (nextBtn) nextBtn.disabled = true;
+
+      filterTimer = setTimeout(() => {
+        tableBody.querySelectorAll('.skeleton-row').forEach(sr => sr.remove());
+        renderRows();
+      }, delay);
     }
-  });
 
-  function clearFilters() {
-    if (searchInput) searchInput.value = '';
-    if (config.filterElements) {
-      config.filterElements.forEach(sel => {
-        const el = typeof sel === 'string' ? document.querySelector(sel) : sel;
-        if (el) el.selectedIndex = 0;
+    // Search input listener with debounced skeleton
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        currentPage = 1;
+        loadTableWithSkeleton(200);
       });
     }
-    currentPage = 1;
-    loadTableWithSkeleton(200);
-  }
 
-  function renderRows() {
-    const allRows = getRows();
-    const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-
-    const matchedRows = allRows.filter(row => {
-      let matchesSearch = true;
-      if (query && config.searchFields) {
-        matchesSearch = config.searchFields(row, query);
-      } else if (query) {
-        matchesSearch = row.textContent.toLowerCase().includes(query);
-      }
-
-      let matchesFilter = true;
-      if (config.filterMatches) {
-        matchesFilter = config.filterMatches(row);
-      }
-
-      return matchesSearch && matchesFilter;
+    // Filter selects listener with debounced skeleton
+    filterElements.forEach(el => {
+      el.addEventListener('change', () => {
+        currentPage = 1;
+        loadTableWithSkeleton(220);
+      });
     });
 
-    const totalMatches = matchedRows.length;
-    const totalPages = Math.max(1, Math.ceil(totalMatches / pageSize));
-    if (currentPage > totalPages) currentPage = totalPages;
-    if (currentPage < 1) currentPage = 1;
-
-    // Show/hide based on pagination slice
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-
-    allRows.forEach(row => {
-      row.style.display = 'none';
-    });
-
-    matchedRows.forEach((row, index) => {
-      if (index >= startIndex && index < endIndex) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    });
-
-    // Update empty state
-    if (emptyState) {
-      emptyState.style.display = totalMatches === 0 ? 'flex' : 'none';
+    // Rows per page listener
+    if (rowsPerPageSelect) {
+      rowsPerPageSelect.addEventListener('change', () => {
+        pageSize = parseInt(rowsPerPageSelect.value, 10) || 5;
+        currentPage = 1;
+        loadTableWithSkeleton(200);
+      });
     }
 
-    // Update page label
-    if (pageInfo) {
-      pageInfo.innerHTML = totalMatches > 0
-        ? `Page ${currentPage} of ${totalPages} &middot; ${totalMatches} ${entityName}`
-        : `0 ${entityName}`;
-    }
-
-    // Update pagination button states
+    // Previous page button
     if (prevBtn) {
-      prevBtn.disabled = currentPage <= 1;
-      prevBtn.style.color = prevBtn.disabled ? '#6C655D' : '#FFFFFF';
-      prevBtn.style.cursor = prevBtn.disabled ? 'default' : 'pointer';
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          loadTableWithSkeleton(180);
+        }
+      });
     }
+
+    // Next page button
     if (nextBtn) {
-      nextBtn.disabled = currentPage >= totalPages || totalMatches === 0;
-      nextBtn.style.color = nextBtn.disabled ? '#6C655D' : '#FFFFFF';
-      nextBtn.style.cursor = nextBtn.disabled ? 'default' : 'pointer';
+      nextBtn.addEventListener('click', () => {
+        const allRows = getRows();
+        const totalMatches = allRows.length;
+        const totalPages = Math.max(1, Math.ceil(totalMatches / pageSize));
+        if (currentPage < totalPages) {
+          currentPage++;
+          loadTableWithSkeleton(180);
+        }
+      });
     }
 
-    updateCheckboxes();
-  }
-
-  function loadTableWithSkeleton(delay = 250) {
-    clearTimeout(filterTimer);
-
-    // Hide all normal rows and existing skeleton
-    const rows = Array.from(tableBody.children);
-    rows.forEach(r => {
-      if (r.classList.contains('skeleton-row')) {
-        r.remove();
-      } else {
-        r.style.display = 'none';
+    // MutationObserver to auto-update pagination when rows are added, edited, or removed
+    let mutationTimer = null;
+    const observer = new MutationObserver(mutations => {
+      const hasStructuralChange = mutations.some(m => {
+        const added = Array.from(m.addedNodes).some(n => n.nodeType === 1 && !n.classList.contains('skeleton-row'));
+        const removed = Array.from(m.removedNodes).some(n => n.nodeType === 1 && !n.classList.contains('skeleton-row'));
+        return added || removed;
+      });
+      if (hasStructuralChange) {
+        clearTimeout(mutationTimer);
+        mutationTimer = setTimeout(() => {
+          renderRows();
+        }, 50);
       }
     });
+    observer.observe(tableBody, { childList: true });
 
-    if (emptyState) emptyState.style.display = 'none';
+    // Initial load with skeleton shimmer animation
+    loadTableWithSkeleton(isInitialLoad ? 280 : 0);
+    isInitialLoad = false;
 
-    // Show 3 skeleton rows
-    const skelRow = document.createElement('tr');
-    skelRow.className = 'skeleton-row';
-    skelRow.innerHTML = `<td colspan="${colCount}"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></td>`;
-    tableBody.appendChild(skelRow);
+    const controller = {
+      reload: (delay = 200) => loadTableWithSkeleton(delay),
+      render: renderRows,
+      observer
+    };
 
-    // Set page label to loading status
-    if (pageInfo) {
-      pageInfo.textContent = `Loading ${entityName}…`;
-    }
+    if (container) container.__tableController = controller;
+    if (tableBody) tableBody.__tableController = controller;
+    window.adminTableController = controller;
 
-    // Disable navigation buttons during load
-    if (prevBtn) {
-      prevBtn.disabled = true;
-      prevBtn.style.color = '#6C655D';
-      prevBtn.style.cursor = 'default';
-    }
-    if (nextBtn) {
-      nextBtn.disabled = true;
-      nextBtn.style.color = '#6C655D';
-      nextBtn.style.cursor = 'default';
-    }
-
-    filterTimer = setTimeout(() => {
-      const s = tableBody.querySelector('.skeleton-row');
-      if (s) s.remove();
-      renderRows();
-    }, delay);
-  }
-
-  // Attach search input listener
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      currentPage = 1;
-      loadTableWithSkeleton(200);
-    });
-  }
-
-  // Attach filter element listeners
-  if (config.filterElements) {
-    config.filterElements.forEach(sel => {
-      const el = typeof sel === 'string' ? document.querySelector(sel) : sel;
-      if (el) {
-        el.addEventListener('change', () => {
-          currentPage = 1;
-          loadTableWithSkeleton(220);
-        });
-      }
-    });
-  }
-
-  // Attach rowsPerPage listener
-  if (rowsPerPageSelect) {
-    rowsPerPageSelect.addEventListener('change', () => {
-      pageSize = parseInt(rowsPerPageSelect.value, 10) || 5;
-      currentPage = 1;
-      loadTableWithSkeleton(220);
-    });
-  }
-
-  // Attach pagination navigation
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      if (currentPage > 1) {
-        currentPage--;
-        loadTableWithSkeleton(180);
-      }
-    });
-  }
-
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      const allRows = getRows();
-      const totalMatches = allRows.filter(row => {
-        let mSearch = !searchInput || !searchInput.value.trim() || (config.searchFields ? config.searchFields(row, searchInput.value.trim().toLowerCase()) : true);
-        let mFilter = !config.filterMatches || config.filterMatches(row);
-        return mSearch && mFilter;
-      }).length;
-      const totalPages = Math.max(1, Math.ceil(totalMatches / pageSize));
-
-      if (currentPage < totalPages) {
-        currentPage++;
-        loadTableWithSkeleton(180);
-      }
-    });
-  }
-
-  // Execute initial load with skeleton!
-  loadTableWithSkeleton(280);
-
-  return {
-    reload: (delay = 200) => loadTableWithSkeleton(delay),
-    filter: renderRows,
-    clear: clearFilters
+    return controller;
   };
-};
+
+  // Auto-initialize any portal table with pagination when document is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const tableWraps = document.querySelectorAll('.table-container, .ui-table-wrap');
+    tableWraps.forEach(tw => {
+      if (!tw.dataset.tableControlled && !tw.closest('#roster-results, #entity-list, #application-list')) {
+        tw.dataset.tableControlled = 'true';
+        window.initAdminTable({ container: tw });
+      }
+    });
+  });
+})();
