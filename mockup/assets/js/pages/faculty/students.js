@@ -435,7 +435,7 @@ const programs = [
                 ),
             ];
             $("#tag").innerHTML =
-                '<option value="">All tags</option>' +
+                '<option value="">Tag: All</option>' +
                 tags.map((t) => `<option>${esc(t)}</option>`).join("");
             loadStudents();
 
