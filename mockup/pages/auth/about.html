@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPMIS - About Us</title>
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
+        
+        :root {
+            --background: #262624;
+            --card: #1e1e1d;
+            --primary: #d97757;
+            --text: #faf9f5;
+            --muted: rgba(250, 249, 245, 0.7);
+            --field: #333;
+            --font-mono: 'Geist Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; }
+
+        /* ── Body & Page Transitions ── */
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            height: 100dvh;
+            overflow: hidden;
+            padding: 2rem 1.25rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+
+            color: var(--text);
+            font-family: var(--font-mono);
+            position: relative;
+
+            background-color: var(--background);
+            background-image:
+                radial-gradient(ellipse 70% 60% at 15% 15%,
+                    rgba(217, 119, 87, 0.10) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 60% at 85% 85%,
+                    rgba(217, 119, 87, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 80% 60% at 50% 50%,
+                    rgba(30, 30, 29, 0.6) 0%, transparent 70%);
+            background-attachment: fixed;
+
+            animation: page-in 0.4s ease-out both;
+        }
+
+        body.page-exit {
+            opacity: 0;
+            transform: translateY(-10px) scale(.99);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+        }
+
+        @keyframes page-in {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body, body.page-exit {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
+        }
+
+        /* ── Pixel matrix background ── */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='3' height='3' x='6' y='6' fill='%23d97757' fill-opacity='0.55'/></svg>");
+            background-size: 16px 16px;
+
+            mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 90%);
+            -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 90%);
+
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 0;
+            animation: pixel-drift 8s linear infinite;
+            will-change: background-position;
+        }
+
+        @keyframes pixel-drift {
+            from { background-position: 0 0; }
+            to   { background-position: 16px 16px; }
+        }
+
+        /* ── Container ── */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Header (title + logo) ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-shrink: 0;
+            padding-right: 0.75rem;
+        }
+
+        h1 {
+            font-family: var(--font-mono);
+            font-weight: 500;
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            background: linear-gradient(90deg,
+                var(--text) 0%,
+                var(--text) 55%,
+                var(--primary) 80%,
+                #b85a3d 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-container {
+            height: 68px;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .logo-container img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity .2s ease, transform .2s ease;
+        }
+
+        .logo-link:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+
+        .logo-link:active {
+            transform: scale(0.98);
+        }
+
+        .logo-link img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* ── Content box (scrollable) ── */
+        .content-box {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            width: 100%;
+            padding: 2.5rem 3rem;
+            border: 1px solid rgba(217, 119, 87, .15);
+            border-radius: 24px;
+            background-color: var(--card);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, .04) inset,
+                        0 8px 24px rgba(0, 0, 0, .35);
+
+            scrollbar-width: thin;
+            scrollbar-color: rgba(217, 119, 87, 0.4) transparent;
+        }
+
+        .content-box::-webkit-scrollbar { width: 8px; }
+        .content-box::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 16px 0;
+        }
+        .content-box::-webkit-scrollbar-thumb {
+            background: rgba(217, 119, 87, 0.35);
+            border-radius: 4px;
+        }
+        .content-box::-webkit-scrollbar-thumb:hover {
+            background: rgba(217, 119, 87, 0.6);
+        }
+
+        /* Orange accent line at the top */
+        .content-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                var(--primary) 50%,
+                transparent 100%
+            );
+            opacity: .6;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Corner warmth */
+        .content-box::after {
+            content: "";
+            position: absolute;
+            top: -60px;
+            left: -60px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: .06;
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content-box > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── Typography ── */
+        .about-text {
+            font-family: var(--font-mono);
+            font-size: .9rem;
+            line-height: 1.75;
+            color: var(--muted);
+            letter-spacing: 0.005em;
+        }
+
+        .about-text p {
+            margin-bottom: 1.1rem;
+        }
+
+        .about-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-text strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Section headers — bar + bigger */
+        .about-text p.section-header strong {
+            display: block;
+            margin-top: 1.75rem;
+            margin-bottom: .5rem;
+            font-size: 1.5rem;
+            letter-spacing: 0.01em;
+            padding-left: 0.85rem;
+            border-left: 2px solid var(--primary);
+            line-height: 1.35;
+            color: #faf9f5;
+        }
+
+        .about-text p.section-header:first-child strong {
+            margin-top: 0;
+        }
+
+        /* Lists — dashed markers */
+        .about-text ul {
+            list-style-type: none;
+            margin-bottom: 1.1rem;
+            padding-left: 0;
+        }
+
+        .about-text li {
+            margin-bottom: .6rem;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .about-text li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            opacity: .85;
+            font-weight: 600;
+        }
+
+        .about-text li strong {
+            color: #faf9f5;
+            font-weight: 600;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            body { padding-inline: 1rem; padding-top: 1.5rem; }
+            .header {
+                flex-direction: column-reverse;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .logo-container { height: 60px; }
+            .content-box { padding: 1.75rem 1.5rem; border-radius: 20px; }
+            .about-text { font-size: .82rem; line-height: 1.7; }
+            .about-text p.section-header strong { font-size: .95rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>About us</h1>
+            <div class="logo-container">
+                <a href="signin.html" class="logo-link" aria-label="Back to sign in">
+                    <img src="../../assets/icons/SPMIS.png" alt="SPMIS Logo">
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content Box -->
+        <main class="content-box">
+            <div class="about-text">
+                <p class="section-header"><strong>About SPMIS</strong></p>
+
+                <p>The Student Profiling Management Information System (SPMIS) is a dedicated, university-wide platform built to empower faculty members in supporting student success. SPMIS serves as an internal reference tool designed to assist faculty in vetting, recommending, and selecting students for competitions, leadership roles, special tasks, academic opportunities, and institutional events.</p>
+
+                <p class="section-header"><strong>Our Purpose & Vision</strong></p>
+                <p>SPMIS bridges the gap between faculty experience and student opportunities. By allowing educators to share, record, and consult review-style observations about students they have taught, coached, or advised, the system enables more informed, holistic decision-making across the university. SPMIS focuses purely on profile insights and faculty research—it is not a student-facing portal nor an activity management application.</p>
+
+                <p class="section-header"><strong>Key Features & Platform Safeguards</strong></p>
+                <ul>
+                    <li><strong>Faculty-Driven Insights:</strong> Reviews reflect direct faculty experiences, combining free-text observations with descriptive tags. To maintain accountability and trust, contributor identities are transparently attached to every review.</li>
+
+                    <li><strong>Complete Contributor Control:</strong> Faculty members retain exclusive ownership over the content they create. You can edit, hide, or permanently delete your reviews at any time. Hidden reviews are strictly private to the creator, while deleted content is permanently purged from the application.</li>
+
+                    <li><strong>Privacy by Design:</strong> SPMIS is built around strong privacy standards. Review edit histories are transparently maintained, while system actions are audited without exposing protected review text. Students do not have access or accounts within the system.</li>
+
+                    <li><strong>Privacy-Preserving AI Research:</strong> SPMIS includes an integrated AI research assistant to help faculty search across visible reviews. Before any review content reaches external AI processing, all student name variants are replaced with opaque placeholder identifiers inside the system boundary to safeguard student identity. Hidden and deleted reviews are strictly excluded from the AI index.</li>
+                </ul>
+
+                <p class="section-header"><strong>Our Commitment to Responsible Use</strong></p>
+                <p>SPMIS is built for legitimate academic and institutional growth. By using the platform, faculty commit to maintaining student privacy, exercising professional judgment, and leveraging system insights responsibly to help every student find the right opportunity to excel.</p>
+            </div>
+        </main>
+
+        <!-- Footer component -->
+        <div data-include="../../components/navigation/footer-nav.html"></div>
+
+    </div>
+
+    <script>
+        (async () => {
+            // 1. Load the footer component
+            const slot = document.querySelector('[data-include]');
+            if (slot) {
+                try {
+                    const res = await fetch(slot.getAttribute('data-include'), { cache: 'no-cache' });
+                    if (res.ok) {
+                        slot.innerHTML = await res.text();
+                    } else {
+                        console.error('Failed to load footer:', res.status, res.statusText);
+                    }
+                } catch (err) {
+                    console.error('Footer include error:', err);
+                }
+            }
+
+            // 2. Determine the current page and apply the 'active' class
+            let currentPage = decodeURIComponent(window.location.pathname.split('/').pop()).toLowerCase().trim() || 'about.html';
+            
+            document.querySelectorAll('.footer-nav a').forEach(a => {
+                let href = decodeURIComponent(a.getAttribute('href')).toLowerCase().trim().split('/').pop();
+                if (href === currentPage) {
+                    a.classList.add('active');
+                }
+            });
+
+            // 3. Page Exit Transition (Matches the Sign In page logic)
+            document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(link => {
+                link.addEventListener('click', event => {
+                    const href = link.getAttribute('href');
+                    if (!href || href.startsWith('javascript:') || link.classList.contains('active')) return;
+                    
+                    event.preventDefault();
+                    document.body.classList.add('page-exit');
+                    
+                    setTimeout(() => { 
+                        window.location.href = href; 
+                    }, 300);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

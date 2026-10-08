@@ -1,0 +1,2332 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude+ Design System — Living Style Guide</title>
+  <link rel="stylesheet" href="../assets/css/global.css?v=5">
+  <link rel="stylesheet" href="../assets/css/components.css?v=8">
+  <style>
+    /* Living Style Guide Showcase Layout */
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+      font-family: var(--font-sans, 'Outfit', sans-serif);
+      margin: 0;
+      padding: 0;
+      line-height: 1.5;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .ui-styleguide {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    /* Style Guide Top Header */
+    .ui-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.875rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .ui-top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .ui-top-bar-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .ui-top-bar-breadcrumb {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    .ui-top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Interactive Theme Switcher Button */
+    .ui-theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.875rem;
+      border-radius: 9999px;
+      background: var(--muted);
+      border: 1px solid var(--border);
+      color: var(--foreground);
+      font: 600 0.8125rem/1 var(--font-sans);
+      cursor: pointer;
+      transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+    }
+
+    .ui-theme-toggle:hover {
+      border-color: var(--primary);
+      background: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .ui-top-bar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      background: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 0.6875rem;
+      color: var(--muted-foreground);
+    }
+
+    .ui-top-bar-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+    }
+
+    .ui-header {
+      margin-bottom: 3rem;
+    }
+
+    .ui-header-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--foreground);
+      margin: 0 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .ui-header-subtitle {
+      font-size: 1rem;
+      color: var(--muted-foreground);
+      margin: 0;
+      max-width: 760px;
+    }
+
+    /* Showcase Sections */
+    .ui-section {
+      margin-bottom: 3.5rem;
+    }
+
+    .ui-section-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .ui-section-title {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 0;
+    }
+
+    .ui-section-desc {
+      font-size: 0.8125rem;
+      color: var(--muted-foreground);
+      margin: 0;
+    }
+
+    /* CSS Grid Layout Utilities */
+    .ui-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .ui-grid-cols-1 {
+      grid-template-columns: 1fr;
+    }
+
+    .ui-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ui-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ui-grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @media (max-width: 960px) {
+      .ui-grid-cols-3,
+      .ui-grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ui-grid-cols-2,
+      .ui-grid-cols-3,
+      .ui-grid-cols-4 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Color Palette Swatches */
+    .ui-color-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .ui-color-swatch {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm, 6px);
+      flex-shrink: 0;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .ui-color-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      min-width: 0;
+    }
+
+    .ui-color-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--foreground);
+    }
+
+    .ui-color-var {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.75rem;
+      color: var(--primary);
+    }
+
+    .ui-color-role {
+      font-size: 0.6875rem;
+      color: var(--muted-foreground);
+    }
+
+    /* Typography Showcase */
+    .ui-typography-sample {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .ui-heading-1 {
+      font-size: 1.875rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--foreground);
+      margin: 0;
+      line-height: 1.25;
+    }
+
+    .ui-heading-2 {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .ui-heading-3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--foreground);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .ui-text {
+      font-size: 0.875rem;
+      color: var(--foreground);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .ui-text-muted {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .ui-text-caption {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin: 0;
+    }
+
+    .ui-text-mono {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.8125rem;
+      color: var(--foreground);
+    }
+
+    /* Button Showcase Layout */
+    .ui-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .ui-btn-row {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .ui-btn-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted-foreground);
+    }
+
+    .ui-icon {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Form Controls Showcase */
+    .ui-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .ui-form-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    .ui-checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--foreground);
+      cursor: pointer;
+    }
+
+    /* Footer */
+    .ui-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      margin-top: 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+  
+        /* Light Mode overrides for brand card */
+        html:not(.dark) .brand-card {
+            background: var(--card);
+            border-color: var(--border);
+            color: var(--muted-foreground) !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        }
+        html:not(.dark) .brand-card::after {
+            background-image: radial-gradient(rgba(0, 0, 0, .04) 1px, transparent 1px);
+        }
+        html:not(.dark) .brand-card::before {
+            background:
+                radial-gradient(circle, transparent 0 22%, rgba(0, 0, 0, .03) 22% 22.4%, transparent 22.4%),
+                radial-gradient(circle, transparent 0 40%, rgba(0, 0, 0, .02) 40% 40.4%, transparent 40.4%),
+                radial-gradient(circle, transparent 0 58%, rgba(0, 0, 0, .01) 58% 58.4%, transparent 58.4%);
+        }
+        html:not(.dark) .brand-hero-title {
+            color: var(--muted-foreground) !important;
+        }
+        html:not(.dark) .brand-hero-sub,
+        html:not(.dark) .brand-features {
+            color: var(--muted-foreground) !important;
+        }
+html:not(.dark) .brand-footer {
+            color: var(--muted-foreground) !important;
+        }
+
+    
+        html:not(.dark) .brand-features li {
+            color: var(--muted-foreground) !important;
+        }
+        html:not(.dark) .auth-footer-outside,
+        html:not(.dark) .auth-footer-outside .legal,
+        html:not(.dark) .auth-footer-outside a {
+            color: var(--muted-foreground) !important;
+        }
+
+    </style>
+</head>
+
+<body>
+  <div class="ui-styleguide">
+
+    <!-- Top Workspace Header Bar with Theme Switcher -->
+    <header class="ui-top-bar">
+      <div class="ui-top-bar-left">
+        <div class="ui-top-bar-dot"></div>
+        <span class="ui-top-bar-breadcrumb">SPMIS DESIGN SYSTEM / LIVING STYLE GUIDE</span>
+      </div>
+      <div class="ui-top-bar-right">
+        <!-- Live Theme Toggle Switch -->
+        <button type="button" id="theme-toggle-btn" class="ui-theme-toggle" aria-label="Toggle theme">
+          <span id="theme-icon">&#127769;</span>
+          <span id="theme-label">Dark Mode</span>
+        </button>
+        <div class="ui-top-bar-badge">
+          <span class="ui-top-bar-pulse"></span>
+          <span>Claude+ Standard</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Title & Overview -->
+    <div class="ui-header">
+      <h1 class="ui-header-title">Claude+ Living Style Guide</h1>
+      <p class="ui-header-subtitle">
+        Interactive visualization and component reference for the raw HTML/CSS Claude+ design system.
+        Supports both <strong>Light Mode</strong> (warm paper canvas) and <strong>Dark Mode</strong> (charcoal canvas)
+        with unified <code>.ui-*</code> class architecture.
+      </p>
+    </div>
+
+    <!-- 1. Color Palette Section -->
+    <section class="ui-section" id="color-palette">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Color Palette (OKLCH Dynamic Tokens)</h2>
+        <span class="ui-section-desc">Tokens adapt automatically when toggling between Light and Dark mode</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-4">
+        <!-- Primary Accent -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--primary);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Primary Accent</span>
+            <span class="ui-color-var">var(--primary)</span>
+            <span class="ui-color-role">Terracotta Action (#D97251)</span>
+          </div>
+        </div>
+
+        <!-- App Background -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--background); border: 1px solid var(--border);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">App Background</span>
+            <span class="ui-color-var">var(--background)</span>
+            <span class="ui-color-role">Paper (Light) / Charcoal (Dark)</span>
+          </div>
+        </div>
+
+        <!-- Card Surface -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--card); border: 1px solid var(--border);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Card Surface</span>
+            <span class="ui-color-var">var(--card)</span>
+            <span class="ui-color-role">Container Surface</span>
+          </div>
+        </div>
+
+        <!-- Border / Dividers -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--border);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Border &amp; Dividers</span>
+            <span class="ui-color-var">var(--border)</span>
+            <span class="ui-color-role">Subtle Framing</span>
+          </div>
+        </div>
+
+        <!-- Muted Surface -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--muted); border: 1px solid var(--border);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Muted Surface</span>
+            <span class="ui-color-var">var(--muted)</span>
+            <span class="ui-color-role">Inputs &amp; Recessed Areas</span>
+          </div>
+        </div>
+
+        <!-- Primary Foreground Text -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--foreground);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Foreground Text</span>
+            <span class="ui-color-var">var(--foreground)</span>
+            <span class="ui-color-role">High Contrast Content</span>
+          </div>
+        </div>
+
+        <!-- Muted Foreground Text -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--muted-foreground);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Muted Foreground</span>
+            <span class="ui-color-var">var(--muted-foreground)</span>
+            <span class="ui-color-role">Secondary Labels</span>
+          </div>
+        </div>
+
+        <!-- Destructive Action -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch" style="background: var(--destructive);"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Destructive</span>
+            <span class="ui-color-var">var(--destructive)</span>
+            <span class="ui-color-role">Alerts &amp; Delete (#DC2626)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Typography Section -->
+    <section class="ui-section" id="typography">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Typography</h2>
+        <span class="ui-section-desc">Outfit font family with Geist Mono for codes and tabular metrics</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-2">
+        <div class="ui-typography-sample">
+          <span class="ui-btn-label">Headings Scale</span>
+          <div>
+            <h1 class="ui-heading-1">Primary Heading 1 (Display Title)</h1>
+            <p class="ui-text-caption">30px &middot; Font-weight 800 &middot; Letter-spacing -0.025em &middot; <code>var(--foreground)</code></p>
+          </div>
+          <div>
+            <h2 class="ui-heading-2">Secondary Heading 2 (Section Title)</h2>
+            <p class="ui-text-caption">22px &middot; Font-weight 700 &middot; Letter-spacing -0.02em &middot; <code>var(--foreground)</code></p>
+          </div>
+          <div>
+            <h3 class="ui-heading-3">Tertiary Heading 3 (Card &amp; Panel Header)</h3>
+            <p class="ui-text-caption">18px &middot; Font-weight 600 &middot; <code>var(--card-foreground)</code></p>
+          </div>
+        </div>
+
+        <div class="ui-typography-sample">
+          <span class="ui-btn-label">Paragraph &amp; Muted Hierarchy</span>
+          <div>
+            <h3 class="ui-heading-3">Primary Paragraph Text</h3>
+            <p class="ui-text">
+              SPMIS provides a unified academic progress management portal with warm surfaces and clear hierarchy.
+              Primary text is styled with <code>var(--foreground)</code> to maintain optimal readability and comfortable contrast.
+            </p>
+          </div>
+          <div>
+            <h3 class="ui-heading-3">Muted Descriptive Text</h3>
+            <p class="ui-text-muted">
+              Secondary details, audit timestamps, and status explanations utilize <code>var(--muted-foreground)</code>
+              to establish quiet visual depth without distracting from critical operational data.
+            </p>
+          </div>
+          <div>
+            <h3 class="ui-heading-3">Monospace Data Text</h3>
+            <p class="ui-text-mono">
+              Student ID: 24-1-00001 &middot; Roster Count: 2,850 &middot; Status: VERIFIED_OK
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Status Badges & Chips Section -->
+    <section class="ui-section" id="badges">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Status Badges &amp; Chips</h2>
+        <span class="ui-section-desc">Semantic pill tags for table statuses, application reviews, and records</span>
+      </div>
+      <div class="ui-btn-row">
+        <div class="ui-btn-group">
+          <span class="ui-badge ui-badge--success">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Approved / Active
+          </span>
+          <span class="ui-badge ui-badge--warning">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            Pending Review
+          </span>
+          <span class="ui-badge ui-badge--destructive">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            Rejected / Deficient
+          </span>
+          <span class="ui-badge ui-badge--info">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            In Progress
+          </span>
+          <span class="ui-badge ui-badge--neutral">
+            Archived / Draft
+          </span>
+        </div>
+        <div class="ui-btn-group" style="margin-top: 1rem;">
+          <span class="ui-badge ui-badge--purple">Research</span>
+          <span class="ui-badge ui-badge--cyan">Algorithms</span>
+          <span class="ui-badge ui-badge--amber">Leadership</span>
+          <span class="ui-badge ui-badge--rose">Robotics</span>
+        </div>
+        <p class="ui-text-caption">
+          Badges utilize subtle tinted backgrounds (<code>color-mix</code>) with sharp readable foreground text matching their semantic severity.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Buttons Section -->
+    <section class="ui-section" id="buttons">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Buttons &amp; Actions</h2>
+        <span class="ui-section-desc">Interactive button primitives conforming to the <code>.ui-btn</code> specification</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-2">
+        <!-- Standard Button Variants -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Standard .ui-btn Variants</span>
+          <div class="ui-btn-group">
+            <button type="button" class="ui-btn">
+              Primary Action
+            </button>
+            <button type="button" class="ui-btn ui-btn-secondary">
+              Secondary Action
+            </button>
+            <button type="button" class="ui-btn ui-btn-outline">
+              Outline Action
+            </button>
+            <button type="button" class="ui-btn ui-btn-destructive">
+              Destructive
+            </button>
+          </div>
+          <p class="ui-text-caption">
+            Primary uses terracotta <code>var(--primary)</code>. Secondary and outline utilize <code>var(--secondary)</code> and <code>var(--border)</code>.
+          </p>
+        </div>
+
+        <!-- Button States & Icons -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Button States &amp; Icons</span>
+          <div class="ui-btn-group">
+            <button type="button" class="ui-btn">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>With Leading Icon</span>
+            </button>
+            <button type="button" class="ui-btn ui-btn-secondary">
+              <span>Next</span>
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+            <button type="button" class="ui-btn" disabled>
+              Disabled Action
+            </button>
+          </div>
+          <p class="ui-text-caption">
+            Disabled state enforces reduced opacity and <code>cursor: not-allowed</code>. Focus rings use <code>var(--ring)</code> with 2px offset.
+          </p>
+        </div>
+
+        <!-- Faculty Portal Specific Buttons -->
+        <div class="ui-btn-row" style="grid-column: 1 / -1;">
+          <span class="ui-btn-label">Faculty Portal Page Actions</span>
+          <div class="ui-btn-group" style="flex-wrap: wrap;">
+            <button type="button" class="ui-btn">+ Register student</button>
+            <button type="button" class="ui-btn">Browse Student</button>
+            <button type="button" class="ui-btn">+ Propose program</button>
+            <button type="button" class="ui-btn">+ Propose department</button>
+            <button type="button" class="ui-btn ui-btn-secondary">Register student</button>
+            <button type="button" class="ui-btn ui-btn-secondary">Propose program</button>
+            <button type="button" class="ui-btn ui-btn-secondary">Propose department</button>
+          </div>
+          <p class="ui-text-caption">
+            Standard action buttons used across the faculty portal headers and action sections. Utilizes base <code>.ui-btn</code> for primary page actions, and <code>.ui-btn-secondary</code> for grouped tertiary actions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Form Controls Section -->
+    <section class="ui-section" id="form-controls">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Form Controls</h2>
+        <span class="ui-section-desc">Unified input fields, select dropdowns, textareas, and labels using <code>.ui-input</code></span>
+      </div>
+      <div class="ui-grid ui-grid-cols-4">
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="sample-text">Student Name</label>
+          <input type="text" id="sample-text" class="ui-input" placeholder="e.g. Alex Morgan" />
+        </div>
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="sample-select">Program Department</label>
+          <select id="sample-select" class="ui-input">
+            <option value="cs">BS Computer Science</option>
+            <option value="is">BS Information Systems</option>
+            <option value="it">BS Information Technology</option>
+            <option value="ds">BS Data Science</option>
+            <option value="ai">BS Artificial Intelligence</option>
+            <option value="cy">BS Cybersecurity</option>
+          </select>
+        </div>
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="sample-search">Search Records</label>
+          <input type="search" id="sample-search" class="ui-input" placeholder="Search roster or IDs..." />
+        </div>
+        <div class="ui-form-group" style="grid-column: 1 / -1;">
+          <label class="ui-form-label" for="sample-notes">Review Assessment Notes</label>
+          <textarea id="sample-notes" class="ui-input" style="min-height: 80px;" placeholder="Provide detailed evaluation feedback..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Cards Section -->
+    <section class="ui-section" id="cards">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Cards</h2>
+        <span class="ui-section-desc">Container primitives: standard card, compact KPI metric card, and interactive link card</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-3">
+        <!-- 1. Standard .ui-card with header and body -->
+        <div class="ui-card">
+          <div class="ui-card-header">
+            <h3 class="ui-card-title">Standard Card</h3>
+            <p class="ui-card-description">Default <code>.ui-card</code> container for details and panels.</p>
+          </div>
+          <div class="ui-card-content">
+            <p class="ui-text">
+              This card serves as the standard container for panels, detail views, and forms.
+              It uses <code>var(--card)</code> surface with a subtle <code>var(--border)</code> outline and <code>var(--radius-lg)</code> corners.
+            </p>
+          </div>
+          <div class="ui-card-footer">
+            <span class="ui-text-muted">Updated 10m ago</span>
+          </div>
+        </div>
+
+        <!-- 2. Compact .ui-card-sm for KPI metrics -->
+        <div class="ui-card ui-card-sm metric-card">
+          <div class="ui-card-header" style="margin-bottom: 0.5rem;">
+            <p class="metric-card-label">KPI Metric Card (.ui-card-sm)</p>
+          </div>
+          <div class="metric-card-row">
+            <strong class="metric-card-value">2,850</strong>
+            <span class="metric-card-trend">&#8599; +12.5%</span>
+          </div>
+          <p class="metric-card-status">AY 2026-2027</p>
+          <p class="ui-card-description">Compact metric summary for dashboard statistics.</p>
+        </div>
+
+        <!-- 3. Interactive .ui-card-interactive on an <a> tag -->
+          <a href="#interactive-target" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; height: 100%; color: inherit; box-sizing: border-box; padding: 1.25rem;">
+            <div class="ui-card-header">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                <h3 class="ui-card-title">Interactive Card Link</h3>
+                <span class="metric-card-trend" style="white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">Link <span class="arrow">&rarr;</span></span>
+              </div>
+              <p class="ui-card-description" style="margin-top: 8px;"><code>.ui-card-interactive</code> directly on an anchor element.</p>
+            </div>
+            <div class="ui-card-content">
+              <p class="ui-text">
+                Hover over this card to view the smooth interactive transition effect.
+                Supports keyboard focus indicators and terracotta primary border highlighting.
+              </p>
+            </div>
+            <div class="ui-card-footer">
+              <span class="ui-text-muted" style="color: var(--primary);">Explore workspace <span class="arrow">&rarr;</span></span>
+            </div>
+          </a>
+
+
+      </div>
+    </section>
+
+    <!-- 7. Data Tables & Pagination Section -->
+    <section class="ui-section" id="data-tables">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Data Tables &amp; Pagination</h2>
+        <span class="ui-section-desc">Responsive table wrappers with subtle row hovers, status pills, and pagination bars</span>
+      </div>
+      <div class="ui-table-wrap">
+        <table class="ui-table">
+          <thead>
+            <tr>
+              <th style="width: 40px;"><input type="checkbox" aria-label="Select all rows"></th>
+              <th>Student</th>
+              <th>Student ID</th>
+              <th>Program</th>
+              <th>Year Level</th>
+              <th>Status</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">SM</div>
+                  <div>
+                    <strong style="display: block; font-size: 0.875rem;">Sam Lee Parker</strong>
+                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">sam.parker@vsu.edu.ph</span>
+                  </div>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00001</code></td>
+              <td>BS Computer Science</td>
+              <td>3rd Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td style="text-align: right;">
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">EB</div>
+                  <div>
+                    <strong style="display: block; font-size: 0.875rem;">Elena Bautista</strong>
+                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">elena.b@vsu.edu.ph</span>
+                  </div>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00042</code></td>
+              <td>BS Information Systems</td>
+              <td>2nd Year</td>
+              <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+              <td style="text-align: right;">
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">Review</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" aria-label="Select row"></td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">RC</div>
+                  <div>
+                    <strong style="display: block; font-size: 0.875rem;">Rafael Cruz</strong>
+                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">r.cruz@vsu.edu.ph</span>
+                  </div>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00109</code></td>
+              <td>BS Information Technology</td>
+              <td>4th Year</td>
+              <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+              <td style="text-align: right;">
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button>
+              </td>
+            </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">AD</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Adrian Davis</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">adrian.d@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00210</code></td>
+                <td>BS Computer Science</td>
+                <td>3rd Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">LM</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Liam Moore</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">liam.m@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00211</code></td>
+                <td>BS Information Systems</td>
+                <td>1st Year</td>
+                <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">KS</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Kaitlyn Smith</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">k.smith@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00212</code></td>
+                <td>BS Computer Engineering</td>
+                <td>4th Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">JT</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Justin Taylor</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">j.taylor@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00213</code></td>
+                <td>BS Computer Science</td>
+                <td>2nd Year</td>
+                <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">MJ</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Mia Johnson</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">m.johnson@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00214</code></td>
+                <td>BS Data Science</td>
+                <td>1st Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">EW</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Ethan White</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">e.white@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00215</code></td>
+                <td>BS Artificial Intelligence</td>
+                <td>3rd Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="Select row"></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">CB</div>
+                    <div>
+                      <strong style="display: block; font-size: 0.875rem;">Chloe Brown</strong>
+                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">c.brown@vsu.edu.ph</span>
+                    </div>
+                  </div>
+                </td>
+                <td><code class="ui-text-mono">24-1-00216</code></td>
+                <td>BS Computer Science</td>
+                <td>4th Year</td>
+                <td><span class="ui-badge ui-badge--success">Approved</span></td>
+                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
+              </tr>
+</tr>
+          </tbody>
+        </table>
+        <!-- Table Pagination Footer -->
+          </div> <!-- Closes ui-table-wrap -->
+          <div class="ui-table-pagination" style="border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <span style="color: var(--muted-foreground); font-size: 0.875rem;">2 of 3 row(s) selected.</span>
+            
+            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+              
+              <!-- Shadcn-styled Select Dropdown -->
+              <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;">
+                <span>Rows per page</span>
+                                                    <style>
+                    .ui-select-pill {
+                      appearance: none !important;
+                      -webkit-appearance: none !important;
+                      background-color: transparent !important;
+                      border: 1px solid var(--border) !important;
+                      border-radius: 9999px !important;
+                      color: var(--foreground) !important;
+                      padding: 0 1.75rem 0 0.875rem !important;
+                      font-size: 0.8125rem !important;
+                      font-weight: 500 !important;
+                      height: 2rem !important;
+                      outline: none !important;
+                      cursor: pointer !important;
+                      transition: background-color 0.15s ease, border-color 0.15s ease !important;
+                    }
+                    .ui-select-pill:hover,
+                    .ui-select-pill:focus {
+                      background-color: var(--accent) !important;
+                    }
+                  </style>
+                <div style="position: relative; display: flex; align-items: center;">
+                  <select class="ui-select-pill" style="min-width: 4rem;">
+                          <option value="5" selected>5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                        </select>
+                  <svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <span style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;">Page 1 of 2</span>
+              
+              <div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;">
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" disabled>Previous</button>
+                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;">Next</button>
+              </div>
+              
+            </div>
+          </div>
+
+
+</section>
+
+    <!-- 8. Chats & AI Assistant Section -->
+    <section class="ui-section" id="chats">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Chats &amp; AI Assistant</h2>
+        <span class="ui-section-desc">Prompt chips, message bubbles, query textarea, and student quick-file context card</span>
+      </div>
+
+      <!-- Quick Prompt Chips -->
+      <div class="ui-chat-prompts" style="margin-bottom: 1.5rem;">
+        <button type="button" class="ui-chat-prompt-btn">
+          <span>Research experience</span>
+          <small>Explore faculty assessments <span class="arrow">&rarr;</span></small>
+        </button>
+        <button type="button" class="ui-chat-prompt-btn">
+          <span>Teamwork &amp; Leadership</span>
+          <small>Ask across student records <span class="arrow">&rarr;</span></small>
+        </button>
+        <button type="button" class="ui-chat-prompt-btn">
+          <span>Communication Skills</span>
+          <small>Find relevant review excerpts <span class="arrow">&rarr;</span></small>
+        </button>
+        <button type="button" class="ui-chat-prompt-btn">
+          <span>Capstone Project Review</span>
+          <small>Verify graduation prerequisites <span class="arrow">&rarr;</span></small>
+        </button>
+      </div>
+
+      <!-- Two-Column Chat Workspace -->
+      <div class="ui-chat-columns">
+        <!-- Left: Chat Thread Card -->
+        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start;">
+            <div class="ui-card-header" style="margin-bottom: 1rem; flex-shrink: 0;">
+            <h3 class="ui-card-title">Ask across student reviews</h3>
+            <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
+          </div>
+            <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+            <div id="chat-log" class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 0.75rem; flex: 1; overflow-y: auto; min-height: 0;">
+              <!-- AI Message -->
+              <div class="ui-chat-msg ui-chat-msg--ai">
+                <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">AI Assistant</span>
+                    <span class="ui-chat-msg-time">10:42 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.</div>
+                </div>
+              </div>
+  
+              <!-- User Message -->
+              <div class="ui-chat-msg ui-chat-msg--user">
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">Prof. Morgan</span>
+                    <span class="ui-chat-msg-time">10:43 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--user">Which students in BS Computer Science demonstrate outstanding research contributions?</div>
+                </div>
+              </div>
+  
+              <!-- AI Message 2 -->
+              <div class="ui-chat-msg ui-chat-msg--ai">
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">AI Assistant</span>
+                    <span class="ui-chat-msg-time">10:43 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="ui-chat-input-wrapper" style="flex-shrink: 0; margin-top: 0.5rem;">
+              <form id="chat-form" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
+                <textarea class="ui-chat-textarea" id="chat-prompt" required placeholder="Type a question across student reviews..." rows="2"></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <span class="ui-chat-input-hint">Press Enter to send, Shift+Enter for new line</span>
+                  <button type="submit" class="ui-btn" id="send" aria-label="Send">
+                    Send query
+                    <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+          <!-- Right: Student Quick File Context Card -->
+          <!-- Right: Student Quick File Context Card -->
+        <div class="ui-chat-context-card">
+          <div class="ui-chat-context-avatar">SP</div>
+          <h3 class="ui-heading-3" style="margin: 0;">Sam Lee Parker</h3>
+          <p class="ui-text-muted" style="font-size: 0.8125rem; margin-top: 0.25rem;">ID: 24-1-00001</p>
+
+          <div class="ui-chat-context-meta">
+            <span class="ui-chat-context-dt">Program</span>
+            <span class="ui-chat-context-dd">BS Computer Science</span>
+            <span class="ui-chat-context-dt">Year Level</span>
+            <span class="ui-chat-context-dd">3rd Year</span>
+            <span class="ui-chat-context-dt">Status</span>
+            <span class="ui-chat-context-dd"><span class="ui-badge ui-badge--success">Good Standing</span></span>
+            <span class="ui-chat-context-dt">Tags</span>
+            <span class="ui-chat-context-dd">
+              <span class="ui-badge ui-badge--purple">Research</span>
+              <span class="ui-badge ui-badge--cyan">Algorithms</span>
+            </span>
+          </div>
+
+          <p class="ui-text-caption" style="margin-bottom: 1.25rem;">
+            Referenced record. Review conversations can synthesize evaluations across all enrolled students.
+          </p>
+
+          <button type="button" class="ui-btn ui-btn-outline" style="width: 100%;">
+            View Full Profile <span class="arrow">&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Authentication & Sign Up Section -->
+    <section class="ui-section" id="auth-cards">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Authentication &amp; Account Cards</h2>
+        <span class="ui-section-desc">Unified Box, Color, and Text contract for Sign In and Sign Up portals</span>
+      </div>
+        <style>
+        
+        
+
+        .auth-demo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            animation: page-in .4s ease-out both;
+            position: relative;
+        }
+
+        @keyframes page-in {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        /* Noticeable background grid */
+        .auth-demo-container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(color-mix(in srgb, var(--foreground) 9%, transparent) 1px, transparent 1px),
+                linear-gradient(90deg, color-mix(in srgb, var(--foreground) 9%, transparent) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 25%, transparent 92%);
+            -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 25%, transparent 92%);
+            pointer-events: none;
+            z-index: 0;
+            animation: grid-drift 6s linear infinite;
+            will-change: background-position;
+        }
+
+        /* Warm terracotta haze behind the split */
+        .auth-demo-container::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 55% 65% at 18% 25%,
+                    color-mix(in srgb, var(--primary) 22%, transparent) 0%,
+                    color-mix(in srgb, var(--primary) 8%, transparent) 40%,
+                    transparent 70%),
+                radial-gradient(ellipse 55% 65% at 85% 80%,
+                    color-mix(in srgb, var(--primary) 16%, transparent) 0%,
+                    color-mix(in srgb, var(--primary) 6%, transparent) 42%,
+                    transparent 72%),
+                radial-gradient(ellipse 90% 90% at 50% 50%,
+                    color-mix(in srgb, var(--primary) 5%, transparent) 0%,
+                    transparent 75%);
+        }
+
+        @keyframes grid-drift {
+            from { background-position: 0 0; }
+            to   { background-position: 48px 48px; }
+        }
+
+        /* ==========================================================
+           Wrapper so the split + outside footer stack vertically
+           ========================================================== */
+        .auth-shell {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+            width: min(1080px, 100%);
+            animation: card-enter .6s cubic-bezier(.2,.9,.3,1) both;
+            animation-delay: .1s;
+        }
+
+        @keyframes card-enter {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================
+           Overlapping split
+           ========================================================== */
+        .auth-split {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            width: 100%;
+            height: min(640px, 100%);
+        }
+
+        /* ---------- LEFT: brand card (behind) ---------- */
+        .brand-card {
+            position: relative;
+            padding: 2.25rem 2.5rem 2rem;
+            padding-right: 4.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            border-radius: 24px;
+            border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--border));
+            background-color: #141311;
+            background: radial-gradient(ellipse 90% 70% at 20% 15%,
+                    color-mix(in srgb, var(--primary) 26%, transparent) 0%, transparent 60%),
+                radial-gradient(ellipse 80% 70% at 80% 100%,
+                    color-mix(in srgb, var(--primary) 16%, transparent) 0%, transparent 60%),
+                linear-gradient(160deg, #1c1b19 0%, #141311 55%, #0f0e0d 100%);
+            color: #faf9f5;
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, .05) inset,
+                0 20px 48px rgba(0, 0, 0, .45);
+            z-index: 1;
+        }
+
+        .brand-card::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 520px;
+            height: 520px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, transparent 0 22%, rgba(250, 249, 245, .05) 22% 22.4%, transparent 22.4%),
+                radial-gradient(circle, transparent 0 40%, rgba(250, 249, 245, .04) 40% 40.4%, transparent 40.4%),
+                radial-gradient(circle, transparent 0 58%, rgba(250, 249, 245, .03) 58% 58.4%, transparent 58.4%);
+            pointer-events: none;
+        }
+
+        .brand-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(250, 249, 245, .06) 1px, transparent 1px);
+            background-size: 22px 22px;
+            mask-image: radial-gradient(ellipse 60% 60% at 80% 90%, black 0%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse 60% 60% at 80% 90%, black 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand-card > * { position: relative; z-index: 1; }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .brand-logo img {
+            display: block;
+            height: 56px;
+            width: auto;
+            filter: drop-shadow(0 0 18px color-mix(in srgb, var(--primary) 20%, transparent));
+        }
+
+        .brand-hero {
+            margin: auto 0;
+            padding: 1.5rem 0;
+            max-width: 24ch;
+        }
+
+        .brand-hero-title {
+            font-size: clamp(1.75rem, 3vw, 2.75rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            margin: 0 0 0.875rem;
+            color: #faf9f5 !important;
+            color: #faf9f5;
+        }
+
+        .brand-hero-title .accent { color: var(--primary); }
+
+        .brand-hero-sub {
+            font-size: 0.825rem;
+            line-height: 1.55;
+            color: rgba(250, 249, 245, .65);
+            margin: 0;
+        }
+
+        .brand-features {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            list-style: none;
+            padding: 0;
+        }
+
+        .brand-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            color: rgba(250, 249, 245, .8);
+        }
+
+        .brand-features .dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            background: color-mix(in srgb, var(--primary) 22%, transparent);
+            border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.7rem;
+            flex-shrink: 0;
+        }
+
+        .brand-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            color: rgba(250, 249, 245, .4);
+            gap: 1rem;
+            max-width: 55%;
+        }
+
+        /* ---------- RIGHT: auth card (on top) ---------- */
+        .auth-card {
+            position: relative;
+            z-index: 2;
+            margin-left: -2.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 2rem 2.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            background: var(--card);
+            color: var(--card-foreground);
+            border-radius: 24px;
+            border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, .04) inset,
+                0 24px 56px rgba(0, 0, 0, .55),
+                0 0 0 1px rgba(0, 0, 0, .25);
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 1.5rem;
+            right: 1.5rem;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                color-mix(in srgb, var(--primary) 60%, transparent) 20%,
+                var(--primary) 50%,
+                color-mix(in srgb, var(--primary) 60%, transparent) 80%,
+                transparent 100%
+            );
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .auth-card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 1.5rem;
+            right: 1.5rem;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                color-mix(in srgb, var(--primary) 50%, transparent) 25%,
+                color-mix(in srgb, var(--primary) 85%, transparent) 50%,
+                color-mix(in srgb, var(--primary) 50%, transparent) 75%,
+                transparent 100%
+            );
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* Body grows to push the sign-up prompt to the bottom */
+        .auth-card-.auth-demo-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 380px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin: 0 0 0.625rem;
+            color: var(--card-foreground);
+            text-align: left;
+            line-height: 1.1;
+        }
+
+        .auth-card-sub {
+            font-size: 0.9375rem;
+            color: var(--muted-foreground);
+            margin: 0 0 2rem;
+            line-height: 1.55;
+            text-align: left;
+        }
+
+        /* ---------- Sign-up prompt INSIDE the auth card ---------- */
+        .auth-card-signup {
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card-signup a {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+        .auth-card-signup a:hover {
+            color: color-mix(in srgb, var(--primary) 80%, #ffffff);
+        }
+
+        .auth-card-signup .arrow {
+            display: inline-block;
+            transition: transform .25s ease;
+        }
+
+        .auth-card-signup a:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        /* ---------- Reuse .ui-auth-* primitives ---------- */
+        .auth-card .ui-auth-wrapper { width: 100%; max-width: none; }
+
+        .auth-card .ui-auth-card {
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            animation: none;
+            display: block;
+        }
+
+        .auth-card .ui-auth-card::before { display: none; }
+        .auth-card .ui-auth-header { display: none; }
+
+        .auth-card .auth-social-btn {
+            width: 100%;
+            height: 2.625rem;
+            background: var(--muted) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--muted-foreground) !important;
+            font-weight: 500;
+            font-size: 0.825rem;
+            border-radius: 999px !important;
+        }
+
+        .auth-card .auth-social-btn:hover {
+            background: var(--accent) !important;
+            border-color: color-mix(in srgb, var(--primary) 45%, var(--border)) !important;
+        }
+
+        .auth-card .ui-input {
+            height: 2.625rem;
+            border-radius: 999px;
+            padding: 0 1.125rem;
+            background: var(--muted);
+            border: 1px solid var(--border);
+            font-size: 0.825rem;
+            transition: padding-right .18s ease, border-color .15s ease, box-shadow .15s ease;
+        }
+
+        /* Reserve space on the right of the input when an error message shows */
+        .ui-auth-field:has(.ui-field-popup.is-visible) .ui-input {
+            padding-right: 12.5rem;
+        }
+
+        .auth-card .ui-input:focus {
+            border-color: var(--ring);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 25%, transparent);
+        }
+
+        .auth-card .ui-auth-btn-submit {
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: 1px solid transparent;
+            border-radius: 999px;
+            height: 2.75rem;
+            font: 600 0.875rem/1 var(--font-sans);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+        }
+
+        .auth-card .ui-auth-btn-submit:hover {
+            background: color-mix(in srgb, var(--primary) 88%, var(--foreground));
+        }
+        .auth-card .ui-auth-footer { display: none; }
+
+        .auth-card .ui-auth-divider {
+            margin: 0.875rem 0;
+            font-size: 0.7rem;
+        }
+
+        .auth-card .ui-auth-form { gap: 0.75rem; }
+
+        /* ==========================================================
+           Footer row — OUTSIDE the card, white, larger text.
+           Hover: underline only, no color change.
+           ========================================================== */
+        .auth-footer-outside {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            column-gap: 0.75rem;
+            font-size: 0.9375rem;
+            color: #ffffff;
+        }
+
+        .auth-footer-outside .legal {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.625rem;
+            font-size: 0.9375rem;
+            color: #ffffff;
+        }
+
+        .auth-footer-outside a {
+            color: #ffffff;
+            text-decoration: none;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            padding-bottom: 2px;
+            transition: transform .2s ease;
+        }
+
+        .auth-footer-outside a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 1px;
+            background: currentColor;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform .25s ease;
+        }
+
+        .auth-footer-outside a:hover {
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .auth-footer-outside a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .auth-footer-outside .sep {
+            opacity: 0.55;
+        }
+
+        /* ==========================================================
+           Validation message — sits INSIDE the input, right-aligned.
+           No layout shift, no overlap.
+           ========================================================== */
+        .ui-input-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .ui-field-popup {
+            position: absolute;
+            top: 50%;
+            right: 1.125rem;
+            transform: translateY(-50%) scale(.96);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0;
+            background: transparent;
+            border: 0;
+            color: var(--primary);
+            font: 600 0.75rem/1 var(--font-sans);
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .18s ease, transform .18s ease;
+            z-index: 3;
+        }
+
+        .ui-field-popup.is-visible {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+        }
+
+        .ui-field-popup-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            border-radius: 4px;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            font: 800 0.7rem/1 var(--font-sans);
+        }
+
+        .ui-input.is-invalid {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent) !important;
+        }
+
+        @keyframes field-shake {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-5px); }
+            40%      { transform: translateX(4px); }
+            60%      { transform: translateX(-3px); }
+            80%      { transform: translateX(2px); }
+        }
+
+        .ui-auth-field.is-shaking {
+            animation: field-shake .35s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* ---------- Google modal ---------- */
+        .google-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: grid;
+            place-items: center;
+            padding: 1.25rem;
+            background: rgba(0, 0, 0, .6);
+            backdrop-filter: blur(2px);
+        }
+
+        .google-modal {
+            position: relative;
+            width: min(100%, 448px);
+            padding: 36px 40px;
+            border-radius: var(--radius-lg);
+            background: var(--popover);
+            color: var(--popover-foreground);
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, .45);
+            text-align: center;
+        }
+
+        .google-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            border: 0;
+            background: transparent;
+            color: var(--muted-foreground);
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .google-close:hover { color: var(--foreground); }
+
+        .google-title { margin: 4px 0 10px; font-size: 22px; font-weight: 600; color: var(--popover-foreground); }
+        .google-subtitle { margin-bottom: 28px; font-size: 14px; color: var(--muted-foreground); }
+
+        .google-account-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--card);
+            color: var(--card-foreground);
+            cursor: pointer;
+            text-align: left;
+            transition: background .15s ease, border-color .15s ease;
+        }
+
+        .google-account-btn:hover { background: var(--accent); border-color: var(--input); }
+
+        .google-avatar {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            margin-right: 12px;
+            border-radius: 50%;
+            background: #1a73e8;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .google-acc-info { display: flex; flex-direction: column; }
+        .google-acc-name { color: var(--card-foreground); font-size: 14px; font-weight: 500; }
+        .google-acc-email { color: var(--muted-foreground); font-size: 12px; }
+
+        .google-footer {
+            margin-top: 28px;
+            color: var(--muted-foreground);
+            font-size: 12px;
+            line-height: 1.5;
+            text-align: left;
+        }
+        .google-footer a { color: var(--primary); text-decoration: none; }
+        .google-footer a:hover { text-decoration: underline; }
+
+        .hidden { display: none !important; }
+
+        
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 900px) {
+            
+
+            .auth-demo-container {
+                padding: 1rem;
+                align-items: flex-start;
+                justify-content: flex-start;
+            }
+
+            .auth-shell {
+                width: 100%;
+            }
+
+            .auth-split {
+                grid-template-columns: 1fr;
+                height: auto;
+                width: 100%;
+            }
+
+            .brand-card {
+                padding: 1.5rem 1.5rem 1.25rem;
+                padding-right: 1.5rem;
+                min-height: 160px;
+                border-radius: 22px;
+            }
+
+            .brand-logo img { height: 44px; }
+            .brand-hero { padding: 1rem 0 0; max-width: none; }
+            .brand-hero-title { font-size: 1.5rem; }
+            .brand-hero-sub { display: none; }
+            .brand-features { display: none; }
+            .brand-footer { display: none; max-width: none; }
+            .brand-card::before { width: 320px; height: 320px; }
+
+            .auth-card {
+                margin-left: 0;
+                margin-top: -1.25rem;
+                margin-bottom: 0;
+                padding: 1.5rem 1.25rem 1.25rem;
+                border-radius: 22px;
+            }
+
+            .auth-card::before,
+            .auth-card::after {
+                left: 1rem;
+                right: 1rem;
+            }
+
+            .auth-card-title { font-size: 2rem; }
+            .auth-card-sub   { margin-bottom: 1.5rem; }
+
+            .auth-footer-outside {
+                width: 100%;
+                padding-left: 0;
+                padding-inline: 0.25rem;
+                justify-content: center;
+            }
+        }
+
+        @media (max-height: 720px) {
+            .auth-split { height: auto; }
+            .auth-card { padding: 1.5rem 2rem 1.25rem; margin-top: 1rem; margin-bottom: 1rem; }
+            .auth-card-title { font-size: 2.125rem; }
+            .auth-card-sub { margin-bottom: 1.25rem; }
+            .auth-card .ui-input,
+            .auth-card .auth-social-btn { height: 2.5rem; }
+            .auth-card .ui-auth-btn-submit { height: 2.625rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .auth-demo-container, .auth-shell { animation: none; }
+            .auth-demo-container::before { animation: none; }
+            .ui-field-popup, .ui-auth-field { transition: none; }
+            .ui-auth-field.is-shaking { animation: none; }
+            .auth-footer-outside a,
+            .auth-footer-outside a::after,
+            .auth-card-signup a,
+            .auth-card-signup .arrow { transition: none; }
+        }
+    
+.auth-demo-container { position: relative; display: flex; align-items: center; justify-content: center; min-height: 800px; padding: 2rem; overflow: hidden; background-color: var(--background); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-top: 2rem; }
+
+        
+        /* Light Mode overrides for brand card */
+        html:not(.dark) .brand-card {
+            background: var(--card);
+            border-color: var(--border);
+            color: var(--muted-foreground) !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        }
+        html:not(.dark) .brand-card::after {
+            background-image: radial-gradient(rgba(0, 0, 0, .04) 1px, transparent 1px);
+        }
+        html:not(.dark) .brand-card::before {
+            background:
+                radial-gradient(circle, transparent 0 22%, rgba(0, 0, 0, .03) 22% 22.4%, transparent 22.4%),
+                radial-gradient(circle, transparent 0 40%, rgba(0, 0, 0, .02) 40% 40.4%, transparent 40.4%),
+                radial-gradient(circle, transparent 0 58%, rgba(0, 0, 0, .01) 58% 58.4%, transparent 58.4%);
+        }
+        html:not(.dark) .brand-hero-title {
+            color: var(--muted-foreground) !important;
+        }
+        html:not(.dark) .brand-hero-sub,
+        html:not(.dark) .brand-features {
+            color: var(--muted-foreground) !important;
+        }
+html:not(.dark) .brand-footer {
+            color: var(--muted-foreground) !important;
+        }
+
+    
+        html:not(.dark) .brand-features li {
+            color: var(--muted-foreground) !important;
+        }
+        html:not(.dark) .auth-footer-outside,
+        html:not(.dark) .auth-footer-outside .legal,
+        html:not(.dark) .auth-footer-outside a {
+            color: var(--muted-foreground) !important;
+        }
+
+    </style>
+        <div class="auth-demo-container">
+            <div class="auth-shell">
+        <div class="auth-split">
+            <!-- LEFT: brand card with the SPMIS logo here -->
+            <aside class="brand-card">
+                <a href="#" class="brand-logo" aria-label="SPMIS">
+                    <img class="logo-dark-only" src="../assets/icons/SPMIS.png" alt="SPMIS" />
+<img class="logo-light-only" src="../assets/icons/SPMIS_LM.png" alt="SPMIS" />
+                </a>
+
+                <div class="brand-hero">
+                    <h1 class="brand-hero-title">
+                        Track every<br>
+                        <span class="accent">student journey.</span>
+                    </h1>
+                    <p class="brand-hero-sub">
+                        From enrollment to graduation &mdash; review, approve, and manage academic records in one calm, focused workspace.
+                    </p>
+
+                    <ul class="brand-features">
+                        <li><span class="dot">&check;</span> Centralized student profiles</li>
+                        <li><span class="dot">&check;</span> Faculty review &amp; approvals</li>
+                        <li><span class="dot">&check;</span> Real-time progress tracking</li>
+                    </ul>
+                </div>
+
+                <div class="brand-footer">
+                    <span>© 2026 SPMIS Project</span>
+                    <span>v1.0</span>
+                </div>
+            </aside>
+
+            <!-- RIGHT: auth card with terracotta top/bottom accents -->
+            <section class="auth-card">
+                <div class="auth-card-body">
+                    <h2 class="auth-card-title">Sign In</h2>
+                    <p class="auth-card-sub">Welcome back. Enter your credentials to continue.</p>
+
+                    <div class="ui-auth-wrapper">
+                        <div class="ui-auth-card">
+                            <button type="button" class="auth-social-btn">
+                                <svg viewBox="0 0 24 24">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                                </svg>
+                                <span>Continue with Google</span>
+                            </button>
+
+                            <div class="ui-auth-divider">
+                                <span>or continue with email</span>
+                            </div>
+
+                            <form class="ui-auth-form" id="signin-form" novalidate>
+                                <div class="ui-auth-field" data-field="email">
+                                    <label class="ui-auth-field-label" for="auth-email">Academic Email</label>
+                                    <div class="ui-input-wrap">
+                                        <input type="email" id="auth-email" class="ui-input" placeholder="faculty@vsu.edu.ph" required />
+                                        <div class="ui-field-popup" role="alert" aria-live="polite">
+                                            <span class="ui-field-popup-icon" aria-hidden="true">!</span>
+                                            <span class="ui-field-popup-text">Please fill in this field.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="ui-auth-field" data-field="password">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label class="ui-auth-field-label" for="auth-pwd">Password</label>
+                                        <a href="#forgot" style="font-size: 0.72rem; color: var(--primary); text-decoration: none;">Forgot password?</a>
+                                    </div>
+                                    <div class="ui-input-wrap">
+                                        <input type="password" id="auth-pwd" class="ui-input" placeholder="••••••••••••" required />
+                                        <div class="ui-field-popup" role="alert" aria-live="polite">
+                                            <span class="ui-field-popup-icon" aria-hidden="true">!</span>
+                                            <span class="ui-field-popup-text">Please fill in this field.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <label class="ui-checkbox-label" style="margin-top: 0.125rem;">
+                                    <input type="checkbox" checked style="accent-color: var(--primary);" />
+                                    <span style="font-size: 0.78rem;">Keep me signed in on this device</span>
+                                </label>
+
+                                <button type="submit" class="ui-auth-btn-submit">
+                                    Sign In to Account
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sign-up prompt INSIDE the card, centered at the bottom -->
+                <div class="auth-card-signup">
+                    <a href="#register">
+                        New here? Sign Up <span class="arrow">&rarr;</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer OUTSIDE the card, white, no color change on hover -->
+        <div class="auth-footer-outside">
+            <span class="legal">
+                <a href="about.html">Contact</a>
+                <span class="sep">&middot;</span>
+                <a href="terms.html">Terms</a>
+                <span class="sep">&middot;</span>
+                <a href="privacy%20policy.html">Privacy</a>
+            </span>
+        </div>
+        </div>
+        </div>
+        
+      </section>
+
+    <!-- 10. Workspace Footer -->
+    <section class="ui-section" id="workspace-footer">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Workspace Footer</h2>
+        <span class="ui-section-desc">Fixed footer bar for admin and faculty portals — pinned to the bottom of the viewport</span>
+      </div>
+
+      <!-- Footer Demo -->
+      <div style="position: relative; background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end;">
+        <div style="padding: 1rem 1.5rem; color: var(--muted-foreground); font-size: 0.8125rem; text-align: center;">↑ Page content sits above the footer</div>
+        <footer class="workspace-footer" style="flex: none !important; height: auto !important; padding: 0.75rem 1.5rem;">
+          <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
+          <span>System Version 2.4.0</span>
+        </footer>
+      </div>
+
+      <!-- Code Reference -->
+      <div class="ui-card" style="margin-top: 1.5rem; padding: 1.25rem;">
+        <h3 class="ui-card-title" style="margin-bottom: 0.75rem;">Usage</h3>
+        <pre style="background: var(--muted); padding: 1rem; border-radius: var(--radius-md); font-size: 0.8125rem; overflow-x: auto; color: var(--foreground); margin: 0;">&lt;main&gt;
+  &lt;div style="flex:1;min-height:0;overflow-y:auto;"&gt;
+    &lt;!-- Page content --&gt;
+  &lt;/div&gt;
+  &lt;footer class="workspace-footer"&gt;
+    &lt;span&gt;&copy; 2026 Portal. All rights reserved.&lt;/span&gt;
+    &lt;span&gt;System Version 2.4.0&lt;/span&gt;
+  &lt;/footer&gt;
+&lt;/main&gt;</pre>
+        <p style="margin-top: 1rem; font-size: 0.8125rem; color: var(--muted-foreground);">
+          The footer uses <code style="background: var(--muted); padding: 2px 6px; border-radius: 4px;">flex: none; height: auto;</code> to override the workspace wildcard selector. 
+          Content is wrapped in a scrollable <code style="background: var(--muted); padding: 2px 6px; border-radius: 4px;">div</code> with <code style="background: var(--muted); padding: 2px 6px; border-radius: 4px;">flex:1</code> so the footer stays pinned at the bottom.
+        </p>
+      </div>
+    </section>
+
+    <!-- Style Guide Footer -->
+    <footer class="ui-footer">
+      <span>&copy; 2026 SPMIS Project · Claude+ Living Style Guide</span>
+      <span>Living Reference in <code>mockup/pages/design-system.html</code> · Architecture in <code>docs/DESIGN_SYSTEM.md</code></span>
+    </footer>
+
+  </div>
+
+  <script>
+    // Live Light / Dark Mode Toggle Functionality
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeLabel = document.getElementById('theme-label');
+    const htmlEl = document.documentElement;
+
+    function updateThemeUI() {
+      const isDark = htmlEl.classList.contains('dark');
+      themeIcon.innerHTML = isDark ? '&#127769;' : '&#9728;&#65039;';
+      themeLabel.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      htmlEl.classList.toggle('dark');
+      updateThemeUI();
+    });
+
+    updateThemeUI();
+  </script>
+
+<script>
+  // Auto-resize chat textarea
+  document.querySelectorAll('.ui-chat-textarea').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
+    // Trigger once on load
+    textarea.dispatchEvent(new Event('input'));
+  });
+</script>
+
+
+
+<script>
+  // Handle Chat Input for Design System
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatForm = document.getElementById('chat-form');
+    const chatPrompt = document.getElementById('chat-prompt');
+    const chatLog = document.querySelector('.ui-chat-log');
+
+    if (chatForm && chatPrompt && chatLog) {
+      chatPrompt.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+          e.preventDefault();
+          if (chatPrompt.value.trim() !== '') {
+            chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
+          }
+        }
+      });
+
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = chatPrompt.value.trim();
+        if (!text) return;
+
+        // Current time
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        // Create new user message
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'ui-chat-msg ui-chat-msg--user';
+        
+        // Escape HTML
+        const safeText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        
+        msgDiv.innerHTML = `
+          <div class="ui-chat-msg-content">
+            <div class="ui-chat-msg-header">
+              <span class="ui-chat-msg-sender">Prof. Morgan</span>
+              <span class="ui-chat-msg-time">${timeStr}</span>
+            </div>
+            <div class="ui-chat-bubble ui-chat-bubble--user">${safeText}</div>
+          </div>
+        `;
+        
+        chatLog.appendChild(msgDiv);
+        
+        // Reset input
+        chatPrompt.value = '';
+        chatPrompt.style.height = 'auto'; // trigger auto-resize reset
+        
+        // Scroll to bottom
+        chatLog.scrollTop = chatLog.scrollHeight;
+      });
+    }
+  });
+</script>
+
+
+<script>
+  // Handle Table Checkboxes
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.ui-table');
+    if (!table) return;
+    
+    const headerCheckbox = table.querySelector('thead input[type="checkbox"]');
+    const rowCheckboxes = table.querySelectorAll('tbody input[type="checkbox"]');
+    const paginationText = document.querySelector('.ui-table-pagination span');
+    
+    function updateTableState() {
+      const total = rowCheckboxes.length;
+      const checked = Array.from(rowCheckboxes).filter(cb => cb.checked).length;
+      
+      if (checked === 0) {
+        headerCheckbox.checked = false;
+        headerCheckbox.indeterminate = false;
+      } else if (checked === total) {
+        headerCheckbox.checked = true;
+        headerCheckbox.indeterminate = false;
+      } else {
+        headerCheckbox.checked = false;
+        headerCheckbox.indeterminate = true;
+      }
+      
+      if (paginationText) {
+        paginationText.textContent = `${checked} of ${total} row(s) selected.`;
+      }
+    }
+    
+    headerCheckbox.addEventListener('change', (e) => {
+      rowCheckboxes.forEach(cb => cb.checked = e.target.checked);
+      updateTableState();
+    });
+    
+    rowCheckboxes.forEach(cb => {
+      cb.addEventListener('change', updateTableState);
+      
+      const tr = cb.closest('tr');
+      if (tr) {
+        tr.style.cursor = 'pointer';
+        tr.addEventListener('click', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.closest('button, a')) {
+            return;
+          }
+          cb.checked = !cb.checked;
+          updateTableState();
+        });
+      }
+    });
+    
+    // Initial state setup
+    updateTableState();
+  });
+</script>
+
+  <script>
+    // Handle Table Static Pagination for Design System Mockups
+    document.addEventListener('DOMContentLoaded', () => {
+      const tableWraps = document.querySelectorAll('.ui-table-wrap');
+      tableWraps.forEach(wrap => {
+        const select = wrap.querySelector('select.ui-select-pill');
+        // Let's also check if the pagination is outside ui-table-wrap, 
+        // in some designs the pagination is a sibling to ui-table-wrap.
+        // In the design system, ui-table-pagination is typically inside ui-table-wrap or right after it.
+        
+        // Let's find the pagination container which might be inside wrap or next to it
+        let pagination = wrap.querySelector('.ui-table-pagination');
+        if (!pagination && wrap.nextElementSibling && wrap.nextElementSibling.classList.contains('ui-table-pagination')) {
+            pagination = wrap.nextElementSibling;
+        }
+        
+        if (!pagination) return;
+        
+        const actualSelect = pagination.querySelector('select.ui-select-pill');
+        if (!actualSelect) return;
+        
+        const tbody = wrap.querySelector('tbody');
+        if (!tbody) return;
+        
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const paginationNav = pagination.querySelector('.ui-table-pagination-nav');
+        if (!paginationNav) return;
+        
+        const buttons = paginationNav.querySelectorAll('button');
+        const prevBtn = buttons[0];
+        const nextBtn = buttons[1];
+        
+        let currentPage = 1;
+        
+        function updateView() {
+          const limit = parseInt(actualSelect.value) || 5;
+          const totalPages = Math.max(1, Math.ceil(rows.length / limit));
+          
+          if (currentPage > totalPages) currentPage = totalPages;
+          
+          const start = (currentPage - 1) * limit;
+          const end = start + limit;
+          
+          rows.forEach((row, i) => {
+            if (i >= start && i < end) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+          
+          const spans = Array.from(pagination.querySelectorAll('span'));
+          const pageSpan = spans.find(s => s.textContent.trim().startsWith('Page '));
+          if (pageSpan) {
+              pageSpan.textContent = `Page ${currentPage} of ${totalPages}`;
+          }
+          
+          if (prevBtn) prevBtn.disabled = currentPage === 1;
+          if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+        }
+        
+        actualSelect.addEventListener('change', () => {
+          currentPage = 1;
+          updateView();
+        });
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+              if (currentPage > 1) {
+                currentPage--;
+                updateView();
+              }
+            });
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+              const limit = parseInt(actualSelect.value) || 5;
+              const totalPages = Math.ceil(rows.length / limit);
+              if (currentPage < totalPages) {
+                currentPage++;
+                updateView();
+              }
+            });
+        }
+        
+        // Initial state
+        updateView();
+      });
+    });
+  </script>
+</body>
+
+</html>

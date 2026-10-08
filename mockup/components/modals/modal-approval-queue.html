@@ -1,0 +1,21 @@
+<!-- Shared route-backed approval queue modal. Include the queue table inside [data-queue-modal-body]. -->
+<div
+  class="modal-overlay"
+  data-queue-modal
+  data-queue-type=""
+  role="dialog"
+  aria-modal="true"
+  aria-hidden="true"
+  aria-labelledby="queue-modal-title"
+>
+  <section class="modal-container" role="document">
+    <header class="modal-header">
+      <h2 id="queue-modal-title" class="modal-title" data-queue-modal-title>Pending applications</h2>
+      <button type="button" class="modal-close modal-cancel" data-queue-close aria-label="Close queue modal">&times;</button>
+    </header>
+    <div data-queue-modal-body></div>
+    <footer class="modal-actions">
+      <button type="button" class="modal-cancel" data-queue-close>Close</button>
+    </footer>
+  </section>
+</div>
