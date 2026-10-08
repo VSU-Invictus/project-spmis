@@ -48,6 +48,10 @@
       ? (typeof config.rowsPerPage === 'string' ? document.querySelector(config.rowsPerPage) : config.rowsPerPage)
       : (paginationEl ? paginationEl.querySelector('.ui-select-pill, select') : document.querySelector('.ui-table-pagination select, #rows-per-page'));
 
+    const rowsPerPageGroup = rowsPerPageSelect
+      ? rowsPerPageSelect.closest('.pagination-rows-per-page, .is-b57eafe')
+      : null;
+
     const pageInfo = config.pageInfo
       ? (typeof config.pageInfo === 'string' ? document.querySelector(config.pageInfo) : config.pageInfo)
       : (paginationEl ? paginationEl.querySelector('.pagination-page-info, #page-label, [role="status"]:not(.pagination-selection-status):not(.is-7fbae58)') : null);
@@ -179,6 +183,8 @@
       }
     });
 
+    let lastTotalPages = 1;
+
     function renderRows() {
       const allRows = getRows();
       const query = searchInput ? (searchInput.value || '').trim().toLowerCase() : '';
@@ -226,7 +232,44 @@
       });
 
       const totalMatches = matchedRows.length;
+
+      // Dynamic Rows Per Page rules:
+      // - If entries <= 5: no rows per page dropdown (hidden)
+      // - If 5 < entries <= 10: only option 5
+      // - If 10 < entries <= 20: options 5 and 10
+      // - If entries > 20: options 5, 10, and 20
+      if (rowsPerPageSelect) {
+        if (totalMatches <= 5) {
+          if (rowsPerPageGroup) rowsPerPageGroup.style.display = 'none';
+          pageSize = 5;
+        } else {
+          if (rowsPerPageGroup) rowsPerPageGroup.style.display = '';
+          let allowedSizes = [];
+          if (totalMatches > 5 && totalMatches <= 10) {
+            allowedSizes = [5];
+          } else if (totalMatches > 10 && totalMatches <= 20) {
+            allowedSizes = [5, 10];
+          } else {
+            allowedSizes = [5, 10, 20];
+          }
+
+          const currentVal = parseInt(rowsPerPageSelect.value, 10) || 5;
+          rowsPerPageSelect.innerHTML = allowedSizes
+            .map(opt => `<option value="${opt}">${opt}</option>`)
+            .join('');
+
+          if (allowedSizes.includes(currentVal)) {
+            rowsPerPageSelect.value = String(currentVal);
+            pageSize = currentVal;
+          } else {
+            pageSize = allowedSizes[0];
+            rowsPerPageSelect.value = String(pageSize);
+          }
+        }
+      }
+
       const totalPages = Math.max(1, Math.ceil(totalMatches / pageSize));
+      lastTotalPages = totalPages;
       if (currentPage > totalPages) currentPage = totalPages;
       if (currentPage < 1) currentPage = 1;
 
@@ -326,6 +369,16 @@
       });
     });
 
+    const controlsArea = document.querySelector('.controls-container, .controls-actions, .filters');
+    if (controlsArea) {
+      controlsArea.addEventListener('change', (e) => {
+        if (e.target && e.target.tagName === 'SELECT' && !e.target.classList.contains('ui-select-pill')) {
+          currentPage = 1;
+          loadTableWithSkeleton(220);
+        }
+      });
+    }
+
     // Rows per page listener
     if (rowsPerPageSelect) {
       rowsPerPageSelect.addEventListener('change', () => {
@@ -348,10 +401,7 @@
     // Next page button
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
-        const allRows = getRows();
-        const totalMatches = allRows.length;
-        const totalPages = Math.max(1, Math.ceil(totalMatches / pageSize));
-        if (currentPage < totalPages) {
+        if (currentPage < lastTotalPages) {
           currentPage++;
           loadTableWithSkeleton(180);
         }

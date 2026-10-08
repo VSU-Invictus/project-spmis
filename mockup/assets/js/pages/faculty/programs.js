@@ -238,7 +238,20 @@ const programs = [
         const getColor = (t) => ({ research: "purple", robotics: "rose", teamwork: "amber", communication: "cyan", algorithms: "cyan", leadership: "amber" }[t.toLowerCase()] || "neutral");
         const full = (s) =>
             `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
-        const badge = (s) => `<span class="ui-badge ui-badge--${s === 'approved' ? 'success' : s === 'pending' ? 'warning' : s === 'rejected' ? 'destructive' : 'neutral'}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
+        const statusIcons = {
+            approved: `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+            active: `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+            pending: `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`,
+            rejected: `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+            "in progress": `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`
+        };
+        const badge = (s) => {
+            const st = (s || "").toLowerCase();
+            const variant = (st === "approved" || st === "active") ? "success" : st === "pending" ? "warning" : st === "rejected" ? "destructive" : st === "in progress" ? "info" : "neutral";
+            const icon = statusIcons[st] || "";
+            const label = esc(s ? (s[0].toUpperCase() + s.slice(1)) : "");
+            return `<span class="ui-badge ui-badge--${variant}">${icon}${label}</span>`;
+        };
         document
             .querySelectorAll("[data-name]")
             .forEach((e) => (e.textContent = state.name));
@@ -593,7 +606,7 @@ const programs = [
             let original = "";
             let listTimer;
               function render() {
-                  $("#entity-list").innerHTML = '<div role="status" aria-label="Loading"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>';
+                  $("#entity-list").innerHTML = `<div class="table-wrap" role="status" aria-label="Loading"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody><tr class="skeleton-row"><td colspan="${isProgram ? 3 : 2}"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="${isProgram ? 3 : 2}"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="${isProgram ? 3 : 2}"><div class="skeleton"></div></td></tr></tbody></table></div>`;
                   clearTimeout(listTimer);
                   listTimer = setTimeout(() => {
                 const filtered = list.filter((p) =>
@@ -602,7 +615,7 @@ const programs = [
                 $("#entity-list").innerHTML = filtered.length
                     ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
                     : '<p class="empty">No matching entries. Try another name.</p>';
-                              }, 300);
+                              }, 220);
               }
             $("#entity-search").oninput = render;
             function open(name = "") {
@@ -756,39 +769,105 @@ const programs = [
             host.after(controls);
             let current = 1;
             const size = controls.querySelector("select"),
+                rowsGroup = controls.querySelector(".is-b57eafe"),
                 buttons = controls.querySelectorAll("button"),
                 info = controls.querySelector("[role=status]");
             function update() {
-                const rows = [...host.querySelectorAll("tbody tr")],
-                    limit = Number(size.value),
-                    pages = Math.max(1, Math.ceil(rows.length / limit));
+                const rows = [...host.querySelectorAll("tbody tr:not(.skeleton-row)")];
+                const totalEntries = rows.length;
+
+                let limit = 5;
+                if (size) {
+                    if (totalEntries <= 5) {
+                        if (rowsGroup) rowsGroup.style.display = "none";
+                        limit = 5;
+                    } else {
+                        if (rowsGroup) rowsGroup.style.display = "";
+                        let allowedSizes = [];
+                        if (totalEntries > 5 && totalEntries <= 10) {
+                            allowedSizes = [5];
+                        } else if (totalEntries > 10 && totalEntries <= 20) {
+                            allowedSizes = [5, 10];
+                        } else {
+                            allowedSizes = [5, 10, 20];
+                        }
+
+                        const currentVal = parseInt(size.value, 10) || 5;
+                        size.innerHTML = allowedSizes
+                            .map((opt) => `<option value="${opt}">${opt}</option>`)
+                            .join("");
+
+                        if (allowedSizes.includes(currentVal)) {
+                            size.value = String(currentVal);
+                            limit = currentVal;
+                        } else {
+                            limit = allowedSizes[0];
+                            size.value = String(limit);
+                        }
+                    }
+                }
+
+                const pages = Math.max(1, Math.ceil(totalEntries / limit));
                 current = Math.min(current, pages);
                 rows.forEach(
                     (row, i) =>
                         (row.hidden = i < (current - 1) * limit || i >= current * limit),
                 );
                 info.textContent =
-                    "Page " +
-                    current +
-                    " of " +
-                    pages +
-                    " · " +
-                    rows.length +
-                    " entries";
-                buttons[0].disabled = current === 1;
-                buttons[1].disabled = current === pages;
+                    totalEntries > 0
+                        ? "Page " + current + " of " + pages + " · " + totalEntries + " entries"
+                        : "0 entries";
+                buttons[0].disabled = current <= 1;
+                buttons[1].disabled = current >= pages || totalEntries === 0;
+            }
+            let pTimer = null;
+            function loadWithSkeleton(cb) {
+                const tbody = host.querySelector("tbody");
+                if (!tbody) {
+                    cb();
+                    return;
+                }
+                const cols = host.querySelectorAll("thead th").length || 3;
+                const rows = [...tbody.querySelectorAll("tr:not(.skeleton-row)")];
+                rows.forEach(r => r.hidden = true);
+                tbody.querySelectorAll(".skeleton-row").forEach(r => r.remove());
+                const count = Math.min(Math.max(1, rows.length), 3);
+                const frag = document.createDocumentFragment();
+                for (let i = 0; i < count; i++) {
+                    const skRow = document.createElement("tr");
+                    skRow.className = "skeleton-row";
+                    skRow.innerHTML = `<td colspan="${cols}"><div class="skeleton"></div></td>`;
+                    frag.appendChild(skRow);
+                }
+                tbody.appendChild(frag);
+                buttons[0].disabled = true;
+                buttons[1].disabled = true;
+                info.textContent = "Loading entries…";
+
+                clearTimeout(pTimer);
+                pTimer = setTimeout(() => {
+                    tbody.querySelectorAll(".skeleton-row").forEach(r => r.remove());
+                    cb();
+                }, 200);
             }
             buttons[0].onclick = () => {
-                current--;
-                update();
+                if (current > 1) {
+                    current--;
+                    loadWithSkeleton(update);
+                }
             };
             buttons[1].onclick = () => {
-                current++;
-                update();
+                const rows = [...host.querySelectorAll("tbody tr:not(.skeleton-row)")];
+                const limit = Number(size ? size.value : 5) || 5;
+                const pages = Math.max(1, Math.ceil(rows.length / limit));
+                if (current < pages) {
+                    current++;
+                    loadWithSkeleton(update);
+                }
             };
             size.onchange = () => {
                 current = 1;
-                update();
+                loadWithSkeleton(update);
             };
             new MutationObserver(() => {
                 current = 1;
