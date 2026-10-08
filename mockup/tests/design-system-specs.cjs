@@ -19,6 +19,16 @@ assert.match(
   /\.keep-signed-in[\s\S]*?color:\s*var\(--color-text-muted,\s*#A0988E\)/,
   "design-system.css must style keep-signed-in label text with soft muted color #A0988E"
 );
+assert.match(
+  designSystemCss,
+  /\.keep-signed-in\s+input\[type="checkbox"\],\s*\.ui-checkbox-label\.keep-signed-in\s+input\[type="checkbox"\]\s*\{[\s\S]*?position:\s*relative\s*!important;[\s\S]*?display:\s*inline-block\s*!important;/,
+  "design-system.css must set position: relative and display: inline-block on keep-signed-in input to prevent checkmark from escaping containing block"
+);
+assert.match(
+  designSystemCss,
+  /\.keep-signed-in\s+input\[type="checkbox"\]:checked::after[\s\S]*?transform:\s*translate\(-50%,\s*-50%\)\s*!important;[\s\S]*?inset:\s*auto\s*!important;/,
+  "design-system.css must center keep-signed-in checkmark with translate(-50%, -50%) and inset: auto to prevent stretching across auth card"
+);
 
 // 2. Verify Portal Sidebar Navigation colors and interactivity
 assert.match(
