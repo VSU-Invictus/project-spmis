@@ -22,7 +22,12 @@
   };
 
   const pageQueue = pageToQueue[window.location.pathname.split('/').pop()] || null;
-  const isEmbeddedQueue = new URLSearchParams(window.location.search).has('embedded');
+  const isEmbeddedQueue = (window.self !== window.top) || new URLSearchParams(window.location.search).has('embedded');
+
+  if (isEmbeddedQueue && typeof document !== 'undefined') {
+    document.documentElement?.classList.add('queue-embedded');
+    if (document.body) document.body.classList.add('queue-embedded');
+  }
 
   function selectedRows(root = document) {
     return [...root.querySelectorAll('.table-body .custom-checkbox:checked')]
@@ -39,9 +44,11 @@
   }
 
   function removeQueueParameter() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('queue');
-    window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('queue');
+      window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch (_) {}
   }
 
   function ensureModalShell() {
@@ -68,7 +75,9 @@
     modal.setAttribute('aria-label', 'Approval queue');
     modal.innerHTML = `
       <section class="modal-container queue-modal-container" role="document">
-        <button type="button" class="modal-close modal-cancel" data-queue-close aria-label="Close queue modal">&times;</button>
+        <button type="button" class="modal-close modal-cancel ui-modal-close" data-queue-close aria-label="Close queue modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
         <div class="queue-modal-body" data-queue-modal-body></div>
       </section>`;
     document.body.appendChild(modal);
@@ -100,12 +109,18 @@
 
   function closeQueueModal(modal, options = {}) {
     if (!modal) return;
-    modal.querySelector('iframe')?.contentWindow?.postMessage('queue-modal-reset', window.location.origin);
+    try {
+      modal.querySelector('iframe')?.contentWindow?.postMessage('queue-modal-reset', '*');
+    } catch (_) {}
     modal.classList.remove('active');
+    modal.classList.remove('show');
+    modal.style.display = 'none';
     modal.setAttribute('aria-hidden', 'true');
     if (!options.preserveUrl) removeQueueParameter();
     const restoreTarget = modal.__restoreFocus;
-    if (restoreTarget && typeof restoreTarget.focus === 'function') restoreTarget.focus();
+    if (restoreTarget && typeof restoreTarget.focus === 'function') {
+      try { restoreTarget.focus(); } catch (_) {}
+    }
   }
 
   function openQueueModal(modal, trigger) {
@@ -113,10 +128,14 @@
     const queue = modal.dataset.queueType;
     if (queueTypes.has(queue)) setQueueModalContent(modal, queue);
     modal.__restoreFocus = trigger || document.activeElement;
+    modal.style.display = 'flex';
     modal.classList.add('active');
+    modal.classList.add('show');
     modal.setAttribute('aria-hidden', 'false');
-    const firstFocusable = modal.querySelector('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
-    if (firstFocusable) firstFocusable.focus();
+    const firstFocusable = modal.querySelector('[data-queue-close], .modal-close, button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+    if (firstFocusable) {
+      try { firstFocusable.focus(); } catch (_) {}
+    }
   }
 
   function installModalContract() {
@@ -147,12 +166,32 @@
     }
 
     modal.querySelectorAll('[data-queue-close], .modal-cancel, .modal-close').forEach((button) => {
-      button.addEventListener('click', () => closeQueueModal(modal));
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeQueueModal(modal);
+      });
     });
 
     modal.addEventListener('click', (event) => {
-      if (event.target === modal) closeQueueModal(modal);
+      if (event.target === modal || event.target.closest('[data-queue-close], .modal-close')) {
+        event.preventDefault();
+        closeQueueModal(modal);
+      }
     });
+
+    // Global document capture listener to ensure close buttons work reliably regardless of event stopPropagation
+    document.addEventListener('click', (event) => {
+      const closeBtn = event.target.closest('[data-queue-close], .modal-close');
+      if (closeBtn) {
+        const targetModal = closeBtn.closest('[data-queue-modal], .modal-overlay') || modal;
+        if (targetModal) {
+          event.preventDefault();
+          event.stopPropagation();
+          closeQueueModal(targetModal);
+        }
+      }
+    }, true);
 
     window.addEventListener('popstate', () => {
       const queue = new URLSearchParams(window.location.search).get('queue');
@@ -164,8 +203,9 @@
     });
 
     window.addEventListener('message', (event) => {
-      if (event.source !== modal.querySelector('iframe')?.contentWindow) return;
-      if (event.data === 'queue-modal-close') closeQueueModal(modal);
+      if (event.data === 'queue-modal-close') {
+        closeQueueModal(modal);
+      }
     });
 
     modal.addEventListener('keydown', (event) => {
@@ -349,7 +389,9 @@
       }
       if (isEmbeddedQueue && window.parent !== window) {
         event.preventDefault();
-        window.parent.postMessage('queue-modal-close', window.location.origin);
+        try {
+          window.parent.postMessage('queue-modal-close', '*');
+        } catch (_) {}
       }
     });
 
@@ -385,7 +427,7 @@
     }, true);
 
     window.addEventListener('message', (event) => {
-      if (event.origin !== window.location.origin || event.data !== 'queue-modal-reset') return;
+      if (event.data !== 'queue-modal-reset') return;
       document.querySelectorAll('.queue-rejection-row').forEach((panel) => panel.remove());
       document.querySelectorAll('.table-body .table-row').forEach((row) => {
         row.classList.remove('checked');
@@ -442,7 +484,16 @@
   }
 
   function initQueue() {
-    if (isEmbeddedQueue && document.body) document.body.classList.add('queue-embedded');
+    if (isEmbeddedQueue) {
+      if (document.documentElement) document.documentElement.classList.add('queue-embedded');
+      if (document.body) document.body.classList.add('queue-embedded');
+      try {
+        document.querySelectorAll('.sidebar-frame, iframe#sidebar-frame, .admin-top-header, .top-header-bar, .admin-footer, .workspace-footer').forEach((el) => {
+          el.style.display = 'none';
+          el.remove();
+        });
+      } catch (_) {}
+    }
     installModalContract();
     if (pageQueue) installQueueRows();
   }

@@ -145,6 +145,7 @@ dialog {
   padding: var(--space-6, 16px);
   max-width: min(90vw, 560px);
   margin: auto;
+  position: relative;
 }
 
 dialog::backdrop {

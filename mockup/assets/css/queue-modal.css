@@ -6,19 +6,20 @@
 
 /* --- 1. MODAL OVERLAY & CONTAINERS --- */
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-modal, 1000);
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: var(--z-modal, 1000) !important;
   display: none;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-7, 16px);
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(4px);
+  align-items: center !important;
+  justify-content: center !important;
+  padding: var(--space-6, 16px) !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(6px) !important;
 }
 
-.modal-overlay.active {
-  display: flex;
+.modal-overlay.active,
+.modal-overlay.show {
+  display: flex !important;
 }
 
 .modal-overlay .modal-container {
@@ -33,70 +34,158 @@
   box-shadow: var(--shadow-md);
 }
 
-.modal-overlay .queue-modal-container {
+.modal-overlay .queue-modal-container,
+.queue-modal-container {
   position: relative !important;
-  width: min(1200px, calc(100vw - 2rem));
-  height: min(820px, calc(100vh - 2rem));
-  display: flex;
-  flex-direction: column;
+  width: min(1120px, calc(100vw - 32px)) !important;
+  max-width: min(1120px, calc(100vw - 32px)) !important;
+  min-width: 0 !important;
+  height: min(840px, calc(100vh - 40px)) !important;
+  max-height: calc(100vh - 40px) !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border: 1px solid var(--color-border-main, #3E3D39) !important;
+  border-radius: var(--radius-xl, 16px) !important;
+  background: var(--color-card, #1A1918) !important;
+  color: var(--color-text-main, #FFFFFF) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72) !important;
+  overflow: hidden !important;
 }
 
 .queue-modal-body {
-  min-height: 0;
-  flex: 1;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
 .queue-modal-frame {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  border-radius: var(--radius-md, 10px);
-  background: var(--color-canvas, var(--background));
+  width: 100% !important;
+  height: 100% !important;
+  flex: 1 1 auto !important;
+  border: 0 !important;
+  border-radius: var(--radius-xl, 16px) !important;
+  background: var(--color-canvas, #141413) !important;
+  display: block !important;
 }
 
 /* --- 2. EMBEDDED QUEUE WORKSPACE OVERRIDES --- */
+html.queue-embedded .sidebar-frame,
+html.queue-embedded iframe[class*="sidebar"],
+html.queue-embedded [class*="sidebar"],
+html.queue-embedded aside,
 body.queue-embedded .sidebar-frame,
+body.queue-embedded iframe[class*="sidebar"],
+body.queue-embedded [class*="sidebar"],
+body.queue-embedded aside,
 body.queue-embedded .admin-top-header,
+body.queue-embedded .top-header-bar,
 body.queue-embedded .admin-footer,
+body.queue-embedded .workspace-footer,
 body.queue-embedded footer {
   display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  flex: 0 0 0px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
+html.queue-embedded,
 body.queue-embedded {
-  height: auto !important;
-  min-height: 0 !important;
-  overflow: auto !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  background: var(--color-canvas, #141413) !important;
   overflow-x: hidden !important;
+  overflow-y: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-html:has(body.queue-embedded) {
-  overflow-x: hidden !important;
-}
-
-body.queue-embedded .app-canvas {
-  border: 0;
+html.queue-embedded .app-canvas,
+html.queue-embedded .app,
+body.queue-embedded .app-canvas,
+body.queue-embedded .app {
+  border: 0 !important;
   width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  overflow: visible !important;
-}
-
-body.queue-embedded .section-container {
-  position: static !important;
-  left: 0;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  overflow: visible !important;
   max-width: 100% !important;
-  padding-bottom: var(--space-7, 16px) !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+  grid-template-columns: 1fr !important;
 }
 
+html.queue-embedded .section-container,
+html.queue-embedded main,
+body.queue-embedded .section-container,
+body.queue-embedded main {
+  position: static !important;
+  left: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 24px 28px !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+}
+
+html.queue-embedded .header-container,
+body.queue-embedded .header-container {
+  padding-right: 56px !important;
+  margin-bottom: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+html.queue-embedded .controls-container,
+body.queue-embedded .controls-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-bottom: 16px !important;
+}
+
+html.queue-embedded .table-margin-container,
+html.queue-embedded .content-wrapper,
+body.queue-embedded .table-margin-container,
+body.queue-embedded .content-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 0 !important;
+  overflow-x: auto !important;
+}
+
+html.queue-embedded .table-container,
 body.queue-embedded .table-container {
   width: 100% !important;
   min-width: 0 !important;
   max-width: 100% !important;
-  overflow-x: hidden !important;
+  overflow-x: auto !important;
   border: 1px solid var(--color-border-main, var(--border)) !important;
   border-radius: var(--radius-md, 10px) !important;
   background: var(--color-card, var(--card)) !important;
@@ -104,6 +193,14 @@ body.queue-embedded .table-container {
   font-family: var(--font-sans) !important;
 }
 
+html.queue-embedded .table-scroll,
+body.queue-embedded .table-scroll {
+  width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.queue-embedded .table-body,
 body.queue-embedded .table-body {
   width: 100% !important;
   height: auto !important;
@@ -112,13 +209,7 @@ body.queue-embedded .table-body {
   min-width: 0 !important;
 }
 
-body.queue-embedded .table-margin-container,
-body.queue-embedded .content-wrapper {
-  width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-}
-
+html.queue-embedded .table-header-row,
 body.queue-embedded .table-header-row {
   min-height: 3rem !important;
   min-width: 0 !important;
@@ -255,9 +346,46 @@ body.queue-embedded .badge-pill.status-active {
 
 .queue-modal-container .modal-close {
   position: absolute !important;
-  top: var(--space-7, 18px) !important;
-  right: var(--space-8, 20px) !important;
-  z-index: var(--z-sidebar, 50) !important;
+  top: 18px !important;
+  right: 20px !important;
+  z-index: 100 !important;
+  width: 34px !important;
+  height: 34px !important;
+  background: #21201E !important;
+  border: 1px solid #3E3D39 !important;
+  border-radius: var(--radius-md, 8px) !important;
+  color: #A0988E !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  transition: all 150ms ease !important;
+  outline: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  padding: 0 !important;
+}
+
+.queue-modal-container .modal-close:hover {
+  color: #FFFFFF !important;
+  background: #2E2D2A !important;
+  border-color: #4E4D48 !important;
+  transform: scale(1.06);
+}
+
+.queue-modal-container .modal-close:active {
+  transform: scale(0.94);
+}
+
+.queue-modal-container .modal-close svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  pointer-events: none !important;
+  display: block !important;
 }
 
 .modal-header,
@@ -411,29 +539,71 @@ body.queue-embedded .badge-pill.status-active {
 }
 
 .action-btn-group .pill-btn.approve,
-.action-btn-group .pill-btn.reject {
-  background: transparent;
-  font-weight: 600;
+.action-btn-group .pill-btn.accept {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 5.5rem !important;
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
+  padding: 0 1.25rem !important;
+  border-radius: var(--radius-full, 9999px) !important;
+  border: 1px solid #10B981 !important;
+  background: transparent !important;
+  color: #10B981 !important;
+  font: 600 var(--font-size-base, 13px)/1 var(--font-sans) !important;
+  cursor: pointer !important;
+  transition: all 150ms ease !important;
+  outline: none !important;
 }
 
-.action-btn-group .pill-btn.approve {
-  border-color: var(--color-status-success, #10B981);
-  color: #75D989;
+.action-btn-group .pill-btn.approve:hover,
+.action-btn-group .pill-btn.accept:hover {
+  background: rgba(16, 185, 129, 0.14) !important;
+  border-color: #34D399 !important;
+  color: #34D399 !important;
+  transform: translateY(-1px);
 }
 
 .action-btn-group .pill-btn.reject {
-  border-color: var(--color-status-danger, #EF4444);
-  color: #FF8B8E;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 5.5rem !important;
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
+  padding: 0 1.25rem !important;
+  border-radius: var(--radius-full, 9999px) !important;
+  border: 1px solid #EF4444 !important;
+  background: transparent !important;
+  color: #EF4444 !important;
+  font: 600 var(--font-size-base, 13px)/1 var(--font-sans) !important;
+  cursor: pointer !important;
+  transition: all 150ms ease !important;
+  outline: none !important;
+}
+
+.action-btn-group .pill-btn.reject:hover {
+  background: rgba(239, 68, 68, 0.14) !important;
+  border-color: #F87171 !important;
+  color: #F87171 !important;
+  transform: translateY(-1px);
 }
 
 .action-btn-group .pill-btn.approve.has-selection {
-  background: var(--color-status-success, #10B981);
-  color: #FFFFFF;
+  background: #10B981 !important;
+  color: #000000 !important;
+  border-color: #10B981 !important;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3) !important;
 }
 
 .action-btn-group .pill-btn.reject.has-selection {
-  background: var(--color-status-danger, #EF4444);
-  color: #FFFFFF;
+  background: #EF4444 !important;
+  color: #FFFFFF !important;
+  border-color: #EF4444 !important;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3) !important;
 }
 
 @media (max-width: 700px) {

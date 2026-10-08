@@ -9,6 +9,18 @@
     <link rel="stylesheet" href="../../assets/css/components.css?v=9" />
     <script src="../../assets/js/faculty-sidebar.js"></script>
     <link rel="stylesheet" href="../../assets/css/pages/faculty/applications.css" />
+  <script>
+    if (window.self !== window.top || new URLSearchParams(window.location.search).has('embedded')) {
+      document.documentElement.classList.add('queue-embedded');
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body?.classList.add('queue-embedded');
+        document.querySelectorAll('.sidebar-frame, iframe#sidebar-frame, .admin-top-header, .top-header-bar, .admin-footer, .workspace-footer').forEach((el) => {
+          el.style.display = 'none';
+          el.remove();
+        });
+      });
+    }
+  </script>
 </head>
   <body data-page="applications">
     <a href="#main" class="skip">Skip to content</a>

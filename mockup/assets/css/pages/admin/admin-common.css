@@ -52,6 +52,78 @@ iframe#sidebar-frame {
   box-sizing: border-box !important;
 }
 
+/* Embedded Queue / Modal Overrides */
+html.queue-embedded,
+body.queue-embedded {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html.queue-embedded .sidebar-frame,
+html.queue-embedded iframe[class*="sidebar"],
+html.queue-embedded [class*="sidebar"],
+html.queue-embedded aside,
+body.queue-embedded .sidebar-frame,
+body.queue-embedded iframe[class*="sidebar"],
+body.queue-embedded [class*="sidebar"],
+body.queue-embedded aside,
+body.queue-embedded .admin-top-header,
+body.queue-embedded .top-header-bar,
+body.queue-embedded .admin-footer,
+body.queue-embedded .workspace-footer,
+body.queue-embedded footer {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  flex: 0 0 0px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+html.queue-embedded .app-canvas,
+body.queue-embedded .app-canvas {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+html.queue-embedded .section-container,
+body.queue-embedded .section-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 24px 28px !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+}
+
 /* Toast component matching dashboard reference */
 .toast {
   position: fixed !important;

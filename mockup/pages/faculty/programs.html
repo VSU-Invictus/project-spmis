@@ -42,7 +42,10 @@
                     <h1>Programs</h1>
                     <p>Browse approved programs or apply to add or edit a name.</p>
                 </div>
-                <button class="ui-btn" id="add-entity">+ Propose program</button>
+                <button type="button" class="ui-btn add-button" id="add-entity">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    <span>Propose program</span>
+                </button>
             </div>
             <p class="muted">
                 Programs are independent of departments. Your proposals require admin
@@ -60,6 +63,9 @@
             <section id="entity-list" aria-live="polite"></section>
             <p class="status" id="proposal-status" role="status"></p>
             <dialog id="proposal-dialog" aria-labelledby="proposal-title">
+                <button type="button" class="modal-close ui-modal-close" data-close aria-label="Close dialog">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
                 <h2 id="proposal-title">Submit proposal</h2>
                 <p class="muted">
                     Your request will be pending until reviewed by an administrator.

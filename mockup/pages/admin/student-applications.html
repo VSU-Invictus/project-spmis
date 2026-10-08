@@ -10,6 +10,18 @@
   <title>Admin Portal - Student Applications</title>
     <link rel="stylesheet" href="../../assets/css/pages/admin/admin-common.css">
   <link rel="stylesheet" href="../../assets/css/pages/admin/student-applications.css">
+  <script>
+    if (window.self !== window.top || new URLSearchParams(window.location.search).has('embedded')) {
+      document.documentElement.classList.add('queue-embedded');
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body?.classList.add('queue-embedded');
+        document.querySelectorAll('.sidebar-frame, iframe#sidebar-frame, .admin-top-header, .top-header-bar, .admin-footer, .workspace-footer').forEach((el) => {
+          el.style.display = 'none';
+          el.remove();
+        });
+      });
+    }
+  </script>
 </head>
 <body>
 
@@ -183,7 +195,6 @@
       <!-- Bottom Bar: Bulk Actions -->
       <div class="bottom-bar-container">
         <div class="action-btn-group">
-          <button class="pill-btn select-all" type="button">Select All</button>
           <button class="pill-btn approve" type="button">Approve</button>
           <button class="pill-btn reject" type="button">Reject</button>
         </div>
