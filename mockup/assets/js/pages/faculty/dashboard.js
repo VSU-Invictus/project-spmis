@@ -284,9 +284,23 @@ const departments = [
       $("#pending-count").textContent = state.applications.filter(
         (a) => a.status === "pending",
       ).length;
-      $("#pending-applications").innerHTML = appTable(
-        state.applications.filter((a) => a.status === "pending"),
-      );
+      $("#pending-applications").innerHTML =
+        state.applications
+          .filter((a) => a.status === "pending")
+          .slice(0, 3)
+          .map(
+            (a) =>
+              '<div class="pending-item"><div><strong>' +
+              esc(a.type) +
+              " · " +
+              esc(a.name) +
+              "</strong><small>Submitted " +
+              esc(a.date) +
+              "</small></div>" +
+              badge(a.status) +
+              "</div>",
+          )
+          .join("") || "<p>No pending applications.</p>";
     }
     if (page === "students") {
       let current = 1,
@@ -809,11 +823,11 @@ const departments = [
       if (!document.getElementById("programs-stat")) {
         const stat = document.createElement("div");
         stat.id = "programs-stat";
-        stat.className = "card stat";
+        stat.className = "ui-card stat";
         stat.innerHTML =
-          '<span class="muted">Programs</span><strong>' +
+          '<span class="muted">Programs</span><strong id="program-count">' +
           programs.length +
-          "</strong><small>Approved programs</small>";
+          '</strong><small>Approved programs</small>';
         document.querySelector(".stats").append(stat);
       }
       document.getElementById("pending-applications").innerHTML =
