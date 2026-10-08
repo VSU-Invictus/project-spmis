@@ -74,3 +74,16 @@
 .is-12b4142:not(#\#):not(#\#) { color: var(--color-text-muted, #A0988E); font-size: 0.875rem; font-weight: var(--font-weight-medium, 500); }
 .is-49e15c7:not(#\#):not(#\#) { gap: 0.5rem; display: flex; }
 .is-b38e363:not(#\#):not(#\#) { min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md, 10px); font-size: 0.8125rem; }
+
+/* Submission note placed at very bottom above footer */
+.application-footer-note {
+  margin-top: auto !important;
+  margin-bottom: 0.75rem !important;
+  font-size: 0.8125rem !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  line-height: 1.5;
+}
+
+#main:has(.application-footer-note) .workspace-footer {
+  margin-top: 0 !important;
+}
