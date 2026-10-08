@@ -92,13 +92,17 @@ body[data-page="dashboard"] .stats,
   padding: 24px;
   box-sizing: border-box;
   margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .dashboard-layout section h2 {
+  font-family: var(--font-family-display, 'Outfit', sans-serif);
   font-size: 18px;
   font-weight: 600;
   color: #FFFFFF;
   margin: 0 0 20px 0;
+  line-height: 1.3;
 }
 
 .dashboard-layout .between {
@@ -110,9 +114,11 @@ body[data-page="dashboard"] .stats,
 
 .dashboard-layout .between h2 {
   margin: 0;
+  font-family: var(--font-family-display, 'Outfit', sans-serif);
   font-size: 18px;
   font-weight: 600;
   color: #FFFFFF;
+  line-height: 1.3;
 }
 
 .dashboard-layout .between a {
@@ -143,30 +149,54 @@ body[data-page="dashboard"] .stats,
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  flex: 1;
 }
 
 .quick-links .ui-card,
+.quick-links .quick-link-item,
 .quick-links a {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
   padding: 18px 20px !important;
-  background: var(--ui-surface-muted, #252422) !important;
-  border: 1px solid var(--border, #2E2D2A) !important;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: var(--radius-md, 10px) !important;
   text-decoration: none !important;
   color: inherit !important;
   box-sizing: border-box !important;
   margin: 0 !important;
+  min-height: 82px !important;
   transition: background-color var(--transition-fast), border-color var(--transition-fast) !important;
 }
 
 .quick-links a:hover,
+.quick-links .quick-link-item:hover,
 .quick-links .ui-card:hover {
-  background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card, #1F1E1D)) !important;
-  border-color: var(--color-border-card-hover, #44423E) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.quick-links .ui-card-header,
+.quick-links .ui-card-title,
+.quick-links .ui-card-description,
+.quick-links h3,
+.quick-links p,
+.quick-links span {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .quick-links .ui-card-header {
   margin-bottom: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
 }
 
 .quick-links h3,
@@ -182,6 +212,7 @@ body[data-page="dashboard"] .stats,
   display: inline-block;
   transition: transform 0.25s ease;
   margin-left: 2px;
+  color: #FFFFFF !important;
 }
 
 .quick-links a:hover .arrow {
@@ -199,7 +230,8 @@ body[data-page="dashboard"] .stats,
 #pending-applications {
   display: flex !important;
   flex-direction: column !important;
-  gap: 22px !important;
+  justify-content: space-between !important;
+  flex: 1 !important;
 }
 
 .pending-item {
@@ -207,18 +239,18 @@ body[data-page="dashboard"] .stats,
   justify-content: space-between !important;
   align-items: center !important;
   gap: 16px !important;
-  padding: 0 !important;
-  border: none !important;
-  border-bottom: none !important;
+  padding: 16px 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-sizing: border-box !important;
 }
 
 .pending-item:first-child {
-  padding-top: 0 !important;
+  padding-top: 2px !important;
 }
 
 .pending-item:last-child {
   border-bottom: none !important;
-  padding-bottom: 0 !important;
+  padding-bottom: 2px !important;
 }
 
 .pending-item strong {
@@ -226,7 +258,7 @@ body[data-page="dashboard"] .stats,
   font-size: 14px !important;
   font-weight: 600 !important;
   color: #FFFFFF !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 5px !important;
   line-height: 1.3 !important;
 }
 
@@ -240,13 +272,14 @@ body[data-page="dashboard"] .stats,
 .pending-item .ui-badge {
   font-size: 11px !important;
   font-weight: 600 !important;
-  padding: 4px 12px !important;
+  padding: 4px 14px !important;
   border-radius: 9999px !important;
-  background: rgba(245, 158, 11, 0.12) !important;
+  background: rgba(245, 158, 11, 0.08) !important;
   border: 1px solid rgba(245, 158, 11, 0.35) !important;
-  color: #FBBF24 !important;
+  color: #F59E0B !important;
   white-space: nowrap !important;
   line-height: 1.2 !important;
+  box-shadow: none !important;
 }
 
 @media (max-width: 850px) {
