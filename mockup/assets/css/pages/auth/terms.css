@@ -1,1 +1,288 @@
-/* Terms of Service Specific Styles (Shared public shell loaded from components.css) */
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
+
+:root {
+    --background: #262624;
+    --card: #1e1e1d;
+    --primary: #d97757;
+    --text: #faf9f5;
+    --muted: rgba(250, 249, 245, 0.7);
+    --field: #333;
+    --font-mono: 'Geist Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+/* ── Body & Page Transitions ── */
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
+    padding: 2rem 1.25rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    color: var(--text);
+    font-family: var(--font-mono);
+    position: relative;
+
+    background-color: var(--background);
+    background-image:
+        radial-gradient(ellipse 70% 60% at 15% 15%,
+            rgba(217, 119, 87, 0.10) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 60% at 85% 85%,
+            rgba(217, 119, 87, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 60% at 50% 50%,
+            rgba(30, 30, 29, 0.6) 0%, transparent 70%);
+    background-attachment: fixed;
+
+    animation: page-in 0.4s ease-out both;
+}
+
+body.page-exit {
+    opacity: 0;
+    transform: translateY(-10px) scale(.99);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+@keyframes page-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body, body.page-exit {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+}
+
+/* ── Pixel matrix background ── */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='3' height='3' x='6' y='6' fill='%23d97757' fill-opacity='0.55'/></svg>");
+    background-size: 16px 16px;
+
+    mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 90%);
+
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+    animation: pixel-drift 8s linear infinite;
+    will-change: background-position;
+}
+
+@keyframes pixel-drift {
+    from { background-position: 0 0; }
+    to   { background-position: 16px 16px; }
+}
+
+/* ── Container ── */
+.container {
+    width: 100%;
+    max-width: 1100px;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Header (title + logo) ── */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-shrink: 0;
+    padding-right: 0.75rem;
+}
+
+h1 {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    background: linear-gradient(90deg,
+        var(--text) 0%,
+        var(--text) 55%,
+        var(--primary) 80%,
+        #b85a3d 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo-container {
+    height: 68px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.logo-container img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity .2s ease, transform .2s ease;
+}
+
+.logo-link:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+
+.logo-link:active {
+    transform: scale(0.98);
+}
+
+.logo-link img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+/* ── Content box (scrollable) ── */
+.content-box {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    padding: 2.5rem 3rem;
+    border: 1px solid rgba(217, 119, 87, .15);
+    border-radius: 24px;
+    background-color: var(--card);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .04) inset,
+                0 8px 24px rgba(0, 0, 0, .35);
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(217, 119, 87, 0.4) transparent;
+}
+
+.content-box::-webkit-scrollbar { width: 8px; }
+.content-box::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 16px 0;
+}
+.content-box::-webkit-scrollbar-thumb {
+    background: rgba(217, 119, 87, 0.35);
+    border-radius: 4px;
+}
+.content-box::-webkit-scrollbar-thumb:hover {
+    background: rgba(217, 119, 87, 0.6);
+}
+
+/* Orange accent line at the top */
+.content-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--primary) 50%,
+        transparent 100%
+    );
+    opacity: .6;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Corner warmth */
+.content-box::after {
+    content: "";
+    position: absolute;
+    top: -60px;
+    left: -60px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: var(--primary);
+    opacity: .06;
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.content-box > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* ── Typography ── */
+.terms-text {
+    font-family: var(--font-mono);
+    font-size: .9rem;
+    line-height: 1.75;
+    color: var(--muted);
+    letter-spacing: 0.005em;
+}
+
+.terms-text p {
+    margin-bottom: 1.1rem;
+}
+
+.terms-text p:last-child {
+    margin-bottom: 0;
+}
+
+.terms-text strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.terms-text p.section-header strong {
+    display: block;
+    margin-top: 1.75rem;
+    margin-bottom: .5rem;
+    font-size: 1.5rem;
+    letter-spacing: 0.01em;
+    padding-left: 0.85rem;
+    border-left: 2px solid var(--primary);
+    line-height: 1.35;
+    color: #faf9f5;
+}
+
+.terms-text p.section-header:first-child strong {
+    margin-top: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    body { padding-inline: 1rem; padding-top: 1.5rem; }
+    .header {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .logo-container { height: 60px; }
+    .content-box { padding: 1.75rem 1.5rem; border-radius: 20px; }
+    .terms-text { font-size: .82rem; line-height: 1.7; }
+    .terms-text p.section-header strong { font-size: .95rem; }
+}
