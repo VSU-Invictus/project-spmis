@@ -7,67 +7,64 @@ const adminPagesDir = path.join(__dirname, "../pages/admin");
 const adminPages = fs.readdirSync(adminPagesDir)
   .filter((file) => file.endsWith(".html"))
   .sort();
-const sidebarScript = fs.readFileSync(
-  path.join(__dirname, "../assets/js/admin-sidebar.js"),
-  "utf8",
-);
+
+const sidebarPath = path.join(__dirname, "../components/navigation/sidebar-admin.html");
+const sidebarHtml = fs.readFileSync(sidebarPath, "utf8");
 
 assert.equal(adminPages.length, 10, "All admin pages must be covered");
 
+// Verify that all admin pages embed the sidebar iframe, top header, and footer inside main
 for (const page of adminPages) {
   const html = fs.readFileSync(path.join(adminPagesDir, page), "utf8");
-  assert.equal(
-    (html.match(/id="sidebar-menu"/g) || []).length,
-    1,
-    `${page} must have one admin sidebar host`,
+  assert.match(
+    html,
+    /<iframe[^>]*sidebar-admin\.html/i,
+    `${page} must embed the sidebar iframe`,
   );
   assert.match(
     html,
-    /assets\/js\/admin-sidebar\.js/,
-    `${page} must load the admin sidebar script`,
+    /class="[^"]*admin-top-header[^"]*"/,
+    `${page} must contain .admin-top-header`,
   );
-  assert.doesNotMatch(
+  assert.match(
     html,
-    /<iframe[^>]*sidebar/i,
-    `${page} must not reload the sidebar in an iframe`,
+    /class="[^"]*admin-footer[^"]*"/,
+    `${page} must contain .admin-footer`,
+  );
+  assert.match(
+    html,
+    /<main[\s\S]*?<footer class="admin-footer"[\s\S]*?<\/main>/,
+    `${page} must place .admin-footer inside <main>`,
   );
 }
 
-const expectedTargets = [
-  "dashboard.html",
-  "faculty-applications.html",
-  "student-applications.html",
-  "program-applications.html",
-  "department-applications.html",
-  "students.html",
-  "departments.html",
-  "programs.html",
-  "faculty.html",
-  "audit-log.html",
+// Verify that sidebar-admin.html contains strictly the 6 core navigation items
+const coreNavKeys = [
+  "dashboard",
+  "students",
+  "departments",
+  "programs",
+  "faculty",
+  "audit-log",
 ];
 
-for (const target of expectedTargets) {
-  assert.match(sidebarScript, new RegExp(`pages/admin/${target}`));
+for (const key of coreNavKeys) {
+  assert.match(
+    sidebarHtml,
+    new RegExp(`data-nav-key="${key}"`),
+    `sidebar-admin.html must have nav link for ${key}`,
+  );
 }
 
-assert.match(sidebarScript, /data-admin-sidebar/);
-assert.match(sidebarScript, /nav-btn-active/);
-assert.match(sidebarScript, /window\.location\.pathname/);
-assert.match(sidebarScript, /sidebar-account-card/);
+const navLinks = sidebarHtml.match(/data-nav-key="[^"]+"/g) || [];
+assert.equal(navLinks.length, 6, "Sidebar must contain strictly 6 navigation items");
 
-// Verify header, footer, fixed icon and button heights across all admin pages
+// Verify styling rules in sidebar-admin.html and components.css
+assert.match(sidebarHtml, /\.nav-btn-active/, "sidebar-admin.html must style active nav state");
+assert.match(sidebarHtml, /#D97251/, "sidebar-admin.html must use terracotta #D97251 for active nav");
+assert.match(sidebarHtml, /#000000/, "sidebar-admin.html must use #000000 for active nav text/icon");
+
 const componentsCss = fs.readFileSync(path.join(__dirname, "../assets/css/components.css"), "utf8");
-assert.match(componentsCss, /\.sidebar-divider\s*\{[^}]*#42423F/i, "Sidebar divider must use #42423F to match header and footer border");
-
-const validFacultyIconPath = 'H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2';
-
-for (const page of adminPages) {
-  const html = fs.readFileSync(path.join(adminPagesDir, page), "utf8");
-  assert.match(html, /class="[^"]*admin-top-header[^"]*"/, `${page} must contain .admin-top-header`);
-  assert.match(html, /class="[^"]*admin-footer[^"]*"/, `${page} must contain .admin-footer`);
-  assert.match(html, /<main[\s\S]*?<footer class="admin-footer"[\s\S]*?<\/main>/, `${page} must place .admin-footer inside <main>`);
-  assert.doesNotMatch(html, /min-h-\[42px\]/, `${page} must not have 42px nav button height (must be 40px locked)`);
-  assert.match(html, new RegExp(validFacultyIconPath), `${page} must have unbroken faculty applications icon`);
-}
+assert.match(componentsCss, /\.nav-btn-active/, "components.css must define .nav-btn-active styles");
 
 console.log("Admin sidebar, header, footer, and navigation button checks passed.");

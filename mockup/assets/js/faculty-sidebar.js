@@ -6,10 +6,6 @@
   document.documentElement.classList.remove("sidebar-collapsed");
 
   function init() {
-    // Setup logout dialog handler for any .sidebar-logout-btn or .logout-btn
-    const logoutBtns = document.querySelectorAll('.sidebar-logout-btn, .logout-btn');
-    if (!logoutBtns.length) return;
-
     let dialog = document.querySelector('.logout-dialog');
     if (!dialog) {
       dialog = document.createElement("dialog");
@@ -61,12 +57,73 @@
       document.body.append(dialog);
     }
 
-    logoutBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        dialog.showModal();
+    const bindLogout = (root) => {
+      if (!root) return;
+      const btns = root.querySelectorAll('.sidebar-logout-btn, .logout-btn');
+      btns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          dialog.showModal();
+        });
       });
-    });
+    };
+
+    bindLogout(document);
+
+    const frame = document.getElementById('sidebar-frame');
+    if (frame) {
+      const attachFrame = () => {
+        try {
+          const doc = frame.contentDocument || frame.contentWindow?.document;
+          bindLogout(doc);
+        } catch (_) {}
+      };
+      if (frame.contentDocument?.readyState === 'complete') {
+        attachFrame();
+      }
+      frame.addEventListener('load', attachFrame);
+    }
+
+    syncActiveLink();
+  }
+
+  function syncActiveLink(fileName) {
+    const frame = document.getElementById('sidebar-frame');
+    if (!frame) return;
+
+    const targetPage = fileName || (window.location && window.location.pathname ? window.location.pathname.split('/').pop() : '') || 'dashboard.html';
+
+    function applyActive() {
+      try {
+        const doc = frame.contentDocument || frame.contentWindow?.document;
+        if (!doc) return;
+        const links = doc.querySelectorAll('#sidebar-nav a');
+        const targetKey = targetPage.replace('.html', '').toLowerCase();
+
+        links.forEach((link) => {
+          const href = (link.getAttribute('href') || '').split('/').pop();
+          const navKey = (link.dataset.navKey || '').toLowerCase();
+          const isActive = href === targetPage || navKey === targetKey || 
+            (navKey === 'students' && (targetKey === 'student-detail' || targetKey === 'register-student')) ||
+            (navKey === 'applications' && targetKey === 'new-review');
+
+          if (isActive) {
+            link.classList.remove('nav-btn-inactive');
+            link.classList.add('nav-btn-active');
+            link.setAttribute('aria-current', 'page');
+          } else {
+            link.classList.remove('nav-btn-active');
+            link.classList.add('nav-btn-inactive');
+            link.removeAttribute('aria-current');
+          }
+        });
+      } catch (_) {}
+    }
+
+    if (frame.contentDocument && frame.contentDocument.readyState === 'complete') {
+      applyActive();
+    }
+    frame.addEventListener('load', applyActive);
   }
 
   if (document.readyState === "loading") {
