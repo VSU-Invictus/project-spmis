@@ -6,16 +6,10 @@
   role="dialog"
   aria-modal="true"
   aria-hidden="true"
-  aria-labelledby="queue-modal-title"
+  aria-label="Approval queue"
 >
-  <section class="modal-container" role="document">
-    <header class="modal-header">
-      <h2 id="queue-modal-title" class="modal-title" data-queue-modal-title>Pending applications</h2>
-      <button type="button" class="modal-close modal-cancel" data-queue-close aria-label="Close queue modal">&times;</button>
-    </header>
-    <div data-queue-modal-body></div>
-    <footer class="modal-actions">
-      <button type="button" class="modal-cancel" data-queue-close>Close</button>
-    </footer>
+  <section class="modal-container queue-modal-container" role="document">
+    <button type="button" class="modal-close modal-cancel" data-queue-close aria-label="Close queue modal">&times;</button>
+    <div class="queue-modal-body" data-queue-modal-body></div>
   </section>
 </div>
