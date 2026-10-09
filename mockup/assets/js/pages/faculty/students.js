@@ -387,7 +387,9 @@ const programs = [
                             }
                         )
                         .join("")}</tbody></table></div>`
-                    : '<div class="ui-card empty"><h2>No matching students</h2><p>Try another review keyword or clear your filters.</p><button class="secondary" id="empty-clear">Clear filters</button></div>';
+                    : students.length
+                        ? '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No matching students</h2><p class="ui-empty-state__description">Try another review keyword or clear your filters.</p><button class="ui-btn ui-btn-outline" id="empty-clear" type="button">Clear filters</button></div>'
+                        : '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No students yet</h2><p class="ui-empty-state__description">Student records will appear here when they are added.</p></div>';
                 $("#page-label").innerHTML = matches.length ? `Page ${current} of ${total} &middot; ${matches.length} entries` : "0 students";
                 $("#previous").disabled = current === 1;
                 $("#next").disabled = current === total;
@@ -395,7 +397,7 @@ const programs = [
             }
             function clear() {
                 document
-                    .querySelectorAll(".filters input,.filters select")
+                    .querySelectorAll("#search, #department, #tag, #owner")
                     .forEach((e) => (e.value = ""));
                 clearTimeout(timer);
                 current = 1;
