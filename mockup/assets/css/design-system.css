@@ -423,6 +423,79 @@
   background-color: #FFFFFF !important;
 }
 
+.ui-table {
+  table-layout: auto !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+/* Force all cells back to table-cell display (overrides any obfuscated is-* rules) */
+.ui-table th,
+.ui-table td {
+  display: table-cell !important;
+  vertical-align: middle !important;
+}
+
+/* Student ID column: fixed width, nowrap, no shrink */
+.ui-table th.col-id,
+.ui-table td.col-id {
+  width: 130px !important;
+  min-width: 130px !important;
+  max-width: 130px !important;
+  white-space: nowrap !important;
+  padding: 0 12px !important;
+}
+
+.ui-table td.col-id code,
+.ui-table td.col-id .ui-text-mono {
+  white-space: nowrap !important;
+  display: inline !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  writing-mode: horizontal-tb !important;
+}
+
+/* Action column: fixed width, nowrap */
+.ui-table th.col-action,
+.ui-table td.col-action {
+  width: 120px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
+  white-space: nowrap !important;
+  padding: 0 12px !important;
+}
+
+/* Student column: flexible */
+.ui-table th:nth-child(2),
+.ui-table td:nth-child(2) {
+  width: 22% !important;
+  min-width: 180px !important;
+}
+
+/* Program column: flexible */
+.ui-table th:nth-child(4),
+.ui-table td:nth-child(4) {
+  width: 20% !important;
+  min-width: 160px !important;
+  white-space: normal !important;
+}
+
+/* Year Level column: fixed */
+.ui-table th:nth-child(5),
+.ui-table td:nth-child(5) {
+  width: 90px !important;
+  min-width: 90px !important;
+  white-space: nowrap !important;
+}
+
+/* Status column: fixed */
+.ui-table th:nth-child(6),
+.ui-table td:nth-child(6) {
+  width: 110px !important;
+  min-width: 110px !important;
+  white-space: nowrap !important;
+}
+
 /* Table Header Select-All Checkbox when partially selected (indeterminate): Dark Charcoal Squircle (#30302E) with WHITE Checkmark */
 :is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:indeterminate,
 .select-all-checkbox:indeterminate {
@@ -834,5 +907,95 @@ html:not(.dark) #demo-sidebar-container .sidebar-logout-btn:hover {
   background: transparent !important;
 }
 
+/* ==========================================================================
+   DISABLED BUTTON STATE (.ui-btn:disabled, [disabled], [aria-disabled="true"])
+   QA Request:
+   - Lower opacity to clearly signal a disabled state (~50% of active).
+   - Remove ALL hover effects: no background change, no border change,
+     no transform, no shadow, no color change.
+   - Remove ALL active/press effects: no scale down, no ripple, no tint.
+   - Cursor must be `not-allowed` (not pointer).
+   - Only ACTIVE buttons should respond to hover and click.
+   ========================================================================== */
 
+.ui-btn:disabled,
+.ui-btn[disabled],
+.ui-btn[aria-disabled="true"],
+.ui-btn.is-disabled,
+button.ui-btn:disabled,
+a.ui-btn[aria-disabled="true"] {
+  opacity: 0.45 !important;            /* ~50% lower than active (1.0 → 0.45) */
+  cursor: not-allowed !important;
+  pointer-events: none !important;     /* Kill ALL hover, focus, click, and active */
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+  background-image: none !important;
+}
+
+/* Belt-and-suspenders: override any hover/active rules from other stylesheets
+   so that even if the element is force-hovered via DevTools it stays inert. */
+.ui-btn:disabled:hover,
+.ui-btn:disabled:active,
+.ui-btn:disabled:focus,
+.ui-btn:disabled:focus-visible,
+.ui-btn[disabled]:hover,
+.ui-btn[disabled]:active,
+.ui-btn[aria-disabled="true"]:hover,
+.ui-btn[aria-disabled="true"]:active,
+.ui-btn.is-disabled:hover,
+.ui-btn.is-disabled:active {
+  opacity: 0.45 !important;
+  background: inherit !important;
+  background-color: inherit !important;
+  color: inherit !important;
+  border-color: inherit !important;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+  outline: none !important;
+}
+
+/* Ensure disabled state survives inside a hovered parent row or container */
+tr:hover .ui-btn:disabled,
+.ui-card:hover .ui-btn:disabled,
+.ui-btn-group:hover .ui-btn:disabled {
+  opacity: 0.45 !important;
+  background: inherit !important;
+  color: inherit !important;
+  border-color: inherit !important;
+  transform: none !important;
+}
+
+/* ==========================================================================
+   PAGINATION CONTROLS — Disabled Previous/Next Buttons
+   Specific QA note: pagination "Previous" must look clearly disabled with
+   NO hover effect when there is no further navigation available.
+   ========================================================================== */
+
+.ui-table-pagination-nav .ui-btn:disabled,
+.ui-table-pagination-nav .ui-btn[disabled],
+.ui-table-pagination-nav button.ui-btn:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  border-color: var(--border, #3E3D39) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Explicitly kill the hover state on disabled pagination buttons */
+.ui-table-pagination-nav .ui-btn:disabled:hover,
+.ui-table-pagination-nav .ui-btn[disabled]:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  border-color: var(--border, #3E3D39) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
 
