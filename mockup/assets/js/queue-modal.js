@@ -22,7 +22,12 @@
   };
 
   const pageQueue = pageToQueue[window.location.pathname.split('/').pop()] || null;
-  const isEmbeddedQueue = new URLSearchParams(window.location.search).has('embedded');
+  const isEmbeddedQueue = (window.self !== window.top) || new URLSearchParams(window.location.search).has('embedded');
+
+  if (isEmbeddedQueue && typeof document !== 'undefined') {
+    document.documentElement?.classList.add('queue-embedded');
+    if (document.body) document.body.classList.add('queue-embedded');
+  }
 
   function selectedRows(root = document) {
     return [...root.querySelectorAll('.table-body .custom-checkbox:checked')]
@@ -39,14 +44,27 @@
   }
 
   function removeQueueParameter() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('queue');
-    window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('queue');
+      window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch (_) {}
   }
 
   function ensureModalShell() {
     let modal = document.querySelector('[data-queue-modal]');
-    if (modal) return modal;
+    if (modal) {
+      modal.querySelectorAll('.modal-header, .modal-actions, footer').forEach((el) => {
+        const closeBtn = el.querySelector('.modal-close');
+        const container = modal.querySelector('.modal-container');
+        if (closeBtn && container && !container.contains(closeBtn)) {
+          container.appendChild(closeBtn);
+        }
+        el.remove();
+      });
+      modal.querySelector('.modal-container')?.classList.add('queue-modal-container');
+      return modal;
+    }
 
     modal = document.createElement('div');
     modal.className = 'modal-overlay';
@@ -54,13 +72,12 @@
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-hidden', 'true');
-    modal.setAttribute('aria-labelledby', 'queue-modal-title');
+    modal.setAttribute('aria-label', 'Approval queue');
     modal.innerHTML = `
       <section class="modal-container queue-modal-container" role="document">
-        <header class="modal-header">
-          <h2 id="queue-modal-title" class="modal-title" data-queue-modal-title>Pending applications</h2>
-          <button type="button" class="modal-close modal-cancel" data-queue-close aria-label="Close queue modal">&times;</button>
-        </header>
+        <button type="button" class="modal-close modal-cancel ui-modal-close" data-queue-close aria-label="Close queue modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
         <div class="queue-modal-body" data-queue-modal-body></div>
       </section>`;
     document.body.appendChild(modal);
@@ -92,12 +109,18 @@
 
   function closeQueueModal(modal, options = {}) {
     if (!modal) return;
-    modal.querySelector('iframe')?.contentWindow?.postMessage('queue-modal-reset', window.location.origin);
+    try {
+      modal.querySelector('iframe')?.contentWindow?.postMessage('queue-modal-reset', '*');
+    } catch (_) {}
     modal.classList.remove('active');
+    modal.classList.remove('show');
+    modal.style.display = 'none';
     modal.setAttribute('aria-hidden', 'true');
     if (!options.preserveUrl) removeQueueParameter();
     const restoreTarget = modal.__restoreFocus;
-    if (restoreTarget && typeof restoreTarget.focus === 'function') restoreTarget.focus();
+    if (restoreTarget && typeof restoreTarget.focus === 'function') {
+      try { restoreTarget.focus(); } catch (_) {}
+    }
   }
 
   function openQueueModal(modal, trigger) {
@@ -105,10 +128,14 @@
     const queue = modal.dataset.queueType;
     if (queueTypes.has(queue)) setQueueModalContent(modal, queue);
     modal.__restoreFocus = trigger || document.activeElement;
+    modal.style.display = 'flex';
     modal.classList.add('active');
+    modal.classList.add('show');
     modal.setAttribute('aria-hidden', 'false');
-    const firstFocusable = modal.querySelector('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
-    if (firstFocusable) firstFocusable.focus();
+    const firstFocusable = modal.querySelector('[data-queue-close], .modal-close, button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+    if (firstFocusable) {
+      try { firstFocusable.focus(); } catch (_) {}
+    }
   }
 
   function installModalContract() {
@@ -139,12 +166,32 @@
     }
 
     modal.querySelectorAll('[data-queue-close], .modal-cancel, .modal-close').forEach((button) => {
-      button.addEventListener('click', () => closeQueueModal(modal));
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeQueueModal(modal);
+      });
     });
 
     modal.addEventListener('click', (event) => {
-      if (event.target === modal) closeQueueModal(modal);
+      if (event.target === modal || event.target.closest('[data-queue-close], .modal-close')) {
+        event.preventDefault();
+        closeQueueModal(modal);
+      }
     });
+
+    // Global document capture listener to ensure close buttons work reliably regardless of event stopPropagation
+    document.addEventListener('click', (event) => {
+      const closeBtn = event.target.closest('[data-queue-close], .modal-close');
+      if (closeBtn) {
+        const targetModal = closeBtn.closest('[data-queue-modal], .modal-overlay') || modal;
+        if (targetModal) {
+          event.preventDefault();
+          event.stopPropagation();
+          closeQueueModal(targetModal);
+        }
+      }
+    }, true);
 
     window.addEventListener('popstate', () => {
       const queue = new URLSearchParams(window.location.search).get('queue');
@@ -156,8 +203,9 @@
     });
 
     window.addEventListener('message', (event) => {
-      if (event.source !== modal.querySelector('iframe')?.contentWindow) return;
-      if (event.data === 'queue-modal-close') closeQueueModal(modal);
+      if (event.data === 'queue-modal-close') {
+        closeQueueModal(modal);
+      }
     });
 
     modal.addEventListener('keydown', (event) => {
@@ -213,9 +261,11 @@
     const rows = [...document.querySelectorAll('.table-body .table-row')];
     const searchInput = document.querySelector('.search-input');
     const selected = () => selectedRows().length;
-    const bulkApprove = document.querySelector('.action-btn-group .pill-btn.approve');
+    const bulkApprove = document.querySelector('.action-btn-group .pill-btn.approve, .action-btn-group .pill-btn.accept');
     const bulkReject = document.querySelector('.action-btn-group .pill-btn.reject');
     const actionBar = document.querySelector('.bottom-bar-container .action-btn-group');
+    const selectAllBtn = document.querySelector('.select-all');
+
     let bulkMessage = actionBar?.querySelector('.queue-bulk-rejection-message');
     if (actionBar && !bulkMessage) {
       bulkMessage = document.createElement('p');
@@ -237,6 +287,27 @@
         button?.classList.toggle('has-selection', hasSelection);
       });
     };
+    const updateSelectAllBtn = () => {
+      if (!selectAllBtn) return;
+      const checkboxes = [...document.querySelectorAll('.table-body .custom-checkbox')];
+      const allChecked = checkboxes.length > 0 && checkboxes.every((cb) => cb.checked);
+      selectAllBtn.textContent = allChecked ? 'Deselect All' : 'Select All';
+    };
+
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('click', () => {
+        const checkboxes = [...document.querySelectorAll('.table-body .custom-checkbox')];
+        const allChecked = checkboxes.length > 0 && checkboxes.every((cb) => cb.checked);
+        checkboxes.forEach((cb) => {
+          cb.checked = !allChecked;
+          const row = cb.closest('.table-row');
+          if (row) row.classList.toggle('checked', cb.checked);
+        });
+        updateBulkButtons();
+        updateBulkMessage();
+        updateSelectAllBtn();
+      });
+    }
 
     searchInput?.addEventListener('input', () => {
       const query = searchInput.value.trim().toLowerCase();
@@ -254,18 +325,7 @@
       const checkbox = row.querySelector('.custom-checkbox');
       if (!checkbox) return;
 
-      row.querySelectorAll('.status-pending').forEach((badge) => badge.remove());
-
-      const hasStatusColumn = document.querySelector('.table-header-row .th-cell.col-status');
-      if (hasStatusColumn && !row.querySelector('.td-cell.col-status')) {
-        const statusCell = document.createElement('div');
-        statusCell.className = 'td-cell col-status';
-        const dateCell = row.querySelector('.td-cell.col-date');
-        if (dateCell) dateCell.before(statusCell);
-        else row.appendChild(statusCell);
-      }
-
-      const actionCell = row.querySelector('.col-actions') || row.lastElementChild;
+      const actionCell = row.querySelector('.col-actions');
       if (actionCell && !actionCell.querySelector('.queue-row-actions')) {
         const actions = document.createElement('span');
         actions.className = 'queue-row-actions';
@@ -275,6 +335,14 @@
 
       row.querySelector('.queue-approve')?.addEventListener('click', () => {
         row.dataset.queueStatus = 'approved';
+        const cb = row.querySelector('.custom-checkbox');
+        if (cb && cb.checked) {
+          cb.checked = false;
+          row.classList.remove('checked');
+          updateBulkButtons();
+          updateBulkMessage();
+          updateSelectAllBtn();
+        }
         showToast('Application Approved');
       });
 
@@ -282,6 +350,7 @@
         row.classList.toggle('checked', checkbox.checked);
         updateBulkButtons();
         updateBulkMessage();
+        updateSelectAllBtn();
       });
 
       row.querySelector('.queue-reject')?.addEventListener('click', () => {
@@ -308,6 +377,7 @@
 
     updateBulkButtons();
     updateBulkMessage();
+    updateSelectAllBtn();
 
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
@@ -319,7 +389,9 @@
       }
       if (isEmbeddedQueue && window.parent !== window) {
         event.preventDefault();
-        window.parent.postMessage('queue-modal-close', window.location.origin);
+        try {
+          window.parent.postMessage('queue-modal-close', '*');
+        } catch (_) {}
       }
     });
 
@@ -343,14 +415,19 @@
       const rows = panel.__queueRows || (row ? [row] : []);
       rows.forEach((selectedRow) => {
         selectedRow.dataset.queueStatus = 'rejected';
-        selectedRow.querySelector('.custom-checkbox')?.click();
+        const cb = selectedRow.querySelector('.custom-checkbox');
+        if (cb) cb.checked = false;
+        selectedRow.classList.remove('checked');
       });
       panel.remove();
+      updateBulkButtons();
+      updateBulkMessage();
+      updateSelectAllBtn();
       showToast('Application Rejected');
     }, true);
 
     window.addEventListener('message', (event) => {
-      if (event.origin !== window.location.origin || event.data !== 'queue-modal-reset') return;
+      if (event.data !== 'queue-modal-reset') return;
       document.querySelectorAll('.queue-rejection-row').forEach((panel) => panel.remove());
       document.querySelectorAll('.table-body .table-row').forEach((row) => {
         row.classList.remove('checked');
@@ -359,20 +436,31 @@
       });
       updateBulkButtons();
       updateBulkMessage();
+      updateSelectAllBtn();
     });
 
-    document.querySelectorAll('.pill-btn.accept').forEach((button) => {
+    document.querySelectorAll('.action-btn-group .pill-btn.approve, .action-btn-group .pill-btn.accept, .pill-btn.accept').forEach((button) => {
       button.textContent = 'Approve';
       button.classList.remove('accept');
       button.classList.add('approve');
       button.addEventListener('click', () => {
-        const count = selected();
+        const rows = selectedRows();
+        const count = rows.length;
         if (!count) return showToast('Please select at least one application');
+        rows.forEach((row) => {
+          row.dataset.queueStatus = 'approved';
+          const cb = row.querySelector('.custom-checkbox');
+          if (cb) cb.checked = false;
+          row.classList.remove('checked');
+        });
+        updateBulkButtons();
+        updateBulkMessage();
+        updateSelectAllBtn();
         showToast(`${count} Application${count === 1 ? '' : 's'} Approved`);
       });
     });
 
-    document.querySelectorAll('.pill-btn.reject').forEach((button) => {
+    document.querySelectorAll('.action-btn-group .pill-btn.reject').forEach((button) => {
       button.addEventListener('click', () => {
         const count = selected();
         if (!count) return showToast('Please select at least one application');
@@ -395,9 +483,24 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    if (isEmbeddedQueue) document.body.classList.add('queue-embedded');
+  function initQueue() {
+    if (isEmbeddedQueue) {
+      if (document.documentElement) document.documentElement.classList.add('queue-embedded');
+      if (document.body) document.body.classList.add('queue-embedded');
+      try {
+        document.querySelectorAll('.sidebar-frame, iframe#sidebar-frame, .admin-top-header, .top-header-bar, .admin-footer, .workspace-footer').forEach((el) => {
+          el.style.display = 'none';
+          el.remove();
+        });
+      } catch (_) {}
+    }
     installModalContract();
     if (pageQueue) installQueueRows();
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initQueue);
+  } else {
+    initQueue();
+  }
 })();

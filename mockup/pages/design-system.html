@@ -1,408 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="dark">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude+ Design System — Living Style Guide</title>
-  <link rel="stylesheet" href="../assets/css/global.css?v=5">
-  <link rel="stylesheet" href="../assets/css/components.css?v=8">
-  <style>
-    /* Living Style Guide Showcase Layout */
-    body {
-      background-color: var(--background);
-      color: var(--foreground);
-      font-family: var(--font-sans, 'Outfit', sans-serif);
-      margin: 0;
-      padding: 0;
-      line-height: 1.5;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-
-    .ui-styleguide {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 5rem;
-    }
-
-    /* Style Guide Top Header */
-    .ui-top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.875rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .ui-top-bar-left {
-      display: flex;
-      align-items: center;
-      gap: 0.625rem;
-    }
-
-    .ui-top-bar-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--primary);
-    }
-
-    .ui-top-bar-breadcrumb {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted-foreground);
-    }
-
-    .ui-top-bar-right {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    /* Interactive Theme Switcher Button */
-    .ui-theme-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.4rem 0.875rem;
-      border-radius: 9999px;
-      background: var(--muted);
-      border: 1px solid var(--border);
-      color: var(--foreground);
-      font: 600 0.8125rem/1 var(--font-sans);
-      cursor: pointer;
-      transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
-    }
-
-    .ui-theme-toggle:hover {
-      border-color: var(--primary);
-      background: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    .ui-top-bar-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      padding: 0.25rem 0.625rem;
-      border-radius: 9999px;
-      background: var(--muted);
-      border: 1px solid var(--border);
-      font-size: 0.6875rem;
-      color: var(--muted-foreground);
-    }
-
-    .ui-top-bar-pulse {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #10B981;
-    }
-
-    .ui-header {
-      margin-bottom: 3rem;
-    }
-
-    .ui-header-title {
-      font-size: 2.25rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: var(--foreground);
-      margin: 0 0 0.5rem;
-      line-height: 1.2;
-    }
-
-    .ui-header-subtitle {
-      font-size: 1rem;
-      color: var(--muted-foreground);
-      margin: 0;
-      max-width: 760px;
-    }
-
-    /* Showcase Sections */
-    .ui-section {
-      margin-bottom: 3.5rem;
-    }
-
-    .ui-section-header {
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.75rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .ui-section-title {
-      font-size: 1.375rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--foreground);
-      margin: 0;
-    }
-
-    .ui-section-desc {
-      font-size: 0.8125rem;
-      color: var(--muted-foreground);
-      margin: 0;
-    }
-
-    /* CSS Grid Layout Utilities */
-    .ui-grid {
-      display: grid;
-      gap: 1.5rem;
-    }
-
-    .ui-grid-cols-1 {
-      grid-template-columns: 1fr;
-    }
-
-    .ui-grid-cols-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .ui-grid-cols-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .ui-grid-cols-4 {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    @media (max-width: 960px) {
-      .ui-grid-cols-3,
-      .ui-grid-cols-4 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 640px) {
-      .ui-grid-cols-2,
-      .ui-grid-cols-3,
-      .ui-grid-cols-4 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Color Palette Swatches */
-    .ui-color-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg, 12px);
-      padding: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .ui-color-swatch {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-sm, 6px);
-      flex-shrink: 0;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-    }
-
-    .ui-color-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.125rem;
-      min-width: 0;
-    }
-
-    .ui-color-name {
-      font-size: 0.875rem;
-      font-weight: 700;
-      color: var(--foreground);
-    }
-
-    .ui-color-var {
-      font-family: var(--font-mono, monospace);
-      font-size: 0.75rem;
-      color: var(--primary);
-    }
-
-    .ui-color-role {
-      font-size: 0.6875rem;
-      color: var(--muted-foreground);
-    }
-
-    /* Typography Showcase */
-    .ui-typography-sample {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg, 12px);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .ui-heading-1 {
-      font-size: 1.875rem;
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      color: var(--foreground);
-      margin: 0;
-      line-height: 1.25;
-    }
-
-    .ui-heading-2 {
-      font-size: 1.375rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--foreground);
-      margin: 0;
-      line-height: 1.3;
-    }
-
-    .ui-heading-3 {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--foreground);
-      margin: 0;
-      line-height: 1.4;
-    }
-
-    .ui-text {
-      font-size: 0.875rem;
-      color: var(--foreground);
-      margin: 0;
-      line-height: 1.6;
-    }
-
-    .ui-text-muted {
-      font-size: 0.875rem;
-      color: var(--muted-foreground);
-      margin: 0;
-      line-height: 1.6;
-    }
-
-    .ui-text-caption {
-      font-size: 0.75rem;
-      color: var(--muted-foreground);
-      margin: 0;
-    }
-
-    .ui-text-mono {
-      font-family: var(--font-mono, monospace);
-      font-size: 0.8125rem;
-      color: var(--foreground);
-    }
-
-    /* Button Showcase Layout */
-    .ui-btn-group {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.875rem;
-    }
-
-    .ui-btn-row {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg, 12px);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .ui-btn-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted-foreground);
-    }
-
-    .ui-icon {
-      width: 1rem;
-      height: 1rem;
-      flex-shrink: 0;
-    }
-
-    /* Form Controls Showcase */
-    .ui-form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-    }
-
-    .ui-form-label {
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: var(--foreground);
-    }
-
-    .ui-checkbox-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.875rem;
-      color: var(--foreground);
-      cursor: pointer;
-    }
-
-    /* Footer */
-    .ui-footer {
-      border-top: 1px solid var(--border);
-      padding-top: 1.5rem;
-      margin-top: 4rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.75rem;
-      color: var(--muted-foreground);
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-  
-        /* Light Mode overrides for brand card */
-        html:not(.dark) .brand-card {
-            background: var(--card);
-            border-color: var(--border);
-            color: var(--muted-foreground) !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-        }
-        html:not(.dark) .brand-card::after {
-            background-image: radial-gradient(rgba(0, 0, 0, .04) 1px, transparent 1px);
-        }
-        html:not(.dark) .brand-card::before {
-            background:
-                radial-gradient(circle, transparent 0 22%, rgba(0, 0, 0, .03) 22% 22.4%, transparent 22.4%),
-                radial-gradient(circle, transparent 0 40%, rgba(0, 0, 0, .02) 40% 40.4%, transparent 40.4%),
-                radial-gradient(circle, transparent 0 58%, rgba(0, 0, 0, .01) 58% 58.4%, transparent 58.4%);
-        }
-        html:not(.dark) .brand-hero-title {
-            color: var(--muted-foreground) !important;
-        }
-        html:not(.dark) .brand-hero-sub,
-        html:not(.dark) .brand-features {
-            color: var(--muted-foreground) !important;
-        }
-html:not(.dark) .brand-footer {
-            color: var(--muted-foreground) !important;
-        }
-
-    
-        html:not(.dark) .brand-features li {
-            color: var(--muted-foreground) !important;
-        }
-        html:not(.dark) .auth-footer-outside,
-        html:not(.dark) .auth-footer-outside .legal,
-        html:not(.dark) .auth-footer-outside a {
-            color: var(--muted-foreground) !important;
-        }
-
-    </style>
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/global.css?v=6">
+  <link rel="stylesheet" href="../assets/css/components.css?v=9">
+  <link rel="stylesheet" href="../assets/css/pages/design-system.css" />
 </head>
 
 <body>
@@ -437,6 +43,22 @@ html:not(.dark) .brand-footer {
       </p>
     </div>
 
+    <!-- Quick Navigation Anchor Bar -->
+    <nav class="ui-quick-nav is-d8c8a7b">
+      <a href="#color-palette" class="ui-badge ui-badge--neutral is-3fcf0f3">Colors</a>
+      <a href="#typography" class="ui-badge ui-badge--neutral is-3fcf0f3">Typography</a>
+      <a href="#badges" class="ui-badge ui-badge--neutral is-3fcf0f3">Badges &amp; Tags</a>
+      <a href="#buttons" class="ui-badge ui-badge--neutral is-3fcf0f3">Buttons &amp; Actions</a>
+      <a href="#form-controls" class="ui-badge ui-badge--neutral is-3fcf0f3">Form Controls &amp; Filters</a>
+      <a href="#cards" class="ui-badge ui-badge--neutral is-3fcf0f3">Cards &amp; KPIs</a>
+      <a href="#data-tables" class="ui-badge ui-badge--neutral is-3fcf0f3">Data Tables &amp; Shimmers</a>
+      <a href="#portal-sidebars" class="ui-badge ui-badge--neutral is-3fcf0f3">Portal Sidebars</a>
+      <a href="#portal-modals" class="ui-badge ui-badge--neutral is-3fcf0f3">Modals &amp; Dialogs</a>
+      <a href="#chats" class="ui-badge ui-badge--neutral is-3fcf0f3">Chats &amp; AI</a>
+      <a href="#auth-cards" class="ui-badge ui-badge--neutral is-3fcf0f3">Auth Cards</a>
+      <a href="#workspace-frame" class="ui-badge ui-badge--neutral is-3fcf0f3">Workspace Frame &amp; Footer</a>
+    </nav>
+
     <!-- 1. Color Palette Section -->
     <section class="ui-section" id="color-palette">
       <div class="ui-section-header">
@@ -446,7 +68,7 @@ html:not(.dark) .brand-footer {
       <div class="ui-grid ui-grid-cols-4">
         <!-- Primary Accent -->
         <div class="ui-color-card">
-          <div class="ui-color-swatch" style="background: var(--primary);"></div>
+          <div class="ui-color-swatch is-723357a"></div>
           <div class="ui-color-info">
             <span class="ui-color-name">Primary Accent</span>
             <span class="ui-color-var">var(--primary)</span>
@@ -456,7 +78,7 @@ html:not(.dark) .brand-footer {
 
         <!-- App Background -->
         <div class="ui-color-card">
-          <div class="ui-color-swatch" style="background: var(--background); border: 1px solid var(--border);"></div>
+          <div class="ui-color-swatch is-7c7c114"></div>
           <div class="ui-color-info">
             <span class="ui-color-name">App Background</span>
             <span class="ui-color-var">var(--background)</span>
@@ -466,7 +88,7 @@ html:not(.dark) .brand-footer {
 
         <!-- Card Surface -->
         <div class="ui-color-card">
-          <div class="ui-color-swatch" style="background: var(--card); border: 1px solid var(--border);"></div>
+          <div class="ui-color-swatch is-51d61e6"></div>
           <div class="ui-color-info">
             <span class="ui-color-name">Card Surface</span>
             <span class="ui-color-var">var(--card)</span>
@@ -476,7 +98,7 @@ html:not(.dark) .brand-footer {
 
         <!-- Border / Dividers -->
         <div class="ui-color-card">
-          <div class="ui-color-swatch" style="background: var(--border);"></div>
+          <div class="ui-color-swatch is-8b2bed2"></div>
           <div class="ui-color-info">
             <span class="ui-color-name">Border &amp; Dividers</span>
             <span class="ui-color-var">var(--border)</span>
@@ -486,7 +108,7 @@ html:not(.dark) .brand-footer {
 
         <!-- Muted Surface -->
         <div class="ui-color-card">
-          <div class="ui-color-swatch" style="background: var(--muted); border: 1px solid var(--border);"></div>
+          <div class="ui-color-swatch is-0df57ad"></div>
           <div class="ui-color-info">
             <span class="ui-color-name">Muted Surface</span>
             <span class="ui-color-var">var(--muted)</span>
@@ -496,7 +118,7 @@ html:not(.dark) .brand-footer {
 
         <!-- Primary Foreground Text -->
         <div class="ui-color-card">
-          <div class="ui-color-swatch" style="background: var(--foreground);"></div>
+          <div class="ui-color-swatch is-04bdb5e"></div>
           <div class="ui-color-info">
             <span class="ui-color-name">Foreground Text</span>
             <span class="ui-color-var">var(--foreground)</span>
@@ -506,7 +128,7 @@ html:not(.dark) .brand-footer {
 
         <!-- Muted Foreground Text -->
         <div class="ui-color-card">
-          <div class="ui-color-swatch" style="background: var(--muted-foreground);"></div>
+          <div class="ui-color-swatch is-915cf5f"></div>
           <div class="ui-color-info">
             <span class="ui-color-name">Muted Foreground</span>
             <span class="ui-color-var">var(--muted-foreground)</span>
@@ -516,7 +138,7 @@ html:not(.dark) .brand-footer {
 
         <!-- Destructive Action -->
         <div class="ui-color-card">
-          <div class="ui-color-swatch" style="background: var(--destructive);"></div>
+          <div class="ui-color-swatch is-b8a4cfc"></div>
           <div class="ui-color-info">
             <span class="ui-color-name">Destructive</span>
             <span class="ui-color-var">var(--destructive)</span>
@@ -578,40 +200,106 @@ html:not(.dark) .brand-footer {
     <!-- 3. Status Badges & Chips Section -->
     <section class="ui-section" id="badges">
       <div class="ui-section-header">
-        <h2 class="ui-section-title">Status Badges &amp; Chips</h2>
-        <span class="ui-section-desc">Semantic pill tags for table statuses, application reviews, and records</span>
+        <h2 class="ui-section-title">Status Badges &amp; Tags</h2>
+        <span class="ui-section-desc">Unified semantic pill tags and status indicators matching portal tables and audit logs</span>
       </div>
-      <div class="ui-btn-row">
-        <div class="ui-btn-group">
-          <span class="ui-badge ui-badge--success">
-            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Approved / Active
-          </span>
-          <span class="ui-badge ui-badge--warning">
-            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            Pending Review
-          </span>
-          <span class="ui-badge ui-badge--destructive">
-            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            Rejected / Deficient
-          </span>
-          <span class="ui-badge ui-badge--info">
-            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            In Progress
-          </span>
-          <span class="ui-badge ui-badge--neutral">
-            Archived / Draft
-          </span>
+      <div class="ui-grid ui-grid-cols-2">
+        <!-- 1. Lifecycle & Operational Statuses -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Operational &amp; Lifecycle Statuses</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--success">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Approved / Active
+            </span>
+            <span class="ui-badge ui-badge--warning">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Pending Review
+            </span>
+            <span class="ui-badge ui-badge--destructive">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              Rejected / Deficient
+            </span>
+            <span class="ui-badge ui-badge--info">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              In Progress
+            </span>
+            <span class="ui-badge ui-badge--neutral">
+              Archived / Draft
+            </span>
+          </div>
+          <p class="ui-text-caption">
+            Standard status badges across applications and roster views with color-matched iconography and semantic background tints.
+          </p>
         </div>
-        <div class="ui-btn-group" style="margin-top: 1rem;">
-          <span class="ui-badge ui-badge--purple">Research</span>
-          <span class="ui-badge ui-badge--cyan">Algorithms</span>
-          <span class="ui-badge ui-badge--amber">Leadership</span>
-          <span class="ui-badge ui-badge--rose">Robotics</span>
+
+        <!-- 2. Entity Types & Origin Context -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Entity Classification &amp; Origin Tags</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--purple">Department</span>
+            <span class="ui-badge ui-badge--cyan">Program</span>
+            <span class="ui-badge ui-badge--warning">Student Origin</span>
+            <span class="ui-badge ui-badge--info">Faculty Origin</span>
+            <span class="ui-badge ui-badge--destructive">System / Direct</span>
+          </div>
+          <p class="ui-text-caption">
+            Structural entity types used in directory tables, application routing, and system entity filters.
+          </p>
         </div>
-        <p class="ui-text-caption">
-          Badges utilize subtle tinted backgrounds (<code>color-mix</code>) with sharp readable foreground text matching their semantic severity.
-        </p>
+
+        <!-- 3. Audit Activity & Mutation Events -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Audit Log Activity Badges</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--success">Created / Addition</span>
+            <span class="ui-badge ui-badge--info">Updated / Edit</span>
+            <span class="ui-badge ui-badge--destructive">Removed / Deleted</span>
+            <span class="ui-badge ui-badge--purple">Evaluation Review</span>
+          </div>
+          <p class="ui-text-caption">
+            Mutation indicators used across system audit trails to identify record creation, modifications, and removals.
+          </p>
+        </div>
+
+        <!-- 4. Domain & Competency Categories -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Domain &amp; Competency Assessment Tags</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--purple">Research</span>
+            <span class="ui-badge ui-badge--cyan">Algorithms</span>
+            <span class="ui-badge ui-badge--amber">Leadership</span>
+            <span class="ui-badge ui-badge--rose">Robotics</span>
+            <span class="ui-badge ui-badge--neutral">General Academic</span>
+          </div>
+          <p class="ui-text-caption">
+            Subject-matter and competency review tags applied to student evaluations and academic curriculum areas. Uniform 1px border is applied across all color variants.
+          </p>
+        </div>
+
+        <!-- 5. Tag Cluster & Overflow Counter -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Tag Cluster &amp; Overflow Counter (+N)</span>
+          <div class="ui-btn-group">
+            <div class="ui-tags-cluster">
+              <span class="ui-badge ui-badge--purple">Research</span>
+              <span class="ui-badge ui-badge--cyan">Algorithms</span>
+              <div class="ui-tags-more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="2 more tags">
+                <span class="ui-badge ui-badge--neutral ui-tags-more-btn">+2</span>
+                <div class="ui-tags-popover" role="tooltip">
+                  <div class="ui-tags-popover-title">Additional Tags (2)</div>
+                  <div class="ui-tags-popover-list">
+                    <span class="ui-badge ui-badge--amber">Leadership</span>
+                    <span class="ui-badge ui-badge--rose">Robotics</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Prevents table and card crowding by displaying up to 2 primary tags with an interactive <code>+N</code> counter that reveals additional tags on hover or click.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -619,7 +307,7 @@ html:not(.dark) .brand-footer {
     <section class="ui-section" id="buttons">
       <div class="ui-section-header">
         <h2 class="ui-section-title">Buttons &amp; Actions</h2>
-        <span class="ui-section-desc">Interactive button primitives conforming to the <code>.ui-btn</code> specification</span>
+        <span class="ui-section-desc">Interactive button primitives conforming to the unified <code>.ui-btn</code> specification</span>
       </div>
       <div class="ui-grid ui-grid-cols-2">
         <!-- Standard Button Variants -->
@@ -640,7 +328,7 @@ html:not(.dark) .brand-footer {
             </button>
           </div>
           <p class="ui-text-caption">
-            Primary uses terracotta <code>var(--primary)</code>. Secondary and outline utilize <code>var(--secondary)</code> and <code>var(--border)</code>.
+            Primary uses terracotta <code>var(--primary)</code> with bold black text. Secondary and outline utilize <code>var(--secondary)</code> and <code>var(--border)</code>.
           </p>
         </div>
 
@@ -670,20 +358,88 @@ html:not(.dark) .brand-footer {
           </p>
         </div>
 
-        <!-- Faculty Portal Specific Buttons -->
-        <div class="ui-btn-row" style="grid-column: 1 / -1;">
-          <span class="ui-btn-label">Faculty Portal Page Actions</span>
-          <div class="ui-btn-group" style="flex-wrap: wrap;">
-            <button type="button" class="ui-btn">+ Register student</button>
-            <button type="button" class="ui-btn">Browse Student</button>
-            <button type="button" class="ui-btn">+ Propose program</button>
-            <button type="button" class="ui-btn">+ Propose department</button>
-            <button type="button" class="ui-btn ui-btn-secondary">Register student</button>
-            <button type="button" class="ui-btn ui-btn-secondary">Propose program</button>
-            <button type="button" class="ui-btn ui-btn-secondary">Propose department</button>
+        <!-- Primary Entity Add & Proposal Actions -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Primary Entity Creation Actions (.add-button)</span>
+          <div class="ui-btn-group is-14c2360">
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Student</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Faculty</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Department</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Program</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Register Student</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Propose Program</span>
+            </button>
           </div>
           <p class="ui-text-caption">
-            Standard action buttons used across the faculty portal headers and action sections. Utilizes base <code>.ui-btn</code> for primary page actions, and <code>.ui-btn-secondary</code> for grouped tertiary actions.
+            Unified primary action across all portals: Terracotta background (<code>#D97251</code>), white text (<code>#FFFFFF</code>) in light mode, consistent SVG plus icon, and <code>height: 38px</code>.
+          </p>
+        </div>
+
+        <!-- Proposal & Queue Decision Pill Buttons -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Queue Decision Pill Buttons (.pill-btn.approve, .pill-btn.reject)</span>
+          <div class="ui-btn-group is-14c2360">
+            <button type="button" class="pill-btn approve">Approve</button>
+            <button type="button" class="pill-btn reject">Reject</button>
+            <button type="button" class="pill-btn accept">Accept Application</button>
+            <button type="button" class="ui-btn ui-btn-secondary is-2dc5827">Browse Records</button>
+          </div>
+          <p class="ui-text-caption">
+            Standard queue review actions: <code>.pill-btn.approve</code> uses emerald green border and text (<code>#10B981</code>) with subtle hover tint (<code>rgba(16, 185, 129, 0.14)</code>), and <code>.pill-btn.reject</code> uses crimson border and text (<code>#EF4444</code>) with subtle hover tint (<code>rgba(239, 68, 68, 0.14)</code>).
+          </p>
+        </div>
+
+        <!-- Standard Modal Close Button Component -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Modal Close Squircle Button (.ui-modal-close)</span>
+          <div class="ui-btn-group is-14c2360" style="align-items: center; gap: 12px;">
+            <button type="button" class="ui-modal-close modal-close" aria-label="Close dialog example">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <span class="ui-text-caption" style="margin: 0;">Default &amp; interactive state: 34&times;34px, 8px radius, dark squircle container with SVG cross.</span>
+          </div>
+          <p class="ui-text-caption">
+            Unified modal close action across all portals and dialogs (faculty register student modal, proposal dialogs, admin approval queue modal). Standardized with <code>width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text-muted);</code> with hover scale (1.05) and active scale (0.95).
+          </p>
+        </div>
+
+        <!-- Interactive Neutral Action Links with Arrow -->
+        <div class="ui-btn-row is-e86cdd0">
+          <span class="ui-btn-label">Interactive Action Links with Animated Arrow (.ui-link-neutral)</span>
+          <div class="ui-btn-group is-0095bec">
+            <a href="#data-tables" class="ui-link-neutral is-a72553f">
+              Review <span class="arrow">&rarr;</span>
+            </a>
+            <a href="#data-tables" class="ui-link-neutral is-a72553f">
+              View All Logs <span class="arrow">&rarr;</span>
+            </a>
+            <a href="#data-tables" class="ui-link-neutral is-a72553f">
+              Write review <span class="arrow">&rarr;</span>
+            </a>
+            <a href="#data-tables" class="ui-link-neutral is-a72553f">
+              View details <span class="arrow">&rarr;</span>
+            </a>
+            <button type="button" class="empty-state-btn is-dc310e0">Clear all filters</button>
+          </div>
+          <p class="ui-text-caption">
+            <code>.ui-link-neutral</code> renders high-contrast neutral text (<code>#FAF9F5</code>) that turns primary terracotta (<code>#D97251</code>) on hover, while <code>.arrow</code> smoothly glides 4px to the right. <code>.empty-state-btn</code> provides filter reset recovery.
           </p>
         </div>
       </div>
@@ -713,11 +469,55 @@ html:not(.dark) .brand-footer {
         </div>
         <div class="ui-form-group">
           <label class="ui-form-label" for="sample-search">Search Records</label>
-          <input type="search" id="sample-search" class="ui-input" placeholder="Search roster or IDs..." />
+            <div class="is-e0dd7f8">
+              <svg class="is-4484244" viewBox="0 0 16 16" fill="none">
+                <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.33"/>
+                <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.33" stroke-linecap="round"/>
+              </svg>
+              <input type="search" id="sample-search" class="ui-input is-1f5bf71" placeholder="Search roster or IDs..." />
+            </div>
         </div>
-        <div class="ui-form-group" style="grid-column: 1 / -1;">
+        <div class="ui-form-group is-e86cdd0">
           <label class="ui-form-label" for="sample-notes">Review Assessment Notes</label>
-          <textarea id="sample-notes" class="ui-input" style="min-height: 80px;" placeholder="Provide detailed evaluation feedback..."></textarea>
+          <textarea id="sample-notes" class="ui-input is-6f0a953" placeholder="Provide detailed evaluation feedback..."></textarea>
+        </div>
+
+        <!-- Table Controls Toolbar (Search & Dropdown Filters) -->
+        <div class="ui-btn-row is-e86cdd0">
+          <span class="ui-btn-label">Standard Portal Table Controls Toolbar</span>
+          <div class="is-30fe52e">
+            <div class="search-wrapper is-a489c38">
+              <svg class="search-icon is-e4bf857" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="#6C655D" stroke-width="1.3"/><path d="M10.5 10.5L14 14" stroke="#6C655D" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input class="search-input is-dd4e5c7" type="search" placeholder="Search by student, faculty, or proposal...">
+            </div>
+            <div class="is-9f3f2d3">
+              <div class="dropdown-container department is-3a95054">
+                <select class="dropdown-select is-5b5fa33">
+                  <option value="all">Department: All</option>
+                  <option>Department of Computer Science</option>
+                  <option>Department of Information Technology</option>
+                  <option>Department of Applied Mathematics</option>
+                </select>
+                <svg class="dropdown-chevron is-c6cac50" viewBox="0 0 14 14" fill="none"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="dropdown-container status is-acf1180">
+                <select class="dropdown-select is-5b5fa33">
+                  <option value="all">Status: All</option>
+                  <option>Active</option>
+                  <option>Under Review</option>
+                  <option>Archived</option>
+                </select>
+                <svg class="dropdown-chevron is-c6cac50" viewBox="0 0 14 14" fill="none"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <button type="button" class="ui-btn add-button">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <span>Add Record</span>
+              </button>
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Unified control bar used across all portal tables. Dropdown filters feature customized chevrons, standardized 12px radius, and dedicated widths (e.g. 195px for department to prevent text truncation).
+          </p>
         </div>
       </div>
     </section>
@@ -748,7 +548,7 @@ html:not(.dark) .brand-footer {
 
         <!-- 2. Compact .ui-card-sm for KPI metrics -->
         <div class="ui-card ui-card-sm metric-card">
-          <div class="ui-card-header" style="margin-bottom: 0.5rem;">
+          <div class="ui-card-header is-ac79cce">
             <p class="metric-card-label">KPI Metric Card (.ui-card-sm)</p>
           </div>
           <div class="metric-card-row">
@@ -760,13 +560,13 @@ html:not(.dark) .brand-footer {
         </div>
 
         <!-- 3. Interactive .ui-card-interactive on an <a> tag -->
-          <a href="#interactive-target" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; height: 100%; color: inherit; box-sizing: border-box; padding: 1.25rem;">
+          <a href="#interactive-target" class="ui-card ui-card-interactive is-90dcd8f">
             <div class="ui-card-header">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+              <div class="is-3083282">
                 <h3 class="ui-card-title">Interactive Card Link</h3>
-                <span class="metric-card-trend" style="white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">Link <span class="arrow">&rarr;</span></span>
+                <span class="metric-card-trend is-378957a">Link <span class="arrow">&rarr;</span></span>
               </div>
-              <p class="ui-card-description" style="margin-top: 8px;"><code>.ui-card-interactive</code> directly on an anchor element.</p>
+              <p class="ui-card-description is-68a09f7"><code>.ui-card-interactive</code> directly on an anchor element.</p>
             </div>
             <div class="ui-card-content">
               <p class="ui-text">
@@ -775,7 +575,7 @@ html:not(.dark) .brand-footer {
               </p>
             </div>
             <div class="ui-card-footer">
-              <span class="ui-text-muted" style="color: var(--primary);">Explore workspace <span class="arrow">&rarr;</span></span>
+              <span class="ui-text-muted is-009cc8c">Explore workspace <span class="arrow">&rarr;</span></span>
             </div>
           </a>
 
@@ -786,291 +586,414 @@ html:not(.dark) .brand-footer {
     <!-- 7. Data Tables & Pagination Section -->
     <section class="ui-section" id="data-tables">
       <div class="ui-section-header">
-        <h2 class="ui-section-title">Data Tables &amp; Pagination</h2>
+        <h2 class="ui-section-title">Data Tables &amp; Loading Shimmers</h2>
         <span class="ui-section-desc">Responsive table wrappers with subtle row hovers, status pills, and pagination bars</span>
+      </div>
+      <div class="is-bd0475c">
+        <span class="is-02ab777">Table features interactive loading shimmers, live row checkboxes, pagination slicing, and empty-state recovery.</span>
+        <button type="button" id="demo-simulate-skeleton-btn" class="ui-btn ui-btn-outline is-e8bc875">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Simulate Skeleton Loading (280ms)
+        </button>
       </div>
       <div class="ui-table-wrap">
         <table class="ui-table">
           <thead>
             <tr>
-              <th style="width: 40px;"><input type="checkbox" aria-label="Select all rows"></th>
+              <th class="checkbox-cell is-479236c"><input type="checkbox" class="custom-checkbox select-all-checkbox" checked aria-label="Select all rows"></th>
               <th>Student</th>
-              <th>Student ID</th>
+              <th class="col-id">Student ID</th>
               <th>Program</th>
               <th>Year Level</th>
               <th>Status</th>
-              <th style="text-align: right;">Action</th>
+              <th class="col-action">Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><input type="checkbox" aria-label="Select row"></td>
+            <tr class="checked">
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" checked aria-label="Select row"></td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">SM</div>
-                  <div>
-                    <strong style="display: block; font-size: 0.875rem;">Sam Lee Parker</strong>
-                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">sam.parker@vsu.edu.ph</span>
-                  </div>
+                <div>
+                  <strong class="is-d3c8577">Sam Lee Parker</strong>
+                  <span class="is-06185fd">sam.parker@vsu.edu.ph</span>
                 </div>
               </td>
               <td><code class="ui-text-mono">24-1-00001</code></td>
               <td>BS Computer Science</td>
               <td>3rd Year</td>
               <td><span class="ui-badge ui-badge--success">Approved</span></td>
-              <td style="text-align: right;">
-                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button>
+              <td class="col-action">
+                <button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button>
               </td>
             </tr>
-            <tr>
-              <td><input type="checkbox" aria-label="Select row"></td>
+            <tr class="checked">
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" checked aria-label="Select row"></td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">EB</div>
-                  <div>
-                    <strong style="display: block; font-size: 0.875rem;">Elena Bautista</strong>
-                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">elena.b@vsu.edu.ph</span>
-                  </div>
+                <div>
+                  <strong class="is-d3c8577">Elena Bautista</strong>
+                  <span class="is-06185fd">elena.b@vsu.edu.ph</span>
                 </div>
               </td>
               <td><code class="ui-text-mono">24-1-00042</code></td>
               <td>BS Information Systems</td>
               <td>2nd Year</td>
               <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
-              <td style="text-align: right;">
-                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">Review</button>
+              <td class="col-action">
+                <a href="#data-tables" class="ui-link-neutral is-a72553f">Review <span class="arrow">&rarr;</span></a>
               </td>
             </tr>
             <tr>
-              <td><input type="checkbox" aria-label="Select row"></td>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">RC</div>
-                  <div>
-                    <strong style="display: block; font-size: 0.875rem;">Rafael Cruz</strong>
-                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">r.cruz@vsu.edu.ph</span>
-                  </div>
+                <div>
+                  <strong class="is-d3c8577">Rafael Cruz</strong>
+                  <span class="is-06185fd">r.cruz@vsu.edu.ph</span>
                 </div>
               </td>
               <td><code class="ui-text-mono">24-1-00109</code></td>
               <td>BS Information Technology</td>
               <td>4th Year</td>
               <td><span class="ui-badge ui-badge--info">In Progress</span></td>
-              <td style="text-align: right;">
-                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button>
+              <td class="col-action">
+                <a href="#data-tables" class="ui-link-neutral is-a72553f">Write review <span class="arrow">&rarr;</span></a>
               </td>
             </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">AD</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Adrian Davis</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">adrian.d@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00210</code></td>
-                <td>BS Computer Science</td>
-                <td>3rd Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">LM</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Liam Moore</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">liam.m@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00211</code></td>
-                <td>BS Information Systems</td>
-                <td>1st Year</td>
-                <td><span class="ui-badge ui-badge--info">In Progress</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">KS</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Kaitlyn Smith</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">k.smith@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00212</code></td>
-                <td>BS Computer Engineering</td>
-                <td>4th Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">JT</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Justin Taylor</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">j.taylor@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00213</code></td>
-                <td>BS Computer Science</td>
-                <td>2nd Year</td>
-                <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">MJ</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Mia Johnson</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">m.johnson@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00214</code></td>
-                <td>BS Data Science</td>
-                <td>1st Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">EW</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Ethan White</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">e.white@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00215</code></td>
-                <td>BS Artificial Intelligence</td>
-                <td>3rd Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" aria-label="Select row"></td>
-                <td>
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">CB</div>
-                    <div>
-                      <strong style="display: block; font-size: 0.875rem;">Chloe Brown</strong>
-                      <span style="font-size: 0.75rem; color: var(--muted-foreground);">c.brown@vsu.edu.ph</span>
-                    </div>
-                  </div>
-                </td>
-                <td><code class="ui-text-mono">24-1-00216</code></td>
-                <td>BS Computer Science</td>
-                <td>4th Year</td>
-                <td><span class="ui-badge ui-badge--success">Approved</span></td>
-                <td style="text-align: right;"><button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.75rem;">View</button></td>
-              </tr>
-</tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Adrian Davis</strong>
+                  <span class="is-06185fd">adrian.d@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00210</code></td>
+              <td>BS Computer Science</td>
+              <td>3rd Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Liam Moore</strong>
+                  <span class="is-06185fd">liam.m@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00211</code></td>
+              <td>BS Information Systems</td>
+              <td>1st Year</td>
+              <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Kaitlyn Smith</strong>
+                  <span class="is-06185fd">k.smith@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00212</code></td>
+              <td>BS Computer Engineering</td>
+              <td>4th Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Justin Taylor</strong>
+                  <span class="is-06185fd">j.taylor@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00213</code></td>
+              <td>BS Computer Science</td>
+              <td>2nd Year</td>
+              <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Mia Johnson</strong>
+                  <span class="is-06185fd">m.johnson@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00214</code></td>
+              <td>BS Data Science</td>
+              <td>1st Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Ethan White</strong>
+                  <span class="is-06185fd">e.white@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00215</code></td>
+              <td>BS Artificial Intelligence</td>
+              <td>3rd Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Chloe Brown</strong>
+                  <span class="is-06185fd">c.brown@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00216</code></td>
+              <td>BS Computer Science</td>
+              <td>4th Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
           </tbody>
         </table>
+        <p class="ui-text-muted is-c67418c">
+          <strong>Column ratio helpers:</strong> <code>.col-id</code> (tight, nowrap), <code>.col-action</code> (tight, left-aligned, nowrap; links/buttons never wrap), <code>.col-60</code> / <code>.col-20</code> for Name/Status/Action tables (60/20/20), <code>.col-flex</code> for columns sharing remaining width equally (Student Name, Program). First and last columns hug the table edges.
+        </p>
         <!-- Table Pagination Footer -->
           </div> <!-- Closes ui-table-wrap -->
-          <div class="ui-table-pagination" style="border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;">
-            <span style="color: var(--muted-foreground); font-size: 0.875rem;">2 of 3 row(s) selected.</span>
+          <div class="ui-table-pagination is-0272b5f">
+            <span class="is-7fbae58">2 of 3 row(s) selected.</span>
             
-            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+            <div class="is-31de0eb">
               
               <!-- Shadcn-styled Select Dropdown -->
-              <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;">
+              <div class="is-b57eafe">
                 <span>Rows per page</span>
-                                                    <style>
-                    .ui-select-pill {
-                      appearance: none !important;
-                      -webkit-appearance: none !important;
-                      background-color: transparent !important;
-                      border: 1px solid var(--border) !important;
-                      border-radius: 9999px !important;
-                      color: var(--foreground) !important;
-                      padding: 0 1.75rem 0 0.875rem !important;
-                      font-size: 0.8125rem !important;
-                      font-weight: 500 !important;
-                      height: 2rem !important;
-                      outline: none !important;
-                      cursor: pointer !important;
-                      transition: background-color 0.15s ease, border-color 0.15s ease !important;
-                    }
-                    .ui-select-pill:hover,
-                    .ui-select-pill:focus {
-                      background-color: var(--accent) !important;
-                    }
-                  </style>
-                <div style="position: relative; display: flex; align-items: center;">
-                  <select class="ui-select-pill" style="min-width: 4rem;">
+                                                    <div class="is-e0dd7f8">
+                  <select class="ui-select-pill is-daab64f">
                           <option value="5" selected>5</option>
                           <option value="10">10</option>
                           <option value="20">20</option>
                         </select>
-                  <svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                  <svg class="is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
-                <span style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;">Page 1 of 2</span>
+                <span class="is-12b4142">Page 1 of 2</span>
               
-              <div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;">
-                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" disabled>Previous</button>
-                <button type="button" class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;">Next</button>
+              <div class="ui-table-pagination-nav is-49e15c7">
+                <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Previous</button>
+                <button type="button" class="ui-btn ui-btn-outline is-b38e363">Next</button>
               </div>
               
             </div>
           </div>
 
+          <!-- Empty State Demo Container -->
+          <div id="demo-empty-state" class="empty-state is-443abc4">
+            <svg class="is-3be30c2" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <p class="is-373be8a">No records matching your search or filters found.</p>
+            <p class="is-ca6ebbd">Try adjusting your query or resetting the active filters.</p>
+            <button type="button" class="empty-state-btn" id="demo-empty-state-btn">Clear all filters</button>
+          </div>
+    </section>
 
-</section>
+    <!-- 8. Portal Sidebar Navigation Section -->
+    <section class="ui-section" id="portal-sidebars">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Portal Sidebar Navigation</h2>
+        <span class="ui-section-desc">Docked 260px navigation sidebar with active state highlights, user account card, and zero-blink view transitions</span>
+      </div>
 
-    <!-- 8. Chats & AI Assistant Section -->
+      <div class="ui-grid ui-grid-cols-2 is-ffdb8e7">
+        <!-- Standard Portal Sidebar Showcase -->
+        <div class="ui-card is-317a4c4">
+          <div class="is-761640e">
+            Standard Portal Sidebar Navigation
+          </div>
+          <div class="demo-sidebar-showcase" id="demo-sidebar-container">
+            <div class="brand-header"><h1 class="brand-title">Academic Portal</h1></div>
+            <nav class="nav" id="demo-sidebar-nav" aria-label="Demo sidebar navigation">
+              <a href="#portal-sidebars" data-nav-key="dashboard" class="nav-btn-active" aria-current="page">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg>
+                <span>Dashboard</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="faculty-apps" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg>
+                <span>Faculty Applications</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="student-apps" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/></svg>
+                <span>Student Applications</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="program-apps" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg>
+                <span>Program Applications</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="dept-apps" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <span>Dept. Applications</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="students" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <span>Students</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="audit" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Audit Log</span>
+              </a>
+            </nav>
+            <div class="sidebar-footer">
+              <div class="sidebar-divider"></div>
+              <div class="sidebar-account-card">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="sidebar-avatar">U</div>
+                  <div style="display: flex; flex-direction: column;">
+                    <span class="sidebar-account-name">Portal User</span>
+                    <span class="sidebar-account-role">Academic Staff</span>
+                  </div>
+                </div>
+                <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Persistent View Transition Architecture -->
+        <div class="ui-card is-03e275d">
+          <h3 class="ui-card-title is-64e8bf9">Persistent View Transitions Architecture</h3>
+          <p class="ui-text is-5c3d21d">
+            All portal workspaces enforce persistent sidebar positioning and instant, blink-free navigation across pages via the View Transitions API and hover prefetching:
+          </p>
+          <ul class="is-ab3271d">
+            <li><strong>Hardcoded Static DOM:</strong> The complete <code>&lt;aside id="sidebar-menu" class="sidebar sidebar-frame"&gt;</code> is pre-rendered in all portal HTML templates, preventing post-load layout shifts.</li>
+            <li><strong>View Transition Tag:</strong> <code>view-transition-name: portal-sidebar;</code> instructs Chromium browsers to anchor the sidebar in place during cross-page crossfades.</li>
+            <li><strong>Hover Prefetch:</strong> Navigation scripts listen for <code>mouseenter</code> on links and inject <code>&lt;link rel="prefetch"&gt;</code> for instantaneous page responses.</li>
+            <li><strong>Semantic Active State:</strong> The current page is marked with <code>.nav-btn-active</code> and <code>aria-current="page"</code>, featuring primary terracotta background (<code>#D97251</code>) and bold black text (<code>#000000</code>).</li>
+          </ul>
+          <div class="is-19f8ba2">
+            <button type="button" id="demo-open-logout-btn" class="ui-btn ui-btn-outline is-5a4e2ab">
+              Preview Logout Confirmation Dialog
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Portal Modals & Dialogs Section -->
+    <section class="ui-section" id="portal-modals">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Portal Modals &amp; Confirmation Dialogs</h2>
+        <span class="ui-section-desc">Accessible, backdrop-blurred modal dialogs for proposal rejections, entity edits, and destructive confirmations</span>
+      </div>
+
+      <div class="ui-grid ui-grid-cols-2 is-ffdb8e7">
+        <!-- Embedded Modal Preview Card -->
+        <div class="ui-card is-03e275d">
+          <div class="is-948e6d6">
+            <span class="ui-btn-label">Standard Portal Modal Architecture</span>
+            <button type="button" id="demo-open-reject-modal-btn" class="ui-btn add-button is-ebaa71c">
+              Open Live Modal
+            </button>
+          </div>
+          
+          <!-- Static Visual Representation of the Modal Container -->
+          <div class="is-52a0171">
+            <div class="is-4cb809c">
+              <h4 class="is-ffac819">Reject Application Proposal</h4>
+              <button type="button" class="modal-close ui-modal-close" aria-label="Close modal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+            <div class="is-578b24d">
+              <!-- Contextual Action Confirmation Alert -->
+              <div class="ui-alert ui-alert--warning is-1d16385">
+                <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <div class="ui-alert-content">
+                  <span class="ui-alert-title">Confirm Rejection Decision</span>
+                  <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+                </div>
+              </div>
+
+              <div>
+                <label class="is-9f7ead6">Selected Application</label>
+                <div class="is-217c1f1">
+                  Dr. Eleanor Vance (Faculty Application)
+                </div>
+              </div>
+              <div>
+                <label class="is-fa77284">
+                  <span>Reason for Rejection <span class="is-97bf356">*</span></span>
+                </label>
+                <div class="is-5943a3d">
+                  Incomplete accreditation documentation for curriculum prerequisites.
+                </div>
+              </div>
+              <button type="button" class="modal-submit is-1671328">Confirm Rejection</button>
+            </div>
+          </div>
+
+          <p class="ui-text-caption">
+            Conforms strictly to the <strong>Standard Card</strong> architecture (<code>background: var(--card)</code>, <code>border: 1px solid var(--border)</code>, 16px radius) with standard lighter-bordered form controls (<code>var(--input)</code>), a resizable rejection textarea, required reason validation, primary terracotta submission button (<code>var(--primary)</code>), and embedded alert confirmation banners (<code>.ui-alert</code>).
+          </p>
+        </div>
+
+        <!-- Specifications & Behavioral Contract -->
+        <div class="ui-card is-03e275d">
+          <h3 class="ui-card-title is-64e8bf9">Modal Keyboard &amp; Accessibility Contract</h3>
+          <ul class="is-1afd29d">
+            <li><strong>Escape Key Dismissal:</strong> Pressing <kbd class="is-48badad">Esc</kbd> immediately closes the active modal overlay without submitting data.</li>
+            <li><strong>Backdrop Click to Close:</strong> Clicking the dimmed overlay outside the <code>.modal-container</code> safely dismisses the modal.</li>
+            <li><strong>Auto-focus &amp; Trap:</strong> Opening shifts focus into the first input or textarea; closing returns focus to the triggering button.</li>
+            <li><strong>Validation &amp; Error Feedback:</strong> Required rejection reasons trigger immediate warning toasts before modal confirmation can proceed.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Chats & AI Assistant Section -->
     <section class="ui-section" id="chats">
       <div class="ui-section-header">
         <h2 class="ui-section-title">Chats &amp; AI Assistant</h2>
         <span class="ui-section-desc">Prompt chips, message bubbles, query textarea, and student quick-file context card</span>
       </div>
 
-      <!-- Quick Prompt Chips -->
-      <div class="ui-chat-prompts" style="margin-bottom: 1.5rem;">
-        <button type="button" class="ui-chat-prompt-btn">
+      <!-- Regular Topic Cards -->
+      <div class="ui-chat-prompts is-d3297f9">
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have research experience?">
           <span>Research experience</span>
-          <small>Explore faculty assessments <span class="arrow">&rarr;</span></small>
-        </button>
-        <button type="button" class="ui-chat-prompt-btn">
+          <small>Explore faculty assessments</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students show teamwork and leadership?">
           <span>Teamwork &amp; Leadership</span>
-          <small>Ask across student records <span class="arrow">&rarr;</span></small>
-        </button>
-        <button type="button" class="ui-chat-prompt-btn">
+          <small>Ask across student records</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Find reviews mentioning communication skills.">
           <span>Communication Skills</span>
-          <small>Find relevant review excerpts <span class="arrow">&rarr;</span></small>
-        </button>
-        <button type="button" class="ui-chat-prompt-btn">
+          <small>Find relevant review excerpts</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Verify capstone project reviews and prerequisites.">
           <span>Capstone Project Review</span>
-          <small>Verify graduation prerequisites <span class="arrow">&rarr;</span></small>
-        </button>
+          <small>Verify graduation prerequisites</small>
+        </div>
       </div>
 
       <!-- Two-Column Chat Workspace -->
       <div class="ui-chat-columns">
         <!-- Left: Chat Thread Card -->
-        <div class="ui-card" style="padding: 1.5rem; display: flex; flex-direction: column; resize: vertical; overflow: hidden; align-self: flex-start;">
-            <div class="ui-card-header" style="margin-bottom: 1rem; flex-shrink: 0;">
+        <div class="ui-card is-dca1b55">
+            <div class="ui-card-header is-2f82c02">
             <h3 class="ui-card-title">Ask across student reviews</h3>
-            <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
+            <p class="ui-card-description">Conversational AI query assistant for student evaluations.</p>
           </div>
-            <div class="ui-chat-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
-            <div id="chat-log" class="ui-chat-log custom-scrollbar" style="display: flex; flex-direction: column; gap: 0.75rem; flex: 1; overflow-y: auto; min-height: 0;">
+            <div class="ui-chat-container is-66768fc">
+            <div id="chat-log" class="ui-chat-log custom-scrollbar is-3fbfa29">
               <!-- AI Message -->
               <div class="ui-chat-msg ui-chat-msg--ai">
                 <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
@@ -1107,10 +1030,10 @@ html:not(.dark) .brand-footer {
             </div>
 
             <!-- Chat Input Area -->
-            <div class="ui-chat-input-wrapper" style="flex-shrink: 0; margin-top: 0.5rem;">
-              <form id="chat-form" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
+            <div class="ui-chat-input-wrapper is-1d1c012">
+              <form class="is-f64a5e3" id="chat-form">
                 <textarea class="ui-chat-textarea" id="chat-prompt" required placeholder="Type a question across student reviews..." rows="2"></textarea>
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div class="is-895ac41">
                   <span class="ui-chat-input-hint">Press Enter to send, Shift+Enter for new line</span>
                   <button type="submit" class="ui-btn" id="send" aria-label="Send">
                     Send query
@@ -1126,8 +1049,8 @@ html:not(.dark) .brand-footer {
           <!-- Right: Student Quick File Context Card -->
         <div class="ui-chat-context-card">
           <div class="ui-chat-context-avatar">SP</div>
-          <h3 class="ui-heading-3" style="margin: 0;">Sam Lee Parker</h3>
-          <p class="ui-text-muted" style="font-size: 0.8125rem; margin-top: 0.25rem;">ID: 24-1-00001</p>
+          <h3 class="ui-heading-3 is-e2b74ba">Sam Lee Parker</h3>
+          <p class="ui-text-muted is-08dff76">ID: 24-1-00001</p>
 
           <div class="ui-chat-context-meta">
             <span class="ui-chat-context-dt">Program</span>
@@ -1143,11 +1066,11 @@ html:not(.dark) .brand-footer {
             </span>
           </div>
 
-          <p class="ui-text-caption" style="margin-bottom: 1.25rem;">
+          <p class="ui-text-caption is-33424b5">
             Referenced record. Review conversations can synthesize evaluations across all enrolled students.
           </p>
 
-          <button type="button" class="ui-btn ui-btn-outline" style="width: 100%;">
+          <button type="button" class="ui-btn ui-btn-outline view-profile-btn is-199b6f0">
             View Full Profile <span class="arrow">&rarr;</span>
           </button>
         </div>
@@ -1160,774 +1083,6 @@ html:not(.dark) .brand-footer {
         <h2 class="ui-section-title">Authentication &amp; Account Cards</h2>
         <span class="ui-section-desc">Unified Box, Color, and Text contract for Sign In and Sign Up portals</span>
       </div>
-        <style>
-        
-        
-
-        .auth-demo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.25rem;
-            animation: page-in .4s ease-out both;
-            position: relative;
-        }
-
-        @keyframes page-in {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-
-        /* Noticeable background grid */
-        .auth-demo-container::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(color-mix(in srgb, var(--foreground) 9%, transparent) 1px, transparent 1px),
-                linear-gradient(90deg, color-mix(in srgb, var(--foreground) 9%, transparent) 1px, transparent 1px);
-            background-size: 48px 48px;
-            mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 25%, transparent 92%);
-            -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 25%, transparent 92%);
-            pointer-events: none;
-            z-index: 0;
-            animation: grid-drift 6s linear infinite;
-            will-change: background-position;
-        }
-
-        /* Warm terracotta haze behind the split */
-        .auth-demo-container::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            background:
-                radial-gradient(ellipse 55% 65% at 18% 25%,
-                    color-mix(in srgb, var(--primary) 22%, transparent) 0%,
-                    color-mix(in srgb, var(--primary) 8%, transparent) 40%,
-                    transparent 70%),
-                radial-gradient(ellipse 55% 65% at 85% 80%,
-                    color-mix(in srgb, var(--primary) 16%, transparent) 0%,
-                    color-mix(in srgb, var(--primary) 6%, transparent) 42%,
-                    transparent 72%),
-                radial-gradient(ellipse 90% 90% at 50% 50%,
-                    color-mix(in srgb, var(--primary) 5%, transparent) 0%,
-                    transparent 75%);
-        }
-
-        @keyframes grid-drift {
-            from { background-position: 0 0; }
-            to   { background-position: 48px 48px; }
-        }
-
-        /* ==========================================================
-           Wrapper so the split + outside footer stack vertically
-           ========================================================== */
-        .auth-shell {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            gap: 1rem;
-            width: min(1080px, 100%);
-            animation: card-enter .6s cubic-bezier(.2,.9,.3,1) both;
-            animation-delay: .1s;
-        }
-
-        @keyframes card-enter {
-            from { opacity: 0; transform: translateY(14px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ==========================================================
-           Overlapping split
-           ========================================================== */
-        .auth-split {
-            position: relative;
-            display: grid;
-            grid-template-columns: 1.05fr 1fr;
-            width: 100%;
-            height: min(640px, 100%);
-        }
-
-        /* ---------- LEFT: brand card (behind) ---------- */
-        .brand-card {
-            position: relative;
-            padding: 2.25rem 2.5rem 2rem;
-            padding-right: 4.5rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            border-radius: 24px;
-            border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--border));
-            background-color: #141311;
-            background: radial-gradient(ellipse 90% 70% at 20% 15%,
-                    color-mix(in srgb, var(--primary) 26%, transparent) 0%, transparent 60%),
-                radial-gradient(ellipse 80% 70% at 80% 100%,
-                    color-mix(in srgb, var(--primary) 16%, transparent) 0%, transparent 60%),
-                linear-gradient(160deg, #1c1b19 0%, #141311 55%, #0f0e0d 100%);
-            color: #faf9f5;
-            box-shadow:
-                0 1px 0 rgba(255, 255, 255, .05) inset,
-                0 20px 48px rgba(0, 0, 0, .45);
-            z-index: 1;
-        }
-
-        .brand-card::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 520px;
-            height: 520px;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background:
-                radial-gradient(circle, transparent 0 22%, rgba(250, 249, 245, .05) 22% 22.4%, transparent 22.4%),
-                radial-gradient(circle, transparent 0 40%, rgba(250, 249, 245, .04) 40% 40.4%, transparent 40.4%),
-                radial-gradient(circle, transparent 0 58%, rgba(250, 249, 245, .03) 58% 58.4%, transparent 58.4%);
-            pointer-events: none;
-        }
-
-        .brand-card::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(rgba(250, 249, 245, .06) 1px, transparent 1px);
-            background-size: 22px 22px;
-            mask-image: radial-gradient(ellipse 60% 60% at 80% 90%, black 0%, transparent 70%);
-            -webkit-mask-image: radial-gradient(ellipse 60% 60% at 80% 90%, black 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .brand-card > * { position: relative; z-index: 1; }
-
-        .brand-logo {
-            display: inline-flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .brand-logo img {
-            display: block;
-            height: 56px;
-            width: auto;
-            filter: drop-shadow(0 0 18px color-mix(in srgb, var(--primary) 20%, transparent));
-        }
-
-        .brand-hero {
-            margin: auto 0;
-            padding: 1.5rem 0;
-            max-width: 24ch;
-        }
-
-        .brand-hero-title {
-            font-size: clamp(1.75rem, 3vw, 2.75rem);
-            font-weight: 700;
-            line-height: 1.05;
-            letter-spacing: -0.03em;
-            margin: 0 0 0.875rem;
-            color: #faf9f5 !important;
-            color: #faf9f5;
-        }
-
-        .brand-hero-title .accent { color: var(--primary); }
-
-        .brand-hero-sub {
-            font-size: 0.825rem;
-            line-height: 1.55;
-            color: rgba(250, 249, 245, .65);
-            margin: 0;
-        }
-
-        .brand-features {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
-            list-style: none;
-            padding: 0;
-        }
-
-        .brand-features li {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.78rem;
-            color: rgba(250, 249, 245, .8);
-        }
-
-        .brand-features .dot {
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
-            background: color-mix(in srgb, var(--primary) 22%, transparent);
-            border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            font-weight: 800;
-            font-size: 0.7rem;
-            flex-shrink: 0;
-        }
-
-        .brand-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.68rem;
-            color: rgba(250, 249, 245, .4);
-            gap: 1rem;
-            max-width: 55%;
-        }
-
-        /* ---------- RIGHT: auth card (on top) ---------- */
-        .auth-card {
-            position: relative;
-            z-index: 2;
-            margin-left: -2.5rem;
-            margin-top: 1.5rem;
-            margin-bottom: 1.5rem;
-            padding: 2rem 2.25rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            background: var(--card);
-            color: var(--card-foreground);
-            border-radius: 24px;
-            border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-            box-shadow:
-                0 1px 0 rgba(255, 255, 255, .04) inset,
-                0 24px 56px rgba(0, 0, 0, .55),
-                0 0 0 1px rgba(0, 0, 0, .25);
-            overflow: hidden;
-        }
-
-        .auth-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 1.5rem;
-            right: 1.5rem;
-            height: 2px;
-            background: linear-gradient(
-                90deg,
-                transparent 0%,
-                color-mix(in srgb, var(--primary) 60%, transparent) 20%,
-                var(--primary) 50%,
-                color-mix(in srgb, var(--primary) 60%, transparent) 80%,
-                transparent 100%
-            );
-            border-radius: 2px;
-            pointer-events: none;
-            z-index: 3;
-        }
-
-        .auth-card::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 1.5rem;
-            right: 1.5rem;
-            height: 2px;
-            background: linear-gradient(
-                90deg,
-                transparent 0%,
-                color-mix(in srgb, var(--primary) 50%, transparent) 25%,
-                color-mix(in srgb, var(--primary) 85%, transparent) 50%,
-                color-mix(in srgb, var(--primary) 50%, transparent) 75%,
-                transparent 100%
-            );
-            border-radius: 2px;
-            pointer-events: none;
-            z-index: 3;
-        }
-
-        /* Body grows to push the sign-up prompt to the bottom */
-        .auth-card-.auth-demo-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            max-width: 380px;
-            width: 100%;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .auth-card-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            margin: 0 0 0.625rem;
-            color: var(--card-foreground);
-            text-align: left;
-            line-height: 1.1;
-        }
-
-        .auth-card-sub {
-            font-size: 0.9375rem;
-            color: var(--muted-foreground);
-            margin: 0 0 2rem;
-            line-height: 1.55;
-            text-align: left;
-        }
-
-        /* ---------- Sign-up prompt INSIDE the auth card ---------- */
-        .auth-card-signup {
-            margin-top: 1.25rem;
-            padding-top: 1rem;
-            border-top: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            position: relative;
-            z-index: 1;
-        }
-
-        .auth-card-signup a {
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 0.8125rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            text-decoration: none;
-            transition: color .2s ease;
-        }
-
-        .auth-card-signup a:hover {
-            color: color-mix(in srgb, var(--primary) 80%, #ffffff);
-        }
-
-        .auth-card-signup .arrow {
-            display: inline-block;
-            transition: transform .25s ease;
-        }
-
-        .auth-card-signup a:hover .arrow {
-            transform: translateX(4px);
-        }
-
-        /* ---------- Reuse .ui-auth-* primitives ---------- */
-        .auth-card .ui-auth-wrapper { width: 100%; max-width: none; }
-
-        .auth-card .ui-auth-card {
-            padding: 0;
-            border: 0;
-            border-radius: 0;
-            background: transparent;
-            box-shadow: none;
-            animation: none;
-            display: block;
-        }
-
-        .auth-card .ui-auth-card::before { display: none; }
-        .auth-card .ui-auth-header { display: none; }
-
-        .auth-card .auth-social-btn {
-            width: 100%;
-            height: 2.625rem;
-            background: var(--muted) !important;
-            border: 1px solid var(--border) !important;
-            color: var(--muted-foreground) !important;
-            font-weight: 500;
-            font-size: 0.825rem;
-            border-radius: 999px !important;
-        }
-
-        .auth-card .auth-social-btn:hover {
-            background: var(--accent) !important;
-            border-color: color-mix(in srgb, var(--primary) 45%, var(--border)) !important;
-        }
-
-        .auth-card .ui-input {
-            height: 2.625rem;
-            border-radius: 999px;
-            padding: 0 1.125rem;
-            background: var(--muted);
-            border: 1px solid var(--border);
-            font-size: 0.825rem;
-            transition: padding-right .18s ease, border-color .15s ease, box-shadow .15s ease;
-        }
-
-        /* Reserve space on the right of the input when an error message shows */
-        .ui-auth-field:has(.ui-field-popup.is-visible) .ui-input {
-            padding-right: 12.5rem;
-        }
-
-        .auth-card .ui-input:focus {
-            border-color: var(--ring);
-            box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 25%, transparent);
-        }
-
-        .auth-card .ui-auth-btn-submit {
-            background: var(--primary);
-            color: var(--primary-foreground);
-            border: 1px solid transparent;
-            border-radius: 999px;
-            height: 2.75rem;
-            font: 600 0.875rem/1 var(--font-sans);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
-        }
-
-        .auth-card .ui-auth-btn-submit:hover {
-            background: color-mix(in srgb, var(--primary) 88%, var(--foreground));
-        }
-        .auth-card .ui-auth-footer { display: none; }
-
-        .auth-card .ui-auth-divider {
-            margin: 0.875rem 0;
-            font-size: 0.7rem;
-        }
-
-        .auth-card .ui-auth-form { gap: 0.75rem; }
-
-        /* ==========================================================
-           Footer row — OUTSIDE the card, white, larger text.
-           Hover: underline only, no color change.
-           ========================================================== */
-        .auth-footer-outside {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            column-gap: 0.75rem;
-            font-size: 0.9375rem;
-            color: #ffffff;
-        }
-
-        .auth-footer-outside .legal {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.625rem;
-            font-size: 0.9375rem;
-            color: #ffffff;
-        }
-
-        .auth-footer-outside a {
-            color: #ffffff;
-            text-decoration: none;
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            padding-bottom: 2px;
-            transition: transform .2s ease;
-        }
-
-        .auth-footer-outside a::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 1px;
-            background: currentColor;
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform .25s ease;
-        }
-
-        .auth-footer-outside a:hover {
-            color: #ffffff;
-            transform: translateY(-1px);
-        }
-
-        .auth-footer-outside a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .auth-footer-outside .sep {
-            opacity: 0.55;
-        }
-
-        /* ==========================================================
-           Validation message — sits INSIDE the input, right-aligned.
-           No layout shift, no overlap.
-           ========================================================== */
-        .ui-input-wrap {
-            position: relative;
-            width: 100%;
-        }
-
-        .ui-field-popup {
-            position: absolute;
-            top: 50%;
-            right: 1.125rem;
-            transform: translateY(-50%) scale(.96);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            padding: 0;
-            background: transparent;
-            border: 0;
-            color: var(--primary);
-            font: 600 0.75rem/1 var(--font-sans);
-            letter-spacing: 0.01em;
-            white-space: nowrap;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity .18s ease, transform .18s ease;
-            z-index: 3;
-        }
-
-        .ui-field-popup.is-visible {
-            opacity: 1;
-            transform: translateY(-50%) scale(1);
-        }
-
-        .ui-field-popup-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-            border-radius: 4px;
-            background: var(--primary);
-            color: var(--primary-foreground);
-            font: 800 0.7rem/1 var(--font-sans);
-        }
-
-        .ui-input.is-invalid {
-            border-color: var(--primary) !important;
-            box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent) !important;
-        }
-
-        @keyframes field-shake {
-            0%, 100% { transform: translateX(0); }
-            20%      { transform: translateX(-5px); }
-            40%      { transform: translateX(4px); }
-            60%      { transform: translateX(-3px); }
-            80%      { transform: translateX(2px); }
-        }
-
-        .ui-auth-field.is-shaking {
-            animation: field-shake .35s cubic-bezier(.36,.07,.19,.97) both;
-        }
-
-        /* ---------- Google modal ---------- */
-        .google-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            display: grid;
-            place-items: center;
-            padding: 1.25rem;
-            background: rgba(0, 0, 0, .6);
-            backdrop-filter: blur(2px);
-        }
-
-        .google-modal {
-            position: relative;
-            width: min(100%, 448px);
-            padding: 36px 40px;
-            border-radius: var(--radius-lg);
-            background: var(--popover);
-            color: var(--popover-foreground);
-            border: 1px solid var(--border);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, .45);
-            text-align: center;
-        }
-
-        .google-close {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            border: 0;
-            background: transparent;
-            color: var(--muted-foreground);
-            font-size: 24px;
-            cursor: pointer;
-            line-height: 1;
-        }
-        .google-close:hover { color: var(--foreground); }
-
-        .google-title { margin: 4px 0 10px; font-size: 22px; font-weight: 600; color: var(--popover-foreground); }
-        .google-subtitle { margin-bottom: 28px; font-size: 14px; color: var(--muted-foreground); }
-
-        .google-account-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            margin: 8px 0;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            background: var(--card);
-            color: var(--card-foreground);
-            cursor: pointer;
-            text-align: left;
-            transition: background .15s ease, border-color .15s ease;
-        }
-
-        .google-account-btn:hover { background: var(--accent); border-color: var(--input); }
-
-        .google-avatar {
-            width: 32px;
-            height: 32px;
-            display: grid;
-            place-items: center;
-            margin-right: 12px;
-            border-radius: 50%;
-            background: #1a73e8;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 500;
-            flex-shrink: 0;
-        }
-
-        .google-acc-info { display: flex; flex-direction: column; }
-        .google-acc-name { color: var(--card-foreground); font-size: 14px; font-weight: 500; }
-        .google-acc-email { color: var(--muted-foreground); font-size: 12px; }
-
-        .google-footer {
-            margin-top: 28px;
-            color: var(--muted-foreground);
-            font-size: 12px;
-            line-height: 1.5;
-            text-align: left;
-        }
-        .google-footer a { color: var(--primary); text-decoration: none; }
-        .google-footer a:hover { text-decoration: underline; }
-
-        .hidden { display: none !important; }
-
-        
-
-        /* ---------- Responsive ---------- */
-        @media (max-width: 900px) {
-            
-
-            .auth-demo-container {
-                padding: 1rem;
-                align-items: flex-start;
-                justify-content: flex-start;
-            }
-
-            .auth-shell {
-                width: 100%;
-            }
-
-            .auth-split {
-                grid-template-columns: 1fr;
-                height: auto;
-                width: 100%;
-            }
-
-            .brand-card {
-                padding: 1.5rem 1.5rem 1.25rem;
-                padding-right: 1.5rem;
-                min-height: 160px;
-                border-radius: 22px;
-            }
-
-            .brand-logo img { height: 44px; }
-            .brand-hero { padding: 1rem 0 0; max-width: none; }
-            .brand-hero-title { font-size: 1.5rem; }
-            .brand-hero-sub { display: none; }
-            .brand-features { display: none; }
-            .brand-footer { display: none; max-width: none; }
-            .brand-card::before { width: 320px; height: 320px; }
-
-            .auth-card {
-                margin-left: 0;
-                margin-top: -1.25rem;
-                margin-bottom: 0;
-                padding: 1.5rem 1.25rem 1.25rem;
-                border-radius: 22px;
-            }
-
-            .auth-card::before,
-            .auth-card::after {
-                left: 1rem;
-                right: 1rem;
-            }
-
-            .auth-card-title { font-size: 2rem; }
-            .auth-card-sub   { margin-bottom: 1.5rem; }
-
-            .auth-footer-outside {
-                width: 100%;
-                padding-left: 0;
-                padding-inline: 0.25rem;
-                justify-content: center;
-            }
-        }
-
-        @media (max-height: 720px) {
-            .auth-split { height: auto; }
-            .auth-card { padding: 1.5rem 2rem 1.25rem; margin-top: 1rem; margin-bottom: 1rem; }
-            .auth-card-title { font-size: 2.125rem; }
-            .auth-card-sub { margin-bottom: 1.25rem; }
-            .auth-card .ui-input,
-            .auth-card .auth-social-btn { height: 2.5rem; }
-            .auth-card .ui-auth-btn-submit { height: 2.625rem; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .auth-demo-container, .auth-shell { animation: none; }
-            .auth-demo-container::before { animation: none; }
-            .ui-field-popup, .ui-auth-field { transition: none; }
-            .ui-auth-field.is-shaking { animation: none; }
-            .auth-footer-outside a,
-            .auth-footer-outside a::after,
-            .auth-card-signup a,
-            .auth-card-signup .arrow { transition: none; }
-        }
-    
-.auth-demo-container { position: relative; display: flex; align-items: center; justify-content: center; min-height: 800px; padding: 2rem; overflow: hidden; background-color: var(--background); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-top: 2rem; }
-
-        
-        /* Light Mode overrides for brand card */
-        html:not(.dark) .brand-card {
-            background: var(--card);
-            border-color: var(--border);
-            color: var(--muted-foreground) !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-        }
-        html:not(.dark) .brand-card::after {
-            background-image: radial-gradient(rgba(0, 0, 0, .04) 1px, transparent 1px);
-        }
-        html:not(.dark) .brand-card::before {
-            background:
-                radial-gradient(circle, transparent 0 22%, rgba(0, 0, 0, .03) 22% 22.4%, transparent 22.4%),
-                radial-gradient(circle, transparent 0 40%, rgba(0, 0, 0, .02) 40% 40.4%, transparent 40.4%),
-                radial-gradient(circle, transparent 0 58%, rgba(0, 0, 0, .01) 58% 58.4%, transparent 58.4%);
-        }
-        html:not(.dark) .brand-hero-title {
-            color: var(--muted-foreground) !important;
-        }
-        html:not(.dark) .brand-hero-sub,
-        html:not(.dark) .brand-features {
-            color: var(--muted-foreground) !important;
-        }
-html:not(.dark) .brand-footer {
-            color: var(--muted-foreground) !important;
-        }
-
-    
-        html:not(.dark) .brand-features li {
-            color: var(--muted-foreground) !important;
-        }
-        html:not(.dark) .auth-footer-outside,
-        html:not(.dark) .auth-footer-outside .legal,
-        html:not(.dark) .auth-footer-outside a {
-            color: var(--muted-foreground) !important;
-        }
-
-    </style>
         <div class="auth-demo-container">
             <div class="auth-shell">
         <div class="auth-split">
@@ -1935,7 +1090,7 @@ html:not(.dark) .brand-footer {
             <aside class="brand-card">
                 <a href="#" class="brand-logo" aria-label="SPMIS">
                     <img class="logo-dark-only" src="../assets/icons/SPMIS.png" alt="SPMIS" />
-<img class="logo-light-only" src="../assets/icons/SPMIS_LM.png" alt="SPMIS" />
+<img class="logo-light-only" src="../assets/icons/SPMIS.png" alt="SPMIS" />
                 </a>
 
                 <div class="brand-hero">
@@ -1995,9 +1150,9 @@ html:not(.dark) .brand-footer {
                                 </div>
 
                                 <div class="ui-auth-field" data-field="password">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div class="is-948e6d6">
                                         <label class="ui-auth-field-label" for="auth-pwd">Password</label>
-                                        <a href="#forgot" style="font-size: 0.72rem; color: var(--primary); text-decoration: none;">Forgot password?</a>
+                                        <a class="is-7bcf3f8" href="#forgot">Forgot password?</a>
                                     </div>
                                     <div class="ui-input-wrap">
                                         <input type="password" id="auth-pwd" class="ui-input" placeholder="••••••••••••" required />
@@ -2008,9 +1163,9 @@ html:not(.dark) .brand-footer {
                                     </div>
                                 </div>
 
-                                <label class="ui-checkbox-label" style="margin-top: 0.125rem;">
-                                    <input type="checkbox" checked style="accent-color: var(--primary);" />
-                                    <span style="font-size: 0.78rem;">Keep me signed in on this device</span>
+                                <label class="ui-checkbox-label keep-signed-in" for="auth-keep-signed-in">
+                                    <input type="checkbox" id="auth-keep-signed-in" class="custom-checkbox" checked />
+                                    <span class="keep-signed-in-text">Keep me signed in on this device</span>
                                 </label>
 
                                 <button type="submit" class="ui-auth-btn-submit">
@@ -2045,38 +1200,73 @@ html:not(.dark) .brand-footer {
         
       </section>
 
-    <!-- 10. Workspace Footer -->
-    <section class="ui-section" id="workspace-footer">
+    <!-- 12. Workspace Frame: Header, Status, Toasts & Pinned Footer -->
+    <section class="ui-section" id="workspace-frame">
       <div class="ui-section-header">
-        <h2 class="ui-section-title">Workspace Footer</h2>
-        <span class="ui-section-desc">Fixed footer bar for admin and faculty portals — pinned to the bottom of the viewport</span>
+        <h2 class="ui-section-title">Workspace Frame (Header, Status, Toasts &amp; Footer)</h2>
+        <span class="ui-section-desc">Unified viewport frame primitives: persistent status header bar, notification toasts, and docked footer</span>
       </div>
 
-      <!-- Footer Demo -->
-      <div style="position: relative; background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end;">
-        <div style="padding: 1rem 1.5rem; color: var(--muted-foreground); font-size: 0.8125rem; text-align: center;">↑ Page content sits above the footer</div>
-        <footer class="workspace-footer" style="flex: none !important; height: auto !important; padding: 0.75rem 1.5rem;">
-          <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
-          <span>System Version 2.4.0</span>
-        </footer>
-      </div>
+      <div class="ui-grid ui-grid-cols-2 is-ffdb8e7">
+        <!-- Portal Top Header Bar Preview -->
+        <div class="ui-card is-03e275d">
+          <span class="ui-btn-label">Portal Status Header Bar</span>
+          <div class="ui-workspace-surface is-24ba48f">
+            <div class="admin-top-header is-911172d">
+              <div class="is-b512c98">
+                <div class="red-dot is-86dee63"></div>
+                <span class="breadcrumb-text">Workspace / Overview</span>
+              </div>
+              <div class="is-1c20bbe">
+                <span class="status-badge">
+                  <span class="green-dot is-6888aeb"></span>
+                  System Live
+                </span>
+                <span class="ay-text">AY 2026-2027</span>
+              </div>
+            </div>
+            <div class="is-469b292">
+              &darr; Page content and tables sit below this header bar
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Pinned at the top of portal viewports. The terracotta dot anchors the workspace context while the pulsing green indicator verifies real-time operational status.
+          </p>
+        </div>
 
-      <!-- Code Reference -->
-      <div class="ui-card" style="margin-top: 1.5rem; padding: 1.25rem;">
-        <h3 class="ui-card-title" style="margin-bottom: 0.75rem;">Usage</h3>
-        <pre style="background: var(--muted); padding: 1rem; border-radius: var(--radius-md); font-size: 0.8125rem; overflow-x: auto; color: var(--foreground); margin: 0;">&lt;main&gt;
-  &lt;div style="flex:1;min-height:0;overflow-y:auto;"&gt;
-    &lt;!-- Page content --&gt;
-  &lt;/div&gt;
-  &lt;footer class="workspace-footer"&gt;
-    &lt;span&gt;&copy; 2026 Portal. All rights reserved.&lt;/span&gt;
-    &lt;span&gt;System Version 2.4.0&lt;/span&gt;
-  &lt;/footer&gt;
-&lt;/main&gt;</pre>
-        <p style="margin-top: 1rem; font-size: 0.8125rem; color: var(--muted-foreground);">
-          The footer uses <code style="background: var(--muted); padding: 2px 6px; border-radius: 4px;">flex: none; height: auto;</code> to override the workspace wildcard selector. 
-          Content is wrapped in a scrollable <code style="background: var(--muted); padding: 2px 6px; border-radius: 4px;">div</code> with <code style="background: var(--muted); padding: 2px 6px; border-radius: 4px;">flex:1</code> so the footer stays pinned at the bottom.
-        </p>
+        <!-- Toast Notifications Demo -->
+        <div class="ui-card is-03e275d">
+          <span class="ui-btn-label">Toast Notification Primitive (.ui-toast)</span>
+          <div class="is-1dac0b9">
+            <button type="button" id="demo-show-toast-btn" class="ui-btn add-button is-b5fea39">
+              Trigger Success Toast
+            </button>
+          </div>
+          
+          <div class="is-c3a5059">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span class="is-1e42189">Application Action Completed Successfully</span>
+          </div>
+
+          <p class="ui-text-caption">
+            Fixed toast positioned at the bottom right with <code>backdrop-filter: blur(8px)</code>, automatic 3-second timeout, and screen reader announcements via <code>aria-live="polite"</code>.
+          </p>
+        </div>
+
+        <!-- Pinned Viewport Workspace Footer -->
+        <div class="ui-card is-a6b38e2">
+          <span class="ui-btn-label">Pinned Viewport Workspace Footer (.workspace-footer)</span>
+          <div class="ui-workspace-surface ui-workspace-footer-preview is-abb9727">
+            <div class="is-0eeaf53">↑ Scrollable workspace content sits above this footer</div>
+            <footer class="workspace-footer is-e8a73a1">
+              <span>&copy; 2026 Academic Management System. All rights reserved.</span>
+              <span>System Version 2.4.0 &middot; AY 2026-2027</span>
+            </footer>
+          </div>
+          <p class="ui-text-caption">
+            Integrated into the bottom of the workspace canvas via <code>flex: none</code> inside the vertical flex column, ensuring clean alignment across desktop and responsive displays.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -2088,245 +1278,68 @@ html:not(.dark) .brand-footer {
 
   </div>
 
-  <script>
-    // Live Light / Dark Mode Toggle Functionality
-    const toggleBtn = document.getElementById('theme-toggle-btn');
-    const themeIcon = document.getElementById('theme-icon');
-    const themeLabel = document.getElementById('theme-label');
-    const htmlEl = document.documentElement;
+  <script src="../assets/js/pages/design-system.js"></script>
 
-    function updateThemeUI() {
-      const isDark = htmlEl.classList.contains('dark');
-      themeIcon.innerHTML = isDark ? '&#127769;' : '&#9728;&#65039;';
-      themeLabel.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-    }
-
-    toggleBtn.addEventListener('click', () => {
-      htmlEl.classList.toggle('dark');
-      updateThemeUI();
-    });
-
-    updateThemeUI();
-  </script>
-
-<script>
-  // Auto-resize chat textarea
-  document.querySelectorAll('.ui-chat-textarea').forEach(textarea => {
-    textarea.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = (this.scrollHeight) + 'px';
-    });
-    // Trigger once on load
-    textarea.dispatchEvent(new Event('input'));
-  });
-</script>
-
-
-
-<script>
-  // Handle Chat Input for Design System
-  document.addEventListener('DOMContentLoaded', () => {
-    const chatForm = document.getElementById('chat-form');
-    const chatPrompt = document.getElementById('chat-prompt');
-    const chatLog = document.querySelector('.ui-chat-log');
-
-    if (chatForm && chatPrompt && chatLog) {
-      chatPrompt.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
-          e.preventDefault();
-          if (chatPrompt.value.trim() !== '') {
-            chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
-          }
-        }
-      });
-
-      chatForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const text = chatPrompt.value.trim();
-        if (!text) return;
-
-        // Current time
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        // Create new user message
-        const msgDiv = document.createElement('div');
-        msgDiv.className = 'ui-chat-msg ui-chat-msg--user';
-        
-        // Escape HTML
-        const safeText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        
-        msgDiv.innerHTML = `
-          <div class="ui-chat-msg-content">
-            <div class="ui-chat-msg-header">
-              <span class="ui-chat-msg-sender">Prof. Morgan</span>
-              <span class="ui-chat-msg-time">${timeStr}</span>
-            </div>
-            <div class="ui-chat-bubble ui-chat-bubble--user">${safeText}</div>
+  <!-- Interactive Demo Modals and Toasts -->
+  <!-- 1. Live Reject Application Modal -->
+  <div class="modal-overlay" id="demoRejectModal">
+    <div class="modal-container">
+      <button class="modal-close ui-modal-close" id="demoCloseRejectModal" aria-label="Close modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <h3 class="modal-title">Reject Application</h3>
+      <form class="modal-form" id="demoRejectForm">
+        <!-- Contextual Action Confirmation Alert -->
+        <div class="ui-alert ui-alert--warning" role="alert">
+          <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <div class="ui-alert-content">
+            <span class="ui-alert-title">Confirm Rejection Decision</span>
+            <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
           </div>
-        `;
-        
-        chatLog.appendChild(msgDiv);
-        
-        // Reset input
-        chatPrompt.value = '';
-        chatPrompt.style.height = 'auto'; // trigger auto-resize reset
-        
-        // Scroll to bottom
-        chatLog.scrollTop = chatLog.scrollHeight;
-      });
-    }
-  });
-</script>
+        </div>
 
+        <div>
+          <label for="demoRejectAppSelect">Application:</label>
+          <select id="demoRejectAppSelect">
+            <option value="app_1">Dr. Eleanor Vance (Faculty Proposal)</option>
+            <option value="app_2">BS Data Science (Program Proposal)</option>
+            <option value="app_3">Dept. of Applied Mathematics</option>
+          </select>
+        </div>
+        <div>
+          <label for="demoRejectReason">
+            <span>Reason for rejection <span class="is-9790b6e">*</span></span>
+          </label>
+          <textarea id="demoRejectReason" required placeholder="Enter specific deficiency or prerequisites reason..."></textarea>
+        </div>
+        <button type="submit" class="modal-submit">Confirm Rejection</button>
+      </form>
+    </div>
+  </div>
 
-<script>
-  // Handle Table Checkboxes
-  document.addEventListener('DOMContentLoaded', () => {
-    const table = document.querySelector('.ui-table');
-    if (!table) return;
-    
-    const headerCheckbox = table.querySelector('thead input[type="checkbox"]');
-    const rowCheckboxes = table.querySelectorAll('tbody input[type="checkbox"]');
-    const paginationText = document.querySelector('.ui-table-pagination span');
-    
-    function updateTableState() {
-      const total = rowCheckboxes.length;
-      const checked = Array.from(rowCheckboxes).filter(cb => cb.checked).length;
-      
-      if (checked === 0) {
-        headerCheckbox.checked = false;
-        headerCheckbox.indeterminate = false;
-      } else if (checked === total) {
-        headerCheckbox.checked = true;
-        headerCheckbox.indeterminate = false;
-      } else {
-        headerCheckbox.checked = false;
-        headerCheckbox.indeterminate = true;
-      }
-      
-      if (paginationText) {
-        paginationText.textContent = `${checked} of ${total} row(s) selected.`;
-      }
-    }
-    
-    headerCheckbox.addEventListener('change', (e) => {
-      rowCheckboxes.forEach(cb => cb.checked = e.target.checked);
-      updateTableState();
-    });
-    
-    rowCheckboxes.forEach(cb => {
-      cb.addEventListener('change', updateTableState);
-      
-      const tr = cb.closest('tr');
-      if (tr) {
-        tr.style.cursor = 'pointer';
-        tr.addEventListener('click', (e) => {
-          if (e.target.tagName === 'INPUT' || e.target.closest('button, a')) {
-            return;
-          }
-          cb.checked = !cb.checked;
-          updateTableState();
-        });
-      }
-    });
-    
-    // Initial state setup
-    updateTableState();
-  });
-</script>
+  <!-- 2. Live Logout Confirmation Dialog -->
+  <dialog id="demoLogoutDialog" class="logout-dialog">
+    <form method="dialog">
+      <h2>Log out?</h2>
+      <p>Are you sure you want to end your current session?</p>
+      <div class="actions">
+        <button type="submit" value="cancel" class="ui-btn ui-btn-outline">Cancel</button>
+        <button type="submit" value="confirm" class="ui-btn ui-btn-primary">Log out</button>
+      </div>
+    </form>
+  </dialog>
 
-  <script>
-    // Handle Table Static Pagination for Design System Mockups
-    document.addEventListener('DOMContentLoaded', () => {
-      const tableWraps = document.querySelectorAll('.ui-table-wrap');
-      tableWraps.forEach(wrap => {
-        const select = wrap.querySelector('select.ui-select-pill');
-        // Let's also check if the pagination is outside ui-table-wrap, 
-        // in some designs the pagination is a sibling to ui-table-wrap.
-        // In the design system, ui-table-pagination is typically inside ui-table-wrap or right after it.
-        
-        // Let's find the pagination container which might be inside wrap or next to it
-        let pagination = wrap.querySelector('.ui-table-pagination');
-        if (!pagination && wrap.nextElementSibling && wrap.nextElementSibling.classList.contains('ui-table-pagination')) {
-            pagination = wrap.nextElementSibling;
-        }
-        
-        if (!pagination) return;
-        
-        const actualSelect = pagination.querySelector('select.ui-select-pill');
-        if (!actualSelect) return;
-        
-        const tbody = wrap.querySelector('tbody');
-        if (!tbody) return;
-        
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        const paginationNav = pagination.querySelector('.ui-table-pagination-nav');
-        if (!paginationNav) return;
-        
-        const buttons = paginationNav.querySelectorAll('button');
-        const prevBtn = buttons[0];
-        const nextBtn = buttons[1];
-        
-        let currentPage = 1;
-        
-        function updateView() {
-          const limit = parseInt(actualSelect.value) || 5;
-          const totalPages = Math.max(1, Math.ceil(rows.length / limit));
-          
-          if (currentPage > totalPages) currentPage = totalPages;
-          
-          const start = (currentPage - 1) * limit;
-          const end = start + limit;
-          
-          rows.forEach((row, i) => {
-            if (i >= start && i < end) {
-              row.style.display = '';
-            } else {
-              row.style.display = 'none';
-            }
-          });
-          
-          const spans = Array.from(pagination.querySelectorAll('span'));
-          const pageSpan = spans.find(s => s.textContent.trim().startsWith('Page '));
-          if (pageSpan) {
-              pageSpan.textContent = `Page ${currentPage} of ${totalPages}`;
-          }
-          
-          if (prevBtn) prevBtn.disabled = currentPage === 1;
-          if (nextBtn) nextBtn.disabled = currentPage === totalPages;
-        }
-        
-        actualSelect.addEventListener('change', () => {
-          currentPage = 1;
-          updateView();
-        });
-        
-        if (prevBtn) {
-            prevBtn.addEventListener('click', () => {
-              if (currentPage > 1) {
-                currentPage--;
-                updateView();
-              }
-            });
-        }
-        
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
-              const limit = parseInt(actualSelect.value) || 5;
-              const totalPages = Math.ceil(rows.length / limit);
-              if (currentPage < totalPages) {
-                currentPage++;
-                updateView();
-              }
-            });
-        }
-        
-        // Initial state
-        updateView();
-      });
-    });
-  </script>
+  <!-- 3. Live Success Toast -->
+  <div id="demoToast" class="ui-toast" role="status" aria-live="polite">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="demoToastMessage">Action completed successfully!</span>
+  </div>
+
+  <script src="../assets/js/pages/design-system-2.js"></script>
 </body>
 
 </html>

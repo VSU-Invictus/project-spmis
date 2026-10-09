@@ -1,0 +1,9 @@
+/* Department Applications Queue Column Widths */
+.table-scroll :is(.table-header-row, .table-row) {
+  min-width: 860px;
+}
+
+.th-cell.col-program, .td-cell.col-program { flex: 280 1 0; }
+.th-cell.col-proposed, .td-cell.col-proposed { flex: 220 1 0; }
+.th-cell.col-type, .td-cell.col-type { flex: 180 1 0; }
+.th-cell.col-date, .td-cell.col-date { flex: 160 1 0; }

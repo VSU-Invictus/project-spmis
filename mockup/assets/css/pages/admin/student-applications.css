@@ -1,0 +1,10 @@
+/* Student Applications Queue Column Widths */
+.table-scroll :is(.table-header-row, .table-row) {
+  min-width: 960px;
+}
+
+.th-cell.col-id, .td-cell.col-id { flex: 159 1 0; }
+.th-cell.col-name, .td-cell.col-name { flex: 241 1 0; }
+.th-cell.col-program, .td-cell.col-program { flex: 275 1 0; }
+.th-cell.col-source, .td-cell.col-source { flex: 221 1 0; }
+.th-cell.col-date, .td-cell.col-date { flex: 164 1 0; }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -7,75 +7,29 @@
     <title>Faculty Sidebar Navigation</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../assets/css/design-system.css">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Navigate parent window when used in an iframe -->
     <base target="_parent">
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #141413;
         }
 
-        .bg-sidebar {
-            background-color: #21201E;
-        }
-
-        .border-sidebar-right {
-            border-color: #181716;
-        }
-
-        /* Active Navigation Item State */
+        /* Active Navigation Item State - Exact Match to Design Spec */
         .nav-btn-active {
-            background-color: var(--primary, #D97251);
-            color: var(--primary-foreground, #FFFFFF);
-        }
-
-        /* Inactive Navigation Item State */
-        .nav-btn-inactive {
-            background-color: transparent;
-            color: #98938D;
-        }
-
-        .nav-btn-inactive:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: #FFFFFF;
-        }
-
-        /* Bottom Account Profile Card Styling */
-        .bg-account-card {
-            background-color: #2B2A27;
-        }
-
-        .bg-avatar {
-            background-color: #F7E2D6;
-        }
-
-        .text-avatar {
-            color: #A35233;
-        }
-
-        .border-divider {
-            border-color: #8C4328;
-        }
-
-        /* Dark Theme Scrollbar for Sidebar Navigation */
-        .dark-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .dark-scrollbar::-webkit-scrollbar-track {
-            background: #21201E;
-        }
-
-        .dark-scrollbar::-webkit-scrollbar-thumb {
-            background: #3E3D39;
-            border-radius: 4px;
+            background-color: #D97251 !important;
+            color: #000000 !important;
+            font-weight: 700 !important;
         }
     </style>
 </head>
@@ -84,7 +38,7 @@
 
     <!-- ========================= STANDALONE FACULTY SIDEBAR ========================= -->
     <aside id="sidebar-menu"
-        class="fixed top-0 left-0 bottom-0 w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50">
+        class="app-sidebar fixed top-0 left-0 bottom-0 w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50">
 
         <div class="flex flex-col gap-1">
             <!-- Brand Title Header -->
@@ -93,12 +47,12 @@
             </div>
 
             <!-- Navigation Links Stream -->
-            <nav class="flex flex-col gap-[3px]" id="sidebar-nav">
+            <nav class="nav flex flex-col gap-[3px]" id="sidebar-nav" aria-label="Faculty navigation">
 
                 <!-- 1. Dashboard -->
-                <a href="../../pages/faculty/dashboard.html"
-                    class="nav-btn-active min-h-[42px] px-3.5 rounded-[16px] flex items-center gap-[12px] text-[13px] font-bold transition-all shadow-sm">
-                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                <a href="../../pages/faculty/dashboard.html" data-nav-key="dashboard"
+                    class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
+                    <svg class="w-[18px] h-[18px] shrink-0 is-052ff0c" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
                         <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
                         <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
@@ -108,7 +62,7 @@
                 </a>
 
                 <!-- 2. Students -->
-                <a href="../../pages/faculty/students.html"
+                <a href="../../pages/faculty/students.html" data-nav-key="students"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -120,7 +74,7 @@
                 </a>
 
                 <!-- 3. Chats -->
-                <a href="../../pages/faculty/chat.html"
+                <a href="../../pages/faculty/chat.html" data-nav-key="chat"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-3 2V11.5a9.5 9.5 0 0 1 19 0Z"></path>
@@ -130,7 +84,7 @@
                 </a>
 
                 <!-- 4. Programs -->
-                <a href="../../pages/faculty/programs.html"
+                <a href="../../pages/faculty/programs.html" data-nav-key="programs"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -140,7 +94,7 @@
                 </a>
 
                 <!-- 5. Departments -->
-                <a href="../../pages/faculty/departments.html"
+                <a href="../../pages/faculty/departments.html" data-nav-key="departments"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="21" x2="21" y2="21"></line>
@@ -154,7 +108,7 @@
                 </a>
 
                 <!-- 6. Applications -->
-                <a href="../../pages/faculty/applications.html"
+                <a href="../../pages/faculty/applications.html" data-nav-key="applications"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
@@ -171,32 +125,161 @@
         <!-- User Profile Card & Footer Divider -->
         <div class="mt-auto pt-3 flex flex-col gap-3">
             <!-- Accent Line Divider -->
-            <div class="h-[1px] w-full border-b border-divider opacity-80"></div>
+            <div class="sidebar-divider h-[1px] w-full border-b border-[#42423F]"></div>
 
             <!-- User Profile Box -->
-            <div class="bg-account-card rounded-[18px] h-[58px] w-full px-3.5 flex items-center justify-between">
+            <div class="sidebar-account-card bg-account-card rounded-[18px] h-[58px] w-full px-3.5 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <!-- Avatar Badge -->
-                    <div class="bg-avatar w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0">
+                    <div class="sidebar-avatar bg-avatar w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0">
                         <span class="text-avatar font-bold text-[17px] leading-none">A</span>
                     </div>
 
                     <!-- User Information Labels -->
-                    <div class="flex flex-col">
-                        <span class="text-white text-[13px] font-bold leading-tight" data-name>Alex Morgan</span>
-                        <span class="text-[#929292] text-[11px] font-medium leading-tight">Faculty member</span>
+                    <div class="sidebar-account-details flex flex-col">
+                        <span class="sidebar-account-name text-white text-[13px] font-bold leading-tight" data-name>Alex Morgan</span>
+                        <span class="sidebar-account-role text-[#929292] text-[11px] font-medium leading-tight">Faculty member</span>
                     </div>
                 </div>
 
                 <!-- Logout Button -->
-                <a href="../../pages/auth/signin.html" class="text-[#929292] hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10" aria-label="Log out" title="Log out">
+                <button type="button" class="sidebar-logout-btn logout-btn" aria-label="Log out" title="Log out" onclick="handleLogout(event)">
                     <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
                     </svg>
-                </a>
+                </button>
             </div>
         </div>
     </aside>
 
+    <script>
+        // Set active state on element
+        function setActiveNav(element) {
+            document.querySelectorAll('#sidebar-nav a').forEach(nav => {
+                nav.classList.remove('nav-btn-active');
+                nav.classList.add('nav-btn-inactive');
+                nav.removeAttribute('aria-current');
+            });
+
+            element.classList.remove('nav-btn-inactive');
+            element.classList.add('nav-btn-active');
+            element.setAttribute('aria-current', 'page');
+        }
+
+        // Determine active page
+        const params = new URLSearchParams(window.location.search || '');
+        let activeKey = (params.get('active') || '').toLowerCase();
+        if (!activeKey) {
+            try {
+                const parentPath = (window.parent.location.pathname || '').toLowerCase();
+                activeKey = parentPath.split('/').pop().replace('.html', '');
+            } catch (e) {
+                const myPath = (window.location.pathname || '').toLowerCase();
+                activeKey = myPath.split('/').pop().replace('.html', '');
+            }
+        }
+        if (!activeKey || activeKey === 'index') activeKey = 'dashboard';
+        if (activeKey === 'student-detail' || activeKey === 'register-student') activeKey = 'students';
+        if (activeKey === 'new-review') activeKey = 'applications';
+
+        document.querySelectorAll('#sidebar-nav a').forEach(link => {
+            const key = (link.dataset.navKey || '').toLowerCase();
+            if (key === activeKey) {
+                setActiveNav(link);
+            }
+        });
+
+        // Smooth parent window navigation
+        document.querySelectorAll('#sidebar-nav a').forEach(link => {
+            link.addEventListener('click', (event) => {
+                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                setActiveNav(link);
+                window.setTimeout(() => {
+                    if (window.parent && window.parent !== window) {
+                        window.parent.location.href = link.href;
+                    } else {
+                        window.location.href = link.href;
+                    }
+                }, 100);
+            });
+        });
+
+        // Logout handler that triggers parent logout dialog or redirects
+        function handleLogout(event) {
+            event.preventDefault();
+            try {
+                const parentDoc = window.parent.document;
+                let dialog = parentDoc.getElementById('faculty-logout-dialog') || parentDoc.querySelector('.logout-dialog');
+                
+                if (!dialog) {
+                    dialog = parentDoc.createElement('dialog');
+                    dialog.id = 'faculty-logout-dialog';
+                    dialog.className = 'logout-dialog';
+                    dialog.style.cssText = 'width: min(420px, calc(100% - 32px)); margin: auto; padding: 26px; border: 1px solid #D97251; border-radius: 15px; background: #30302E; color: #FFF; font-family: "Outfit", sans-serif;';
+                    
+                    let style = parentDoc.getElementById('faculty-logout-style');
+                    if (!style) {
+                        style = parentDoc.createElement('style');
+                        style.id = 'faculty-logout-style';
+                        style.textContent = 'dialog#faculty-logout-dialog::backdrop, dialog.logout-dialog::backdrop { background: rgba(0, 0, 0, 0.6); }';
+                        parentDoc.head.appendChild(style);
+                    }
+                    
+                    const form = parentDoc.createElement('form');
+                    form.method = 'dialog';
+                    
+                    const h2 = parentDoc.createElement('h2');
+                    h2.textContent = 'Log out?';
+                    h2.style.cssText = 'margin: 0 0 8px; font-size: 20px; font-weight: bold;';
+                    
+                    const p = parentDoc.createElement('p');
+                    p.textContent = 'Are you sure you want to end your faculty session?';
+                    p.style.cssText = 'margin: 0 0 22px; color: #9C948B; font-size: 14px; line-height: 1.5;';
+                    
+                    const actions = parentDoc.createElement('div');
+                    actions.style.cssText = 'display: flex; justify-content: flex-end; gap: 12px;';
+                    
+                    const btnCancel = parentDoc.createElement('button');
+                    btnCancel.type = 'submit';
+                    btnCancel.value = 'cancel';
+                    btnCancel.textContent = 'Cancel';
+                    btnCancel.style.cssText = 'padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; background: transparent; color: #FFF; border: 1px solid #6C655D; transition: background 0.2s;';
+                    btnCancel.onmouseover = () => btnCancel.style.background = 'rgba(255,255,255,0.1)';
+                    btnCancel.onmouseout = () => btnCancel.style.background = 'transparent';
+                    
+                    const btnConfirm = parentDoc.createElement('button');
+                    btnConfirm.type = 'submit';
+                    btnConfirm.value = 'confirm';
+                    btnConfirm.textContent = 'Log out';
+                    btnConfirm.style.cssText = 'padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; background: #D97251; color: #FFF; border: none; transition: filter 0.2s;';
+                    btnConfirm.onmouseover = () => btnConfirm.style.filter = 'brightness(1.1)';
+                    btnConfirm.onmouseout = () => btnConfirm.style.filter = 'none';
+                    
+                    actions.appendChild(btnCancel);
+                    actions.appendChild(btnConfirm);
+                    
+                    form.appendChild(h2);
+                    form.appendChild(p);
+                    form.appendChild(actions);
+                    dialog.appendChild(form);
+                    
+                    dialog.addEventListener('close', () => {
+                        if (dialog.returnValue === 'confirm') {
+                            window.parent.location.href = '../../pages/auth/signin.html';
+                        }
+                    });
+                    
+                    parentDoc.body.appendChild(dialog);
+                }
+                
+                dialog.showModal();
+            } catch (e) {
+                if (confirm('Are you sure you want to end your faculty session?')) {
+                    window.parent.location.href = '../../pages/auth/signin.html';
+                }
+            }
+        }
+    </script>
 </body>
 </html>

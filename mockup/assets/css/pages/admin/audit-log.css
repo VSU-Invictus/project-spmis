@@ -1,0 +1,38 @@
+/* Admin Audit Log Specific Styles */
+.table-scroll :is(.table-header-row, .table-row) {
+  min-width: 860px;
+}
+
+.th-cell.col-date, .td-cell.col-date {
+  flex: 220 1 0;
+  padding-left: var(--space-9, 24px);
+}
+
+.th-cell.col-user, .td-cell.col-user {
+  flex: 180 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.th-cell.col-action-type, .td-cell.col-action-type {
+  flex: 150 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.th-cell.col-entity, .td-cell.col-entity {
+  flex: 170 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.th-cell.col-target, .td-cell.col-target {
+  flex: 280 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: var(--space-9, 24px);
+}
