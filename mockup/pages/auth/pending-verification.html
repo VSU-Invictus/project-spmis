@@ -1,47 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
-
+<html lang="en" class="dark ui-auth-document">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../assets/css/design-system.css">
     <link rel="stylesheet" href="../../assets/css/global.css">
-    <link rel="stylesheet" href="../../assets/css/background.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="../../assets/css/pages/auth/pending-verification.css" />
+    <link rel="stylesheet" href="../../assets/css/pages/auth/role-routing.css">
     <title>SPMIS - Pending Verification</title>
 </head>
-
-<body>
-
-    <div class="verification-wrapper">
-        <!-- Inline SVG Clock Icon -->
-        <svg class="icon-clock" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="28" stroke="#d97757" stroke-width="2.5" />
-            <path d="M32 16 V32 L42 38" stroke="#d97757" stroke-width="2.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-        </svg>
-
-        <h1 class="title">Account Pending Verification</h1>
-
-        <p class="desc-main">
-            Your faculty account has been successfully submitted and is awaiting approval from the system administrator.
-        </p>
-
-        <p class="desc-sub">
-            Check your email and verify your account by clicking the &ldquo;Verify Email&rdquo;.
-        </p>
-
-        <a href="signin.html" class="ui-btn btn-primary">Back to Sign In</a>
+<body class="ui-auth-page">
+    <div class="ui-auth-viewport ui-verification-layout">
+        <section class="ui-verification-card" aria-labelledby="verification-title">
+            <svg class="ui-verification-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <circle cx="32" cy="32" r="28" />
+                <path d="M32 16 V32 L42 38" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h1 class="ui-verification-title" id="verification-title">Account Pending Verification</h1>
+            <p class="ui-verification-description">Your faculty account has been successfully submitted and is awaiting approval from the system administrator.</p>
+            <p class="ui-auth-role-description">Faculty access will be available after your account is approved.</p>
+            <a href="signin.html" class="ui-btn">Back to Sign In</a>
+            <nav class="ui-auth-role-nav" aria-label="Mockup dashboard previews">
+                <p class="ui-auth-role-description">Preview a dashboard</p>
+                <div class="ui-auth-role-actions">
+                    <a class="ui-btn" href="../admin/dashboard.html" data-dashboard-link>Admin User</a>
+                    <a class="ui-btn ui-btn-secondary" href="../faculty/dashboard.html" data-dashboard-link>Faculty User</a>
+                </div>
+            </nav>
+        </section>
+        <footer class="ui-verification-footer">
+            <nav aria-label="Information and policies">
+                <a href="about.html">About</a>
+                <a href="terms.html">Terms</a>
+                <a href="privacy%20policy.html">Privacy Policy</a>
+            </nav>
+        </footer>
     </div>
-
-    <!-- Footer Pinned to Bottom -->
-    <div class="footer-links">
-        <a href="about.html">About</a> &bull;
-        <a href="terms.html">Terms</a> &bull;
-        <a href="privacy%20policy.html">Privacy Policy</a>
-    </div>
-
 </body>
-
 </html>

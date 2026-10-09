@@ -1,0 +1,127 @@
+/* Shared mockup dashboard entry points. Load after the page stylesheet. */
+html.ui-auth-document,
+body.ui-auth-page {
+    height: 100vh;
+    min-height: 0;
+    margin: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+body.ui-auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(var(--spacing) * 4);
+    border: 1px solid var(--primary);
+    font-family: var(--font-sans);
+}
+
+.ui-auth-viewport {
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.ui-auth-panel {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.ui-auth-role-nav {
+    display: grid;
+    gap: calc(var(--spacing) * 3);
+    margin-top: calc(var(--spacing) * 4);
+    padding-top: calc(var(--spacing) * 4);
+    border-top: 1px solid var(--border);
+    width: 100%;
+}
+
+.ui-auth-role-description {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.ui-auth-role-actions,
+.ui-auth-account-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--spacing) * 3);
+}
+
+.ui-auth-other-account {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: start;
+}
+
+.ui-auth-dialog-content {
+    overflow-y: auto;
+}
+
+.ui-auth-account-nav {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    margin-block: calc(var(--spacing) * 4);
+}
+
+.ui-auth-page .ui-btn:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+.ui-verification-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing) * 8);
+    width: min(100%, 36rem);
+}
+
+.ui-verification-card {
+    display: grid;
+    justify-items: center;
+    gap: calc(var(--spacing) * 4);
+    padding: calc(var(--spacing) * 6);
+    text-align: center;
+}
+
+.ui-verification-icon {
+    width: 4.5rem;
+    height: 4.5rem;
+    color: var(--primary);
+}
+
+.ui-verification-title {
+    margin: 0;
+    color: var(--foreground);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    line-height: 1.2;
+}
+
+.ui-verification-description {
+    margin: 0;
+    color: var(--foreground);
+    line-height: 1.5;
+}
+
+.ui-verification-card .ui-auth-role-actions,
+.ui-verification-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: calc(var(--spacing) * 4);
+}
+
+.ui-verification-footer {
+    padding-bottom: calc(var(--spacing) * 4);
+}
+
+.ui-verification-footer a {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+}

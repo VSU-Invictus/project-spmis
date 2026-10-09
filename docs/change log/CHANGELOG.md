@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **UI:** Added explicit Admin User and Faculty User dashboard preview links to the redesigned sign-in and pending-verification pages. The account chooser uses native dashboard links and the `?account=google` route, with keyboard focus containment and restoration. Auth entry pages use a token-based terracotta frame and internal scrolling.
 - **UI:** Added Action Confirmation Alert blocks (`.ui-alert`, `.ui-alert--warning`, `.ui-alert--info`) to Portal Modals to safeguard users from accidental approvals or rejections, providing clear context before state mutations.
 - **UI:** Added confirmation Accept Modal (`#acceptModal`) across Admin applications tables (`faculty-applications.html`, `student-applications.html`, `department-applications.html`, `program-applications.html`) with applicant summary breakdown to prevent accidental single-click approvals.
 - **UI:** Added zero-blink smooth page transitions across admin portal pages using the View Transitions API (`view-transition-name: portal-sidebar`) and link hover prefetching (`bd915b5`).
