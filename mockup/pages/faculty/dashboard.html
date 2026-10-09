@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard · SPMIS Faculty</title>
+  <link rel="stylesheet" href="../../assets/css/design-system.css" />
+    <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
+    <link rel="stylesheet" href="../../assets/css/components.css?v=9" />
+  <script src="../../assets/js/faculty-sidebar.js"></script>
+  <link rel="stylesheet" href="../../assets/css/pages/faculty/dashboard.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body data-page="dashboard">
+  <a href="#main" class="skip">Skip to content</a>
+  <div class="app">
+    <iframe
+      src="../../components/navigation/sidebar-faculty.html?active=dashboard"
+      id="sidebar-frame"
+      class="sidebar-frame"
+      title="Faculty Sidebar">
+    </iframe>
+    <main id="main">
+      <!-- Top Brand Header Bar -->
+      <div class="is-3c1f7d3">
+<div class="top-header-bar">
+        <div class="is-b512c98">
+          <div class="is-86dee63"></div>
+          <span class="is-aae39be">FACULTY PORTAL / OVERVIEW</span>
+        </div>
+        <div class="is-2dec633">
+          <span class="status-live-pill is-20045f6">
+            <span class="is-15b160a"></span>
+            System Live
+          </span>
+          <span class="is-98efe8b">AY 2026-2027</span>
+        </div>
+      </div>
+      <div class="header">
+        <div>
+
+          <h1>Good day, <span data-name>Alex Morgan</span></h1>
+          <p>
+            Your reviews, student research, and application updates in one
+            place.
+          </p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="ui-card stat">
+          <span class="muted">Students</span>
+          <strong id="student-count">20</strong>
+          <small>Approved sample roster</small>
+        </div>
+        <div class="ui-card stat">
+          <span class="muted">Your reviews</span>
+          <strong id="review-count">3</strong>
+          <small>Active and hidden</small>
+        </div>
+      </div>
+      <section class="ui-card dashboard-quick-links">
+        <h2>Quick links</h2>
+        <div class="quick-links">
+          <!-- Card 1 -->
+          <a href="students.html" class="quick-link-item">
+            <h3>Browse students <span class="arrow">&rarr;</span></h3>
+            <p>Search records and active reviews.</p>
+          </a>
+          <!-- Card 2 -->
+          <a href="students.html" class="quick-link-item">
+            <h3>Write a review <span class="arrow">&rarr;</span></h3>
+            <p>Select a student to add text and tags.</p>
+          </a>
+          <!-- Card 3 -->
+          <a href="chat.html" class="quick-link-item">
+            <h3>Open Chats <span class="arrow">&rarr;</span></h3>
+            <p>Explore reviews across students.</p>
+          </a>
+          <!-- Card 4 -->
+          <a href="students.html?register=true" class="quick-link-item">
+            <h3>Register a student <span class="arrow">&rarr;</span></h3>
+            <p>Submit a registration application.</p>
+          </a>
+        </div>
+      </section>
+      <section class="ui-card dashboard-reviews">
+        <div class="between">
+          <h2>Recent active reviews</h2>
+          <a href="students.html" class="ui-link-neutral">Browse all students <span class="arrow">&rarr;</span></a>
+        </div>
+        <div id="recent-reviews" class="review-feed"></div>
+      </section>
+      <noscript>
+        <p class="notice">
+          Enable JavaScript to display sample lists and use the mock
+          interactions.
+        </p>
+      </noscript>
+          <!-- Workspace Footer -->
+</div>
+      <footer class="workspace-footer">
+        <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
+        <span>System Version 2.4.0</span>
+      </footer>
+    </main>
+  </div>
+  <script src="../../assets/js/pages/faculty/dashboard.js"></script>
+
+    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Action successful!</span>
+    </div>
+    <script src="../../assets/js/pages/faculty/dashboard-2.js"></script>
+
+</body>
+
+</html>

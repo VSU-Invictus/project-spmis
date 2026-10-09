@@ -1,0 +1,22 @@
+/* Faculty Register Student Specific Styles */
+
+/* ---- Former inline styles (specificity boosted to match inline priority) ---- */
+.is-b512c98:not(#\#):not(#\#) { display: flex; align-items: center; gap: var(--space-4, 10px); }
+.is-052ff0c:not(#\#):not(#\#) { width: 18px; height: 18px; }
+.is-86dee63:not(#\#):not(#\#) { width: 10px; height: 10px; border-radius: var(--radius-full); background: var(--color-primary-base, #D97251); }
+.is-aae39be:not(#\#):not(#\#) { font-size: var(--font-size-xs, 11px); font-weight: var(--font-weight-semibold, 600); letter-spacing: 0.6px; text-transform: uppercase; color: var(--color-text-muted, #A0988E); }
+.is-2dec633:not(#\#):not(#\#) { display: flex; align-items: center; gap: var(--space-5, 12px); font-size: var(--font-size-xs, 11px); color: var(--color-text-muted, #A0988E); }
+.is-20045f6:not(#\#):not(#\#) { display: inline-flex; align-items: center; gap: var(--space-2, 6px); padding: var(--space-1, 4px) var(--space-4, 10px); border-radius: var(--radius-full); background: var(--color-pill, #3D3D3A); border: 1px solid var(--color-border-pill, #484844); }
+.is-15b160a:not(#\#):not(#\#) { width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--color-status-success, #10B981); }
+.is-98efe8b:not(#\#):not(#\#) { font-size: var(--font-size-xs, 11px); color: var(--color-text-muted, #A0988E); }
+.is-82e88f3:not(#\#):not(#\#) { margin-top: 18px; }
+.is-78465d4:not(#\#):not(#\#) { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem; }
+.is-7fbae58:not(#\#):not(#\#) { color: var(--color-text-muted, #A0988E); font-size: 0.875rem; }
+.is-31de0eb:not(#\#):not(#\#) { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+.is-b57eafe:not(#\#):not(#\#) { display: flex; align-items: center; gap: 0.5rem; color: var(--color-text-muted, #A0988E); font-size: 0.875rem; font-weight: var(--font-weight-medium, 500); }
+.is-e0dd7f8:not(#\#):not(#\#) { position: relative; display: flex; align-items: center; }
+.is-daab64f:not(#\#):not(#\#) { min-width: 4rem; }
+.is-4b97db6:not(#\#):not(#\#) { position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6; }
+.is-12b4142:not(#\#):not(#\#) { color: var(--color-text-muted, #A0988E); font-size: 0.875rem; font-weight: var(--font-weight-medium, 500); }
+.is-49e15c7:not(#\#):not(#\#) { gap: 0.5rem; display: flex; }
+.is-b38e363:not(#\#):not(#\#) { min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md, 10px); font-size: 0.8125rem; }

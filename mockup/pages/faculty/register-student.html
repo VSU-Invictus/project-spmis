@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register student · SPMIS Faculty</title>
+    <link rel="stylesheet" href="../../assets/css/design-system.css" />
+    <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
+    <link rel="stylesheet" href="../../assets/css/components.css?v=9" />
+    <script src="../../assets/js/pages/faculty/register-student.js"></script>
+    <script src="../../assets/js/faculty-sidebar.js"></script>
+    <link rel="stylesheet" href="../../assets/css/pages/faculty/register-student.css" />
+</head>
+
+<body data-page="register-student">
+    <a href="#main" class="skip">Skip to content</a>
+    <iframe
+      src="../../components/navigation/sidebar-faculty.html?active=students"
+      id="sidebar-frame"
+      class="sidebar-frame"
+      title="Faculty Sidebar">
+    </iframe>
+        <main id="main">
+      <!-- Top Brand Header Bar -->
+      <div class="top-header-bar">
+        <div class="is-b512c98">
+          <div class="is-86dee63"></div>
+          <span class="is-aae39be">FACULTY PORTAL / REGISTER STUDENT</span>
+        </div>
+        <div class="is-2dec633">
+          <span class="status-live-pill is-20045f6">
+            <span class="is-15b160a"></span>
+            System Live
+          </span>
+          <span class="is-98efe8b">AY 2026-2027</span>
+        </div>
+      </div>
+            <a href="students.html">← Back to students</a>
+            <div class="header">
+                <div>
+
+                    <h1>Register a student</h1>
+                    <p>Apply to add a new student to the independent SPMIS roster.</p>
+                </div>
+            </div>
+            <div class="notice">
+                Registration requires physical verification by an administrator
+                outside the system. Your application stays pending until the admin
+                approves it.
+            </div>
+            <form class="narrow ui-card" id="registration-form">
+                <h2>Student information</h2>
+                <label>Student ID number<input id="student-id" required maxlength="40" placeholder="e.g. 24-1-00006" />
+                </label>
+                <div class="grid">
+                    <label>First name<input id="first-name" required maxlength="80" autocomplete="off" />
+                    </label>
+                    <label>Last name<input id="last-name" required maxlength="80" autocomplete="off" />
+                    </label>
+                </div>
+                <label>Middle name (optional)<input id="middle-name" maxlength="80" autocomplete="off" />
+                </label>
+                <label>Program<select id="program" required>
+                        <option>BS Computer Science</option>                    </select>
+                    <small>Choose an approved program. A missing program can be proposed
+                        from the Programs page.</small>
+                </label>
+                <p id="registration-status" role="status"></p>
+                <div class="actions">
+                    <button>Submit application</button>
+                    <a class="button secondary" href="students.html">Cancel</a>
+                </div>
+            </form>
+            <section class="ui-card" id="registration-success" hidden>
+                <span class="ui-badge ui-badge--neutral">Pending</span>
+                <h2>Registration application submitted</h2>
+                <p>
+                    The student will appear in the roster after admin approval. Track
+                    the decision in your applications.
+                </p>
+                <a class="button" href="applications.html">View my applications</a>
+            </section>
+            <noscript>
+                <p class="notice">
+                    Enable JavaScript to display sample lists and use the mock
+                    interactions.
+                </p>
+            </noscript>
+              <!-- Workspace Footer -->
+      <footer class="workspace-footer">
+        <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
+        <span>System Version 2.4.0</span>
+      </footer>
+    </main>
+    </div>
+    <script src="../../assets/js/pages/faculty/register-student-2.js"></script>
+
+    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Action successful!</span>
+    </div>
+    <script src="../../assets/js/pages/faculty/register-student-3.js"></script>
+
+</body>
+
+</html>
+
+
+

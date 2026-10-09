@@ -1,0 +1,24 @@
+/* Admin Departments Specific Styles */
+.table-scroll :is(.table-header-row, .table-row) {
+  min-width: 680px;
+}
+
+.th-cell.col-dept, .td-cell.col-dept {
+  flex: 620 1 0;
+  padding-left: var(--space-9, 24px);
+}
+
+.th-cell.col-status, .td-cell.col-status {
+  flex: 180 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.th-cell.col-action, .td-cell.col-action {
+  flex: 200 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: var(--space-9, 24px);
+}

@@ -1,0 +1,355 @@
+/* ==========================================================================
+   Faculty Dashboard (page-specific)
+   Layout: Header -> Students / Your reviews -> Quick links ->
+   Recent active reviews -> Footer
+   ========================================================================== */
+
+/* ---- Statistic cards (Students / Your reviews) ---- */
+body[data-page="dashboard"] .stats,
+.stats {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+  margin-bottom: 16px !important;
+}
+
+.stat,
+.ui-card.stat {
+  background: var(--card, #1F1E1D) !important;
+  border: 1px solid var(--border, #2E2D2A) !important;
+  border-radius: var(--radius-xl, 14px) !important;
+  padding: 20px 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  min-height: 108px !important;
+  box-sizing: border-box !important;
+  cursor: default !important;
+  transition: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Explicitly remove any hover effect - regular static card */
+.stat:hover,
+.ui-card.stat:hover,
+.stat:focus,
+.ui-card.stat:focus,
+.stat:active,
+.ui-card.stat:active {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: var(--border, #2E2D2A) !important;
+  background: var(--card, #1F1E1D) !important;
+  cursor: default !important;
+}
+
+.stat *,
+.ui-card.stat *,
+.stat:hover *,
+.ui-card.stat:hover * {
+  cursor: default !important;
+  transform: none !important;
+}
+
+.stat .muted {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  display: block !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+}
+
+.stat strong,
+#student-count,
+#review-count {
+  display: block !important;
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  color: #FFFFFF !important;
+  margin: 10px 0 8px 0 !important;
+  line-height: 1 !important;
+  font-family: inherit !important;
+}
+
+.stat small {
+  display: block !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+}
+
+/* ---- Full-width dashboard sections (Quick links / Recent active reviews) ---- */
+.dashboard-quick-links,
+.dashboard-reviews {
+  background: var(--card, #1F1E1D);
+  border: 1px solid var(--border, #2E2D2A);
+  border-radius: var(--radius-xl, 14px);
+  padding: 20px 24px;
+  box-sizing: border-box;
+  margin: 0 0 16px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-quick-links h2,
+.dashboard-reviews h2 {
+  font-family: var(--font-family-display, 'Outfit', sans-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+}
+
+.dashboard-reviews .between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dashboard-reviews .between h2 {
+  margin: 0;
+}
+
+.dashboard-reviews .between a {
+  font-size: 12px;
+  color: var(--muted-foreground, #A0988E);
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 150ms ease;
+}
+
+.dashboard-reviews .between a:hover {
+  color: var(--primary, #D97251) !important;
+}
+
+.dashboard-reviews .between a .arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.dashboard-reviews .between a:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* ---- Quick links: two columns, two rows ---- */
+.quick-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.quick-links .ui-card,
+.quick-links .quick-link-item,
+.quick-links a {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding: 14px 16px !important;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: var(--radius-md, 10px) !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  min-height: 64px !important;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast) !important;
+}
+
+.quick-links a:hover,
+.quick-links .quick-link-item:hover,
+.quick-links .ui-card:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.quick-links .ui-card-header,
+.quick-links .ui-card-title,
+.quick-links .ui-card-description,
+.quick-links h3,
+.quick-links p,
+.quick-links span {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.quick-links .ui-card-header {
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+.quick-links h3,
+.quick-links .ui-card-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #FFFFFF !important;
+  margin: 0 0 4px 0 !important;
+  line-height: 1.3 !important;
+}
+
+.quick-links .arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+  margin-left: 2px;
+  color: #FFFFFF !important;
+}
+
+.quick-links a:hover .arrow {
+  transform: translateX(4px);
+}
+
+.quick-links p,
+.quick-links .ui-card-description {
+  font-size: 12px !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+/* ---- Recent active reviews feed (single-column news feed) ---- */
+.review-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-feed-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border, #2E2D2A);
+  border-radius: var(--radius-md, 10px);
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.review-feed-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.review-feed-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.review-feed-contributor {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+  line-height: 1.3;
+}
+
+.review-feed-sub {
+  font-size: 12px;
+  color: var(--muted-foreground, #A0988E);
+  line-height: 1.4;
+}
+
+/* Clickable student name inside the review feed (uses the shared
+   .ui-link-neutral convention: neutral at rest, terracotta on hover). */
+.review-feed .review-feed-student {
+  color: var(--foreground, #FFFFFF) !important;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-sm, 6px);
+  transition: color 150ms ease;
+}
+
+.review-feed .review-feed-student:hover {
+  color: var(--primary, #D97251) !important;
+  text-decoration: none;
+}
+
+.review-feed .review-feed-student:focus-visible {
+  outline: 2px solid var(--ring, var(--primary, #D97251));
+  outline-offset: 2px;
+}
+
+/* "You" attribution indicator for the current faculty member's reviews. */
+.review-feed .review-feed-you {
+  color: var(--muted-foreground, #A0988E);
+  font-weight: 500;
+}
+
+.review-feed-body {
+  font-size: 13px;
+  color: var(--muted-foreground, #A0988E);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.review-feed-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.review-feed .ui-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  body[data-page="dashboard"] .stats,
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .quick-links {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Former inline styles (specificity boosted to match inline priority) ---- */
+.is-052ff0c:not(#\#):not(#\#) { width: 18px; height: 18px; }
+.is-b512c98:not(#\#):not(#\#) { display: flex; align-items: center; gap: var(--space-4, 10px); }
+.is-3c1f7d3:not(#\#):not(#\#) { flex: 1; min-height: 0; overflow-y: auto; padding-right: 4px; }
+.is-86dee63:not(#\#):not(#\#) { width: 10px; height: 10px; border-radius: var(--radius-full); background: var(--color-primary-base, #D97251); }
+.is-aae39be:not(#\#):not(#\#) { font-size: var(--font-size-xs, 11px); font-weight: var(--font-weight-semibold, 600); letter-spacing: 0.6px; text-transform: uppercase; color: var(--color-text-muted, #A0988E); }
+.is-2dec633:not(#\#):not(#\#) { display: flex; align-items: center; gap: var(--space-5, 12px); font-size: var(--font-size-xs, 11px); color: var(--color-text-muted, #A0988E); }
+.is-20045f6:not(#\#):not(#\#) { display: inline-flex; align-items: center; gap: var(--space-2, 6px); padding: var(--space-1, 4px) var(--space-4, 10px); border-radius: var(--radius-full); background: var(--color-pill, #3D3D3A); border: 1px solid var(--color-border-pill, #484844); }
+.is-15b160a:not(#\#):not(#\#) { width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--color-status-success, #10B981); }
+.is-98efe8b:not(#\#):not(#\#) { font-size: var(--font-size-xs, 11px); color: var(--color-text-muted, #A0988E); }
+.is-0af7632:not(#\#):not(#\#) { text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem; }
+.is-c42e0ec:not(#\#):not(#\#) { margin-bottom: 0; }
+.is-56c00b6:not(#\#):not(#\#) { margin-bottom: 4px; }
+.is-88aa25c:not(#\#):not(#\#) { margin-top: 0; }
+.is-82e88f3:not(#\#):not(#\#) { margin-top: 18px; }
+.is-78465d4:not(#\#):not(#\#) { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem; }
+.is-7fbae58:not(#\#):not(#\#) { color: var(--color-text-muted, #A0988E); font-size: 0.875rem; }
+.is-31de0eb:not(#\#):not(#\#) { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+.is-b57eafe:not(#\#):not(#\#) { display: flex; align-items: center; gap: 0.5rem; color: var(--color-text-muted, #A0988E); font-size: 0.875rem; font-weight: var(--font-weight-medium, 500); }
+.is-e0dd7f8:not(#\#):not(#\#) { position: relative; display: flex; align-items: center; }
+.is-daab64f:not(#\#):not(#\#) { min-width: 4rem; }
+.is-4b97db6:not(#\#):not(#\#) { position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6; }
+.is-12b4142:not(#\#):not(#\#) { color: var(--color-text-muted, #A0988E); font-size: 0.875rem; font-weight: var(--font-weight-medium, 500); }
+.is-49e15c7:not(#\#):not(#\#) { gap: 0.5rem; display: flex; }
+.is-b38e363:not(#\#):not(#\#) { min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md, 10px); font-size: 0.8125rem; }

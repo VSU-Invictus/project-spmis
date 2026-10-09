@@ -1,0 +1,340 @@
+/* ==========================================================================
+   SPMIS GLOBAL CSS (global.css)
+   Base resets, typography defaults, core elements, and viewport layout.
+   Tokens imported from design-system.css.
+   Component styles located in components.css.
+   ========================================================================== */
+
+/* --- 1. FONTS & DESIGN TOKENS IMPORT --- */
+@import url('https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;500;600;700&family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
+@import url('./design-system.css');
+
+/* --- 2. GLOBAL RESET & BASE ELEMENT STYLES --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: var(--space-0, 0);
+  padding: var(--space-0, 0);
+  border-color: var(--color-border-main, var(--border));
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  margin: var(--space-0, 0);
+  padding: var(--space-0, 0);
+  background-color: var(--color-canvas, var(--background));
+  color: var(--color-text-main, var(--foreground));
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md, 14px);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fixed full-screen viewport only for dashboard portal applications */
+body:has(:is(.app, .app-canvas, .dashboard-container)) {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+/* --- 3. BASE TYPOGRAPHY --- */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text-title, var(--foreground));
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: var(--font-size-3xl, 24px); }
+h2 { font-size: var(--font-size-2xl, 20px); }
+h3 { font-size: var(--font-size-xl, 18px); }
+h4 { font-size: var(--font-size-lg, 16px); }
+h5 { font-size: var(--font-size-md, 14px); }
+h6 { font-size: var(--font-size-base, 13px); }
+
+p {
+  color: var(--color-text-muted, var(--muted-foreground));
+  margin-bottom: var(--space-3, 8px);
+}
+
+p:last-child {
+  margin-bottom: var(--space-0, 0);
+}
+
+small {
+  font-size: var(--font-size-sm, 12px);
+  color: var(--color-text-muted, var(--muted-foreground));
+}
+
+code, kbd, samp, pre {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* --- 4. BASE INTERACTIVE ELEMENTS --- */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-base, var(--primary));
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: var(--space-0, 0);
+  color: inherit;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: var(--space-3, 8px) var(--space-4, 10px);
+  background-color: var(--color-input, var(--card));
+  transition: border-color var(--transition-fast), outline-color var(--transition-fast);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--ring, var(--primary));
+  outline-offset: 1px;
+  border-color: var(--color-primary-base, var(--primary));
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* --- 5. BASE DIALOG & MODAL RESETS --- */
+dialog {
+  border: 1px solid var(--color-border-main, var(--border));
+  border-radius: var(--radius-xl, 16px);
+  background: var(--color-card, var(--card));
+  color: var(--color-text-main, var(--foreground));
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-6, 16px);
+  max-width: min(90vw, 560px);
+  margin: auto;
+  position: relative;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+/* --- 6. ACTIONS & BACK LINK UTILITIES --- */
+.actions {
+  display: flex;
+  justify-content: space-between;   /* Cancel left, Publish/Submit right */
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* On narrow screens, stack full-width for usability */
+@media (max-width: 480px) {
+  .actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .actions .ui-btn,
+  .actions a.ui-btn,
+  .actions button,
+  .actions a.button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+.actions .ui-btn {
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.actions .ui-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.actions .ui-btn:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.08s;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .actions .ui-btn,
+  .actions .ui-btn:hover,
+  .actions .ui-btn:active {
+    transition: none;
+    transform: none;
+  }
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.back-link-text {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px;
+  line-height: 1.2;
+}
+
+.back-link-text::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.back-link:hover .back-link-text::after {
+  transform: scaleX(1);
+}
+
+.arrow-nudge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  transform: translateY(-1px);
+}
+
+.back-link :is(.arrow, .arrow-left) {
+  display: inline-block;
+  line-height: 1;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.back-link:hover :is(.arrow, .arrow-left) {
+  transform: translateX(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-link :is(.arrow, .arrow-left),
+  .back-link:hover :is(.arrow, .arrow-left),
+  .back-link-text::after {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* --- 7. ACCESSIBILITY & SKIP LINKS --- */
+.skip,
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip:focus {
+  position: fixed;
+  top: var(--space-3, 8px);
+  left: var(--space-3, 8px);
+  width: auto;
+  height: auto;
+  padding: var(--space-3, 8px) var(--space-5, 12px);
+  clip: auto;
+  z-index: var(--z-modal, 1000);
+  background: var(--color-primary-base, var(--primary));
+  color: var(--color-primary-white, #FFFFFF);
+  border-radius: var(--radius-sm, 6px);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* --- 8. RESPONSIVE DATA TABLE CONTAINER GUARANTEE --- */
+:is(.ui-table-wrap, .table-wrap, .table-container, [class*="table-container"], [class*="table-wrapper"], .table-scroll) {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  :is(.ui-table-wrap, .table-wrap, .table-container, [class*="table-container"], [class*="table-wrapper"], .table-scroll) {
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  :is(.ui-table, table.ui-table, .table-wrap table, .table-container table, [class*="table-container"] table, .table-scroll table) {
+    min-width: 680px !important;
+  }
+}
+
+/* --- 9. LIGHT & DARK LOGO HANDLING --- */
+html.dark .logo-light-only { display: none !important; }
+html:not(.dark) .logo-dark-only { display: none !important; }
+html:not(.dark) .logo-light-only { display: block !important; filter: invert(1) hue-rotate(180deg); }
+
+/* --- 10. MOTION SAFETY --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

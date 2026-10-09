@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/background/pixel.css">
+    <link rel="stylesheet" href="../../assets/css/pages/auth/about.css" />
+
+    <title>SPMIS - About Us</title>
+</head>
+<body class="bg-pixel">
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>About us</h1>
+            <div class="logo-container">
+                <a href="signin.html" class="logo-link" aria-label="Back to sign in">
+                    <img src="../../assets/icons/SPMIS.png" alt="SPMIS Logo">
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content Box -->
+        <main class="content-box">
+            <div class="about-text">
+                <p class="section-header"><strong>About SPMIS</strong></p>
+
+                <p>The Student Profiling Management Information System (SPMIS) is a dedicated, university-wide platform built to empower faculty members in supporting student success. SPMIS serves as an internal reference tool designed to assist faculty in vetting, recommending, and selecting students for competitions, leadership roles, special tasks, academic opportunities, and institutional events.</p>
+
+                <p class="section-header"><strong>Our Purpose & Vision</strong></p>
+                <p>SPMIS bridges the gap between faculty experience and student opportunities. By allowing educators to share, record, and consult review-style observations about students they have taught, coached, or advised, the system enables more informed, holistic decision-making across the university. SPMIS focuses purely on profile insights and faculty research—it is not a student-facing portal nor an activity management application.</p>
+
+                <p class="section-header"><strong>Key Features & Platform Safeguards</strong></p>
+                <ul>
+                    <li><strong>Faculty-Driven Insights:</strong> Reviews reflect direct faculty experiences, combining free-text observations with descriptive tags. To maintain accountability and trust, contributor identities are transparently attached to every review.</li>
+
+                    <li><strong>Complete Contributor Control:</strong> Faculty members retain exclusive ownership over the content they create. You can edit, hide, or permanently delete your reviews at any time. Hidden reviews are strictly private to the creator, while deleted content is permanently purged from the application.</li>
+
+                    <li><strong>Privacy by Design:</strong> SPMIS is built around strong privacy standards. Review edit histories are transparently maintained, while system actions are audited without exposing protected review text. Students do not have access or accounts within the system.</li>
+
+                    <li><strong>Privacy-Preserving AI Research:</strong> SPMIS includes an integrated AI research assistant to help faculty search across visible reviews. Before any review content reaches external AI processing, all student name variants are replaced with opaque placeholder identifiers inside the system boundary to safeguard student identity. Hidden and deleted reviews are strictly excluded from the AI index.</li>
+                </ul>
+
+                <p class="section-header"><strong>Our Commitment to Responsible Use</strong></p>
+                <p>SPMIS is built for legitimate academic and institutional growth. By using the platform, faculty commit to maintaining student privacy, exercising professional judgment, and leveraging system insights responsibly to help every student find the right opportunity to excel.</p>
+            </div>
+        </main>
+
+        <!-- Footer component -->
+        <div data-include="../../components/navigation/footer-nav.html"></div>
+
+    </div>
+
+    <script>
+        (async () => {
+            // 1. Load the footer component
+            const slot = document.querySelector('[data-include]');
+            if (slot) {
+                try {
+                    const res = await fetch(slot.getAttribute('data-include'), { cache: 'no-cache' });
+                    if (res.ok) {
+                        slot.innerHTML = await res.text();
+                    } else {
+                        console.error('Failed to load footer:', res.status, res.statusText);
+                    }
+                } catch (err) {
+                    console.error('Footer include error:', err);
+                }
+            }
+
+            // 2. Determine the current page and apply the 'active' class
+            let currentPage = decodeURIComponent(window.location.pathname.split('/').pop()).toLowerCase().trim() || 'about.html';
+            
+            document.querySelectorAll('.footer-nav a').forEach(a => {
+                let href = decodeURIComponent(a.getAttribute('href')).toLowerCase().trim().split('/').pop();
+                if (href === currentPage) {
+                    a.classList.add('active');
+                }
+            });
+
+            // 3. Page Exit Transition (Matches the Sign In page logic)
+            document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(link => {
+                link.addEventListener('click', event => {
+                    const href = link.getAttribute('href');
+                    if (!href || href.startsWith('javascript:') || link.classList.contains('active')) return;
+                    
+                    event.preventDefault();
+                    document.body.classList.add('page-exit');
+                    
+                    setTimeout(() => { 
+                        window.location.href = href; 
+                    }, 300);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

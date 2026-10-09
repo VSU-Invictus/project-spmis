@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student details · SPMIS Faculty</title>
+    <link rel="stylesheet" href="../../assets/css/design-system.css" />
+    <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
+    <link rel="stylesheet" href="../../assets/css/components.css?v=9" />
+    <script src="../../assets/js/faculty-sidebar.js"></script>
+    <link rel="stylesheet" href="../../assets/css/pages/faculty/student-detail.css" />
+</head>
+
+<body data-page="student-detail">
+    <a href="#main" class="skip">Skip to content</a>
+    <div class="app">
+    <iframe
+      src="../../components/navigation/sidebar-faculty.html?active=students"
+      id="sidebar-frame"
+      class="sidebar-frame"
+      title="Faculty Sidebar">
+    </iframe>
+        <main id="main">
+      <!-- Top Brand Header Bar -->
+      <div class="top-header-bar">
+        <div class="is-b512c98">
+          <div class="is-86dee63"></div>
+          <span class="is-aae39be">FACULTY PORTAL / STUDENT DETAIL</span>
+        </div>
+        <div class="is-2dec633">
+          <span class="status-live-pill is-20045f6">
+            <span class="is-15b160a"></span>
+            System Live
+          </span>
+          <span class="is-98efe8b">AY 2026-2027</span>
+        </div>
+      </div>
+            <a href="students.html" class="ui-link-neutral back-link">
+                <span class="arrow-left">&larr;</span> Back to students
+            </a>
+            <div class="header">
+                <div>
+                    <p>Student information and attributed faculty reviews.</p>
+                </div>
+                <a class="button" id="new-review-link" href="new-review.html">Write review <span class="arrow">&rarr;</span></a>
+            </div>
+            <section class="ui-card basic-info-card">
+                <div class="basic-info-header">
+                    <span class="basic-info-title">BASIC INFORMATION</span>
+                </div>
+                <dl class="basic-info-grid">
+                    <div class="basic-info-col">
+                        <dt class="basic-info-label">FULL NAME</dt>
+                        <dd class="basic-info-value" data-student-name>Sam Lee Parker</dd>
+                    </div>
+                    <div class="basic-info-col">
+                        <dt class="basic-info-label">STUDENT ID</dt>
+                        <dd class="basic-info-value" data-student-id>24-1-00001</dd>
+                    </div>
+                    <div class="basic-info-col">
+                        <dt class="basic-info-label">PROGRAM</dt>
+                        <dd class="basic-info-value" data-student-program>BS Computer Science</dd>
+                    </div>
+                    <div class="basic-info-col">
+                        <dt class="basic-info-label">STATUS</dt>
+                        <dd class="basic-info-value" data-student-status>
+                            <span class="ui-badge ui-badge--success">Active</span>
+                        </dd>
+                    </div>
+                    <div class="basic-info-col">
+                        <dt class="basic-info-label">REVIEW TAGS</dt>
+                        <dd class="basic-info-value" data-student-tags>
+                            <div class="ui-tags-cluster">
+                                <span class="ui-badge ui-badge--purple">research</span>
+                                <span class="ui-badge ui-badge--amber">teamwork</span>
+                                <span class="ui-badge ui-badge--rose">robotics</span>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+            </section>
+            <section class="ui-card ai-summary-card" aria-labelledby="ai-summary-title">
+                <div class="ai-summary-header">
+                    <div class="ai-summary-heading">
+                        <span class="ai-summary-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"></path>
+                                <path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"></path>
+                            </svg>
+                        </span>
+                        <h2 class="ai-summary-title" id="ai-summary-title">AI Review Summary</h2>
+                    </div>
+                    <span class="ui-badge ui-badge--purple ai-summary-badge">AI-generated</span>
+                </div>
+                <p class="ai-summary-text">
+                    Sam Lee Parker shows strong research planning and dependable teamwork, having developed a clear research plan and supported the team throughout the robotics project. Peers also highlight clear communication, with Sam explaining the prototype effectively and helping classmates troubleshoot their designs.
+                </p>
+                <p class="ai-summary-meta">
+                    Generated from <span data-ai-review-count>2</span> active reviews. Hidden and deleted reviews are excluded.
+                </p>
+            </section>
+            <div class="between">
+                <h2>Visible reviews</h2>
+                <small>Active reviews + your own hidden reviews</small>
+            </div>
+            <p class="muted">
+                Reviews reflect their contributors’ assessments. Only the author can
+                edit, hide, unhide, or delete a review.
+            </p>
+            <section id="reviews" aria-label="Student reviews"></section>
+            <dialog id="edit-dialog" aria-labelledby="edit-title">
+                <h2 id="edit-title">Edit your review</h2>
+                <p class="muted">
+                    The previous version remains in the inline edit history for anyone
+                    who can view this review. Visibility stays unchanged.
+                </p>
+                <form id="edit-form">
+                    <label>Review text<textarea id="edit-body" required> </textarea>
+                    </label>
+                    <label>Tags <small>Optional; separate tags with spaces.</small>
+                        <input id="edit-tags" />
+                    </label>
+                    <div class="actions">
+                        <button class="ui-btn ui-btn-primary">Save changes</button>
+                        <button class="ui-btn ui-btn-outline" type="button" data-close>Cancel</button>
+                    </div>
+                </form>
+            </dialog>
+            <dialog id="delete-dialog" aria-labelledby="delete-title">
+                <h2 id="delete-title">Delete this review?</h2>
+                <p>
+                    The review will disappear from the portal, including your own view.
+                    This action cannot be undone here. Use Hide if you want to restore
+                    visibility later.
+                </p>
+                <div class="actions">
+                    <button class="ui-btn ui-btn-destructive" id="confirm-delete">Delete review</button>
+                    <button class="ui-btn ui-btn-outline" type="button" data-close>Keep review</button>
+                </div>
+            </dialog>
+            <noscript>
+                <p class="notice">
+                    Enable JavaScript to display sample lists and use the mock
+                    interactions.
+                </p>
+            </noscript>
+              <!-- Workspace Footer -->
+      <footer class="workspace-footer">
+        <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
+        <span>System Version 2.4.0</span>
+      </footer>
+    </main>
+    </div>
+    <script src="../../assets/js/pages/faculty/student-detail.js"></script>
+
+    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Action successful!</span>
+    </div>
+    <script src="../../assets/js/pages/faculty/student-detail-2.js"></script>
+
+</body>
+
+</html>
+
+
+

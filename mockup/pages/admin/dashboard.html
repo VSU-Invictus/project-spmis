@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - System Metrics & Approvals</title>
+    <link rel="stylesheet" href="../../assets/css/design-system.css">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/pages/admin/admin-common.css">
+    <link rel="stylesheet" href="../../assets/css/pages/admin/dashboard.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-canvas">
+        
+        <!-- Reusable Admin Sidebar Component -->
+        <iframe src="../../components/navigation/sidebar-admin.html?active=dashboard" id="sidebar-frame" class="sidebar-frame" title="Admin Sidebar"></iframe>
+
+        <!-- Main Dashboard Viewport -->
+        <main class="section-container">
+            
+            <!-- Admin Top Header Bar -->
+            <div class="admin-top-header w-full">
+                <div class="header-left">
+                    <div class="red-dot"></div>
+                    <span class="breadcrumb-text">Admin Portal / Overview</span>
+                </div>
+                <div class="header-right">
+                    <span class="status-badge">
+                        <span class="green-dot"></span>
+                        System Live
+                    </span>
+                    <span class="ay-text">AY 2026-2027</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Content Container -->
+            <div class="w-full flex flex-col gap-6 pt-2 pb-6">
+                
+                <!-- Page Heading Section -->
+                <div>
+                    <h1 class="text-[28px] sm:text-[32px] font-bold text-white tracking-tight leading-none mb-2">Dashboard</h1>
+                    <p class="text-[13px] text-[#8E8A83] font-normal leading-normal">System-wide metrics and real-time pending queue summaries.</p>
+                </div>
+
+                <!-- Pending Approval Queue Cards Section -->
+                <div>
+                    <h2 class="text-[15px] font-bold text-white tracking-tight mb-3">Pending Approval Queue</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+
+                        <!-- Card 1: STUDENTS -->
+                        <a href="dashboard.html?queue=student" data-queue-open="student" class="metric-card p-4 sm:p-5 flex flex-col justify-between min-h-[96px] block text-inherit no-underline">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold tracking-[0.06em] text-[#8E8A83] uppercase">STUDENTS</span>
+                                <span class="w-2 h-2 rounded-full bg-[#F59E0B]"></span>
+                            </div>
+                            <div class="flex items-baseline justify-between mt-3">
+                                <span class="text-[32px] sm:text-[36px] font-bold text-white leading-none">4</span>
+                                <span class="text-[11px] font-semibold text-[#B85D3B]">Requires Review</span>
+                            </div>
+                        </a>
+
+                        <!-- Card 2: DEPARTMENTS -->
+                        <a href="dashboard.html?queue=department" data-queue-open="department" class="metric-card p-4 sm:p-5 flex flex-col justify-between min-h-[96px] block text-inherit no-underline">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold tracking-[0.06em] text-[#8E8A83] uppercase">DEPARTMENTS</span>
+                                <span class="w-2 h-2 rounded-full bg-[#8B5CF6]"></span>
+                            </div>
+                            <div class="flex items-baseline justify-between mt-3">
+                                <span class="text-[32px] sm:text-[36px] font-bold text-white leading-none">5</span>
+                                <span class="text-[11px] font-semibold text-[#B85D3B]">Requires Review</span>
+                            </div>
+                        </a>
+
+                        <!-- Card 3: PROGRAMS -->
+                        <a href="dashboard.html?queue=program" data-queue-open="program" class="metric-card p-4 sm:p-5 flex flex-col justify-between min-h-[96px] block text-inherit no-underline">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold tracking-[0.06em] text-[#8E8A83] uppercase">PROGRAMS</span>
+                                <span class="w-2 h-2 rounded-full bg-[#06B6D4]"></span>
+                            </div>
+                            <div class="flex items-baseline justify-between mt-3">
+                                <span class="text-[32px] sm:text-[36px] font-bold text-white leading-none">5</span>
+                                <span class="text-[11px] font-semibold text-[#B85D3B]">Requires Review</span>
+                            </div>
+                        </a>
+
+                        <!-- Card 4: FACULTY -->
+                        <a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="metric-card p-4 sm:p-5 flex flex-col justify-between min-h-[96px] block text-inherit no-underline">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold tracking-[0.06em] text-[#8E8A83] uppercase">FACULTY</span>
+                                <span class="w-2 h-2 rounded-full bg-[#3B82F6]"></span>
+                            </div>
+                            <div class="flex items-baseline justify-between mt-3">
+                                <span class="text-[32px] sm:text-[36px] font-bold text-white leading-none">4</span>
+                                <span class="text-[11px] font-semibold text-[#B85D3B]">Requires Review</span>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- Split View: Left Queue Table & Right Activity Log -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full items-stretch">
+                    
+                    <!-- Left: Pending Approval Queue Table (Spans 8 columns) -->
+                    <div class="lg:col-span-8 dashboard-panel p-5 sm:p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-[16px] font-bold text-white tracking-tight">Pending Approval Queue</h3>
+                                <span class="text-[11px] text-[#7E7972] font-normal">Requires System-Admin Action</span>
+                            </div>
+
+                            <div class="table-inner-container ui-table-wrap w-full">
+                                <div class="overflow-x-auto custom-scrollbar">
+                                    <table class="ui-table w-full text-left border-collapse min-w-[580px]">
+                                        <thead>
+                                            <tr class="bg-[#21201E] text-[#A0988E] text-[11px] font-bold uppercase tracking-wider h-[44px] border-b border-[#383734]">
+                                                <th class="py-2.5 px-4 text-left w-[110px]">TYPE</th>
+                                                <th class="py-2.5 px-4 text-left">APPLICANT / TITLE</th>
+                                                <th class="py-2.5 px-4 text-left">DEPARTMENT / CONTEXT</th>
+                                                <th class="py-2.5 px-4 text-left w-[130px]">SUBMITTED</th>
+                                                <th class="py-2.5 px-4 text-right w-[110px]">ACTION</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-[13px] font-medium divide-y divide-[#232220]">
+                                            <!-- Row 1 -->
+                                            <tr class="h-[52px] hover:bg-white/[0.02] transition-colors">
+                                                <td class="py-2.5 px-4">
+                                                    <span class="ui-badge ui-badge--info" data-tag="faculty">
+                                                        Faculty
+                                                    </span>
+                                                </td>
+                                                <td class="py-2.5 px-4 font-medium text-white">Dr. Eleanor Vance</td>
+                                                <td class="py-2.5 px-4 text-[#A39E96]">Computer Science</td>
+                                                <td class="py-2.5 px-4 text-[#A39E96] font-mono text-[12px]">2026-09-10</td>
+                                                <td class="py-2.5 px-4 text-right">
+                                                    <button type="button" onclick="handleReview('Dr. Eleanor Vance')" class="text-white hover:text-[#D97251] transition-colors inline-flex items-center justify-end gap-1 font-medium text-[13px] cursor-pointer bg-transparent border-0 p-0">
+                                                        Review &rarr;
+                                                    </button>
+                                                </td>
+                                            </tr>
+
+                                            <!-- Row 2 -->
+                                            <tr class="h-[52px] hover:bg-white/[0.02] transition-colors">
+                                                <td class="py-2.5 px-4">
+                                                    <span class="ui-badge ui-badge--amber" data-tag="student">
+                                                        Student
+                                                    </span>
+                                                </td>
+                                                <td class="py-2.5 px-4 font-medium text-white">Radz Ponce Moreno</td>
+                                                <td class="py-2.5 px-4 text-[#A39E96]">BS Computer Science</td>
+                                                <td class="py-2.5 px-4 text-[#A39E96] font-mono text-[12px]">2026-09-10</td>
+                                                <td class="py-2.5 px-4 text-right">
+                                                    <button type="button" onclick="handleReview('Radz Ponce Moreno')" class="text-white hover:text-[#D97251] transition-colors inline-flex items-center justify-end gap-1 font-medium text-[13px] cursor-pointer bg-transparent border-0 p-0">
+                                                        Review &rarr;
+                                                    </button>
+                                                </td>
+                                            </tr>
+
+                                            <!-- Row 3 -->
+                                            <tr class="h-[52px] hover:bg-white/[0.02] transition-colors">
+                                                <td class="py-2.5 px-4">
+                                                    <span class="ui-badge ui-badge--cyan" data-tag="program">
+                                                        Program
+                                                    </span>
+                                                </td>
+                                                <td class="py-2.5 px-4 font-medium text-white">BS Data Science</td>
+                                                <td class="py-2.5 px-4 text-[#A39E96]">New Addition</td>
+                                                <td class="py-2.5 px-4 text-[#A39E96] font-mono text-[12px]">2026-09-09</td>
+                                                <td class="py-2.5 px-4 text-right">
+                                                    <button type="button" onclick="handleReview('BS Data Science')" class="text-white hover:text-[#D97251] transition-colors inline-flex items-center justify-end gap-1 font-medium text-[13px] cursor-pointer bg-transparent border-0 p-0">
+                                                        Review &rarr;
+                                                    </button>
+                                                </td>
+                                            </tr>
+
+                                            <!-- Row 4 -->
+                                            <tr class="h-[52px] hover:bg-white/[0.02] transition-colors">
+                                                <td class="py-2.5 px-4">
+                                                    <span class="ui-badge ui-badge--info" data-tag="faculty">
+                                                        Faculty
+                                                    </span>
+                                                </td>
+                                                <td class="py-2.5 px-4 font-medium text-white">Dr. Sophia Al-Mansoor</td>
+                                                <td class="py-2.5 px-4 text-[#A39E96]">Applied Mathematics</td>
+                                                <td class="py-2.5 px-4 text-[#A39E96] font-mono text-[12px]">2026-09-08</td>
+                                                <td class="py-2.5 px-4 text-right">
+                                                    <button type="button" onclick="handleReview('Dr. Sophia Al-Mansoor')" class="text-white hover:text-[#D97251] transition-colors inline-flex items-center justify-end gap-1 font-medium text-[13px] cursor-pointer bg-transparent border-0 p-0">
+                                                        Review &rarr;
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="ui-empty-state" role="status" aria-live="polite" hidden>
+                                    <h2 class="ui-empty-state__title" data-empty-title>No pending applications</h2>
+                                    <p class="ui-empty-state__description" data-empty-description>Applications awaiting admin review will appear here.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: System Activity Log (Spans 4 columns) -->
+                    <div class="lg:col-span-4 dashboard-panel p-5 sm:p-6 flex flex-col justify-between">
+                        <div>
+                            <!-- Card Header -->
+                            <div class="flex items-center justify-between pb-4 border-b border-[#42423F]">
+                                <h3 class="text-[17px] font-bold text-white tracking-tight">System Activity Log</h3>
+                                <span class="text-[12px] text-[#8E8A83] font-normal">Recent Audits</span>
+                            </div>
+
+                            <!-- Activity Items List -->
+                            <div class="flex flex-col">
+                                <!-- Item 1 -->
+                                <div class="py-4 border-b border-[#42423F]">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-[14px] font-bold text-white leading-tight">User Permissions Updated</h4>
+                                        <span class="text-[12px] text-[#8E8A83] font-normal shrink-0">10m ago</span>
+                                    </div>
+                                    <p class="text-[13px] text-[#8E8A83] leading-normal mt-1.5">Admin updated role for Prof. Miller</p>
+                                </div>
+
+                                <!-- Item 2 -->
+                                <div class="py-4 border-b border-[#42423F]">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-[14px] font-bold text-white leading-tight">Batch Students Enrolled</h4>
+                                        <span class="text-[12px] text-[#8E8A83] font-normal shrink-0">1h ago</span>
+                                    </div>
+                                    <p class="text-[13px] text-[#8E8A83] leading-normal mt-1.5">18 new BS CS student profiles</p>
+                                </div>
+
+                                <!-- Item 3 -->
+                                <div class="py-4">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-[14px] font-bold text-white leading-tight">System Backup Completed</h4>
+                                        <span class="text-[12px] text-[#8E8A83] font-normal shrink-0">3h ago</span>
+                                    </div>
+                                    <p class="text-[13px] text-[#8E8A83] leading-normal mt-1.5">Automated database backup #1049</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Activity Log Footer -->
+                        <div class="flex items-center justify-between pt-4 border-t border-[#42423F] mt-auto">
+                            <span class="text-[13px] text-[#8E8A83]">Showing 3 of 128 logs</span>
+                            <a href="audit-log.html" class="text-[14px] font-bold text-white hover:text-[#D97251] transition-colors inline-flex items-center gap-1.5">
+                                View All Logs &rarr;
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer indicator -->
+            <footer class="admin-footer">
+                <span>&copy; 2026 Admin Portal. All rights reserved.</span>
+                <span>System Version 2.4.0</span>
+            </footer>
+
+        </main>
+
+        <!-- Action Toast Modal -->
+        <div id="toast-modal" class="fixed bottom-6 right-6 bg-[#1A1918] text-white px-4 py-3 rounded-xl shadow-xl border border-[#D97251] transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50">
+            <svg class="w-5 h-5 text-[#D97251]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 9 01-18 0 9 9 0118 0z"></path>
+            </svg>
+            <span id="toast-message" class="text-xs font-medium">Opening review workspace...</span>
+        </div>
+
+    </div>
+
+    <script src="../../assets/js/admin-sidebar.js"></script>
+    <script src="../../assets/js/admin-table.js"></script>
+    <script src="../../assets/js/pages/admin/dashboard.js"></script>
+    <script src="../../assets/js/queue-modal.js"></script>
+</body>
+</html>

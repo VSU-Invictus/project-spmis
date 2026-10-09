@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude+ Design System — Living Style Guide</title>
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/global.css?v=6">
+  <link rel="stylesheet" href="../assets/css/components.css?v=9">
+  <link rel="stylesheet" href="../assets/css/pages/design-system.css" />
+</head>
+
+<body>
+  <div class="ui-styleguide">
+
+    <!-- Top Workspace Header Bar with Theme Switcher -->
+    <header class="ui-top-bar">
+      <div class="ui-top-bar-left">
+        <div class="ui-top-bar-dot"></div>
+        <span class="ui-top-bar-breadcrumb">SPMIS DESIGN SYSTEM / LIVING STYLE GUIDE</span>
+      </div>
+      <div class="ui-top-bar-right">
+        <!-- Live Theme Toggle Switch -->
+        <button type="button" id="theme-toggle-btn" class="ui-theme-toggle" aria-label="Toggle theme">
+          <span id="theme-icon">&#127769;</span>
+          <span id="theme-label">Dark Mode</span>
+        </button>
+        <div class="ui-top-bar-badge">
+          <span class="ui-top-bar-pulse"></span>
+          <span>Claude+ Standard</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Title & Overview -->
+    <div class="ui-header">
+      <h1 class="ui-header-title">Claude+ Living Style Guide</h1>
+      <p class="ui-header-subtitle">
+        Interactive visualization and component reference for the raw HTML/CSS Claude+ design system.
+        Supports both <strong>Light Mode</strong> (warm paper canvas) and <strong>Dark Mode</strong> (charcoal canvas)
+        with unified <code>.ui-*</code> class architecture.
+      </p>
+    </div>
+
+    <!-- Quick Navigation Anchor Bar -->
+    <nav class="ui-quick-nav is-d8c8a7b">
+      <a href="#color-palette" class="ui-badge ui-badge--neutral is-3fcf0f3">Colors</a>
+      <a href="#typography" class="ui-badge ui-badge--neutral is-3fcf0f3">Typography</a>
+      <a href="#badges" class="ui-badge ui-badge--neutral is-3fcf0f3">Badges &amp; Tags</a>
+      <a href="#buttons" class="ui-badge ui-badge--neutral is-3fcf0f3">Buttons &amp; Actions</a>
+      <a href="#form-controls" class="ui-badge ui-badge--neutral is-3fcf0f3">Form Controls &amp; Filters</a>
+      <a href="#cards" class="ui-badge ui-badge--neutral is-3fcf0f3">Cards &amp; KPIs</a>
+      <a href="#data-tables" class="ui-badge ui-badge--neutral is-3fcf0f3">Data Tables &amp; Shimmers</a>
+      <a href="#portal-sidebars" class="ui-badge ui-badge--neutral is-3fcf0f3">Portal Sidebars</a>
+      <a href="#portal-modals" class="ui-badge ui-badge--neutral is-3fcf0f3">Modals &amp; Dialogs</a>
+      <a href="#chats" class="ui-badge ui-badge--neutral is-3fcf0f3">Chats &amp; AI</a>
+      <a href="#auth-cards" class="ui-badge ui-badge--neutral is-3fcf0f3">Auth Cards</a>
+      <a href="#workspace-frame" class="ui-badge ui-badge--neutral is-3fcf0f3">Workspace Frame &amp; Footer</a>
+    </nav>
+
+    <!-- 1. Color Palette Section -->
+    <section class="ui-section" id="color-palette">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Color Palette (OKLCH Dynamic Tokens)</h2>
+        <span class="ui-section-desc">Tokens adapt automatically when toggling between Light and Dark mode</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-4">
+        <!-- Primary Accent -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch is-723357a"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Primary Accent</span>
+            <span class="ui-color-var">var(--primary)</span>
+            <span class="ui-color-role">Terracotta Action (#D97251)</span>
+          </div>
+        </div>
+
+        <!-- App Background -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch is-7c7c114"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">App Background</span>
+            <span class="ui-color-var">var(--background)</span>
+            <span class="ui-color-role">Paper (Light) / Charcoal (Dark)</span>
+          </div>
+        </div>
+
+        <!-- Card Surface -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch is-51d61e6"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Card Surface</span>
+            <span class="ui-color-var">var(--card)</span>
+            <span class="ui-color-role">Container Surface</span>
+          </div>
+        </div>
+
+        <!-- Border / Dividers -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch is-8b2bed2"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Border &amp; Dividers</span>
+            <span class="ui-color-var">var(--border)</span>
+            <span class="ui-color-role">Subtle Framing</span>
+          </div>
+        </div>
+
+        <!-- Muted Surface -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch is-0df57ad"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Muted Surface</span>
+            <span class="ui-color-var">var(--muted)</span>
+            <span class="ui-color-role">Inputs &amp; Recessed Areas</span>
+          </div>
+        </div>
+
+        <!-- Primary Foreground Text -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch is-04bdb5e"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Foreground Text</span>
+            <span class="ui-color-var">var(--foreground)</span>
+            <span class="ui-color-role">High Contrast Content</span>
+          </div>
+        </div>
+
+        <!-- Muted Foreground Text -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch is-915cf5f"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Muted Foreground</span>
+            <span class="ui-color-var">var(--muted-foreground)</span>
+            <span class="ui-color-role">Secondary Labels</span>
+          </div>
+        </div>
+
+        <!-- Destructive Action -->
+        <div class="ui-color-card">
+          <div class="ui-color-swatch is-b8a4cfc"></div>
+          <div class="ui-color-info">
+            <span class="ui-color-name">Destructive</span>
+            <span class="ui-color-var">var(--destructive)</span>
+            <span class="ui-color-role">Alerts &amp; Delete (#DC2626)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Typography Section -->
+    <section class="ui-section" id="typography">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Typography</h2>
+        <span class="ui-section-desc">Outfit font family with Geist Mono for codes and tabular metrics</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-2">
+        <div class="ui-typography-sample">
+          <span class="ui-btn-label">Headings Scale</span>
+          <div>
+            <h1 class="ui-heading-1">Primary Heading 1 (Display Title)</h1>
+            <p class="ui-text-caption">30px &middot; Font-weight 800 &middot; Letter-spacing -0.025em &middot; <code>var(--foreground)</code></p>
+          </div>
+          <div>
+            <h2 class="ui-heading-2">Secondary Heading 2 (Section Title)</h2>
+            <p class="ui-text-caption">22px &middot; Font-weight 700 &middot; Letter-spacing -0.02em &middot; <code>var(--foreground)</code></p>
+          </div>
+          <div>
+            <h3 class="ui-heading-3">Tertiary Heading 3 (Card &amp; Panel Header)</h3>
+            <p class="ui-text-caption">18px &middot; Font-weight 600 &middot; <code>var(--card-foreground)</code></p>
+          </div>
+        </div>
+
+        <div class="ui-typography-sample">
+          <span class="ui-btn-label">Paragraph &amp; Muted Hierarchy</span>
+          <div>
+            <h3 class="ui-heading-3">Primary Paragraph Text</h3>
+            <p class="ui-text">
+              SPMIS provides a unified academic progress management portal with warm surfaces and clear hierarchy.
+              Primary text is styled with <code>var(--foreground)</code> to maintain optimal readability and comfortable contrast.
+            </p>
+          </div>
+          <div>
+            <h3 class="ui-heading-3">Muted Descriptive Text</h3>
+            <p class="ui-text-muted">
+              Secondary details, audit timestamps, and status explanations utilize <code>var(--muted-foreground)</code>
+              to establish quiet visual depth without distracting from critical operational data.
+            </p>
+          </div>
+          <div>
+            <h3 class="ui-heading-3">Monospace Data Text</h3>
+            <p class="ui-text-mono">
+              Student ID: 24-1-00001 &middot; Roster Count: 2,850 &middot; Status: VERIFIED_OK
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Status Badges & Chips Section -->
+    <section class="ui-section" id="badges">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Status Badges &amp; Tags</h2>
+        <span class="ui-section-desc">Unified semantic pill tags and status indicators matching portal tables and audit logs</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-2">
+        <!-- 1. Lifecycle & Operational Statuses -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Operational &amp; Lifecycle Statuses</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--success">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Approved / Active
+            </span>
+            <span class="ui-badge ui-badge--warning">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Pending Review
+            </span>
+            <span class="ui-badge ui-badge--destructive">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              Rejected / Deficient
+            </span>
+            <span class="ui-badge ui-badge--info">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              In Progress
+            </span>
+            <span class="ui-badge ui-badge--neutral">
+              Archived / Draft
+            </span>
+          </div>
+          <p class="ui-text-caption">
+            Standard status badges across applications and roster views with color-matched iconography and semantic background tints.
+          </p>
+        </div>
+
+        <!-- 2. Entity Types & Origin Context -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Entity Classification &amp; Origin Tags</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--purple">Department</span>
+            <span class="ui-badge ui-badge--cyan">Program</span>
+            <span class="ui-badge ui-badge--warning">Student Origin</span>
+            <span class="ui-badge ui-badge--info">Faculty Origin</span>
+            <span class="ui-badge ui-badge--destructive">System / Direct</span>
+          </div>
+          <p class="ui-text-caption">
+            Structural entity types used in directory tables, application routing, and system entity filters.
+          </p>
+        </div>
+
+        <!-- 3. Audit Activity & Mutation Events -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Audit Log Activity Badges</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--success">Created / Addition</span>
+            <span class="ui-badge ui-badge--info">Updated / Edit</span>
+            <span class="ui-badge ui-badge--destructive">Removed / Deleted</span>
+            <span class="ui-badge ui-badge--purple">Evaluation Review</span>
+          </div>
+          <p class="ui-text-caption">
+            Mutation indicators used across system audit trails to identify record creation, modifications, and removals.
+          </p>
+        </div>
+
+        <!-- 4. Domain & Competency Categories -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Domain &amp; Competency Assessment Tags</span>
+          <div class="ui-btn-group">
+            <span class="ui-badge ui-badge--purple">Research</span>
+            <span class="ui-badge ui-badge--cyan">Algorithms</span>
+            <span class="ui-badge ui-badge--amber">Leadership</span>
+            <span class="ui-badge ui-badge--rose">Robotics</span>
+            <span class="ui-badge ui-badge--neutral">General Academic</span>
+          </div>
+          <p class="ui-text-caption">
+            Subject-matter and competency review tags applied to student evaluations and academic curriculum areas. Uniform 1px border is applied across all color variants.
+          </p>
+        </div>
+
+        <!-- 5. Tag Cluster & Overflow Counter -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Tag Cluster &amp; Overflow Counter (+N)</span>
+          <div class="ui-btn-group">
+            <div class="ui-tags-cluster">
+              <span class="ui-badge ui-badge--purple">Research</span>
+              <span class="ui-badge ui-badge--cyan">Algorithms</span>
+              <div class="ui-tags-more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="2 more tags">
+                <span class="ui-badge ui-badge--neutral ui-tags-more-btn">+2</span>
+                <div class="ui-tags-popover" role="tooltip">
+                  <div class="ui-tags-popover-title">Additional Tags (2)</div>
+                  <div class="ui-tags-popover-list">
+                    <span class="ui-badge ui-badge--amber">Leadership</span>
+                    <span class="ui-badge ui-badge--rose">Robotics</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Prevents table and card crowding by displaying up to 2 primary tags with an interactive <code>+N</code> counter that reveals additional tags on hover or click.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Buttons Section -->
+    <section class="ui-section" id="buttons">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Buttons &amp; Actions</h2>
+        <span class="ui-section-desc">Interactive button primitives conforming to the unified <code>.ui-btn</code> specification</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-2">
+        <!-- Standard Button Variants -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Standard .ui-btn Variants</span>
+          <div class="ui-btn-group">
+            <button type="button" class="ui-btn">
+              Primary Action
+            </button>
+            <button type="button" class="ui-btn ui-btn-secondary">
+              Secondary Action
+            </button>
+            <button type="button" class="ui-btn ui-btn-outline">
+              Outline Action
+            </button>
+            <button type="button" class="ui-btn ui-btn-destructive">
+              Destructive
+            </button>
+          </div>
+          <p class="ui-text-caption">
+            Primary uses terracotta <code>var(--primary)</code> with bold black text. Secondary and outline utilize <code>var(--secondary)</code> and <code>var(--border)</code>.
+          </p>
+        </div>
+
+        <!-- Button States & Icons -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Button States &amp; Icons</span>
+          <div class="ui-btn-group">
+            <button type="button" class="ui-btn">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>With Leading Icon</span>
+            </button>
+            <button type="button" class="ui-btn ui-btn-secondary">
+              <span>Next</span>
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+            <button type="button" class="ui-btn" disabled>
+              Disabled Action
+            </button>
+          </div>
+          <p class="ui-text-caption">
+            Disabled state enforces reduced opacity and <code>cursor: not-allowed</code>. Focus rings use <code>var(--ring)</code> with 2px offset.
+          </p>
+        </div>
+
+        <!-- Primary Entity Add & Proposal Actions -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Primary Entity Creation Actions (.add-button)</span>
+          <div class="ui-btn-group is-14c2360">
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Student</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Faculty</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Department</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Add Program</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Register Student</span>
+            </button>
+            <button type="button" class="ui-btn add-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Propose Program</span>
+            </button>
+          </div>
+          <p class="ui-text-caption">
+            Unified primary action across all portals: Terracotta background (<code>#D97251</code>), white text (<code>#FFFFFF</code>) in light mode, consistent SVG plus icon, and <code>height: 38px</code>.
+          </p>
+        </div>
+
+        <!-- Proposal & Queue Decision Pill Buttons -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Queue Decision Pill Buttons (.pill-btn.approve, .pill-btn.reject)</span>
+          <div class="ui-btn-group is-14c2360">
+            <button type="button" class="pill-btn approve">Approve</button>
+            <button type="button" class="pill-btn reject">Reject</button>
+            <button type="button" class="pill-btn accept">Accept Application</button>
+            <button type="button" class="ui-btn ui-btn-secondary is-2dc5827">Browse Records</button>
+          </div>
+          <p class="ui-text-caption">
+            Standard queue review actions: <code>.pill-btn.approve</code> uses emerald green border and text (<code>#10B981</code>) with subtle hover tint (<code>rgba(16, 185, 129, 0.14)</code>), and <code>.pill-btn.reject</code> uses crimson border and text (<code>#EF4444</code>) with subtle hover tint (<code>rgba(239, 68, 68, 0.14)</code>).
+          </p>
+        </div>
+
+        <!-- Standard Modal Close Button Component -->
+        <div class="ui-btn-row">
+          <span class="ui-btn-label">Modal Close Squircle Button (.ui-modal-close)</span>
+          <div class="ui-btn-group is-14c2360" style="align-items: center; gap: 12px;">
+            <button type="button" class="ui-modal-close modal-close" aria-label="Close dialog example">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <span class="ui-text-caption" style="margin: 0;">Default &amp; interactive state: 34&times;34px, 8px radius, dark squircle container with SVG cross.</span>
+          </div>
+          <p class="ui-text-caption">
+            Unified modal close action across all portals and dialogs (faculty register student modal, proposal dialogs, admin approval queue modal). Standardized with <code>width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text-muted);</code> with hover scale (1.05) and active scale (0.95).
+          </p>
+        </div>
+
+        <!-- Interactive Neutral Action Links with Arrow -->
+        <div class="ui-btn-row is-e86cdd0">
+          <span class="ui-btn-label">Interactive Action Links with Animated Arrow (.ui-link-neutral)</span>
+          <div class="ui-btn-group is-0095bec">
+            <a href="#data-tables" class="ui-link-neutral is-a72553f">
+              Review <span class="arrow">&rarr;</span>
+            </a>
+            <a href="#data-tables" class="ui-link-neutral is-a72553f">
+              View All Logs <span class="arrow">&rarr;</span>
+            </a>
+            <a href="#data-tables" class="ui-link-neutral is-a72553f">
+              Write review <span class="arrow">&rarr;</span>
+            </a>
+            <a href="#data-tables" class="ui-link-neutral is-a72553f">
+              View details <span class="arrow">&rarr;</span>
+            </a>
+            <button type="button" class="empty-state-btn is-dc310e0">Clear all filters</button>
+          </div>
+          <p class="ui-text-caption">
+            <code>.ui-link-neutral</code> renders high-contrast neutral text (<code>#FAF9F5</code>) that turns primary terracotta (<code>#D97251</code>) on hover, while <code>.arrow</code> smoothly glides 4px to the right. <code>.empty-state-btn</code> provides filter reset recovery.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Form Controls Section -->
+    <section class="ui-section" id="form-controls">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Form Controls</h2>
+        <span class="ui-section-desc">Unified input fields, select dropdowns, textareas, and labels using <code>.ui-input</code></span>
+      </div>
+      <div class="ui-grid ui-grid-cols-4">
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="sample-text">Student Name</label>
+          <input type="text" id="sample-text" class="ui-input" placeholder="e.g. Alex Morgan" />
+        </div>
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="sample-select">Program Department</label>
+          <select id="sample-select" class="ui-input">
+            <option value="cs">BS Computer Science</option>
+            <option value="is">BS Information Systems</option>
+            <option value="it">BS Information Technology</option>
+            <option value="ds">BS Data Science</option>
+            <option value="ai">BS Artificial Intelligence</option>
+            <option value="cy">BS Cybersecurity</option>
+          </select>
+        </div>
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="sample-search">Search Records</label>
+            <div class="is-e0dd7f8">
+              <svg class="is-4484244" viewBox="0 0 16 16" fill="none">
+                <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.33"/>
+                <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.33" stroke-linecap="round"/>
+              </svg>
+              <input type="search" id="sample-search" class="ui-input is-1f5bf71" placeholder="Search roster or IDs..." />
+            </div>
+        </div>
+        <div class="ui-form-group is-e86cdd0">
+          <label class="ui-form-label" for="sample-notes">Review Assessment Notes</label>
+          <textarea id="sample-notes" class="ui-input is-6f0a953" placeholder="Provide detailed evaluation feedback..."></textarea>
+        </div>
+
+        <!-- Table Controls Toolbar (Search & Dropdown Filters) -->
+        <div class="ui-btn-row is-e86cdd0">
+          <span class="ui-btn-label">Standard Portal Table Controls Toolbar</span>
+          <div class="is-30fe52e">
+            <div class="search-wrapper is-a489c38">
+              <svg class="search-icon is-e4bf857" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="#6C655D" stroke-width="1.3"/><path d="M10.5 10.5L14 14" stroke="#6C655D" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input aria-label="Search by student, faculty, or proposal" class="search-input is-dd4e5c7" type="search" placeholder="Search by student, faculty, or proposal...">
+            </div>
+            <div class="is-9f3f2d3">
+              <div class="dropdown-container department is-3a95054">
+                <select aria-label="Filter by department" class="dropdown-select is-5b5fa33">
+                  <option value="all">Department: All</option>
+                  <option>Department of Computer Science</option>
+                  <option>Department of Information Technology</option>
+                  <option>Department of Applied Mathematics</option>
+                </select>
+                <svg class="dropdown-chevron is-c6cac50" viewBox="0 0 14 14" fill="none"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="dropdown-container status is-acf1180">
+                <select aria-label="Filter by status" class="dropdown-select is-5b5fa33">
+                  <option value="all">Status: All</option>
+                  <option>Active</option>
+                  <option>Under Review</option>
+                  <option>Archived</option>
+                </select>
+                <svg class="dropdown-chevron is-c6cac50" viewBox="0 0 14 14" fill="none"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <button type="button" class="ui-btn add-button">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <span>Add Record</span>
+              </button>
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Unified control bar used across all portal tables. Dropdown filters feature customized chevrons, standardized 12px radius, and dedicated widths (e.g. 195px for department to prevent text truncation).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Cards Section -->
+    <section class="ui-section" id="cards">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Cards</h2>
+        <span class="ui-section-desc">Container primitives: standard card, compact KPI metric card, and interactive link card</span>
+      </div>
+      <div class="ui-grid ui-grid-cols-3">
+        <!-- 1. Standard .ui-card with header and body -->
+        <div class="ui-card">
+          <div class="ui-card-header">
+            <h3 class="ui-card-title">Standard Card</h3>
+            <p class="ui-card-description">Default <code>.ui-card</code> container for details and panels.</p>
+          </div>
+          <div class="ui-card-content">
+            <p class="ui-text">
+              This card serves as the standard container for panels, detail views, and forms.
+              It uses <code>var(--card)</code> surface with a subtle <code>var(--border)</code> outline and <code>var(--radius-lg)</code> corners.
+            </p>
+          </div>
+          <div class="ui-card-footer">
+            <span class="ui-text-muted">Updated 10m ago</span>
+          </div>
+        </div>
+
+        <!-- 2. Compact .ui-card-sm for KPI metrics -->
+        <div class="ui-card ui-card-sm metric-card">
+          <div class="ui-card-header is-ac79cce">
+            <p class="metric-card-label">KPI Metric Card (.ui-card-sm)</p>
+          </div>
+          <div class="metric-card-row">
+            <strong class="metric-card-value">2,850</strong>
+            <span class="metric-card-trend">&#8599; +12.5%</span>
+          </div>
+          <p class="metric-card-status">AY 2026-2027</p>
+          <p class="ui-card-description">Compact metric summary for dashboard statistics.</p>
+        </div>
+
+        <!-- 3. Interactive .ui-card-interactive on an <a> tag -->
+          <a href="#interactive-target" class="ui-card ui-card-interactive is-90dcd8f">
+            <div class="ui-card-header">
+              <div class="is-3083282">
+                <h3 class="ui-card-title">Interactive Card Link</h3>
+                <span class="metric-card-trend is-378957a">Link <span class="arrow">&rarr;</span></span>
+              </div>
+              <p class="ui-card-description is-68a09f7"><code>.ui-card-interactive</code> directly on an anchor element.</p>
+            </div>
+            <div class="ui-card-content">
+              <p class="ui-text">
+                Hover over this card to view the smooth interactive transition effect.
+                Supports keyboard focus indicators and terracotta primary border highlighting.
+              </p>
+            </div>
+            <div class="ui-card-footer">
+              <span class="ui-text-muted is-009cc8c">Explore workspace <span class="arrow">&rarr;</span></span>
+            </div>
+          </a>
+
+
+      </div>
+    </section>
+
+    <!-- 7. Data Tables & Pagination Section -->
+    <section class="ui-section" id="data-tables">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Data Tables &amp; Loading Shimmers</h2>
+        <span class="ui-section-desc">Responsive table wrappers with subtle row hovers, status pills, and pagination bars</span>
+      </div>
+      <div class="is-bd0475c">
+        <span class="is-02ab777">Table features interactive loading shimmers, live row checkboxes, pagination slicing, and empty-state recovery.</span>
+        <button type="button" id="demo-simulate-skeleton-btn" class="ui-btn ui-btn-outline is-e8bc875">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Simulate Skeleton Loading (280ms)
+        </button>
+      </div>
+      <div class="ui-table-wrap">
+        <table class="ui-table">
+          <thead>
+            <tr>
+              <th class="checkbox-cell is-479236c"><input type="checkbox" class="custom-checkbox select-all-checkbox" checked aria-label="Select all rows"></th>
+              <th>Student</th>
+              <th class="col-id">Student ID</th>
+              <th>Program</th>
+              <th>Year Level</th>
+              <th>Status</th>
+              <th class="col-action">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="checked">
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" checked aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Sam Lee Parker</strong>
+                  <span class="is-06185fd">sam.parker@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00001</code></td>
+              <td>BS Computer Science</td>
+              <td>3rd Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action">
+                <button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button>
+              </td>
+            </tr>
+            <tr class="checked">
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" checked aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Elena Bautista</strong>
+                  <span class="is-06185fd">elena.b@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00042</code></td>
+              <td>BS Information Systems</td>
+              <td>2nd Year</td>
+              <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+              <td class="col-action">
+                <a href="#data-tables" class="ui-link-neutral is-a72553f">Review <span class="arrow">&rarr;</span></a>
+              </td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Rafael Cruz</strong>
+                  <span class="is-06185fd">r.cruz@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00109</code></td>
+              <td>BS Information Technology</td>
+              <td>4th Year</td>
+              <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+              <td class="col-action">
+                <a href="#data-tables" class="ui-link-neutral is-a72553f">Write review <span class="arrow">&rarr;</span></a>
+              </td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Adrian Davis</strong>
+                  <span class="is-06185fd">adrian.d@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00210</code></td>
+              <td>BS Computer Science</td>
+              <td>3rd Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Liam Moore</strong>
+                  <span class="is-06185fd">liam.m@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00211</code></td>
+              <td>BS Information Systems</td>
+              <td>1st Year</td>
+              <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Kaitlyn Smith</strong>
+                  <span class="is-06185fd">k.smith@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00212</code></td>
+              <td>BS Computer Engineering</td>
+              <td>4th Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Justin Taylor</strong>
+                  <span class="is-06185fd">j.taylor@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00213</code></td>
+              <td>BS Computer Science</td>
+              <td>2nd Year</td>
+              <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Mia Johnson</strong>
+                  <span class="is-06185fd">m.johnson@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00214</code></td>
+              <td>BS Data Science</td>
+              <td>1st Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Ethan White</strong>
+                  <span class="is-06185fd">e.white@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00215</code></td>
+              <td>BS Artificial Intelligence</td>
+              <td>3rd Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></td>
+              <td>
+                <div>
+                  <strong class="is-d3c8577">Chloe Brown</strong>
+                  <span class="is-06185fd">c.brown@vsu.edu.ph</span>
+                </div>
+              </td>
+              <td><code class="ui-text-mono">24-1-00216</code></td>
+              <td>BS Computer Science</td>
+              <td>4th Year</td>
+              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="ui-text-muted is-c67418c">
+          <strong>Column ratio helpers:</strong> <code>.col-id</code> (tight, nowrap), <code>.col-action</code> (tight, left-aligned, nowrap; links/buttons never wrap), <code>.col-60</code> / <code>.col-20</code> for Name/Status/Action tables (60/20/20), <code>.col-flex</code> for columns sharing remaining width equally (Student Name, Program). First and last columns hug the table edges.
+        </p>
+        <!-- Table Pagination Footer -->
+          </div> <!-- Closes ui-table-wrap -->
+          <div class="ui-table-pagination is-0272b5f">
+            <span class="is-7fbae58">2 of 3 row(s) selected.</span>
+            
+            <div class="is-31de0eb">
+              
+              <!-- Shadcn-styled Select Dropdown -->
+              <div class="is-b57eafe">
+                <span>Rows per page</span>
+                                                    <div class="is-e0dd7f8">
+                  <select aria-label="Rows per page" class="ui-select-pill is-daab64f">
+                          <option value="5" selected>5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                        </select>
+                  <svg class="is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <span class="is-12b4142">Page 1 of 2</span>
+              
+              <div class="ui-table-pagination-nav is-49e15c7">
+                <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Previous</button>
+                <button type="button" class="ui-btn ui-btn-outline is-b38e363">Next</button>
+              </div>
+              
+            </div>
+          </div>
+
+          <!-- Empty State Demo Container -->
+          <div id="demo-empty-state" class="empty-state is-443abc4">
+            <svg class="is-3be30c2" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <p class="is-373be8a">No records matching your search or filters found.</p>
+            <p class="is-ca6ebbd">Try adjusting your query or resetting the active filters.</p>
+            <button type="button" class="empty-state-btn" id="demo-empty-state-btn">Clear all filters</button>
+          </div>
+    </section>
+
+    <!-- 8. Portal Sidebar Navigation Section -->
+    <section class="ui-section" id="portal-sidebars">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Portal Sidebar Navigation</h2>
+        <span class="ui-section-desc">Docked 260px navigation sidebar with active state highlights, user account card, and zero-blink view transitions</span>
+      </div>
+
+      <div class="ui-grid ui-grid-cols-2 is-ffdb8e7">
+        <!-- Standard Portal Sidebar Showcase -->
+        <div class="ui-card is-317a4c4">
+          <div class="is-761640e">
+            Standard Portal Sidebar Navigation
+          </div>
+          <div class="demo-sidebar-showcase" id="demo-sidebar-container">
+            <div class="brand-header"><h1 class="brand-title">Academic Portal</h1></div>
+            <nav class="nav" id="demo-sidebar-nav" aria-label="Demo sidebar navigation">
+              <a href="#portal-sidebars" data-nav-key="dashboard" class="nav-btn-active" aria-current="page">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5"/></svg>
+                <span>Dashboard</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="faculty-apps" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14h6M9 18h6M9 10h.01"/></svg>
+                <span>Faculty Applications</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="student-apps" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z"/></svg>
+                <span>Student Applications</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="program-apps" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5"/></svg>
+                <span>Program Applications</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="dept-apps" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <span>Dept. Applications</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="students" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <span>Students</span>
+              </a>
+              <a href="#portal-sidebars" data-nav-key="audit" class="nav-btn-inactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Audit Log</span>
+              </a>
+            </nav>
+            <div class="sidebar-footer">
+              <div class="sidebar-divider"></div>
+              <div class="sidebar-account-card">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="sidebar-avatar">U</div>
+                  <div style="display: flex; flex-direction: column;">
+                    <span class="sidebar-account-name">Portal User</span>
+                    <span class="sidebar-account-role">Academic Staff</span>
+                  </div>
+                </div>
+                <button type="button" class="sidebar-logout-btn" aria-label="Log out" title="Log out">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Persistent View Transition Architecture -->
+        <div class="ui-card is-03e275d">
+          <h3 class="ui-card-title is-64e8bf9">Persistent View Transitions Architecture</h3>
+          <p class="ui-text is-5c3d21d">
+            All portal workspaces enforce persistent sidebar positioning and instant, blink-free navigation across pages via the View Transitions API and hover prefetching:
+          </p>
+          <ul class="is-ab3271d">
+            <li><strong>Hardcoded Static DOM:</strong> The complete <code>&lt;aside id="sidebar-menu" class="sidebar sidebar-frame"&gt;</code> is pre-rendered in all portal HTML templates, preventing post-load layout shifts.</li>
+            <li><strong>View Transition Tag:</strong> <code>view-transition-name: portal-sidebar;</code> instructs Chromium browsers to anchor the sidebar in place during cross-page crossfades.</li>
+            <li><strong>Hover Prefetch:</strong> Navigation scripts listen for <code>mouseenter</code> on links and inject <code>&lt;link rel="prefetch"&gt;</code> for instantaneous page responses.</li>
+            <li><strong>Semantic Active State:</strong> The current page is marked with <code>.nav-btn-active</code> and <code>aria-current="page"</code>, featuring primary terracotta background (<code>#D97251</code>) and bold black text (<code>#000000</code>).</li>
+          </ul>
+          <div class="is-19f8ba2">
+            <button type="button" id="demo-open-logout-btn" class="ui-btn ui-btn-outline is-5a4e2ab">
+              Preview Logout Confirmation Dialog
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Portal Modals & Dialogs Section -->
+    <section class="ui-section" id="portal-modals">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Portal Modals &amp; Confirmation Dialogs</h2>
+        <span class="ui-section-desc">Accessible, backdrop-blurred modal dialogs for proposal rejections, entity edits, and destructive confirmations</span>
+      </div>
+
+      <div class="ui-grid ui-grid-cols-2 is-ffdb8e7">
+        <!-- Embedded Modal Preview Card -->
+        <div class="ui-card is-03e275d">
+          <div class="is-948e6d6">
+            <span class="ui-btn-label">Standard Portal Modal Architecture</span>
+            <button type="button" id="demo-open-reject-modal-btn" class="ui-btn add-button is-ebaa71c">
+              Open Live Modal
+            </button>
+          </div>
+          
+          <!-- Static Visual Representation of the Modal Container -->
+          <div class="is-52a0171">
+            <div class="is-4cb809c">
+              <h4 class="is-ffac819">Reject Application Proposal</h4>
+              <button type="button" class="modal-close ui-modal-close" aria-label="Close modal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+            <div class="is-578b24d">
+              <!-- Contextual Action Confirmation Alert -->
+              <div class="ui-alert ui-alert--warning is-1d16385">
+                <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <div class="ui-alert-content">
+                  <span class="ui-alert-title">Confirm Rejection Decision</span>
+                  <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+                </div>
+              </div>
+
+              <div>
+                <label class="is-9f7ead6">Selected Application</label>
+                <div class="is-217c1f1">
+                  Dr. Eleanor Vance (Faculty Application)
+                </div>
+              </div>
+              <div>
+                <label class="is-fa77284">
+                  <span>Reason for Rejection <span class="is-97bf356">*</span></span>
+                </label>
+                <div class="is-5943a3d">
+                  Incomplete accreditation documentation for curriculum prerequisites.
+                </div>
+              </div>
+              <button type="button" class="modal-submit is-1671328">Confirm Rejection</button>
+            </div>
+          </div>
+
+          <p class="ui-text-caption">
+            Conforms strictly to the <strong>Standard Card</strong> architecture (<code>background: var(--card)</code>, <code>border: 1px solid var(--border)</code>, 16px radius) with standard lighter-bordered form controls (<code>var(--input)</code>), a resizable rejection textarea, required reason validation, primary terracotta submission button (<code>var(--primary)</code>), and embedded alert confirmation banners (<code>.ui-alert</code>).
+          </p>
+        </div>
+
+        <!-- Specifications & Behavioral Contract -->
+        <div class="ui-card is-03e275d">
+          <h3 class="ui-card-title is-64e8bf9">Modal Keyboard &amp; Accessibility Contract</h3>
+          <ul class="is-1afd29d">
+            <li><strong>Escape Key Dismissal:</strong> Pressing <kbd class="is-48badad">Esc</kbd> immediately closes the active modal overlay without submitting data.</li>
+            <li><strong>Backdrop Click to Close:</strong> Clicking the dimmed overlay outside the <code>.modal-container</code> safely dismisses the modal.</li>
+            <li><strong>Auto-focus &amp; Trap:</strong> Opening shifts focus into the first input or textarea; closing returns focus to the triggering button.</li>
+            <li><strong>Validation &amp; Error Feedback:</strong> Required rejection reasons trigger immediate warning toasts before modal confirmation can proceed.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Chats & AI Assistant Section -->
+    <section class="ui-section" id="chats">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Chats &amp; AI Assistant</h2>
+        <span class="ui-section-desc">Prompt chips, message bubbles, query textarea, and student quick-file context card</span>
+      </div>
+
+      <!-- Regular Topic Cards -->
+      <div class="ui-chat-prompts is-d3297f9">
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have research experience?">
+          <span>Research experience</span>
+          <small>Explore faculty assessments</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students show teamwork and leadership?">
+          <span>Teamwork &amp; Leadership</span>
+          <small>Ask across student records</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Find reviews mentioning communication skills.">
+          <span>Communication Skills</span>
+          <small>Find relevant review excerpts</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Verify capstone project reviews and prerequisites.">
+          <span>Capstone Project Review</span>
+          <small>Verify graduation prerequisites</small>
+        </div>
+      </div>
+
+      <!-- Two-Column Chat Workspace -->
+      <div class="ui-chat-columns">
+        <!-- Left: Chat Thread Card -->
+        <div class="ui-card is-dca1b55">
+            <div class="ui-card-header is-2f82c02">
+            <h3 class="ui-card-title">Ask across student reviews</h3>
+            <p class="ui-card-description">Conversational AI query assistant for student evaluations.</p>
+          </div>
+            <div class="ui-chat-container is-66768fc">
+            <div id="chat-log" class="ui-chat-log custom-scrollbar is-3fbfa29">
+              <!-- AI Message -->
+              <div class="ui-chat-msg ui-chat-msg--ai">
+                <div class="ui-chat-avatar ui-chat-avatar--text">SP</div>
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">AI Assistant</span>
+                    <span class="ui-chat-msg-time">10:42 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.</div>
+                </div>
+              </div>
+  
+              <!-- User Message -->
+              <div class="ui-chat-msg ui-chat-msg--user">
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">Prof. Morgan</span>
+                    <span class="ui-chat-msg-time">10:43 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--user">Which students in BS Computer Science demonstrate outstanding research contributions?</div>
+                </div>
+              </div>
+  
+              <!-- AI Message 2 -->
+              <div class="ui-chat-msg ui-chat-msg--ai">
+                <div class="ui-chat-msg-content">
+                  <div class="ui-chat-msg-header">
+                    <span class="ui-chat-msg-sender">AI Assistant</span>
+                    <span class="ui-chat-msg-time">10:43 AM</span>
+                  </div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="ui-chat-input-wrapper is-1d1c012">
+              <form class="is-f64a5e3" id="chat-form">
+                <textarea aria-label="Message to AI Chat Assistant" class="ui-chat-textarea" id="chat-prompt" required placeholder="Type a question across student reviews..." rows="2"></textarea>
+                <div class="is-895ac41">
+                  <span class="ui-chat-input-hint">Press Enter to send, Shift+Enter for new line</span>
+                  <button type="submit" class="ui-btn" id="send" aria-label="Send">
+                    Send query
+                    <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+          <!-- Right: Student Quick File Context Card -->
+          <!-- Right: Student Quick File Context Card -->
+        <div class="ui-chat-context-card">
+          <div class="ui-chat-context-avatar">SP</div>
+          <h3 class="ui-heading-3 is-e2b74ba">Sam Lee Parker</h3>
+          <p class="ui-text-muted is-08dff76">ID: 24-1-00001</p>
+
+          <div class="ui-chat-context-meta">
+            <span class="ui-chat-context-dt">Program</span>
+            <span class="ui-chat-context-dd">BS Computer Science</span>
+            <span class="ui-chat-context-dt">Year Level</span>
+            <span class="ui-chat-context-dd">3rd Year</span>
+            <span class="ui-chat-context-dt">Status</span>
+            <span class="ui-chat-context-dd"><span class="ui-badge ui-badge--success">Good Standing</span></span>
+            <span class="ui-chat-context-dt">Tags</span>
+            <span class="ui-chat-context-dd">
+              <span class="ui-badge ui-badge--purple">Research</span>
+              <span class="ui-badge ui-badge--cyan">Algorithms</span>
+            </span>
+          </div>
+
+          <p class="ui-text-caption is-33424b5">
+            Referenced record. Review conversations can synthesize evaluations across all enrolled students.
+          </p>
+
+          <button type="button" class="ui-btn ui-btn-outline view-profile-btn is-199b6f0">
+            View Full Profile <span class="arrow">&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Authentication & Sign Up Section -->
+    <section class="ui-section" id="auth-cards">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Authentication &amp; Account Cards</h2>
+        <span class="ui-section-desc">Unified Box, Color, and Text contract for Sign In and Sign Up portals</span>
+      </div>
+        <div class="auth-demo-container">
+            <div class="auth-shell">
+        <div class="auth-split">
+            <!-- LEFT: brand card with the SPMIS logo here -->
+            <aside class="brand-card">
+                <a href="#" class="brand-logo" aria-label="SPMIS">
+                    <img class="logo-dark-only" src="../assets/icons/SPMIS.png" alt="SPMIS" />
+<img class="logo-light-only" src="../assets/icons/SPMIS.png" alt="SPMIS" />
+                </a>
+
+                <div class="brand-hero">
+                    <h1 class="brand-hero-title">
+                        Track every<br>
+                        <span class="accent">student journey.</span>
+                    </h1>
+                    <p class="brand-hero-sub">
+                        From enrollment to graduation &mdash; review, approve, and manage academic records in one calm, focused workspace.
+                    </p>
+
+                    <ul class="brand-features">
+                        <li><span class="dot">&check;</span> Centralized student profiles</li>
+                        <li><span class="dot">&check;</span> Faculty review &amp; approvals</li>
+                        <li><span class="dot">&check;</span> Real-time progress tracking</li>
+                    </ul>
+                </div>
+
+                <div class="brand-footer">
+                    <span>© 2026 SPMIS Project</span>
+                    <span>v1.0</span>
+                </div>
+            </aside>
+
+            <!-- RIGHT: auth card with terracotta top/bottom accents -->
+            <section class="auth-card">
+                <div class="auth-card-body">
+                    <h2 class="auth-card-title">Sign In</h2>
+                    <p class="auth-card-sub">Welcome back. Enter your credentials to continue.</p>
+
+                    <div class="ui-auth-wrapper">
+                        <div class="ui-auth-card">
+                            <button type="button" class="auth-social-btn">
+                                <svg viewBox="0 0 24 24">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                                </svg>
+                                <span>Continue with Google</span>
+                            </button>
+
+                            <div class="ui-auth-divider">
+                                <span>or continue with email</span>
+                            </div>
+
+                            <form class="ui-auth-form" id="signin-form" novalidate>
+                                <div class="ui-auth-field" data-field="email">
+                                    <label class="ui-auth-field-label" for="auth-email">Academic Email</label>
+                                    <div class="ui-input-wrap">
+                                        <input type="email" id="auth-email" class="ui-input" placeholder="faculty@vsu.edu.ph" required />
+                                        <div class="ui-field-popup" role="alert" aria-live="polite">
+                                            <span class="ui-field-popup-icon" aria-hidden="true">!</span>
+                                            <span class="ui-field-popup-text">Please fill in this field.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="ui-auth-field" data-field="password">
+                                    <div class="is-948e6d6">
+                                        <label class="ui-auth-field-label" for="auth-pwd">Password</label>
+                                        <a class="is-7bcf3f8" href="#forgot">Forgot password?</a>
+                                    </div>
+                                    <div class="ui-input-wrap">
+                                        <input type="password" id="auth-pwd" class="ui-input" placeholder="••••••••••••" required />
+                                        <div class="ui-field-popup" role="alert" aria-live="polite">
+                                            <span class="ui-field-popup-icon" aria-hidden="true">!</span>
+                                            <span class="ui-field-popup-text">Please fill in this field.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <label class="ui-checkbox-label keep-signed-in" for="auth-keep-signed-in">
+                                    <input type="checkbox" id="auth-keep-signed-in" class="custom-checkbox" checked />
+                                    <span class="keep-signed-in-text">Keep me signed in on this device</span>
+                                </label>
+
+                                <button type="submit" class="ui-auth-btn-submit">
+                                    Sign In to Account
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sign-up prompt INSIDE the card, centered at the bottom -->
+                <div class="auth-card-signup">
+                    <a href="#register">
+                        New here? Sign Up <span class="arrow">&rarr;</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer OUTSIDE the card, white, no color change on hover -->
+        <div class="auth-footer-outside">
+            <span class="legal">
+                <a href="about.html">Contact</a>
+                <span class="sep">&middot;</span>
+                <a href="terms.html">Terms</a>
+                <span class="sep">&middot;</span>
+                <a href="privacy%20policy.html">Privacy</a>
+            </span>
+        </div>
+        </div>
+        </div>
+        
+      </section>
+
+    <!-- 12. Workspace Frame: Header, Status, Toasts & Pinned Footer -->
+    <section class="ui-section" id="workspace-frame">
+      <div class="ui-section-header">
+        <h2 class="ui-section-title">Workspace Frame (Header, Status, Toasts &amp; Footer)</h2>
+        <span class="ui-section-desc">Unified viewport frame primitives: persistent status header bar, notification toasts, and docked footer</span>
+      </div>
+
+      <div class="ui-grid ui-grid-cols-2 is-ffdb8e7">
+        <!-- Portal Top Header Bar Preview -->
+        <div class="ui-card is-03e275d">
+          <span class="ui-btn-label">Portal Status Header Bar</span>
+          <div class="ui-workspace-surface is-24ba48f">
+            <div class="admin-top-header is-911172d">
+              <div class="is-b512c98">
+                <div class="red-dot is-86dee63"></div>
+                <span class="breadcrumb-text">Workspace / Overview</span>
+              </div>
+              <div class="is-1c20bbe">
+                <span class="status-badge">
+                  <span class="green-dot is-6888aeb"></span>
+                  System Live
+                </span>
+                <span class="ay-text">AY 2026-2027</span>
+              </div>
+            </div>
+            <div class="is-469b292">
+              &darr; Page content and tables sit below this header bar
+            </div>
+          </div>
+          <p class="ui-text-caption">
+            Pinned at the top of portal viewports. The terracotta dot anchors the workspace context while the pulsing green indicator verifies real-time operational status.
+          </p>
+        </div>
+
+        <!-- Toast Notifications Demo -->
+        <div class="ui-card is-03e275d">
+          <span class="ui-btn-label">Toast Notification Primitive (.ui-toast)</span>
+          <div class="is-1dac0b9">
+            <button type="button" id="demo-show-toast-btn" class="ui-btn add-button is-b5fea39">
+              Trigger Success Toast
+            </button>
+          </div>
+          
+          <div class="is-c3a5059">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span class="is-1e42189">Application Action Completed Successfully</span>
+          </div>
+
+          <p class="ui-text-caption">
+            Fixed toast positioned at the bottom right with <code>backdrop-filter: blur(8px)</code>, automatic 3-second timeout, and screen reader announcements via <code>aria-live="polite"</code>.
+          </p>
+        </div>
+
+        <!-- Pinned Viewport Workspace Footer -->
+        <div class="ui-card is-a6b38e2">
+          <span class="ui-btn-label">Pinned Viewport Workspace Footer (.workspace-footer)</span>
+          <div class="ui-workspace-surface ui-workspace-footer-preview is-abb9727">
+            <div class="is-0eeaf53">↑ Scrollable workspace content sits above this footer</div>
+            <footer class="workspace-footer is-e8a73a1">
+              <span>&copy; 2026 Academic Management System. All rights reserved.</span>
+              <span>System Version 2.4.0 &middot; AY 2026-2027</span>
+            </footer>
+          </div>
+          <p class="ui-text-caption">
+            Integrated into the bottom of the workspace canvas via <code>flex: none</code> inside the vertical flex column, ensuring clean alignment across desktop and responsive displays.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Style Guide Footer -->
+    <footer class="ui-footer">
+      <span>&copy; 2026 SPMIS Project · Claude+ Living Style Guide</span>
+      <span>Living Reference in <code>mockup/pages/design-system.html</code> · Architecture in <code>docs/DESIGN_SYSTEM.md</code></span>
+    </footer>
+
+  </div>
+
+  <script src="../assets/js/pages/design-system.js"></script>
+
+  <!-- Interactive Demo Modals and Toasts -->
+  <!-- 1. Live Reject Application Modal -->
+  <div class="modal-overlay" id="demoRejectModal">
+    <div class="modal-container">
+      <button class="modal-close ui-modal-close" id="demoCloseRejectModal" aria-label="Close modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <h3 class="modal-title">Reject Application</h3>
+      <form class="modal-form" id="demoRejectForm">
+        <!-- Contextual Action Confirmation Alert -->
+        <div class="ui-alert ui-alert--warning" role="alert">
+          <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <div class="ui-alert-content">
+            <span class="ui-alert-title">Confirm Rejection Decision</span>
+            <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+          </div>
+        </div>
+
+        <div>
+          <label for="demoRejectAppSelect">Application:</label>
+          <select id="demoRejectAppSelect">
+            <option value="app_1">Dr. Eleanor Vance (Faculty Proposal)</option>
+            <option value="app_2">BS Data Science (Program Proposal)</option>
+            <option value="app_3">Dept. of Applied Mathematics</option>
+          </select>
+        </div>
+        <div>
+          <label for="demoRejectReason">
+            <span>Reason for rejection <span class="is-9790b6e">*</span></span>
+          </label>
+          <textarea id="demoRejectReason" required placeholder="Enter specific deficiency or prerequisites reason..."></textarea>
+        </div>
+        <button type="submit" class="modal-submit">Confirm Rejection</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Live Logout Confirmation Dialog -->
+  <dialog id="demoLogoutDialog" class="logout-dialog">
+    <form method="dialog">
+      <h2>Log out?</h2>
+      <p>Are you sure you want to end your current session?</p>
+      <div class="actions">
+        <button type="submit" value="cancel" class="ui-btn ui-btn-outline">Cancel</button>
+        <button type="submit" value="confirm" class="ui-btn ui-btn-primary">Log out</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 3. Live Success Toast -->
+  <div id="demoToast" class="ui-toast" role="status" aria-live="polite">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="demoToastMessage">Action completed successfully!</span>
+  </div>
+
+  <script src="../assets/js/pages/design-system-2.js"></script>
+</body>
+
+</html>

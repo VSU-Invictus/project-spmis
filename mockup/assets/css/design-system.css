@@ -1,0 +1,838 @@
+/* ==========================================================================
+   SPMIS DESIGN SYSTEM TOKENS (design-system.css)
+   Central token repository for all portal themes, spacing, typography,
+   colors, radii, shadows, z-indices, and transitions.
+
+   STANDARD BREAKPOINTS (Reference for media queries across stylesheets):
+   - xs:  max-width: 480px  (Mobile devices)
+   - sm:  max-width: 700px  (Tablets / compact screens)
+   - md:  max-width: 850px  (Small desktop / stacked layouts)
+   - lg:  max-width: 1024px (Standard desktop)
+   - xl:  max-width: 1280px (Wide monitors)
+   ========================================================================== */
+
+:root {
+  /* --- 1. PRIMITIVE & THEME COLORS (Claude+ Palette) --- */
+  --background: oklch(0.9818 0.0054 95.0986);
+  --foreground: oklch(0.3438 0.0269 95.7226);
+  --card: oklch(0.9665 0.0067 97.3521);
+  --card-foreground: oklch(0.1908 0.0020 106.5859);
+  --popover: oklch(1.0000 0 0);
+  --popover-foreground: oklch(0.2671 0.0196 98.9390);
+  --primary: oklch(0.6171 0.1375 39.0427);
+  --primary-foreground: oklch(1.0000 0 0);
+  --secondary: oklch(0.9245 0.0138 92.9892);
+  --secondary-foreground: oklch(0.4334 0.0177 98.6048);
+  --muted: oklch(0.9341 0.0153 90.2390);
+  --muted-foreground: oklch(0.5341 0.0078 97.4503);
+  --accent: oklch(0.9245 0.0138 92.9892);
+  --accent-foreground: oklch(0.2671 0.0196 98.9390);
+  --destructive: oklch(0.1908 0.0020 106.5859);
+  --destructive-foreground: oklch(1.0000 0 0);
+  --border: oklch(0.8847 0.0069 97.3627);
+  --input: oklch(0.7621 0.0156 98.3528);
+  --ring: oklch(0.6171 0.1375 39.0427);
+  --sidebar: oklch(0.9663 0.0080 98.8792);
+  --sidebar-foreground: oklch(0.3590 0.0051 106.6524);
+  --sidebar-primary: oklch(0.6171 0.1375 39.0427);
+  --sidebar-primary-foreground: oklch(0.9881 0 0);
+  --sidebar-accent: oklch(0.9245 0.0138 92.9892);
+  --sidebar-accent-foreground: oklch(0.3250 0 0);
+  --sidebar-border: oklch(0.9401 0 0);
+  --sidebar-ring: oklch(0.7731 0 0);
+  --text: var(--foreground);
+
+  /* Semantic UI Surfaces */
+  --ui-surface: var(--card);
+  --ui-surface-muted: var(--muted);
+  --ui-surface-text: var(--foreground);
+  --ui-surface-muted-text: var(--muted-foreground);
+  --ui-surface-border: var(--border);
+
+  /* --- 2. SEMANTIC PALETTE TOKENS (LIGHT DEFAULTS) --- */
+  --color-canvas: #FAF9F5;
+  --color-sidebar: #F0EDE6;
+  --color-card: #FFFFFF;
+  --color-card-subtle: #F6F4EE;
+  --color-card-hover: rgba(0, 0, 0, 0.04);
+  --color-muted: #EFECE6;
+  --color-input: #FFFFFF;
+  --color-pill: #EAE6DF;
+
+  --color-primary-base: #D97251;
+  --color-primary-hover: #C56344;
+  --color-primary-active: #B25537;
+  --color-primary-subtle: rgba(217, 114, 81, 0.12);
+  --color-primary-text: #FFFFFF;
+  --color-primary-white: #FFFFFF;
+  --color-primary-foreground: #FFFFFF;
+
+  --color-text-main: #21201E;
+  --color-text-title: #141413;
+  --color-text-muted: #706B65;
+  --color-text-dim: #98938D;
+  --color-text-subtle: #A0988E;
+
+  --color-border-main: #E2DDD4;
+  --color-border-subtle: #ECE8E1;
+  --color-border-sidebar: #E2DDD4;
+  --color-border-pill: #D5CECE;
+  --color-border-divider: #E2DDD4;
+  --color-surface-well: #F4F1EA;
+  --color-border-well: #E5E0D8;
+  --color-border-card-hover: #D5CEBE;
+  --color-scrollbar-thumb: #C8C0B2;
+
+  --color-status-success: #10B981;
+  --color-status-success-subtle: rgba(16, 185, 129, 0.12);
+  --color-status-warning: #F59E0B;
+  --color-status-warning-subtle: rgba(245, 158, 11, 0.12);
+  --color-status-danger: #EF4444;
+  --color-status-danger-subtle: rgba(239, 68, 68, 0.12);
+  --color-status-info: #8AB4F8;
+  --color-status-info-subtle: rgba(138, 180, 248, 0.12);
+
+  --color-avatar-bg: #F7E2D6;
+  --color-avatar-text: #A35233;
+
+  /* --- 3. TYPOGRAPHY TOKENS --- */
+  --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Intel One Mono', 'Geist Mono', ui-monospace, monospace;
+  --font-number: 'Intel One Mono', monospace;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 13px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* --- 4. SPACING SCALE TOKENS --- */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 10px;
+  --space-5: 12px;
+  --space-6: 14px;
+  --space-7: 16px;
+  --space-8: 20px;
+  --space-9: 24px;
+  --space-10: 28px;
+  --space-12: 32px;
+  --space-16: 48px;
+
+  /* --- 5. BORDER RADIUS SCALE TOKENS --- */
+  --radius: 1rem;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 18px;
+  --radius-3xl: 20px;
+  --radius-full: 9999px;
+
+  /* --- 6. ELEVATION & SHADOW TOKENS --- */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.25), 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 20px rgba(217, 114, 81, 0.25);
+
+  /* --- 7. Z-INDEX SCALE TOKENS --- */
+  --z-below: -1;
+  --z-base: 0;
+  --z-raised: 1;
+  --z-badge: 2;
+  --z-dropdown: 10;
+  --z-sidebar: 50;
+  --z-header: 60;
+  --z-modal-backdrop: 999;
+  --z-modal: 1000;
+  --z-toast: 2000;
+
+  /* --- 8. TRANSITIONS & TIMING TOKENS --- */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-smooth: 300ms ease-out;
+}
+
+/* ==========================================================================
+   DARK THEME OVERRIDES (Active in both .dark and [data-theme="dark"])
+   ========================================================================== */
+.dark,
+[data-theme="dark"] {
+  --background: oklch(0.2679 0.0036 106.6427);
+  --foreground: oklch(0.9576 0.0027 106.4494);
+  --card: oklch(0.2928 0.0018 106.5092);
+  --card-foreground: oklch(0.9818 0.0054 95.0986);
+  --popover: oklch(0.3085 0.0035 106.6039);
+  --popover-foreground: oklch(0.9211 0.0040 106.4781);
+  --primary: oklch(0.6724 0.1308 38.7559);
+  --primary-foreground: oklch(0.1908 0.0020 106.5859);
+  --secondary: oklch(0.2213 0.0038 106.7070);
+  --secondary-foreground: oklch(0.9818 0.0054 95.0986);
+  --muted: oklch(0.2213 0.0038 106.7070);
+  --muted-foreground: oklch(0.7713 0.0169 99.0657);
+  --accent: oklch(0.2130 0.0078 95.4245);
+  --accent-foreground: oklch(0.9663 0.0080 98.8792);
+  --destructive: oklch(0.6368 0.2078 25.3313);
+  --destructive-foreground: oklch(1.0000 0 0);
+  --border: oklch(0.3618 0.0101 106.8928);
+  --input: oklch(0.4336 0.0113 100.2195);
+  --ring: oklch(0.6724 0.1308 38.7559);
+  --sidebar: oklch(0.2357 0.0024 67.7077);
+  --sidebar-foreground: oklch(0.8074 0.0142 93.0137);
+  --sidebar-primary: oklch(0.6724 0.1308 38.7559);
+  --sidebar-primary-foreground: oklch(0.9881 0 0);
+  --sidebar-accent: oklch(0.1680 0.0020 106.6177);
+  --sidebar-accent-foreground: oklch(0.8074 0.0142 93.0137);
+  --sidebar-border: oklch(0.3618 0.0101 106.8928);
+  --sidebar-ring: oklch(0.7731 0 0);
+
+  /* Semantic UI Surfaces in Dark Mode */
+  --ui-surface: var(--card);
+  --ui-surface-muted: var(--muted);
+  --ui-surface-text: var(--foreground);
+  --ui-surface-muted-text: var(--muted-foreground);
+  --ui-surface-border: var(--border);
+
+  /* Semantic Dark Palette Tokens */
+  --color-canvas: #141413;
+  --color-sidebar: #21201E;
+  --color-card: #2B2A27;
+  --color-card-subtle: #1F1E1D;
+  --color-card-hover: rgba(255, 255, 255, 0.05);
+  --color-muted: #2B2A27;
+  --color-input: #21201E;
+  --color-pill: #3D3D3A;
+
+  --color-primary-base: #D97251;
+  --color-primary-hover: #C56344;
+  --color-primary-active: #B25537;
+  --color-primary-subtle: rgba(217, 114, 81, 0.12);
+  --color-primary-text: #000000;
+  --color-primary-white: #FFFFFF;
+  --color-primary-foreground: #FFFFFF;
+
+  --color-text-main: #FFFFFF;
+  --color-text-title: #FAF9F5;
+  --color-text-muted: #A0988E;
+  --color-text-dim: #98938D;
+  --color-text-subtle: #6C655D;
+
+  --color-border-main: #383734;
+  --color-border-subtle: #2B2A27;
+  --color-border-sidebar: #3E3D39;
+  --color-border-pill: #484844;
+  --color-border-divider: #42423F;
+  --color-surface-well: #171615;
+  --color-border-well: #282725;
+  --color-border-card-hover: #44423E;
+  --color-scrollbar-thumb: #3E3D39;
+
+  --color-status-success: #10B981;
+  --color-status-success-subtle: rgba(16, 185, 129, 0.12);
+  --color-status-warning: #F59E0B;
+  --color-status-warning-subtle: rgba(245, 158, 11, 0.12);
+  --color-status-danger: #EF4444;
+  --color-status-danger-subtle: rgba(239, 68, 68, 0.12);
+  --color-status-info: #8AB4F8;
+  --color-status-info-subtle: rgba(138, 180, 248, 0.12);
+
+  --color-avatar-bg: #F7E2D6;
+  --color-avatar-text: #A35233;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   MODAL CLOSE BUTTON COMPONENT (.ui-modal-close, .modal-close)
+   Standard squircle icon-based dismiss button following the design system specs.
+   Matches the faculty portal register student modal close button.
+   ========================================================================== */
+.ui-modal-close,
+.modal-close {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  padding: 0 !important;
+  border: 1px solid var(--color-border-main, #3E3D39) !important;
+  border-radius: var(--radius-md, 8px) !important;
+  background: var(--color-card, #21201E) !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  cursor: pointer !important;
+  outline: none !important;
+  transition: all var(--duration-fast, 150ms) var(--ease-default, ease) !important;
+  box-sizing: border-box !important;
+}
+
+.ui-modal-close:hover,
+.modal-close:hover {
+  color: var(--color-text-main, #FFFFFF) !important;
+  background: var(--color-muted, #2E2D2A) !important;
+  border-color: var(--color-border-card-hover, #4E4D48) !important;
+  transform: scale(1.05);
+}
+
+.ui-modal-close:active,
+.modal-close:active {
+  transform: scale(0.95);
+}
+
+.ui-modal-close svg,
+.modal-close svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  pointer-events: none !important;
+  display: block !important;
+}
+
+/* ==========================================================================
+   QUEUE DECISION PILL BUTTONS (.pill-btn.approve, .pill-btn.reject)
+   Outlined status pill actions matching the approval queue specification.
+   ========================================================================== */
+.pill-btn.approve,
+.pill-btn.accept {
+  background: transparent !important;
+  color: #10B981 !important;
+  border: 1px solid #10B981 !important;
+  border-radius: 9999px !important;
+  font-weight: 500 !important;
+  transition: all var(--duration-fast, 150ms) ease !important;
+}
+
+.pill-btn.approve:hover,
+.pill-btn.accept:hover {
+  background: rgba(16, 185, 129, 0.14) !important;
+  color: #10B981 !important;
+  border-color: #10B981 !important;
+}
+
+.pill-btn.reject {
+  background: transparent !important;
+  color: #EF4444 !important;
+  border: 1px solid #EF4444 !important;
+  border-radius: 9999px !important;
+  font-weight: 500 !important;
+  transition: all var(--duration-fast, 150ms) ease !important;
+}
+
+.pill-btn.reject:hover {
+  background: rgba(239, 68, 68, 0.14) !important;
+  color: #EF4444 !important;
+  border-color: #EF4444 !important;
+}
+
+/* ==========================================================================
+   STANDARD CUSTOM CHECKBOX PRIMITIVE (.custom-checkbox, .ui-checkbox)
+   Equal-sized (1:1 square, 20px x 20px) squircle checkbox.
+   - Header (Select All): Charcoal squircle (#30302E) with white checkmark (#FFFFFF).
+   - Table rows (Checked): Terracotta squircle (#D97251) with black checkmark (#000000).
+   - Auth Card: Terracotta squircle (#D97251) with white checkmark (#FFFFFF).
+   Guarantees equal vertical and horizontal dimensions across tables and cards.
+   ========================================================================== */
+.custom-checkbox,
+.ui-checkbox,
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) input[type="checkbox"],
+.keep-signed-in input[type="checkbox"],
+.ui-checkbox-label.keep-signed-in input[type="checkbox"] {
+  position: relative !important;
+  box-sizing: border-box !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  aspect-ratio: 1 / 1 !important;
+  border: 1.5px solid var(--border, #3E3D39) !important;
+  border-radius: 6px !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+  outline: none !important;
+  display: inline-block !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+  transition: background-color var(--duration-fast, 150ms) ease, border-color var(--duration-fast, 150ms) ease, box-shadow var(--duration-fast, 150ms) ease !important;
+}
+
+.custom-checkbox:hover:not(:checked),
+.ui-checkbox:hover:not(:checked),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) input[type="checkbox"]:hover:not(:checked),
+.keep-signed-in input[type="checkbox"]:hover:not(:checked),
+.ui-checkbox-label.keep-signed-in input[type="checkbox"]:hover:not(:checked) {
+  border-color: #55524D !important;
+}
+
+.custom-checkbox:focus-visible,
+.ui-checkbox:focus-visible,
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) input[type="checkbox"]:focus-visible,
+.keep-signed-in input[type="checkbox"]:focus-visible,
+.ui-checkbox-label.keep-signed-in input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--ring, #D97251) !important;
+  outline-offset: 2px !important;
+}
+
+/* Base custom checkbox checked state (terracotta with white checkmark) */
+.custom-checkbox:checked,
+.ui-checkbox:checked {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+.custom-checkbox:checked::after,
+.ui-checkbox:checked::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  inset: auto !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Table Header Select-All Checkbox when partially selected (indeterminate): Dark Charcoal Squircle (#30302E) with WHITE Checkmark */
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:indeterminate,
+.select-all-checkbox:indeterminate {
+  background-color: #30302E !important;
+  border-color: #3E3D39 !important;
+}
+
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:indeterminate::after,
+.select-all-checkbox:indeterminate::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  inset: auto !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Table Header Select-All Checkbox when ALL rows selected: Terracotta/Orange Squircle (#D97251) with BLACK Checkmark */
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:checked:not(:indeterminate),
+.select-all-checkbox:checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:checked:not(:indeterminate)::after,
+.select-all-checkbox:checked:not(:indeterminate)::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  inset: auto !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #000000 !important;
+}
+
+/* Table Body Row Checkboxes: Terracotta Squircle (#D97251) with BLACK Checkmark */
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(tbody, .table-body) input[type="checkbox"]:checked,
+.row-checkbox:checked {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(tbody, .table-body) input[type="checkbox"]:checked::after,
+.row-checkbox:checked::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  inset: auto !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #000000 !important;
+}
+
+/* Auth Card "Keep me signed in on this device" Row Checkbox */
+.keep-signed-in input[type="checkbox"]:checked,
+.ui-checkbox-label.keep-signed-in input[type="checkbox"]:checked {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+.keep-signed-in input[type="checkbox"]:checked::after,
+.ui-checkbox-label.keep-signed-in input[type="checkbox"]:checked::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  inset: auto !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Auth Card "Keep me signed in on this device" Row */
+.keep-signed-in,
+.ui-checkbox-label.keep-signed-in {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  margin-top: 4px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  text-align: left !important;
+}
+
+.keep-signed-in input[type="checkbox"],
+.ui-checkbox-label.keep-signed-in input[type="checkbox"] {
+  position: relative !important;
+  display: inline-block !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+}
+
+.keep-signed-in span,
+.keep-signed-in-text,
+.ui-checkbox-label.keep-signed-in span {
+  font-size: 0.8125rem !important;
+  line-height: 1.35 !important;
+  font-weight: 400 !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  white-space: nowrap !important;
+}
+
+html:not(.dark) .keep-signed-in span,
+html:not(.dark) .keep-signed-in-text,
+html:not(.dark) .ui-checkbox-label.keep-signed-in span {
+  color: var(--color-text-muted, #6C655D) !important;
+}
+
+/* Table Checkbox Cell Alignment */
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td):first-child:has(input[type="checkbox"]),
+:is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(th, td).checkbox-cell {
+  width: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  padding: 0 !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* ==========================================================================
+   PORTAL SIDEBAR NAVIGATION SPECIFICATION (.nav-btn-active, .nav-btn-inactive)
+   Standard navigation item styles matching faculty and admin portal sidebars.
+   ========================================================================== */
+#demo-sidebar-container,
+.demo-sidebar-showcase {
+  width: 100% !important;
+  max-width: 260px !important;
+  background: var(--sidebar, #1F1E1D) !important;
+  border: 1px solid var(--sidebar-border, #181716) !important;
+  border-radius: 16px !important;
+  padding: 1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+}
+
+#demo-sidebar-container .brand-header {
+  height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+#demo-sidebar-container .brand-title {
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  line-height: 26px !important;
+  letter-spacing: -0.025em !important;
+  color: #FFFFFF !important;
+  margin: 0 !important;
+}
+
+#demo-sidebar-container .nav {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive,
+#demo-sidebar-container .nav-btn-active {
+  min-height: 40px !important;
+  height: 40px !important;
+  max-height: 40px !important;
+  padding: 0 14px !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  font-size: 13px !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive {
+  background: transparent !important;
+  color: #98938D !important;
+  font-weight: 600 !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive svg {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+  color: #98938D !important;
+  stroke: currentColor !important;
+  transition: color 0.15s ease !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive span {
+  color: #98938D !important;
+  font-weight: 600 !important;
+  transition: color 0.15s ease !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #FFFFFF !important;
+}
+
+#demo-sidebar-container .nav-btn-inactive:hover svg,
+#demo-sidebar-container .nav-btn-inactive:hover span {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Active navigation item: primary terracotta background with black text/icon */
+#demo-sidebar-container .nav-btn-active,
+#demo-sidebar-container [aria-current="page"] {
+  background-color: #D97251 !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+#demo-sidebar-container .nav-btn-active svg,
+#demo-sidebar-container [aria-current="page"] svg {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+  color: #000000 !important;
+  stroke: #000000 !important;
+  stroke-width: 2 !important;
+}
+
+#demo-sidebar-container .nav-btn-active span,
+#demo-sidebar-container [aria-current="page"] span {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+#demo-sidebar-container .sidebar-footer {
+  margin-top: auto !important;
+  padding-top: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+#demo-sidebar-container .sidebar-divider {
+  height: 1px !important;
+  width: 100% !important;
+  background-color: #42423F !important;
+}
+
+#demo-sidebar-container .sidebar-account-card {
+  background: var(--account-card, #252422) !important;
+  border: 1px solid var(--sidebar-card-border, #2E2D2A) !important;
+  border-radius: 18px !important;
+  height: 58px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+}
+
+#demo-sidebar-container .sidebar-avatar {
+  background: #D97251 !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  font-size: 17px !important;
+  flex-shrink: 0 !important;
+}
+
+#demo-sidebar-container .sidebar-account-name {
+  color: #FFFFFF !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+#demo-sidebar-container .sidebar-account-role {
+  color: #929292 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+}
+
+#demo-sidebar-container .sidebar-logout-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #929292 !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.15s ease !important;
+}
+
+#demo-sidebar-container .sidebar-logout-btn:hover {
+  color: #FFFFFF !important;
+}
+
+/* Light mode overrides for Standard Portal Sidebar Navigation */
+html:not(.dark) #demo-sidebar-container {
+  background: #FAF9F6 !important;
+  border: 1px solid #E8E5DE !important;
+}
+
+html:not(.dark) #demo-sidebar-container .brand-title {
+  color: #141413 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive {
+  color: #4A4740 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive svg {
+  color: #4A4740 !important;
+  stroke: #4A4740 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive span {
+  color: #4A4740 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive:hover {
+  background-color: #EFECE6 !important;
+  color: #141413 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive:hover svg,
+html:not(.dark) #demo-sidebar-container .nav-btn-inactive:hover span {
+  color: #141413 !important;
+  stroke: #141413 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-active,
+html:not(.dark) #demo-sidebar-container [aria-current="page"] {
+  background-color: #D97251 !important;
+  color: #FFFFFF !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-active svg,
+html:not(.dark) #demo-sidebar-container [aria-current="page"] svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+html:not(.dark) #demo-sidebar-container .nav-btn-active span,
+html:not(.dark) #demo-sidebar-container [aria-current="page"] span {
+  color: #FFFFFF !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-divider {
+  background-color: #E2DDD4 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-account-card {
+  background: #F0EDE6 !important;
+  border: 1px solid #E2DDD4 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-account-name {
+  color: #141413 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-account-role {
+  color: #706B65 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-logout-btn {
+  color: #706B65 !important;
+}
+
+html:not(.dark) #demo-sidebar-container .sidebar-logout-btn:hover {
+  color: #141413 !important;
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Portal Status Header Bar Surface */
+.admin-top-header {
+  background: transparent !important;
+}
+
+
+

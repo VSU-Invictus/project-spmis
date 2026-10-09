@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Applications · SPMIS Faculty</title>
+    <link rel="stylesheet" href="../../assets/css/design-system.css" />
+    <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
+    <link rel="stylesheet" href="../../assets/css/components.css?v=9" />
+    <script src="../../assets/js/faculty-sidebar.js"></script>
+    <link rel="stylesheet" href="../../assets/css/pages/faculty/applications.css" />
+  <script>
+    if (window.self !== window.top || new URLSearchParams(window.location.search).has('embedded')) {
+      document.documentElement.classList.add('queue-embedded');
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body?.classList.add('queue-embedded');
+        document.querySelectorAll('.sidebar-frame, iframe#sidebar-frame, .admin-top-header, .top-header-bar, .admin-footer, .workspace-footer').forEach((el) => {
+          el.style.display = 'none';
+          el.remove();
+        });
+      });
+    }
+  </script>
+</head>
+  <body data-page="applications">
+    <a href="#main" class="skip">Skip to content</a>
+    <div class="app">
+    <iframe
+      src="../../components/navigation/sidebar-faculty.html?active=applications"
+      id="sidebar-frame"
+      class="sidebar-frame"
+      title="Faculty Sidebar">
+    </iframe>
+      <main id="main">
+      <!-- Top Brand Header Bar -->
+      <div class="top-header-bar">
+        <div class="is-b512c98">
+          <div class="is-86dee63"></div>
+          <span class="is-aae39be">FACULTY PORTAL / APPLICATIONS</span>
+        </div>
+        <div class="is-2dec633">
+          <span class="status-live-pill is-20045f6">
+            <span class="is-15b160a"></span>
+            System Live
+          </span>
+          <span class="is-98efe8b">AY 2026-2027</span>
+        </div>
+      </div>
+        <div class="header">
+          <div>
+
+            <h1>Your applications</h1>
+            <p>
+              Track your student registrations, program proposals, and
+              department proposals.
+            </p>
+          </div>
+        </div>
+        <div class="controls-container">
+          <div class="search-wrapper">
+            <svg class="search-icon" viewBox="0 0 16 16" fill="none">
+              <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" stroke-width="1.33"/>
+              <path d="M10.5 10.5L14 14" stroke="#8A837A" stroke-width="1.33" stroke-linecap="round"/>
+            </svg>
+            <input aria-label="Search record name or application type"
+              id="application-search"
+              type="search"
+              class="search-input"
+              placeholder="Search record name or application type"
+            />
+          </div>
+          <div class="controls-actions">
+            <div class="dropdown-container status">
+              <select aria-label="Filter by application status" id="application-status" class="dropdown-select">
+                <option value="">Status: All</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+                <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <section id="application-list" aria-live="polite"></section>
+        <p class="muted">
+          Only your submissions appear here. Admin decisions include a reason
+          when a request is rejected. A resubmission is a new application.
+        </p>
+        <noscript>
+          <p class="notice">
+            Enable JavaScript to display sample lists and use the mock
+            interactions.
+          </p>
+        </noscript>
+            <!-- Workspace Footer -->
+      <footer class="workspace-footer">
+        <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
+        <span>System Version 2.4.0</span>
+      </footer>
+    </main>
+    </div>
+    <script src="../../assets/js/pages/faculty/applications.js"></script>
+  
+    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toast-message">Action successful!</span>
+    </div>
+    <script src="../../assets/js/pages/faculty/applications-2.js"></script>
+
+</body>
+</html>
+
+
+

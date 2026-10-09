@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/design-system.css">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/queue-modal.css">
+  <title>Admin Portal - Students</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/pages/admin/admin-common.css">
+  <link rel="stylesheet" href="../../assets/css/pages/admin/students.css">
+</head>
+<body>
+  <div class="app-canvas">
+    <!-- Admin Sidebar Component -->
+    <iframe src="../../components/navigation/sidebar-admin.html?active=students" id="sidebar-frame" class="sidebar-frame" title="Admin Sidebar"></iframe>
+
+    <main class="section-container">
+      <!-- Admin Top Header -->
+      <div class="admin-top-header">
+        <div class="header-left">
+          <div class="red-dot"></div>
+          <span class="breadcrumb-text">Admin Portal / Student Roster</span>
+        </div>
+        <div class="header-right">
+          <span class="status-badge">
+            <span class="green-dot"></span>
+            System Live
+          </span>
+          <span class="ay-text">AY 2026-2027</span>
+        </div>
+      </div>
+
+      <header class="header-container">
+        <div class="heading-wrapper">
+          <h2 class="heading-title">Student Roster</h2>
+        </div>
+      </header>
+
+      <div class="controls-container">
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" stroke-width="1.33"/>
+            <path d="M10.5 10.5L14 14" stroke="#8A837A" stroke-width="1.33" stroke-linecap="round"/>
+          </svg>
+          <input aria-label="Search by student id or name" id="searchInput" type="text" class="search-input" placeholder="Search by student id or name...">
+        </div>
+
+        <div class="controls-actions">
+          <a href="students.html?queue=student" class="queue-button" data-queue-open="student" aria-label="Open student applications queue">
+            Queue
+            <span class="queue-counter">3</span>
+          </a>
+          <div class="dropdown-container program">
+            <select aria-label="Filter by program" id="programFilter" class="dropdown-select">
+              <option value="all">Program: All</option>
+              <option>BS in Computer Science</option>
+              <option>BS in Computer Engineering</option>
+              <option>BS in Medical Technology</option>
+              <option>BS in Information System</option>
+              <option>BS In Applied Mathematics</option>
+            </select>
+            <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <button id="addButton" type="button" class="btn-add">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 1.16663V12.8333M1.16666 6.99996H12.8333" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Add Student
+          </button>
+        </div>
+      </div>
+
+      <div class="table-margin-container">
+        <div class="table-container ui-table-wrap">
+          <div class="table-scroll">
+            <div class="table-header-row">
+              <div class="th-cell col-id">Student ID</div>
+              <div class="th-cell col-fname">First Name</div>
+              <div class="th-cell col-mname">Middle Name</div>
+              <div class="th-cell col-lname">Last Name</div>
+              <div class="th-cell col-program">Program</div>
+              <div class="th-cell col-action text-right">Actions</div>
+            </div>
+
+            <div id="tableBody" class="table-body">
+              <div class="table-row" data-id="27-1-12345" data-fname="dubai chu wee" data-mname="coo" data-lname="ki" data-program="BS in Computer Science">
+                <div class="td-cell col-id">27-1-12345</div>
+                <div class="td-cell col-fname">Dubai Chu Wee</div>
+                <div class="td-cell col-mname">Coo</div>
+                <div class="td-cell col-lname">Ki</div>
+                <div class="td-cell col-program">BS in Computer Science</div>
+                <div class="td-cell col-action">
+                  <button class="pill-btn-sm edit" type="button">Edit</button>
+                  <button class="pill-btn-sm remove" type="button">Remove</button>
+                </div>
+              </div>
+
+              <div class="table-row" data-id="27-1-67676" data-fname="syx" data-mname="sev" data-lname="vyn" data-program="BS in Computer Engineering">
+                <div class="td-cell col-id">27-1-67676</div>
+                <div class="td-cell col-fname">Syx</div>
+                <div class="td-cell col-mname">Sev</div>
+                <div class="td-cell col-lname">Vyn</div>
+                <div class="td-cell col-program">BS in Computer Engineering</div>
+                <div class="td-cell col-action">
+                  <button class="pill-btn-sm edit" type="button">Edit</button>
+                  <button class="pill-btn-sm remove" type="button">Remove</button>
+                </div>
+              </div>
+
+              <div class="table-row" data-id="27-1-76767" data-fname="ca" data-mname="is" data-lname="mille" data-program="BS in Medical Technology">
+                <div class="td-cell col-id">27-1-76767</div>
+                <div class="td-cell col-fname">Ca</div>
+                <div class="td-cell col-mname">Is</div>
+                <div class="td-cell col-lname">Mille</div>
+                <div class="td-cell col-program">BS in Medical Technology</div>
+                <div class="td-cell col-action">
+                  <button class="pill-btn-sm edit" type="button">Edit</button>
+                  <button class="pill-btn-sm remove" type="button">Remove</button>
+                </div>
+              </div>
+
+              <div class="table-row" data-id="27-1-12870" data-fname="dag gan" data-mname="land" data-lname="silot" data-program="BS in Information System">
+                <div class="td-cell col-id">27-1-12870</div>
+                <div class="td-cell col-fname">Dag Gan</div>
+                <div class="td-cell col-mname">Land</div>
+                <div class="td-cell col-lname">Silot</div>
+                <div class="td-cell col-program">BS in Information System</div>
+                <div class="td-cell col-action">
+                  <button class="pill-btn-sm edit" type="button">Edit</button>
+                  <button class="pill-btn-sm remove" type="button">Remove</button>
+                </div>
+              </div>
+
+              <div class="table-row" data-id="27-1-98917" data-fname="chat" data-mname="ge" data-lname="pity" data-program="BS In Applied Mathematics">
+                <div class="td-cell col-id">27-1-98917</div>
+                <div class="td-cell col-fname">Chat</div>
+                <div class="td-cell col-mname">Ge</div>
+                <div class="td-cell col-lname">Pity</div>
+                <div class="td-cell col-program">BS In Applied Mathematics</div>
+                <div class="td-cell col-action">
+                  <button class="pill-btn-sm edit" type="button">Edit</button>
+                  <button class="pill-btn-sm remove" type="button">Remove</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-empty-state" role="status" aria-live="polite" hidden>
+            <h2 class="ui-empty-state__title" data-empty-title>No students yet</h2>
+            <p class="ui-empty-state__description" data-empty-description>Student records will appear here when they are added.</p>
+          </div>
+        </div>
+
+        <div class="ui-table-pagination is-0272b5f">
+          <span class="pagination-selection-status is-7fbae58" role="status"></span>
+          <div class="pagination-controls-group is-31de0eb">
+            <div class="pagination-rows-per-page is-b57eafe">
+              <span>Rows per page</span>
+              <div class="pagination-select-wrapper is-e0dd7f8">
+                <select class="ui-select-pill is-daab64f" aria-label="Rows per page">
+                  <option value="5" selected>5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                </select>
+                <svg class="pagination-select-chevron is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <span class="pagination-page-info is-12b4142" role="status">Page 1 of 1 · 5 entries</span>
+            <div class="ui-table-pagination-nav is-49e15c7">
+              <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Previous</button>
+              <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer indicator -->
+      <footer class="admin-footer">
+        <span>&copy; 2026 Admin Portal. All rights reserved.</span>
+        <span>System Version 2.4.0</span>
+      </footer>
+    </main>
+
+    <!-- Create / Edit Student Modal -->
+    <div id="studentModal" class="modal-overlay">
+      <section class="modal-card">
+        <button id="closeStudent" class="modal-close" type="button" aria-label="Close">✕</button>
+        <h2 id="studentModalTitle" class="modal-title">Create Student</h2>
+
+        <form id="studentForm" class="modal-form">
+          <label for="studentId">Student Id:</label>
+          <input id="studentId" type="text" placeholder="ex. 27-6-76767" required>
+
+          <label for="studentFname">First Name:</label>
+          <input id="studentFname" type="text" placeholder="ex. Chat" required>
+
+          <label for="studentMname">Middle Name:</label>
+          <input id="studentMname" type="text" placeholder="ex. Gee">
+
+          <label for="studentLname">Last Name:</label>
+          <input id="studentLname" type="text" placeholder="ex. Pity" required>
+
+          <label for="studentProgram">Program:</label>
+          <div class="modal-select-wrapper">
+            <select id="studentProgram">
+              <option value="" disabled selected>Program:</option>
+              <option>BS in Computer Science</option>
+              <option>BS in Computer Engineering</option>
+              <option>BS in Medical Technology</option>
+              <option>BS in Information System</option>
+              <option>BS In Applied Mathematics</option>
+            </select>
+            <svg class="modal-select-chevron" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <button type="submit" class="modal-submit">Submit</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- Remove Student Modal -->
+    <div id="removeModal" class="modal-overlay">
+      <section class="modal-card">
+        <button id="closeRemove" class="modal-close" type="button" aria-label="Close">✕</button>
+        <h2 class="modal-title">Remove Student</h2>
+
+        <div class="modal-form modal-form-center">
+          <p class="modal-confirm-msg">
+            Are you sure you want to remove this student? This action cannot be undone.
+          </p>
+          <div class="modal-confirm-actions">
+            <button id="cancelRemove" type="button" class="modal-submit modal-btn-cancel">Cancel</button>
+            <button id="confirmRemove" type="button" class="modal-submit modal-btn-danger">Confirm</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script src="../../assets/js/queue-modal.js"></script>
+
+    <script src="../../assets/js/admin-sidebar.js"></script>
+    <script src="../../assets/js/admin-table.js"></script>
+    <script src="../../assets/js/pages/admin/students.js"></script>
+</body>
+</html>
+
