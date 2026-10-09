@@ -277,15 +277,18 @@
       const endIndex = startIndex + pageSize;
 
       allRows.forEach(row => {
-        row.style.display = 'none';
+        row.style.setProperty('display', 'none', 'important');
+        row.hidden = true;
       });
 
       matchedRows.forEach((row, index) => {
         if (index >= startIndex && index < endIndex) {
-          row.style.display = '';
+          row.style.removeProperty('display');
+          row.hidden = false;
           row.classList.add('table-fade-in');
         } else {
-          row.style.display = 'none';
+          row.style.setProperty('display', 'none', 'important');
+          row.hidden = true;
         }
       });
 
@@ -317,7 +320,8 @@
         if (r.classList.contains('skeleton-row')) {
           r.remove();
         } else {
-          r.style.display = 'none';
+          r.style.setProperty('display', 'none', 'important');
+          r.hidden = true;
         }
       });
 

@@ -59,9 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
     closeRejectBtn.addEventListener('click', () => rejectModal.classList.remove('active'));
   }
   if (rejectModal) {
-    rejectModal.addEventListener('click', (e) => {
-      if (e.target === rejectModal) rejectModal.classList.remove('active');
-    });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && rejectModal.classList.contains('active')) {
         rejectModal.classList.remove('active');

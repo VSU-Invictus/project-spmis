@@ -174,7 +174,7 @@
     });
 
     modal.addEventListener('click', (event) => {
-      if (event.target === modal || event.target.closest('[data-queue-close], .modal-close')) {
+      if (event.target.closest('[data-queue-close], .modal-close')) {
         event.preventDefault();
         closeQueueModal(modal);
       }
@@ -263,8 +263,10 @@
     const selected = () => selectedRows().length;
     const bulkApprove = document.querySelector('.action-btn-group .pill-btn.approve, .action-btn-group .pill-btn.accept');
     const bulkReject = document.querySelector('.action-btn-group .pill-btn.reject');
-    const actionBar = document.querySelector('.bottom-bar-container .action-btn-group');
+    const actionBar = document.querySelector('.bottom-bar-container .action-btn-group') || document.querySelector('.action-btn-group');
     const selectAllBtn = document.querySelector('.select-all');
+    const headerCheckbox = document.querySelector('.table-header-row .custom-checkbox, .table-header-row .select-all-checkbox');
+    const selectionStatus = document.querySelector('.pagination-selection-status');
 
     let bulkMessage = actionBar?.querySelector('.queue-bulk-rejection-message');
     if (actionBar && !bulkMessage) {
@@ -275,6 +277,13 @@
     }
     const updateBulkMessage = () => {
       const count = selected();
+      if (selectionStatus) {
+        if (count > 0) {
+          selectionStatus.textContent = `${count} selected`;
+        } else {
+          selectionStatus.textContent = '';
+        }
+      }
       if (!bulkMessage) return;
       bulkMessage.hidden = count < 2;
       bulkMessage.textContent = count > 1
@@ -288,11 +297,31 @@
       });
     };
     const updateSelectAllBtn = () => {
-      if (!selectAllBtn) return;
       const checkboxes = [...document.querySelectorAll('.table-body .custom-checkbox')];
-      const allChecked = checkboxes.length > 0 && checkboxes.every((cb) => cb.checked);
-      selectAllBtn.textContent = allChecked ? 'Deselect All' : 'Select All';
+      const checkedCount = checkboxes.filter((cb) => cb.checked).length;
+      const allChecked = checkboxes.length > 0 && checkedCount === checkboxes.length;
+      if (selectAllBtn) {
+        selectAllBtn.textContent = allChecked ? 'Deselect All' : 'Select All';
+      }
+      if (headerCheckbox) {
+        headerCheckbox.checked = allChecked;
+        headerCheckbox.indeterminate = checkedCount > 0 && !allChecked;
+      }
     };
+
+    if (headerCheckbox) {
+      headerCheckbox.addEventListener('change', () => {
+        const checkboxes = [...document.querySelectorAll('.table-body .custom-checkbox')];
+        checkboxes.forEach((cb) => {
+          cb.checked = headerCheckbox.checked;
+          const row = cb.closest('.table-row');
+          if (row) row.classList.toggle('checked', cb.checked);
+        });
+        updateBulkButtons();
+        updateBulkMessage();
+        updateSelectAllBtn();
+      });
+    }
 
     if (selectAllBtn) {
       selectAllBtn.addEventListener('click', () => {
@@ -309,17 +338,24 @@
       });
     }
 
-    searchInput?.addEventListener('input', () => {
-      const query = searchInput.value.trim().toLowerCase();
-      rows.forEach((row) => {
-        const matches = !query || row.textContent.toLowerCase().includes(query);
-        row.hidden = !matches;
-        const rejection = row.nextElementSibling?.classList.contains('queue-rejection-row')
-          ? row.nextElementSibling
-          : null;
-        if (rejection && !matches) rejection.hidden = true;
+    if (!document.querySelector('.table-container')?.__tableController && !window.adminTableController) {
+      searchInput?.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        rows.forEach((row) => {
+          const matches = !query || row.textContent.toLowerCase().includes(query);
+          row.hidden = !matches;
+          if (!matches) {
+            row.style.setProperty('display', 'none', 'important');
+          } else {
+            row.style.removeProperty('display');
+          }
+          const rejection = row.nextElementSibling?.classList.contains('queue-rejection-row')
+            ? row.nextElementSibling
+            : null;
+          if (rejection && !matches) rejection.hidden = true;
+        });
       });
-    });
+    }
 
     rows.forEach((row) => {
       const checkbox = row.querySelector('.custom-checkbox');
@@ -369,9 +405,14 @@
       });
 
       row.addEventListener('click', (event) => {
-        if (event.target.closest('button, input, textarea, select')) return;
+        if (event.target.tagName === 'INPUT' || event.target.closest('button, a, textarea, select, label')) return;
+        event.stopPropagation();
         checkbox.checked = !checkbox.checked;
+        row.classList.toggle('checked', checkbox.checked);
         checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        updateBulkButtons();
+        updateBulkMessage();
+        updateSelectAllBtn();
       });
     });
 
@@ -396,6 +437,17 @@
     });
 
     document.addEventListener('click', (event) => {
+      const modalClose = event.target.closest('[data-queue-close], .ui-modal-close, .modal-close');
+      if (modalClose && !modalClose.closest('.queue-rejection-actions')) {
+        if (isEmbeddedQueue && window.parent !== window) {
+          event.preventDefault();
+          event.stopPropagation();
+          try {
+            window.parent.postMessage('queue-modal-close', '*');
+          } catch (_) {}
+          return;
+        }
+      }
       const close = event.target.closest('.queue-rejection-row .modal-cancel');
       if (close) {
         event.preventDefault();

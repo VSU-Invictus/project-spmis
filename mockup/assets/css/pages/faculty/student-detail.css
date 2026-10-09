@@ -106,6 +106,56 @@
   opacity: 0.95;
 }
 
+dialog .modal-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  margin-top: 18px !important;
+}
+
+dialog .modal-actions .ui-btn {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 16px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-md, 8px) !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  flex: initial !important;
+  width: auto !important;
+}
+
+dialog .modal-actions .ui-btn-primary {
+  background: var(--primary, #D97251) !important;
+  color: #000000 !important;
+  border: 1px solid var(--primary, #D97251) !important;
+  font-weight: 700 !important;
+  transition: opacity 150ms ease, transform 150ms ease !important;
+}
+
+html:not(.dark) dialog .modal-actions .ui-btn-primary {
+  color: #FFFFFF !important;
+}
+
+dialog .modal-actions .ui-btn-primary:hover {
+  opacity: 0.92 !important;
+  transform: translateY(-1px) !important;
+}
+
+dialog .modal-actions .ui-btn-outline {
+  background: transparent !important;
+  border: 1px solid var(--border, #383734) !important;
+  color: var(--foreground, #FAF9F5) !important;
+}
+
+dialog .modal-actions .ui-btn-outline:hover {
+  background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card)) !important;
+  border-color: var(--primary, #D97251) !important;
+  color: #FFFFFF !important;
+}
+
 @media (max-width: 1024px) {
   .basic-info-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;

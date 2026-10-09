@@ -100,9 +100,9 @@
                     <label>Tags <small>Optional; separate tags with spaces.</small>
                         <input id="edit-tags" />
                     </label>
-                    <div class="actions">
-                        <button class="ui-btn ui-btn-primary">Save changes</button>
+                    <div class="actions modal-actions">
                         <button class="ui-btn ui-btn-outline" type="button" data-close>Cancel</button>
+                        <button class="ui-btn ui-btn-primary" type="submit">Save changes</button>
                     </div>
                 </form>
             </dialog>
@@ -113,9 +113,9 @@
                     This action cannot be undone here. Use Hide if you want to restore
                     visibility later.
                 </p>
-                <div class="actions">
-                    <button class="ui-btn ui-btn-destructive" id="confirm-delete">Delete review</button>
-                    <button class="ui-btn ui-btn-outline" type="button" data-close>Keep review</button>
+                <div class="actions modal-actions">
+                    <button class="ui-btn ui-btn-outline" type="button" data-close>Cancel</button>
+                    <button class="ui-btn ui-btn-primary" id="confirm-delete">Delete review</button>
                 </div>
             </dialog>
             <noscript>

@@ -44,7 +44,7 @@
                 </div>
                 <button type="button" class="ui-btn add-button" id="add-entity">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                    <span>Propose program</span>
+                    <span>Propose Program</span>
                 </button>
             </div>
             <p class="muted">
@@ -62,23 +62,30 @@
             </div>
             <section id="entity-list" aria-live="polite"></section>
             <p class="status" id="proposal-status" role="status"></p>
-            <dialog id="proposal-dialog" aria-labelledby="proposal-title">
-                <button type="button" class="modal-close ui-modal-close" data-close aria-label="Close dialog">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-                <h2 id="proposal-title">Submit proposal</h2>
-                <p class="muted">
-                    Your request will be pending until reviewed by an administrator.
-                </p>
-                <form id="proposal-form">
-                    <label>Proposed name<input id="entity-name" required maxlength="120" />
-                    </label>
-                    <div class="actions">
-                        <button type="submit">Submit application</button>
-                        <button class="secondary" type="button" data-close>Cancel</button>
-                    </div>
-                </form>
-            </dialog>
+        <!-- Propose / Edit Program Modal -->
+        <dialog id="proposal-dialog" class="proposal-modal" aria-labelledby="proposal-title">
+          <div class="modal-header">
+            <div class="modal-header-content">
+              <h2 class="modal-title" id="proposal-title">Propose a program</h2>
+              <p class="modal-subtitle">Your request will be pending until reviewed by an administrator.</p>
+            </div>
+            <button type="button" class="modal-close ui-modal-close" data-close aria-label="Close dialog">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="proposal-form" class="modal-form">
+              <div class="ui-form-group">
+                <label class="ui-form-label" for="entity-name">Proposed name</label>
+                <input type="text" id="entity-name" class="ui-input" required maxlength="120" placeholder="e.g. BS Data Science" autocomplete="off" />
+              </div>
+              <div class="modal-actions">
+                <button type="button" class="ui-btn ui-btn-outline" data-close id="cancel-proposal-btn">Cancel</button>
+                <button type="submit" class="ui-btn ui-btn-primary" id="submit-proposal-btn">Submit application</button>
+              </div>
+            </form>
+          </div>
+        </dialog>
             <noscript>
                 <p class="notice">
                     Enable JavaScript to display sample lists and use the mock

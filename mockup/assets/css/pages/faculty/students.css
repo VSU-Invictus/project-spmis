@@ -152,6 +152,11 @@ dialog#register-student-modal[open] {
   flex-shrink: 0 !important;
 }
 
+.register-modal .modal-close,
+#close-register-modal {
+  display: none !important;
+}
+
 .modal-header-content {
   flex: 1 !important;
 }
@@ -322,14 +327,16 @@ dialog#register-student-modal[open] {
 }
 
 .modal-actions .ui-btn {
-  height: 33px !important;
-  min-height: 33px !important;
-  padding: 0 14px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 16px !important;
   font-size: 0.8125rem !important;
   font-weight: 600 !important;
   border-radius: var(--radius-md, 8px) !important;
   cursor: pointer !important;
   box-sizing: border-box !important;
+  flex: initial !important;
+  width: auto !important;
 }
 
 .modal-actions .ui-btn-primary {

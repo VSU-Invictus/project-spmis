@@ -625,7 +625,19 @@ const programs = [
                     : `Propose a ${isProgram ? "program" : "department"}`;
                 $("#entity-name").value = name;
                 $("#entity-name").setCustomValidity("");
-                $("#proposal-dialog").showModal();
+                const dlg = document.getElementById("proposal-dialog");
+                if (dlg && !dlg.open) {
+                    dlg.showModal();
+                }
+                setTimeout(() => $("#entity-name")?.focus(), 50);
+            }
+            const proposalDialog = document.getElementById("proposal-dialog");
+            if (proposalDialog && !proposalDialog.dataset.backdropBound) {
+                proposalDialog.dataset.backdropBound = "true";
+                proposalDialog.addEventListener("cancel", (e) => {
+                    e.preventDefault();
+                    proposalDialog.close();
+                });
             }
             $("#add-entity").onclick = () => open();
             $("#entity-list").onclick = (e) => {
@@ -657,6 +669,7 @@ const programs = [
                     original ? `${original} ${name}` : name,
                     { original, name },
                 );
+                $("#proposal-form").reset();
                 $("#proposal-dialog").close();
                 $("#proposal-status").textContent =
                     "Application submitted. The approved list stays unchanged until an admin approves your proposal.";

@@ -346,6 +346,32 @@
   border-color: #EF4444 !important;
 }
 
+.pill-btn.approve.has-selection {
+  background: #10B981 !important;
+  color: #000000 !important;
+  border-color: #10B981 !important;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3) !important;
+}
+
+.pill-btn.approve.has-selection:hover {
+  background: #059669 !important;
+  border-color: #059669 !important;
+  color: #000000 !important;
+}
+
+.pill-btn.reject.has-selection {
+  background: #EF4444 !important;
+  color: #FFFFFF !important;
+  border-color: #EF4444 !important;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3) !important;
+}
+
+.pill-btn.reject.has-selection:hover {
+  background: #DC2626 !important;
+  border-color: #DC2626 !important;
+  color: #FFFFFF !important;
+}
+
 /* ==========================================================================
    STANDARD CUSTOM CHECKBOX PRIMITIVE (.custom-checkbox, .ui-checkbox)
    Equal-sized (1:1 square, 20px x 20px) squircle checkbox.
