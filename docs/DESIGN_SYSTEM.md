@@ -757,7 +757,7 @@ Unified layout primitives anchoring the full-screen portal viewport: the persist
 <!-- 3. Pinned Viewport Workspace Footer (.admin-footer / .workspace-footer) -->
 <footer class="admin-footer" style="flex: none !important; height: auto !important; margin-top: auto; padding-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #42423F; font-size: 11px; color: #A0988E; width: 100%; background: transparent;">
   <span>&copy; 2026 Admin Portal. All rights reserved.</span>
-  <span>System Version 2.4.0</span>
+  <span>System Version 0.1.0</span>
 </footer>
 ```
 
