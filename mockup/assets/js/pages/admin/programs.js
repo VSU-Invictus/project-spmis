@@ -100,15 +100,14 @@
     });
 
     document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
+    document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
     document.getElementById('closeEntity')?.addEventListener('click', () => closeModal(entityModal));
+    document.getElementById('cancelEntity')?.addEventListener('click', () => closeModal(entityModal));
     if (!window.adminTableController && !tableBody?.__tableController) {
       searchInput?.addEventListener('input', filterRows);
       statusFilter?.addEventListener('change', filterRows);
     }
 
-    [entityModal, removeModal].forEach(modal => {
-      modal?.addEventListener('click', event => { if (event.target === modal) closeModal(modal); });
-    });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') { closeModal(entityModal); closeModal(removeModal); }
     });

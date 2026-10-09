@@ -47,7 +47,6 @@ document.getElementById('trigger-google-btn')?.addEventListener('click', () => {
     overlay.classList.remove('hidden');
 });
 document.getElementById('close-google').addEventListener('click', closeGooglePopup);
-overlay.addEventListener('click', event => { if (event.target === overlay) closeGooglePopup(); });
 document.addEventListener('keydown', event => { if (event.key === 'Escape') closeGooglePopup(); });
 document.querySelectorAll('.mock-login-action').forEach(button => button.addEventListener('click', () => {
     window.location.href = button.dataset.role === 'admin' ? '../admin/dashboard.html' : '../faculty/dashboard.html';

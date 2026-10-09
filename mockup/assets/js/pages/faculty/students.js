@@ -620,20 +620,6 @@ const programs = [
                 cancelBtn.addEventListener("click", () => closeModal(true));
             }
             if (registerModal) {
-                registerModal.addEventListener("click", (e) => {
-                    // Only handle clicks directly on the dialog backdrop
-                    if (e.target !== registerModal) return;
-                    const rect = registerModal.getBoundingClientRect();
-                    const isInDialog = (
-                        rect.top <= e.clientY &&
-                        e.clientY <= rect.top + rect.height &&
-                        rect.left <= e.clientX &&
-                        e.clientX <= rect.left + rect.width
-                    );
-                    if (!isInDialog) {
-                        closeModal(true);
-                    }
-                });
                 registerModal.addEventListener("cancel", (e) => {
                     e.preventDefault();
                     closeModal(true);

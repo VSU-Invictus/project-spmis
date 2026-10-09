@@ -173,18 +173,13 @@
 
     // Close buttons
     document.getElementById('closeStudent')?.addEventListener('click', () => closeModal(studentModal));
+    document.getElementById('cancelStudent')?.addEventListener('click', () => closeModal(studentModal));
     document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
     if (!window.adminTableController && !tableBody?.__tableController) {
       searchInput?.addEventListener('input', filterRows);
       programFilter?.addEventListener('change', filterRows);
     }
 
-    // Click outside modal to close
-    [studentModal, removeModal].forEach((modal) => {
-      modal?.addEventListener('click', (event) => {
-        if (event.target === modal) closeModal(modal);
-      });
-    });
 
     // Escape key to close
     document.addEventListener('keydown', (event) => {

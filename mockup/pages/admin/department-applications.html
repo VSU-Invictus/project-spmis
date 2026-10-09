@@ -93,7 +93,7 @@
         <div class="table-container ui-table-wrap">
           <div class="table-scroll">
             <div class="table-header-row">
-              <div class="th-cell checkbox-cell"><input type="checkbox" aria-label="Select all rows" class="select-all-checkbox"></div>
+              <div class="th-cell checkbox-cell"><input type="checkbox" aria-label="Select all rows" class="custom-checkbox select-all-checkbox"></div>
               <div class="th-cell col-program">Department</div>
               <div class="th-cell col-proposed">Proposed by</div>
               <div class="th-cell col-type">Request Type</div>
@@ -102,50 +102,192 @@
 
             <div class="table-body">
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
-                <div class="td-cell col-program">Department in Computer Science</div>
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Computer Science</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="ui-badge ui-badge--info">Edit Existing</span></div>
                 <div class="td-cell col-date">2026-09-10</div>
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
-                <div class="td-cell col-program">Department in Computer Engineering</div>
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Computer Engineering</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
                 <div class="td-cell col-date">2026-09-10</div>
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
-                <div class="td-cell col-program">Department In Medical Technology</div>
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Medical Technology</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
                 <div class="td-cell col-date">2026-09-10</div>
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
-                <div class="td-cell col-program">Department in Information System</div>
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Information Systems</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
                 <div class="td-cell col-date">2026-09-10</div>
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
-                <div class="td-cell col-program">Department in Applied Mathematics</div>
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Applied Mathematics</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
                 <div class="td-cell col-date">2026-09-10</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Artificial Intelligence</div>
+                <div class="td-cell col-proposed">Dr. Alan Turing</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-09-09</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Cyber Security</div>
+                <div class="td-cell col-proposed">Sarah Connor</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-09-09</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Data Science</div>
+                <div class="td-cell col-proposed">Ada Lovelace</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-09-08</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Software Engineering</div>
+                <div class="td-cell col-proposed">Linus Torvalds</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--info">Edit Existing</span></div>
+                <div class="td-cell col-date">2026-09-08</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Electrical Engineering</div>
+                <div class="td-cell col-proposed">Nikola Tesla</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--info">Edit Existing</span></div>
+                <div class="td-cell col-date">2026-09-07</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Mechanical Engineering</div>
+                <div class="td-cell col-proposed">James Watt</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-09-07</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Chemical Engineering</div>
+                <div class="td-cell col-proposed">Marie Curie</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--info">Edit Existing</span></div>
+                <div class="td-cell col-date">2026-09-06</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Biotechnology</div>
+                <div class="td-cell col-proposed">Rosalind Franklin</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-09-06</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Civil Engineering</div>
+                <div class="td-cell col-proposed">Thomas Telford</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--info">Edit Existing</span></div>
+                <div class="td-cell col-date">2026-09-05</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Environmental Science</div>
+                <div class="td-cell col-proposed">Rachel Carson</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-09-05</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Physics</div>
+                <div class="td-cell col-proposed">Albert Einstein</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--info">Edit Existing</span></div>
+                <div class="td-cell col-date">2026-09-04</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Chemistry</div>
+                <div class="td-cell col-proposed">Dmitri Mendeleev</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-09-04</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Statistics</div>
+                <div class="td-cell col-proposed">Florence Nightingale</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--info">Edit Existing</span></div>
+                <div class="td-cell col-date">2026-09-03</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Robotics</div>
+                <div class="td-cell col-proposed">Isaac Asimov</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-09-03</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Aerospace Engineering</div>
+                <div class="td-cell col-proposed">Neil Armstrong</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-09-02</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Bioinformatics</div>
+                <div class="td-cell col-proposed">Francis Crick</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--info">Edit Existing</span></div>
+                <div class="td-cell col-date">2026-09-01</div>
+              </div>
+
+              <div class="table-row">
+                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox row-checkbox" aria-label="Select row"></div>
+                <div class="td-cell col-program">Department of Cognitive Science</div>
+                <div class="td-cell col-proposed">Noam Chomsky</div>
+                <div class="td-cell col-type"><span class="ui-badge ui-badge--success">Addition</span></div>
+                <div class="td-cell col-date">2026-08-30</div>
               </div>
             </div>
           </div>
         </div>
 
         <div class="ui-table-pagination is-0272b5f">
-          <span class="pagination-selection-status is-7fbae58" role="status"></span>
+          <div class="pagination-actions-group bottom-bar-container">
+            <div class="action-btn-group">
+              <button class="pill-btn approve" type="button">Approve</button>
+              <button class="pill-btn reject" type="button">Reject</button>
+            </div>
+            <span class="pagination-selection-status is-7fbae58" role="status"></span>
+          </div>
           <div class="pagination-controls-group is-31de0eb">
             <div class="pagination-rows-per-page is-b57eafe">
               <span>Rows per page</span>
@@ -158,20 +300,12 @@
                 <svg class="pagination-select-chevron is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
               </div>
             </div>
-            <span class="pagination-page-info is-12b4142" role="status">Page 1 of 1 · 5 entries</span>
+            <span class="pagination-page-info is-12b4142" role="status">Page 1 of 5 · 22 entries</span>
             <div class="ui-table-pagination-nav is-49e15c7">
               <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Previous</button>
-              <button type="button" class="ui-btn ui-btn-outline is-b38e363" disabled>Next</button>
+              <button type="button" class="ui-btn ui-btn-outline is-b38e363">Next</button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Bottom Bar: Bulk Actions -->
-      <div class="bottom-bar-container">
-        <div class="action-btn-group">
-          <button class="pill-btn approve" type="button">Approve</button>
-          <button class="pill-btn reject" type="button">Reject</button>
         </div>
       </div>
 

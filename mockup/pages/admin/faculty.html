@@ -44,6 +44,12 @@
         <div class="heading-wrapper">
           <h1 class="heading-title">Faculty</h1>
         </div>
+        <button id="addButton" type="button" class="btn-add">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Add Faculty</span>
+        </button>
       </div>
 
       <div class="controls-container">
@@ -72,13 +78,6 @@
   <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
           </div>
-
-          <button id="addButton" type="button" class="btn-add">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <span>Add Faculty</span>
-          </button>
         </div>
       </div>
 
@@ -178,47 +177,76 @@
 
     <div id="facultyModal" class="modal-overlay">
       <section class="modal-card faculty">
-        <button id="closeFaculty" class="modal-close" type="button" aria-label="Close">✕</button>
-        <h2 id="facultyModalTitle" class="modal-title">Add Faculty</h2>
+        <div class="modal-header">
+          <div class="modal-header-content">
+            <h2 id="facultyModalTitle" class="modal-title">Add Faculty</h2>
+            <p class="modal-subtitle">Enter faculty credentials and assignment details.</p>
+          </div>
+        </div>
 
         <form id="facultyForm" class="modal-form">
-          <label for="facultyName">Name</label>
-          <input id="facultyName" type="text" required>
+          <div class="ui-form-group">
+            <label for="facultyName" class="ui-form-label">Full Name</label>
+            <input id="facultyName" type="text" class="ui-input" placeholder="e.g. Dr. Jane Doe" required>
+          </div>
 
-          <label for="facultyEmail">Email Address</label>
-          <input id="facultyEmail" type="email" required>
+          <div class="ui-form-group">
+            <label for="facultyEmail" class="ui-form-label">Email Address</label>
+            <input id="facultyEmail" type="email" class="ui-input" placeholder="e.g. jdoe@university.edu" required>
+          </div>
 
-          <label for="facultyDepartment">Department</label>
-          <select id="facultyDepartment">
-            <option>Department of Computer Science</option>
-            <option>Department of Information Technology</option>
-            <option>Department of Applied Mathematics</option>
-            <option>Department of Biological Sciences</option>
-          </select>
+          <div class="ui-form-group">
+            <label for="facultyDepartment" class="ui-form-label">Department</label>
+            <div class="modal-select-wrapper">
+              <select id="facultyDepartment" class="ui-input" required>
+                <option value="Department of Computer Science">Department of Computer Science</option>
+                <option value="Department of Information Technology">Department of Information Technology</option>
+                <option value="Department of Applied Mathematics">Department of Applied Mathematics</option>
+                <option value="Department of Biological Sciences">Department of Biological Sciences</option>
+              </select>
+              <svg class="modal-select-chevron" viewBox="0 0 14 14" fill="none">
+                <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
 
-          <label for="facultyRole">Role</label>
-          <select id="facultyRole">
-            <option value="faculty">faculty</option>
-            <option value="admin">admin</option>
-          </select>
+          <div class="ui-form-group">
+            <label for="facultyRole" class="ui-form-label">Role</label>
+            <div class="modal-select-wrapper">
+              <select id="facultyRole" class="ui-input" required>
+                <option value="faculty">Faculty</option>
+                <option value="admin">Admin</option>
+              </select>
+              <svg class="modal-select-chevron" viewBox="0 0 14 14" fill="none">
+                <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
 
-          <button type="submit" class="modal-submit">Submit</button>
+          <div class="modal-actions">
+            <button id="cancelFaculty" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
+            <button type="submit" class="ui-btn ui-btn-primary modal-submit">Save Faculty</button>
+          </div>
         </form>
       </section>
     </div>
 
     <div id="removeModal" class="modal-overlay">
-      <section class="modal-card">
-        <button id="closeRemove" class="modal-close" type="button" aria-label="Close">✕</button>
-        <h2 class="modal-title">Remove Faculty</h2>
+      <section class="modal-card compact">
+        <div class="modal-header">
+          <div class="modal-header-content">
+            <h2 class="modal-title">Remove Faculty</h2>
+            <p class="modal-subtitle">Confirm permanent deletion of this record.</p>
+          </div>
+        </div>
 
-        <div class="modal-form modal-form-center">
+        <div class="modal-body">
           <p class="modal-confirm-msg">
             Are you sure you want to remove this faculty member? This action cannot be undone.
           </p>
-          <div class="modal-confirm-actions">
-            <button id="cancelRemove" type="button" class="modal-submit modal-btn-cancel">Cancel</button>
-            <button id="confirmRemove" type="button" class="modal-submit modal-btn-danger">Confirm</button>
+          <div class="modal-actions modal-confirm-actions">
+            <button id="cancelRemove" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
+            <button id="confirmRemove" type="button" class="ui-btn ui-btn-primary modal-submit">Confirm</button>
           </div>
         </div>
       </section>

@@ -40,6 +40,12 @@
         <div class="heading-wrapper">
           <h2 class="heading-title">Student Roster</h2>
         </div>
+        <button id="addButton" type="button" class="btn-add">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 1.16663V12.8333M1.16666 6.99996H12.8333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Add Student</span>
+        </button>
       </header>
 
       <div class="controls-container">
@@ -69,12 +75,6 @@
               <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <button id="addButton" type="button" class="btn-add">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 1.16663V12.8333M1.16666 6.99996H12.8333" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Add Student
-          </button>
         </div>
       </div>
 
@@ -186,56 +186,79 @@
 
     <!-- Create / Edit Student Modal -->
     <div id="studentModal" class="modal-overlay">
-      <section class="modal-card">
-        <button id="closeStudent" class="modal-close" type="button" aria-label="Close">✕</button>
-        <h2 id="studentModalTitle" class="modal-title">Create Student</h2>
+      <section class="modal-card student">
+        <div class="modal-header">
+          <div class="modal-header-content">
+            <h2 id="studentModalTitle" class="modal-title">Create Student</h2>
+            <p class="modal-subtitle">Enter student identity and program enrollment details.</p>
+          </div>
+        </div>
 
         <form id="studentForm" class="modal-form">
-          <label for="studentId">Student Id:</label>
-          <input id="studentId" type="text" placeholder="ex. 27-6-76767" required>
-
-          <label for="studentFname">First Name:</label>
-          <input id="studentFname" type="text" placeholder="ex. Chat" required>
-
-          <label for="studentMname">Middle Name:</label>
-          <input id="studentMname" type="text" placeholder="ex. Gee">
-
-          <label for="studentLname">Last Name:</label>
-          <input id="studentLname" type="text" placeholder="ex. Pity" required>
-
-          <label for="studentProgram">Program:</label>
-          <div class="modal-select-wrapper">
-            <select id="studentProgram">
-              <option value="" disabled selected>Program:</option>
-              <option>BS in Computer Science</option>
-              <option>BS in Computer Engineering</option>
-              <option>BS in Medical Technology</option>
-              <option>BS in Information System</option>
-              <option>BS In Applied Mathematics</option>
-            </select>
-            <svg class="modal-select-chevron" viewBox="0 0 14 14" fill="none">
-              <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+          <div class="ui-form-group">
+            <label for="studentId" class="ui-form-label">Student ID</label>
+            <input id="studentId" type="text" class="ui-input" placeholder="e.g. 27-6-76767" required>
           </div>
 
-          <button type="submit" class="modal-submit">Submit</button>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="ui-form-group">
+              <label for="studentFname" class="ui-form-label">First Name</label>
+              <input id="studentFname" type="text" class="ui-input" placeholder="e.g. John" required>
+            </div>
+
+            <div class="ui-form-group">
+              <label for="studentMname" class="ui-form-label">Middle Name</label>
+              <input id="studentMname" type="text" class="ui-input" placeholder="Optional">
+            </div>
+          </div>
+
+          <div class="ui-form-group">
+            <label for="studentLname" class="ui-form-label">Last Name</label>
+            <input id="studentLname" type="text" class="ui-input" placeholder="e.g. Doe" required>
+          </div>
+
+          <div class="ui-form-group">
+            <label for="studentProgram" class="ui-form-label">Program</label>
+            <div class="modal-select-wrapper">
+              <select id="studentProgram" class="ui-input" required>
+                <option value="" disabled selected>Select Program</option>
+                <option value="BS in Computer Science">BS in Computer Science</option>
+                <option value="BS in Computer Engineering">BS in Computer Engineering</option>
+                <option value="BS in Medical Technology">BS in Medical Technology</option>
+                <option value="BS in Information System">BS in Information System</option>
+                <option value="BS In Applied Mathematics">BS In Applied Mathematics</option>
+              </select>
+              <svg class="modal-select-chevron" viewBox="0 0 14 14" fill="none">
+                <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#6C655D" stroke-width="1.17" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button id="cancelStudent" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
+            <button type="submit" class="ui-btn ui-btn-primary modal-submit">Save Student</button>
+          </div>
         </form>
       </section>
     </div>
 
     <!-- Remove Student Modal -->
     <div id="removeModal" class="modal-overlay">
-      <section class="modal-card">
-        <button id="closeRemove" class="modal-close" type="button" aria-label="Close">✕</button>
-        <h2 class="modal-title">Remove Student</h2>
+      <section class="modal-card compact">
+        <div class="modal-header">
+          <div class="modal-header-content">
+            <h2 class="modal-title">Remove Student</h2>
+            <p class="modal-subtitle">Confirm permanent deletion of this record.</p>
+          </div>
+        </div>
 
-        <div class="modal-form modal-form-center">
+        <div class="modal-body">
           <p class="modal-confirm-msg">
             Are you sure you want to remove this student? This action cannot be undone.
           </p>
-          <div class="modal-confirm-actions">
-            <button id="cancelRemove" type="button" class="modal-submit modal-btn-cancel">Cancel</button>
-            <button id="confirmRemove" type="button" class="modal-submit modal-btn-danger">Confirm</button>
+          <div class="modal-actions modal-confirm-actions">
+            <button id="cancelRemove" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
+            <button id="confirmRemove" type="button" class="ui-btn ui-btn-primary modal-submit">Confirm</button>
           </div>
         </div>
       </section>

@@ -133,15 +133,14 @@
     });
 
     document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
+    document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
     document.getElementById('closeFaculty')?.addEventListener('click', () => closeModal(facultyModal));
+    document.getElementById('cancelFaculty')?.addEventListener('click', () => closeModal(facultyModal));
     if (!window.adminTableController && !tableBody?.__tableController) {
       searchInput?.addEventListener('input', filterRows);
       departmentFilter?.addEventListener('change', filterRows);
     }
 
-    [facultyModal, removeModal].forEach(modal => {
-      modal?.addEventListener('click', event => { if (event.target === modal) closeModal(modal); });
-    });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') { closeModal(facultyModal); closeModal(removeModal); }
     });
