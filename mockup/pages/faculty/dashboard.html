@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard · SPMIS Faculty</title>
   <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
-    <link rel="stylesheet" href="../../assets/css/components.css?v=8" />
+  <link rel="stylesheet" href="../../assets/css/components.css?v=8" />
   <script src="../../assets/js/faculty-sidebar.js"></script>
   <style>
     /* Faculty layout and components. Shared colors come from assets/css/global.css. */
@@ -81,7 +81,7 @@
       height: 100vh;
       margin: 0;
       display: flex;
-      
+
       box-sizing: border-box;
       border-radius: 0;
       overflow: hidden;
@@ -249,23 +249,29 @@
       align-items: center;
     }
 
-    
+
     .quick-links {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
-    
+    body[data-page="dashboard"] .quick-links .ui-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
 
-    
-
-    
 
 
-    
 
-    
+
+
+
+
+
+
+
 
     .filters {
       display: grid;
@@ -644,7 +650,7 @@
     }
 
     .nav a:hover:not([aria-current="page"]),
-    
+
 
     button:hover,
     .button:hover {
@@ -718,7 +724,8 @@
 
     input::placeholder,
     textarea::placeholder {
-      color: var(--muted-foreground); opacity: 1;
+      color: var(--muted-foreground);
+      opacity: 1;
     }
 
     input[readonly] {
@@ -766,7 +773,9 @@
       top: 16px;
       width: 26px;
       height: 26px;
-      background: var(--ui-surface-muted); border: 1px solid var(--ui-surface-border); color: var(--primary);
+      background: var(--ui-surface-muted);
+      border: 1px solid var(--ui-surface-border);
+      color: var(--primary);
       border-radius: 50%;
       text-align: center;
       line-height: 26px;
@@ -929,8 +938,8 @@
     }
 
     .dashboard-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 20px;
     }
 
@@ -945,33 +954,40 @@
     .dashboard-layout .between a {
       font-size: 12px;
       text-decoration: none;
+      text-underline-offset: 4px;
       white-space: nowrap;
+      color: var(--primary);
     }
 
-    
+    .dashboard-layout .between a:hover {
+      text-decoration: underline;
+    }
 
-    
-
-    .pending-item {
+    .review-feed {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 15px 0;
-      border-bottom: 1px solid var(--ui-surface-border);
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 16px;
     }
 
-    .pending-item:last-child {
-      border-bottom: 0;
+    .review-feed .review {
+      margin: 0;
+      padding: 18px;
     }
 
-    .pending-item small {
-      display: block;
+    .review-feed .review h3 {
+      font-size: 15px;
+      margin: 0;
     }
 
-    .pending-item strong {
-      font-size: 13px;
-      font-weight: 500;
+    .review-feed .review-body {
+      margin: 12px 0;
+    }
+
+    .review-feed .review-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
     .chat-prompts {
@@ -1077,10 +1093,6 @@
         grid-column: 1/-1;
       }
 
-      .dashboard-layout {
-        grid-template-columns: 1fr;
-      }
-
       .chat-prompts {
         grid-template-columns: 1fr 1fr;
       }
@@ -1133,13 +1145,8 @@
   </style>
   <style>
     body[data-page="dashboard"] .stats {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    @media (max-width: 700px) {
-      body[data-page="dashboard"] .stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -1147,48 +1154,71 @@
 <body data-page="dashboard">
   <a href="#main" class="skip">Skip to content</a>
   <div class="app">
-        <aside class="sidebar" id="sidebar-menu" data-component="sidebar-faculty">
+    <aside class="sidebar" id="sidebar-menu" data-component="sidebar-faculty">
       <div class="flex flex-col gap-1">
         <div class="brand-header">
           <h1 class="brand-title">Faculty Portal</h1>
         </div>
         <nav class="nav" id="sidebar-nav" aria-label="Faculty navigation">
-        <a href="dashboard.html" class="nav-btn-active" aria-current="page">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" /><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" /><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" /><rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
-          </svg>
-          <span>Dashboard</span>
-        </a>
-        <a href="students.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          <span>Students</span>
-        </a>
-        <a href="chat.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-3 2V11.5a9.5 9.5 0 0 1 19 0Z"></path><path d="m12 6 1.3 3.7L17 11l-3.7 1.3L12 16l-1.3-3.7L7 11l3.7-1.3Z"></path>
-          </svg>
-          <span>AI Chat Assistant</span>
-        </a>
-        <a href="programs.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          </svg>
-          <span>Programs</span>
-        </a>
-        <a href="departments.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><polygon points="12 2 3 10 21 10"></polygon><line x1="7" y1="21" x2="7" y2="10"></line><line x1="12" y1="21" x2="12" y2="10"></line><line x1="17" y1="21" x2="17" y2="10"></line>
-          </svg>
-          <span>Departments</span>
-        </a>
-        <a href="applications.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14h6"></path><path d="M9 18h6"></path><path d="M9 10h.01"></path>
-          </svg>
-          <span>Applications</span>
-        </a>
+          <a href="dashboard.html" class="nav-btn-active" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+              <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+              <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+              <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
+            </svg>
+            <span>Dashboard</span>
+          </a>
+          <a href="students.html" class="nav-btn-inactive">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>Students</span>
+          </a>
+          <a href="chat.html" class="nav-btn-inactive">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-3 2V11.5a9.5 9.5 0 0 1 19 0Z"></path>
+              <path d="m12 6 1.3 3.7L17 11l-3.7 1.3L12 16l-1.3-3.7L7 11l3.7-1.3Z"></path>
+            </svg>
+            <span>AI Chat Assistant</span>
+          </a>
+          <a href="programs.html" class="nav-btn-inactive">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span>Programs</span>
+          </a>
+          <a href="departments.html" class="nav-btn-inactive">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <line x1="3" y1="21" x2="21" y2="21"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+              <polygon points="12 2 3 10 21 10"></polygon>
+              <line x1="7" y1="21" x2="7" y2="10"></line>
+              <line x1="12" y1="21" x2="12" y2="10"></line>
+              <line x1="17" y1="21" x2="17" y2="10"></line>
+            </svg>
+            <span>Departments</span>
+          </a>
+          <a href="applications.html" class="nav-btn-inactive">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              <path d="M9 14h6"></path>
+              <path d="M9 18h6"></path>
+              <path d="M9 10h.01"></path>
+            </svg>
+            <span>Applications</span>
+          </a>
         </nav>
       </div>
 
@@ -1205,7 +1235,8 @@
             </div>
           </div>
           <button type="button" class="sidebar-logout-btn logout-btn" aria-label="Log out" title="Log out">
-            <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.8" aria-hidden="true">
               <path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
             </svg>
           </button>
@@ -1217,10 +1248,13 @@
       <div class="top-header-bar">
         <div style="display: flex; align-items: center; gap: 10px;">
           <div style="width: 10px; height: 10px; border-radius: 50%; background: #D97251;"></div>
-          <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #A0988E;">FACULTY PORTAL / OVERVIEW</span>
+          <span
+            style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #A0988E;">FACULTY
+            PORTAL / OVERVIEW</span>
         </div>
         <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; color: #A0988E;">
-          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844;">
+          <span
+            style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844;">
             <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
             System Live
           </span>
@@ -1232,8 +1266,7 @@
 
           <h1>Good day, <span data-name>Alex Morgan</span></h1>
           <p>
-            Your reviews, student research, and application updates in one
-            place.
+            Your reviews and recent student activity in one place.
           </p>
         </div>
       </div>
@@ -1248,57 +1281,58 @@
           <strong id="review-count">3</strong>
           <small>Active and hidden</small>
         </div>
-        <div class="card stat">
-          <span class="muted">Pending applications</span>
-          <strong id="pending-count">3</strong>
-          <small>Awaiting admin review</small>
-        </div>
-        <div class="card stat" id="programs-stat">
-          <span class="muted">Programs</span>
-          <strong>3</strong>
-          <small>Approved programs</small>
-        </div>
       </div>
       <div class="dashboard-layout">
         <section class="card">
           <h2>Quick links</h2>
           <div class="quick-links">
-              <!-- Card 1 -->
-              <a href="students.html" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
-                <div class="ui-card-header" style="margin-bottom: 0;">
-                  <h3 class="ui-card-title" style="margin-bottom: 4px;">Browse students <span class="arrow">&rarr;</span></h3>
-                    <p class="ui-card-description" style="margin-top: 0;">Search records and active reviews.</p>
-                </div>
-              </a>
-              <!-- Card 2 -->
-              <a href="students.html" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
-                <div class="ui-card-header" style="margin-bottom: 0;">
-                  <h3 class="ui-card-title" style="margin-bottom: 4px;">Write a review <span class="arrow">&rarr;</span></h3>
-                    <p class="ui-card-description" style="margin-top: 0;">Select a student to add text and tags.</p>
-                </div>
-              </a>
-              <!-- Card 3 -->
-              <a href="chat.html" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
-                <div class="ui-card-header" style="margin-bottom: 0;">
-                  <h3 class="ui-card-title" style="margin-bottom: 4px;">Open Chats <span class="arrow">&rarr;</span></h3>
-                    <p class="ui-card-description" style="margin-top: 0;">Explore reviews across students.</p>
-                </div>
-              </a>
-              <!-- Card 4 -->
-              <a href="students.html?register=true" class="ui-card ui-card-interactive" style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
-                <div class="ui-card-header" style="margin-bottom: 0;">
-                  <h3 class="ui-card-title" style="margin-bottom: 4px;">Register a student <span class="arrow">&rarr;</span></h3>
-                    <p class="ui-card-description" style="margin-top: 0;">Submit a registration application.</p>
-                </div>
-              </a>
-            </div>
-        </section>
-        <section class="card">
-          <div class="between">
-            <h2>Your pending applications</h2>
-            <a href="applications.html">View all applications <span class="arrow">&rarr;</span></a>
+            <!-- Card 1 -->
+            <a href="students.html" class="ui-card ui-card-interactive"
+              style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
+              <div class="ui-card-header" style="margin-bottom: 0;">
+                <h3 class="ui-card-title" style="margin-bottom: 4px;">Browse students <span class="arrow">&rarr;</span>
+                </h3>
+                <p class="ui-card-description" style="margin-top: 0;">Search records and active reviews.</p>
+              </div>
+            </a>
+            <!-- Card 2 -->
+            <a href="students.html" class="ui-card ui-card-interactive"
+              style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
+              <div class="ui-card-header" style="margin-bottom: 0;">
+                <h3 class="ui-card-title" style="margin-bottom: 4px;">Write a review <span class="arrow">&rarr;</span>
+                </h3>
+                <p class="ui-card-description" style="margin-top: 0;">Select a student to add text and tags.</p>
+              </div>
+            </a>
+            <!-- Card 3 -->
+            <a href="chat.html" class="ui-card ui-card-interactive"
+              style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
+              <div class="ui-card-header" style="margin-bottom: 0;">
+                <h3 class="ui-card-title" style="margin-bottom: 4px;">Open Chats <span class="arrow">&rarr;</span></h3>
+                <p class="ui-card-description" style="margin-top: 0;">Explore reviews across students.</p>
+              </div>
+            </a>
+            <!-- Card 4 -->
+            <a href="students.html?register=true" class="ui-card ui-card-interactive"
+              style="text-decoration: none; display: flex; flex-direction: column; color: inherit; box-sizing: border-box; padding: 1rem;">
+              <div class="ui-card-header" style="margin-bottom: 0;">
+                <h3 class="ui-card-title" style="margin-bottom: 4px;">Register a student <span
+                    class="arrow">&rarr;</span></h3>
+                <p class="ui-card-description" style="margin-top: 0;">Submit a registration application.</p>
+              </div>
+            </a>
           </div>
-          <div id="pending-applications"></div>
+        </section>
+        <section class="card" aria-labelledby="active-reviews-heading">
+          <div class="between">
+            <h2 id="active-reviews-heading">Recent active reviews</h2>
+            <a href="students.html">Browse students <span class="arrow">&rarr;</span></a>
+          </div>
+          <p class="muted">
+            The latest active reviews from faculty. Hidden and deleted reviews
+            are never shown.
+          </p>
+          <div id="active-reviews-feed" class="review-feed"></div>
         </section>
       </div>
       <noscript>
@@ -1307,7 +1341,7 @@
           interactions.
         </p>
       </noscript>
-          <!-- Workspace Footer -->
+      <!-- Workspace Footer -->
       <footer class="workspace-footer" style="margin-top: 3rem;">
         <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
@@ -1469,90 +1503,90 @@
       } catch { }
     }
     const students = [
-            {
-                id: "24-1-00001",
-                first: "Sam",
-                middle: "Lee",
-                last: "Parker",
-                program: "BS Computer Science",
-            },
-            {
-                id: "24-1-00002",
-                first: "Taylor",
-                middle: "",
-                last: "Reed",
-                program: "BS Computer Engineering",
-            },
-            {
-                id: "24-1-00003",
-                first: "Jordan",
-                middle: "",
-                last: "Blake",
-                program: "BS Information Systems",
-            },
-            {
-                id: "24-1-00004",
-                first: "Casey",
-                middle: "",
-                last: "Lane",
-                program: "BS Computer Science",
-            },
-            {
-                id: "24-1-00005",
-                first: "Drew",
-                middle: "",
-                last: "Hayes",
-                program: "BS Information Systems",
-            },
-            { id: "24-1-00006", first: "Alex", middle: "C", last: "Smith", program: "BS Information Systems" },
-            { id: "24-1-00007", first: "Morgan", middle: "", last: "Freeman", program: "BS Computer Science" },
-            { id: "24-1-00008", first: "Casey", middle: "D", last: "Jones", program: "BS Computer Engineering" },
-            { id: "24-1-00009", first: "Riley", middle: "", last: "O'Neil", program: "BS Computer Science" },
-            { id: "24-1-00010", first: "Jamie", middle: "L", last: "Martinez", program: "BS Information Systems" },
-            { id: "24-1-00011", first: "Avery", middle: "", last: "Wilson", program: "BS Computer Engineering" },
-            { id: "24-1-00012", first: "Quinn", middle: "M", last: "Taylor", program: "BS Computer Science" },
-            { id: "24-1-00013", first: "Skyler", middle: "", last: "Brown", program: "BS Information Systems" },
-            { id: "24-1-00014", first: "Reese", middle: "T", last: "Davis", program: "BS Computer Engineering" },
-            { id: "24-1-00015", first: "Rowan", middle: "", last: "Miller", program: "BS Computer Science" },
-            { id: "24-1-00016", first: "Emerson", middle: "J", last: "Moore", program: "BS Information Systems" },
-            { id: "24-1-00017", first: "Finley", middle: "", last: "Anderson", program: "BS Computer Engineering" },
-            { id: "24-1-00018", first: "Dallas", middle: "R", last: "Thomas", program: "BS Computer Science" },
-            { id: "24-1-00019", first: "Dakota", middle: "", last: "Jackson", program: "BS Information Systems" },
-            { id: "24-1-00020", first: "Peyton", middle: "S", last: "White", program: "BS Computer Engineering" }
-        ];
-const programs = [
-    "BS Computer Science",
-    "BS Computer Engineering",
-    "BS Information Systems",
-    "BS Data Science",
-    "BS Artificial Intelligence",
-    "BS Cybersecurity",
-    "BS Software Engineering",
-    "BA Digital Media",
-    "BS Applied Mathematics",
-    "BA Game Design",
-    "BS Physics",
-    "BS Chemistry",
-    "BS Biology"
-];
-const departments = [
-    "Computer Science",
-    "Engineering",
-    "Mathematics",
-    "Data Science",
-    "Information Technology",
-    "Cybersecurity",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "Digital Arts",
-    "Software Engineering",
-    "Applied Sciences",
-    "Humanities",
-    "Business Administration"
-];
+      {
+        id: "24-1-00001",
+        first: "Sam",
+        middle: "Lee",
+        last: "Parker",
+        program: "BS Computer Science",
+      },
+      {
+        id: "24-1-00002",
+        first: "Taylor",
+        middle: "",
+        last: "Reed",
+        program: "BS Computer Engineering",
+      },
+      {
+        id: "24-1-00003",
+        first: "Jordan",
+        middle: "",
+        last: "Blake",
+        program: "BS Information Systems",
+      },
+      {
+        id: "24-1-00004",
+        first: "Casey",
+        middle: "",
+        last: "Lane",
+        program: "BS Computer Science",
+      },
+      {
+        id: "24-1-00005",
+        first: "Drew",
+        middle: "",
+        last: "Hayes",
+        program: "BS Information Systems",
+      },
+      { id: "24-1-00006", first: "Alex", middle: "C", last: "Smith", program: "BS Information Systems" },
+      { id: "24-1-00007", first: "Morgan", middle: "", last: "Freeman", program: "BS Computer Science" },
+      { id: "24-1-00008", first: "Casey", middle: "D", last: "Jones", program: "BS Computer Engineering" },
+      { id: "24-1-00009", first: "Riley", middle: "", last: "O'Neil", program: "BS Computer Science" },
+      { id: "24-1-00010", first: "Jamie", middle: "L", last: "Martinez", program: "BS Information Systems" },
+      { id: "24-1-00011", first: "Avery", middle: "", last: "Wilson", program: "BS Computer Engineering" },
+      { id: "24-1-00012", first: "Quinn", middle: "M", last: "Taylor", program: "BS Computer Science" },
+      { id: "24-1-00013", first: "Skyler", middle: "", last: "Brown", program: "BS Information Systems" },
+      { id: "24-1-00014", first: "Reese", middle: "T", last: "Davis", program: "BS Computer Engineering" },
+      { id: "24-1-00015", first: "Rowan", middle: "", last: "Miller", program: "BS Computer Science" },
+      { id: "24-1-00016", first: "Emerson", middle: "J", last: "Moore", program: "BS Information Systems" },
+      { id: "24-1-00017", first: "Finley", middle: "", last: "Anderson", program: "BS Computer Engineering" },
+      { id: "24-1-00018", first: "Dallas", middle: "R", last: "Thomas", program: "BS Computer Science" },
+      { id: "24-1-00019", first: "Dakota", middle: "", last: "Jackson", program: "BS Information Systems" },
+      { id: "24-1-00020", first: "Peyton", middle: "S", last: "White", program: "BS Computer Engineering" }
+    ];
+    const programs = [
+      "BS Computer Science",
+      "BS Computer Engineering",
+      "BS Information Systems",
+      "BS Data Science",
+      "BS Artificial Intelligence",
+      "BS Cybersecurity",
+      "BS Software Engineering",
+      "BA Digital Media",
+      "BS Applied Mathematics",
+      "BA Game Design",
+      "BS Physics",
+      "BS Chemistry",
+      "BS Biology"
+    ];
+    const departments = [
+      "Computer Science",
+      "Engineering",
+      "Mathematics",
+      "Data Science",
+      "Information Technology",
+      "Cybersecurity",
+      "Physics",
+      "Chemistry",
+      "Biology",
+      "Digital Arts",
+      "Software Engineering",
+      "Applied Sciences",
+      "Humanities",
+      "Business Administration"
+    ];
     const getColor = (t) => ({ research: "purple", robotics: "rose", teamwork: "amber", communication: "cyan", algorithms: "cyan", leadership: "amber" }[t.toLowerCase()] || "neutral");
-        const full = (s) =>
+    const full = (s) =>
       `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
     const badge = (s) => `<span class="ui-badge ui-badge--${s === 'approved' ? 'success' : s === 'pending' ? 'warning' : s === 'rejected' ? 'destructive' : 'neutral'}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
     document
@@ -1592,17 +1626,29 @@ const departments = [
       });
       save();
     }
+    function renderActiveReviewsFeed() {
+      const feed = $("#active-reviews-feed");
+      if (!feed) return;
+      const active = state.reviews
+        .filter((r) => r.status === "active")
+        .sort((a, b) => (a.date < b.date ? 1 : -1));
+      feed.innerHTML =
+        active
+          .map((r) => {
+            const student = students.find((s) => s.id === r.student);
+            const studentName = student ? full(student) : r.student;
+            const reviewer =
+              r.owner === "self" ? state.name + " · You" : r.author;
+            return `<article class="card review"><div class="between"><div><h3>${esc(reviewer)}</h3><small>Review of <a href="student-detail.html?id=${encodeURIComponent(r.student)}" class="ui-link-neutral">${esc(studentName)}</a> · ${esc(r.department)} · ${esc(r.date)}</small></div><span class="ui-badge ui-badge--success">Active</span></div><p class="review-body">${esc(r.body)}</p><div class="review-tags">${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div></article>`;
+          })
+          .join("") || '<div class="empty">No active reviews yet.</div>';
+    }
     if (page === "dashboard") {
       $("#student-count").textContent = students.length;
       $("#review-count").textContent = state.reviews.filter(
         (r) => r.owner === "self" && r.status !== "deleted",
       ).length;
-      $("#pending-count").textContent = state.applications.filter(
-        (a) => a.status === "pending",
-      ).length;
-      $("#pending-applications").innerHTML = appTable(
-        state.applications.filter((a) => a.status === "pending"),
-      );
+      renderActiveReviewsFeed();
     }
     if (page === "students") {
       let current = 1,
@@ -2061,9 +2107,9 @@ const departments = [
       if (!host) return;
       const controls = document.createElement("div");
       controls.className = "ui-table-pagination";
-          controls.style.cssText = "border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;";
+      controls.style.cssText = "border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;";
       controls.innerHTML =
-            '<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;"><span style="color: var(--muted-foreground); font-size: 0.875rem;"></span><div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;"><div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"><span>Rows per page</span><div style="position: relative; display: flex; align-items: center;"><select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem;"><option value="5" selected>5</option><option value="10">10</option><option value="20">20</option></select><svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><span role="status" style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"></span><div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;"><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Previous</button><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Next</button></div></div></div>';
+        '<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;"><span style="color: var(--muted-foreground); font-size: 0.875rem;"></span><div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;"><div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"><span>Rows per page</span><div style="position: relative; display: flex; align-items: center;"><select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem;"><option value="5" selected>5</option><option value="10">10</option><option value="20">20</option></select><svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><span role="status" style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"></span><div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;"><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Previous</button><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Next</button></div></div></div>';
       host.after(controls);
       let current = 1;
       const size = controls.querySelector("select"),
@@ -2110,47 +2156,6 @@ const departments = [
     if (page === "applications") paginateTable("application-list");
     if (page === "programs" || page === "departments")
       paginateTable("entity-list");
-    if (page === "dashboard") {
-      if (!document.querySelector(".dashboard-layout")) {
-        const quick = document.querySelector(".quick-links").closest("section"),
-          pending = document
-            .getElementById("pending-applications")
-            .closest("section");
-        const panels = document.createElement("div");
-        panels.className = "dashboard-layout";
-        quick.before(panels);
-        pending.classList.add("card");
-        panels.append(quick, pending);
-      }
-      if (!document.getElementById("programs-stat")) {
-        const stat = document.createElement("div");
-        stat.id = "programs-stat";
-        stat.className = "card stat";
-        stat.innerHTML =
-          '<span class="muted">Programs</span><strong>' +
-          programs.length +
-          "</strong><small>Approved programs</small>";
-        document.querySelector(".stats").append(stat);
-      }
-      document.getElementById("pending-applications").innerHTML =
-        state.applications
-          .filter((a) => a.status === "pending")
-          .slice(0, 3)
-          .map(
-            (a) =>
-              '<div class="pending-item"><div><strong>' +
-              esc(a.type) +
-              " · " +
-              esc(a.name) +
-              "</strong><small>Submitted " +
-              esc(a.date) +
-              "</small></div>" +
-              badge(a.status) +
-              "</div>",
-          )
-          .join("") || "<p>No pending applications.</p>";
-    }
-
     if (page === "chat") {
       document.querySelectorAll("[data-prompt]").forEach(
         (b) =>
@@ -2231,6 +2236,3 @@ const departments = [
 </body>
 
 </html>
-
-
-
