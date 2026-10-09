@@ -205,3 +205,8 @@
 #reviews > .review + .review {
   margin-top: var(--space-6, 14px);
 }
+
+/* Spacing between the final review card and the footer */
+#reviews > .review:last-child {
+  margin-bottom: var(--space-6, 14px);
+}
