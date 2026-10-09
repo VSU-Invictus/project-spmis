@@ -999,16 +999,3 @@ tr:hover .ui-btn:disabled,
   box-shadow: none !important;
 }
 
-/* ==========================================================================
-   ACTIVE BUTTONS — Only these respond to hover / active
-   Restates the hover contract so it's crystal clear in the codebase.
-   ========================================================================== */
-
-.ui-btn:not(:disabled):not([disabled]):not([aria-disabled="true"]):not(.is-disabled):hover {
-  /* existing hover styles from your .ui-btn rules apply here */
-}
-
-.ui-btn:not(:disabled):not([disabled]):not([aria-disabled="true"]):not(.is-disabled):active {
-  /* existing active/press styles from your .ui-btn rules apply here */
-}
-
