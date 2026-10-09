@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark ui-auth-document">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +7,10 @@
     <link rel="stylesheet" href="../../assets/css/components.css">
     <link rel="stylesheet" href="../../assets/css/background/grid.css">
     <link rel="stylesheet" href="../../assets/css/pages/auth/signin.css" />
-    <link rel="stylesheet" href="../../assets/css/pages/auth/role-routing.css">
     <title>SPMIS - Sign In</title>
 </head>
-<body class="bg-grid ui-auth-page">
-    <div class="auth-shell ui-auth-viewport">
+<body class="bg-grid">
+    <div class="auth-shell">
         <div class="auth-split">
 
             <!-- ═══════════════════════════════════════════════
@@ -48,7 +47,7 @@
             <!-- ═══════════════════════════════════════════════
                  RIGHT: auth card
                  ═══════════════════════════════════════════════ -->
-            <section class="auth-card ui-auth-panel">
+            <section class="auth-card">
                 <div class="auth-card-body">
                     <h2 class="auth-card-title">Sign In</h2>
                     <p class="auth-card-sub">Welcome back. Enter your credentials to continue.</p>
@@ -116,13 +115,6 @@
                                     Sign In to Account
                                 </button>
                             </form>
-                            <nav class="ui-auth-role-nav" aria-label="Mockup dashboard previews">
-                                <p class="ui-auth-role-description">Preview a dashboard</p>
-                                <div class="ui-auth-role-actions">
-                                    <a class="ui-btn" href="../admin/dashboard.html" data-dashboard-link>Admin User</a>
-                                    <a class="ui-btn ui-btn-secondary" href="../faculty/dashboard.html" data-dashboard-link>Faculty User</a>
-                                </div>
-                            </nav>
                         </div>
                     </div>
                 </div>
@@ -157,7 +149,7 @@
                 <span>Sign in with Google</span>
             </div>
 
-            <div class="google-content ui-auth-dialog-content">
+            <div class="google-content">
 
                 <!-- STEP 1: ACCOUNTS -->
                 <div class="google-step active" data-google-step="accounts">
@@ -167,12 +159,32 @@
                     <h2 id="google-title" class="google-title">Choose an account</h2>
                     <p class="google-subtitle">to continue to <b>SPMIS</b></p>
 
-                    <nav class="ui-auth-account-nav" aria-label="Choose a mockup account">
-                        <a class="ui-btn" href="../admin/dashboard.html" data-dashboard-link>Admin User</a>
-                        <a class="ui-btn ui-btn-secondary" href="../faculty/dashboard.html" data-dashboard-link>Faculty User</a>
-                    </nav>
+                    <button class="google-account-btn mock-login-action" data-role="admin">
+                        <span class="google-avatar" style="background:#a56b46">A</span>
+                        <span class="google-acc-info">
+                            <span class="google-acc-name">Admin Portal</span>
+                            <span class="google-acc-email">admin.acc@vsu.edu.ph</span>
+                        </span>
+                    </button>
 
-                    <button type="button" class="ui-btn ui-btn-secondary ui-auth-other-account" id="use-another-account">Use another account</button>
+                    <button class="google-account-btn mock-login-action" data-role="faculty">
+                        <span class="google-avatar" style="background:#5f6368">F</span>
+                        <span class="google-acc-info">
+                            <span class="google-acc-name">Faculty Portal</span>
+                            <span class="google-acc-email">faculty.acc@vsu.edu.ph</span>
+                        </span>
+                    </button>
+
+                    <button class="google-account-btn other-account" id="use-another-account">
+                        <span class="google-avatar">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                            </svg>
+                        </span>
+                        <span class="google-acc-info">
+                            <span class="google-acc-name">Use another account</span>
+                        </span>
+                    </button>
 
                     <p class="google-footer">
                         To continue, Google will share your name, email address, language preference, and profile picture with SPMIS. Before using this app, you can review SPMIS's
@@ -268,7 +280,6 @@
             googleSteps.forEach((s) =>
                 s.classList.toggle('active', s.dataset.googleStep === step)
             );
-            overlay.querySelector('.google-step.active')?.querySelector('input, a[href], button')?.focus();
         };
 
         const resetGoogleFlow = () => {
@@ -280,30 +291,15 @@
             document.querySelectorAll('.google-field').forEach((f) => f.classList.remove('is-filled'));
         };
 
-        const syncGoogleRoute = () => {
-            const open = new URL(window.location.href).searchParams.get('account') === 'google';
-            overlay.classList.toggle('hidden', !open);
-            document.querySelector('.ui-auth-viewport').inert = open;
-            resetGoogleFlow();
-            document.getElementById(open ? 'close-google' : 'trigger-google-btn').focus();
-        };
-
         const openGooglePopup = () => {
-            const url = new URL(window.location.href);
-            url.searchParams.set('account', 'google');
-            window.history.pushState(null, '', url);
-            syncGoogleRoute();
+            resetGoogleFlow();
+            overlay.classList.remove('hidden');
         };
 
         const closeGooglePopup = () => {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('account');
-            window.history.replaceState(null, '', url);
-            syncGoogleRoute();
+            overlay.classList.add('hidden');
+            resetGoogleFlow();
         };
-
-        window.addEventListener('popstate', syncGoogleRoute);
-        if (new URL(window.location.href).searchParams.get('account') === 'google') syncGoogleRoute();
 
         document.getElementById('trigger-google-btn')?.addEventListener('click', openGooglePopup);
         document.getElementById('close-google').addEventListener('click', closeGooglePopup);
@@ -311,27 +307,17 @@
             if (event.target === overlay) closeGooglePopup();
         });
         document.addEventListener('keydown', (event) => {
-            if (overlay.classList.contains('hidden')) return;
-            if (event.key === 'Escape') {
-                event.preventDefault();
+            if (event.key === 'Escape' && !overlay.classList.contains('hidden')) {
                 closeGooglePopup();
             }
-            if (event.key === 'Tab') {
-                const controls = [...overlay.querySelectorAll('a[href], button, input')]
-                    .filter(control => !control.disabled && control.getClientRects().length > 0);
-                const first = controls[0];
-                const last = controls[controls.length - 1];
-                if (!controls.includes(document.activeElement)) {
-                    event.preventDefault();
-                    (event.shiftKey ? last : first)?.focus();
-                } else if (event.shiftKey && document.activeElement === first) {
-                    event.preventDefault();
-                    last.focus();
-                } else if (!event.shiftKey && document.activeElement === last) {
-                    event.preventDefault();
-                    first.focus();
-                }
-            }
+        });
+
+        document.querySelectorAll('.mock-login-action').forEach((button) => {
+            button.addEventListener('click', () => {
+                window.location.href = button.dataset.role === 'admin'
+                    ? '../admin/dashboard.html'
+                    : '../faculty/dashboard.html';
+            });
         });
 
         document.getElementById('use-another-account').addEventListener('click', () => showGoogleStep('email'));
@@ -501,7 +487,7 @@
             })();
 
             // 3. Page exit transition
-            document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"]):not([data-dashboard-link])').forEach((link) => {
+            document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach((link) => {
                 link.addEventListener('click', (event) => {
                     const href = link.getAttribute('href');
                     if (!href || href.startsWith('javascript:') || link.classList.contains('active')) return;
