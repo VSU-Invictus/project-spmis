@@ -287,7 +287,20 @@ const departments = [
           .map((r) => {
             const student = students.find((s) => s.id === r.student);
             const studentName = student ? full(student) : r.student;
-            const contributor = r.owner === "self" ? state.name : r.author;
+            const isSelf = r.owner === "self";
+            const contributor = isSelf ? state.name : r.author;
+            const contributorMarkup =
+              esc(contributor) +
+              (isSelf
+                ? ' <span class="review-feed-you">· You</span>'
+                : "");
+            const studentMarkup = student
+              ? '<a class="ui-link-neutral review-feed-student" href="student-detail.html?id=' +
+                encodeURIComponent(student.id) +
+                '">' +
+                esc(studentName) +
+                "</a>"
+              : esc(studentName);
             const tags = r.tags
               .map(
                 (t) =>
@@ -299,10 +312,10 @@ const departments = [
               '<div class="review-feed-head">' +
               '<div class="review-feed-meta">' +
               '<span class="review-feed-contributor">' +
-              esc(contributor) +
+              contributorMarkup +
               "</span>" +
               '<span class="review-feed-sub">Reviewing ' +
-              esc(studentName) +
+              studentMarkup +
               " · " +
               esc(r.department) +
               " · " +

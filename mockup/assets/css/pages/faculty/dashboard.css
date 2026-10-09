@@ -270,6 +270,32 @@ body[data-page="dashboard"] .stats,
   line-height: 1.4;
 }
 
+/* Clickable student name inside the review feed (uses the shared
+   .ui-link-neutral convention: neutral at rest, terracotta on hover). */
+.review-feed .review-feed-student {
+  color: var(--foreground, #FFFFFF) !important;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-sm, 6px);
+  transition: color 150ms ease;
+}
+
+.review-feed .review-feed-student:hover {
+  color: var(--primary, #D97251) !important;
+  text-decoration: none;
+}
+
+.review-feed .review-feed-student:focus-visible {
+  outline: 2px solid var(--ring, var(--primary, #D97251));
+  outline-offset: 2px;
+}
+
+/* "You" attribution indicator for the current faculty member's reviews. */
+.review-feed .review-feed-you {
+  color: var(--muted-foreground, #A0988E);
+  font-weight: 500;
+}
+
 .review-feed-body {
   font-size: 13px;
   color: var(--muted-foreground, #A0988E);
