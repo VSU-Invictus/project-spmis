@@ -1,10 +1,17 @@
+/* ==========================================================================
+   Faculty Dashboard (page-specific)
+   Layout: Header -> Students / Your reviews -> Quick links ->
+   Recent active reviews -> Footer
+   ========================================================================== */
+
+/* ---- Statistic cards (Students / Your reviews) ---- */
 body[data-page="dashboard"] .stats,
 .stats {
   display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 16px !important;
   width: 100% !important;
-  margin-bottom: 24px !important;
+  margin-bottom: 16px !important;
 }
 
 .stat,
@@ -57,9 +64,7 @@ body[data-page="dashboard"] .stats,
 
 .stat strong,
 #student-count,
-#review-count,
-#pending-count,
-#program-count {
+#review-count {
   display: block !important;
   font-size: 32px !important;
   font-weight: 700 !important;
@@ -78,50 +83,42 @@ body[data-page="dashboard"] .stats,
   line-height: 1.3 !important;
 }
 
-.dashboard-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  align-items: stretch;
-}
-
-.dashboard-layout > section {
+/* ---- Full-width dashboard sections (Quick links / Recent active reviews) ---- */
+.dashboard-quick-links,
+.dashboard-reviews {
   background: var(--card, #1F1E1D);
   border: 1px solid var(--border, #2E2D2A);
   border-radius: var(--radius-xl, 14px);
-  padding: 24px;
+  padding: 20px 24px;
   box-sizing: border-box;
-  margin: 0;
+  margin: 0 0 16px 0;
   display: flex;
   flex-direction: column;
 }
 
-.dashboard-layout section h2 {
+.dashboard-quick-links h2,
+.dashboard-reviews h2 {
   font-family: var(--font-family-display, 'Outfit', sans-serif);
   font-size: 18px;
   font-weight: 600;
   color: #FFFFFF;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
   line-height: 1.3;
 }
 
-.dashboard-layout .between {
+.dashboard-reviews .between {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.dashboard-layout .between h2 {
+.dashboard-reviews .between h2 {
   margin: 0;
-  font-family: var(--font-family-display, 'Outfit', sans-serif);
-  font-size: 18px;
-  font-weight: 600;
-  color: #FFFFFF;
-  line-height: 1.3;
 }
 
-.dashboard-layout .between a {
+.dashboard-reviews .between a {
   font-size: 12px;
   color: var(--muted-foreground, #A0988E);
   text-decoration: none;
@@ -132,24 +129,24 @@ body[data-page="dashboard"] .stats,
   transition: color 150ms ease;
 }
 
-.dashboard-layout .between a:hover {
+.dashboard-reviews .between a:hover {
   color: var(--primary, #D97251) !important;
 }
 
-.dashboard-layout .between a .arrow {
+.dashboard-reviews .between a .arrow {
   display: inline-block;
   transition: transform 0.25s ease;
 }
 
-.dashboard-layout .between a:hover .arrow {
+.dashboard-reviews .between a:hover .arrow {
   transform: translateX(4px);
 }
 
+/* ---- Quick links: two columns, two rows ---- */
 .quick-links {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  flex: 1;
+  gap: 12px;
 }
 
 .quick-links .ui-card,
@@ -158,7 +155,7 @@ body[data-page="dashboard"] .stats,
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
-  padding: 18px 20px !important;
+  padding: 14px 16px !important;
   background: transparent !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: var(--radius-md, 10px) !important;
@@ -166,7 +163,7 @@ body[data-page="dashboard"] .stats,
   color: inherit !important;
   box-sizing: border-box !important;
   margin: 0 !important;
-  min-height: 82px !important;
+  min-height: 64px !important;
   transition: background-color var(--transition-fast), border-color var(--transition-fast) !important;
 }
 
@@ -201,10 +198,10 @@ body[data-page="dashboard"] .stats,
 
 .quick-links h3,
 .quick-links .ui-card-title {
-  font-size: 15px !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
   color: #FFFFFF !important;
-  margin: 0 0 6px 0 !important;
+  margin: 0 0 4px 0 !important;
   line-height: 1.3 !important;
 }
 
@@ -221,71 +218,78 @@ body[data-page="dashboard"] .stats,
 
 .quick-links p,
 .quick-links .ui-card-description {
-  font-size: 13px !important;
-  color: var(--muted-foreground, #A0988E) !important;
-  margin: 0 !important;
-  line-height: 1.45 !important;
-}
-
-#pending-applications {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  flex: 1 !important;
-}
-
-.pending-item {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  gap: 16px !important;
-  padding: 16px 0 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
-  box-sizing: border-box !important;
-}
-
-.pending-item:first-child {
-  padding-top: 2px !important;
-}
-
-.pending-item:last-child {
-  border-bottom: none !important;
-  padding-bottom: 2px !important;
-}
-
-.pending-item strong {
-  display: block !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  color: #FFFFFF !important;
-  margin-bottom: 5px !important;
-  line-height: 1.3 !important;
-}
-
-.pending-item small {
-  display: block !important;
   font-size: 12px !important;
   color: var(--muted-foreground, #A0988E) !important;
-  line-height: 1.3 !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
 }
 
-.pending-item .ui-badge {
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  padding: 4px 14px !important;
-  border-radius: 9999px !important;
-  background: rgba(245, 158, 11, 0.08) !important;
-  border: 1px solid rgba(245, 158, 11, 0.35) !important;
-  color: #F59E0B !important;
-  white-space: nowrap !important;
-  line-height: 1.2 !important;
-  box-shadow: none !important;
+/* ---- Recent active reviews feed (single-column news feed) ---- */
+.review-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-@media (max-width: 850px) {
-  .dashboard-layout {
-    grid-template-columns: 1fr;
-  }
+.review-feed-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border, #2E2D2A);
+  border-radius: var(--radius-md, 10px);
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.review-feed-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.review-feed-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.review-feed-contributor {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+  line-height: 1.3;
+}
+
+.review-feed-sub {
+  font-size: 12px;
+  color: var(--muted-foreground, #A0988E);
+  line-height: 1.4;
+}
+
+.review-feed-body {
+  font-size: 13px;
+  color: var(--muted-foreground, #A0988E);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.review-feed-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.review-feed .ui-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 @media (max-width: 700px) {
