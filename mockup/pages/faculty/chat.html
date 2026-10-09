@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Chats &middot; SPMIS Faculty</title>
-    <link rel="stylesheet" href="../../assets/css/design-system.css" />
-    <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
-    <link rel="stylesheet" href="../../assets/css/components.css?v=9" />
-    <script src="../../assets/js/faculty-sidebar.js"></script>
-    <link rel="stylesheet" href="../../assets/css/pages/faculty/chat.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Chat Assistant &middot; SPMIS Faculty</title>
+  <link rel="stylesheet" href="../../assets/css/design-system.css" />
+  <link rel="stylesheet" href="../../assets/css/global.css?v=5" />
+  <link rel="stylesheet" href="../../assets/css/components.css?v=9" />
+  <script src="../../assets/js/faculty-sidebar.js"></script>
+  <link rel="stylesheet" href="../../assets/css/pages/faculty/chat.css" />
 </head>
-  <body data-page="chat">
-    <a href="#main" class="skip">Skip to content</a>
-    <div class="app">
+<body data-page="chat">
+  <a href="#main" class="skip">Skip to content</a>
+  <div class="app">
     <iframe
       src="../../components/navigation/sidebar-faculty.html?active=chat"
       id="sidebar-frame"
       class="sidebar-frame"
       title="Faculty Sidebar">
     </iframe>
-      <main id="main">
+    <main id="main">
       <!-- Top Brand Header Bar -->
       <div class="top-header-bar">
         <div class="is-b512c98">
@@ -34,41 +34,43 @@
           <span class="is-98efe8b">AY 2026-2027</span>
         </div>
       </div>
-        <div class="header">
-          <div>
-
-            <h1>Chats &amp; Faculty AI Assistant</h1>
-            <p>
-              Explore attributed reviews across students in one conversation.
-            </p>
-          </div>
-                    <a class="ui-btn ui-btn-secondary" href="students.html">Browse Student</a>
+      <div class="header">
+        <div>
+          <h1>AI Chat Assistant</h1>
+          <p>Explore attributed reviews across students in one conversation.</p>
         </div>
-        <div class="ui-chat-prompts is-35d063e">
-          <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have research experience?">
-            <span>Research experience</span>
-            <small>Explore faculty assessments</small>
-          </div>
-          <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students show teamwork?">
-            <span>Teamwork</span>
-            <small>Ask across student records</small>
-          </div>
-          <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Find reviews mentioning communication.">
-            <span>Communication</span>
-            <small>Find relevant review excerpts</small>
-          </div>
-          <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have robotics experience?">
-            <span>Robotics</span>
-            <small>Explore project experience</small>
-          </div>
+        <a class="ui-btn ui-btn-secondary" href="students.html">Browse Student</a>
+      </div>
+      <div class="chat-privacy-notice" role="note" aria-label="De-identification privacy notice">
+        <span class="ui-badge ui-badge--warning">Privacy</span>
+        <p><strong>Do not enter raw student names or other identifying details.</strong>
+          Refer to students by ID or program instead so the assistant can help without exposing personal data.</p>
+      </div>
+      <div class="ui-chat-prompts is-35d063e">
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have research experience?">
+          <span>Research experience</span>
+          <small>Explore faculty assessments</small>
         </div>
-                <div class="ui-chat-columns">
-          <div class="ui-card is-dca1b55">
-            <div class="ui-card-header is-2f82c02">
-              <h3 class="ui-card-title">Ask across student reviews</h3>
-              <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
-            </div>
-            <div class="ui-chat-container is-66768fc">
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students show teamwork?">
+          <span>Teamwork</span>
+          <small>Ask across student records</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Find reviews mentioning communication.">
+          <span>Communication</span>
+          <small>Find relevant review excerpts</small>
+        </div>
+        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have robotics experience?">
+          <span>Robotics</span>
+          <small>Explore project experience</small>
+        </div>
+      </div>
+      <div class="ui-chat-columns">
+        <div class="ui-card is-dca1b55">
+          <div class="ui-card-header is-2f82c02">
+            <h3 class="ui-card-title">Ask across student reviews</h3>
+            <p class="ui-card-description">Faculty conversational assistant for student evaluations.</p>
+          </div>
+          <div class="ui-chat-container is-66768fc">
             <div id="chat-log" class="ui-chat-log custom-scrollbar is-3fbfa29">
               <!-- AI Message -->
               <div class="ui-chat-msg ui-chat-msg--ai">
@@ -81,7 +83,6 @@
                   <div class="ui-chat-bubble ui-chat-bubble--ai">What would you like to explore across the student records? You can ask about research experience, leadership, or specific project contributions.</div>
                 </div>
               </div>
-  
               <!-- User Message -->
               <div class="ui-chat-msg ui-chat-msg--user">
                 <div class="ui-chat-msg-content">
@@ -89,10 +90,9 @@
                     <span class="ui-chat-msg-sender">Prof. Morgan</span>
                     <span class="ui-chat-msg-time">10:43 AM</span>
                   </div>
-                  <div class="ui-chat-bubble ui-chat-bubble--user">Which students in BS Computer Science demonstrate outstanding research contributions?</div>
+                  <div class="ui-chat-bubble ui-chat-bubble--user">Which students in BS Computer Science have demonstrated research and teamwork skills?</div>
                 </div>
               </div>
-  
               <!-- AI Message 2 -->
               <div class="ui-chat-msg ui-chat-msg--ai">
                 <div class="ui-chat-msg-content">
@@ -100,11 +100,10 @@
                     <span class="ui-chat-msg-sender">AI Assistant</span>
                     <span class="ui-chat-msg-time">10:43 AM</span>
                   </div>
-                  <div class="ui-chat-bubble ui-chat-bubble--ai">Based on active reviews, <strong>Sam Lee Parker (24-1-00001)</strong> published a peer-reviewed paper on neural network quantization in IEEE Access and mentored underclassmen in the capstone research symposium.</div>
+                  <div class="ui-chat-bubble ui-chat-bubble--ai">Based on active faculty reviews, student <strong>24-1-00001</strong> demonstrated research planning and teamwork skills by developing a clear research plan and supporting peers during a robotics project.</div>
                 </div>
               </div>
             </div>
-
             <!-- Chat Input Area -->
             <div class="ui-chat-input-wrapper is-1d1c012">
               <form class="is-f64a5e3" id="chat-form">
@@ -120,70 +119,44 @@
             </div>
           </div>
         </div>
-
-          <!-- Right: Student Quick File Context Card -->
-          <div class="ui-chat-context-card">
-            <div class="ui-chat-context-avatar">SP</div>
-            <h3 class="ui-heading-3 is-e2b74ba">Sam Lee Parker</h3>
-            <p class="ui-text-muted is-4909155">ID: 24-1-00001</p>
-  
-            <div class="ui-chat-context-meta">
-              <span class="ui-chat-context-dt">Program</span>
-              <span class="ui-chat-context-dd">BS Computer Science</span>
-              
-              <span class="ui-chat-context-dt">Year Level</span>
-              <span class="ui-chat-context-dd">3rd Year</span>
-              
-              <span class="ui-chat-context-dt">Status</span>
-              <span class="ui-chat-context-dd"><span class="ui-badge ui-badge--success">Good Standing</span></span>
-              
-              <span class="ui-chat-context-dt">Tags</span>
-              <span class="ui-chat-context-dd">
-                <span class="ui-badge ui-badge--purple">Research</span>
-                <span class="ui-badge ui-badge--cyan">Algorithms</span>
-              </span>
-            </div>
-  
-            <p class="ui-text-caption is-7a2039a">
-              Referenced record. Review conversations can synthesize evaluations across all enrolled students.
-            </p>
-  
-            <a class="ui-btn ui-btn-outline view-profile-btn is-bdcc6ae" href="student-detail.html?id=24-1-00001">
-              View Full Profile <span class="arrow">&rarr;</span>
-            </a>
+        <!-- Right: Student Quick File Context Card -->
+        <div class="ui-chat-context-card">
+          <div class="ui-chat-context-avatar">SP</div>
+          <h3 class="ui-heading-3 is-e2b74ba">Sam Lee Parker</h3>
+          <p class="ui-text-muted is-4909155">ID: 24-1-00001</p>
+          <div class="ui-chat-context-meta">
+            <span class="ui-chat-context-dt">Program</span>
+            <span class="ui-chat-context-dd">BS Computer Science</span>
+            <span class="ui-chat-context-dt">Year Level</span>
+            <span class="ui-chat-context-dd">3rd Year</span>
+            <span class="ui-chat-context-dt">Status</span>
+            <span class="ui-chat-context-dd"><span class="ui-badge ui-badge--success">Good Standing</span></span>
+            <span class="ui-chat-context-dt">Tags</span>
+            <span class="ui-chat-context-dd">
+              <span class="ui-badge ui-badge--purple">Research</span>
+              <span class="ui-badge ui-badge--cyan">Algorithms</span>
+            </span>
           </div>
+          <p class="ui-text-caption is-7a2039a">Referenced record. Review conversations can synthesize evaluations across all enrolled students.</p>
+          <a class="ui-btn ui-btn-outline view-profile-btn is-bdcc6ae" href="student-detail.html?id=24-1-00001">
+            View Full Profile <span class="arrow">&rarr;</span>
+          </a>
         </div>
-        <p class="muted">
-          Use contributor assessments as context for your own decisions. Read
-          full reviews and edit histories from the student roster.
-        </p>
-        <noscript>
-          <p class="notice">
-            Enable JavaScript to display sample lists and use the mock
-            interactions.
-          </p>
-        </noscript>
-            
-      
+      </div>
+      <p class="muted">Use contributor assessments as context for your own decisions. Read full reviews and edit histories from the student roster.</p>
+      <noscript><p class="notice">Enable JavaScript to display sample lists and use the mock interactions.</p></noscript>
       <!-- Workspace Footer -->
       <footer class="workspace-footer">
         <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
         <span>System Version 2.4.0</span>
       </footer>
     </main>
-    </div>
-    <script src="../../assets/js/pages/faculty/chat.js"></script>
-
-    <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        <span id="toast-message">Action successful!</span>
-    </div>
-    <script src="../../assets/js/pages/faculty/chat-2.js"></script>
-
+  </div>
+  <script src="../../assets/js/pages/faculty/chat.js"></script>
+  <div id="global-success-toast" class="ui-toast" role="status" aria-live="polite">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toast-message">Action successful!</span>
+  </div>
+  <script src="../../assets/js/pages/faculty/chat-2.js"></script>
 </body>
 </html>
-
-
-
-
-

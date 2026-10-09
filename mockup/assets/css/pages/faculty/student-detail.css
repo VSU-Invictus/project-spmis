@@ -140,3 +140,73 @@
 .is-12b4142:not(#\#):not(#\#) { color: var(--color-text-muted, #A0988E); font-size: 0.875rem; font-weight: var(--font-weight-medium, 500); }
 .is-49e15c7:not(#\#):not(#\#) { gap: 0.5rem; display: flex; }
 .is-b38e363:not(#\#):not(#\#) { min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md, 10px); font-size: 0.8125rem; }
+
+/* AI Review Summary Card */
+.ai-summary-card {
+  padding: var(--space-8, 20px) var(--space-9, 24px) !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  background: var(--color-card, #1F1E1D) !important;
+  border: 1px solid var(--color-border-subtle, #2E2D2A) !important;
+  margin-bottom: var(--space-9, 24px) !important;
+}
+
+.ai-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6, 16px);
+  border-bottom: 1px solid var(--color-border-main, rgba(255, 255, 255, 0.08));
+  padding-bottom: var(--space-5, 12px);
+  margin-bottom: var(--space-6, 16px);
+}
+
+.ai-summary-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4, 10px);
+  min-width: 0;
+}
+
+.ai-summary-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary-base, #D97251);
+  flex-shrink: 0;
+}
+
+.ai-summary-title {
+  font-size: var(--font-size-xs, 11px);
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #9C948B);
+  margin: 0;
+}
+
+.ai-summary-badge {
+  flex-shrink: 0;
+}
+
+.ai-summary-text {
+  font-size: var(--font-size-md, 14px);
+  line-height: 1.6;
+  color: var(--foreground, #FFFFFF);
+  margin: 0 0 var(--space-6, 16px);
+}
+
+.ai-summary-meta {
+  font-size: var(--font-size-sm, 12px);
+  color: var(--color-text-muted, #A0988E);
+  margin: 0;
+}
+
+/* Vertical spacing between review cards */
+#reviews > .review + .review {
+  margin-top: var(--space-6, 14px);
+}
+
+/* Spacing between the final review card and the footer */
+#reviews > .review:last-child {
+  margin-bottom: var(--space-6, 14px);
+}
