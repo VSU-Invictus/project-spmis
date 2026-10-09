@@ -475,13 +475,14 @@ body.queue-embedded .section-container {
   vertical-align: middle;
 }
 
-/* Monospace ID column */
+/* Standard Sans ID column */
 .td-cell.col-id,
 .table-container td.col-id {
-  font-family: var(--font-mono, 'Intel One Mono', monospace);
+  font-family: var(--font-sans, 'Outfit', sans-serif);
   font-size: 0.8125rem;
   letter-spacing: -0.01em;
   color: var(--color-text-main, #FFFFFF);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Alignment helpers */

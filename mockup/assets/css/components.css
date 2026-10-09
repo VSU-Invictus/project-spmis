@@ -1054,7 +1054,7 @@ html:not(.dark) .status-live-pill {
     font-size: 11px !important;
     font-weight: 700 !important;
     line-height: 1 !important;
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
     transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease !important;
 }
 
@@ -1063,9 +1063,10 @@ html:not(.dark) .status-live-pill {
     border-color: var(--border) !important;
 }
 
-/* Monospace Number & Identifier Primitives ('Intel One Mono' Standard) */
+/* Number & Identifier Primitives (Aligned to Design System Sans Standard) */
 :is(.font-intel-mono, .number-font, .tabular-nums) {
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
+    font-variant-numeric: tabular-nums;
 }
 
 :is(
@@ -1082,7 +1083,8 @@ html:not(.dark) .status-live-pill {
     #roster-results td:nth-child(1),
     #roster-results th:nth-child(1)
 ) {
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
+    font-variant-numeric: tabular-nums;
 }
 
 :is(
@@ -1094,7 +1096,8 @@ html:not(.dark) .status-live-pill {
     .badge-count,
     .tag-count
 ) {
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
+    font-variant-numeric: tabular-nums;
 }
 
 :is(
@@ -1108,7 +1111,8 @@ html:not(.dark) .status-live-pill {
     #pending-count,
     #programs-stat strong
 ) {
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
+    font-variant-numeric: tabular-nums;
 }
 
 .ui-input:focus-visible {
@@ -2544,7 +2548,7 @@ button:hover .arrow,
 .ui-tags-more-btn {
     cursor: pointer;
     font-weight: 700 !important;
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
     user-select: none;
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }

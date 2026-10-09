@@ -271,7 +271,7 @@ dialog#register-student-modal[open] {
 }
 
 .modal-form input#student-id {
-  font-family: var(--font-number, monospace) !important;
+  font-family: var(--font-number, var(--font-sans)) !important;
   letter-spacing: 0.04em !important;
 }
 
