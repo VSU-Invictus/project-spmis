@@ -72,7 +72,11 @@
 
     const emptyState = config.emptyState
       ? (typeof config.emptyState === 'string' ? document.querySelector(config.emptyState) : config.emptyState)
-      : document.querySelector('#emptyState, .empty-state');
+      : container.querySelector('.ui-empty-state, #emptyState, .empty-state');
+    const emptyTitle = emptyState && emptyState.querySelector('[data-empty-title]');
+    const emptyDescription = emptyState && emptyState.querySelector('[data-empty-description]');
+    const defaultEmptyTitle = emptyTitle ? emptyTitle.textContent : '';
+    const defaultEmptyDescription = emptyDescription ? emptyDescription.textContent : '';
 
     const filterElements = config.filterElements
       ? config.filterElements.map(el => typeof el === 'string' ? document.querySelector(el) : el).filter(Boolean)
@@ -247,7 +251,11 @@
       });
 
       if (emptyState) {
-        emptyState.style.display = totalMatches === 0 ? 'flex' : 'none';
+        if (emptyTitle) emptyTitle.textContent = allRows.length ? 'No matching results' : defaultEmptyTitle;
+        if (emptyDescription) emptyDescription.textContent = allRows.length
+          ? 'Try another search or clear the filters.'
+          : defaultEmptyDescription;
+        emptyState.hidden = totalMatches !== 0;
       }
 
       if (pageInfo) {
@@ -278,7 +286,7 @@
         }
       });
 
-      if (emptyState) emptyState.style.display = 'none';
+      if (emptyState) emptyState.hidden = true;
 
       // Insert 3 skeleton shimmer rows matching table structure
       const frag = document.createDocumentFragment();
