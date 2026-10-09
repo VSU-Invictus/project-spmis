@@ -11,7 +11,7 @@ When resolving conflicts, AI agents must evaluate directives in this strict orde
 ## 2. Repo Map & Structural Constraints
 Per MoM #4, the `/mockup` folder structure is locked and a strict **one-file-per-route** rule applies (each sitemap route = exactly one HTML file).
 * `mockup/pages/{admin,faculty,auth}` — one HTML file per sitemap route.
-* `mockup/components/{modals,navigation,tables}` — reusable UI fragments.
+* `mockup/components/navigation` — active reusable footer and sidebar fragments. The locked structure reserves `components/modals` and `components/tables`, but their unused HTML files have been removed.
 * `mockup/assets/{css,js,icons}` — vanilla assets (`global.css`, `components.css`, `faculty-sidebar.js`, icons).
 * `mockup/tests/` — test suites.
 * `docs/` — documentation, including `docs/change log/CHANGELOG.md`, which must be updated alongside relevant codebase changes.
@@ -26,7 +26,7 @@ Per MoM #4, the `/mockup` folder structure is locked and a strict **one-file-per
 This section describes the *actual current state* of the repository.
 * **Tech Stack:** Static HTML5 and vanilla CSS. Do NOT generate React components, JSX, Vue, Angular, or use bundlers.
 * **M1 Modals (Current State):** Modals in M1 are built as static `div`-based overlays (e.g., `.modal-overlay` / `.modal-container`).
-* **Empty Components:** The three reusable modal files (`modal-rejection-reason.html`, `modal-add-edit-entity.html`, `modal-delete-confirm.html`) are currently placeholder files awaiting content.
+* **Component Inventory:** Only the footer and two sidebar HTML fragments are currently consumed from `mockup/components/`. Unused modal and table fragments were removed; active dialogs and tables are defined in their pages or built by `assets/js/queue-modal.js`.
 * **AI & Privacy:** Zero real data is permitted in mockups. AI text de-identification uses `{{STUDENT:<uuid>}}`. The Gemini API and `GEMINI_API_KEY` are strictly confined to Supabase Edge Functions.
 
 ## 5. Target Architecture & Design (Post-M1)

@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 <!-- Active development updates -->
 
+### Removed
+- **Cleanup:** Removed seven unreferenced HTML files from `mockup/components/`: `modal-add-edit-entity.html`, `modal-approval-confirm.html`, `modal-approval-queue.html`, `modal-delete-confirm.html`, `modal-rejection-reason.html`, `table-approval-queue.html`, and `table-management-roster.html`. Four were empty placeholders; three were unused modal fragments. The active footer, both sidebars, and page/script-defined modals and tables remain available.
+
 ### Added
 - **UI:** Added explicit Admin User and Faculty User dashboard preview links to the redesigned sign-in and pending-verification pages. The account chooser uses native dashboard links and the `?account=google` route, with keyboard focus containment and restoration. Auth entry pages use a token-based terracotta frame and internal scrolling.
 - **UI:** Added Action Confirmation Alert blocks (`.ui-alert`, `.ui-alert--warning`, `.ui-alert--info`) to Portal Modals to safeguard users from accidental approvals or rejections, providing clear context before state mutations.
