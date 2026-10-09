@@ -58,12 +58,12 @@
             <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" stroke-width="1.33"/>
             <path d="M10.5 10.5L14 14" stroke="#8A837A" stroke-width="1.33" stroke-linecap="round"/>
           </svg>
-          <input type="text" class="search-input" placeholder="Search by program proposals...">
+          <input aria-label="Search by program proposals" type="text" class="search-input" placeholder="Search by program proposals...">
         </div>
 
         <div class="controls-actions">
           <div class="dropdown-container type">
-            <select class="dropdown-select">
+            <select aria-label="Filter by request type" class="dropdown-select">
               <option>Type: All</option>
               <option>Addition</option>
               <option>Edit Existing</option>
@@ -74,7 +74,7 @@
           </div>
 
           <div class="dropdown-container sort">
-            <select class="dropdown-select">
+            <select aria-label="Sort by submission date" class="dropdown-select">
               <option>Oldest</option>
               <option>Newest</option>
             </select>
@@ -98,7 +98,7 @@
 
             <div class="table-body">
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+                <div class="td-cell checkbox-cell"><input aria-label="Select program application: Bachelor of Science in Computer Science" type="checkbox" class="custom-checkbox"></div>
                 <div class="td-cell col-program">Bachelor of Science in Computer Science</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="badge-pill type-edit">Edit Existing</span></div>
@@ -106,7 +106,7 @@
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+                <div class="td-cell checkbox-cell"><input aria-label="Select program application: Master of Science in Computer Science" type="checkbox" class="custom-checkbox"></div>
                 <div class="td-cell col-program">Master of Science in Computer Science</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="badge-pill type-addition">Addition</span></div>
@@ -114,7 +114,7 @@
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+                <div class="td-cell checkbox-cell"><input aria-label="Select program application: Bachelor of Science in Medical Technology" type="checkbox" class="custom-checkbox"></div>
                 <div class="td-cell col-program">Bachelor of Science in Medical Technology</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="badge-pill type-addition">Addition</span></div>
@@ -122,7 +122,7 @@
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+                <div class="td-cell checkbox-cell"><input aria-label="Select program application: Bachelor of Science in Information System" type="checkbox" class="custom-checkbox"></div>
                 <div class="td-cell col-program">Bachelor of Science in Information System</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="badge-pill type-addition">Addition</span></div>
@@ -130,13 +130,17 @@
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+                <div class="td-cell checkbox-cell"><input aria-label="Select program application: Bachelor of Science in Applied Mathematics" type="checkbox" class="custom-checkbox"></div>
                 <div class="td-cell col-program">Bachelor of Science in Applied Mathematics</div>
                 <div class="td-cell col-proposed">John Doe</div>
                 <div class="td-cell col-type"><span class="badge-pill type-addition">Addition</span></div>
                 <div class="td-cell col-date">2026-09-10</div>
               </div>
             </div>
+          </div>
+          <div class="ui-empty-state" role="status" aria-live="polite" hidden>
+            <h2 class="ui-empty-state__title" data-empty-title>No pending program applications</h2>
+            <p class="ui-empty-state__description" data-empty-description>Program applications awaiting review will appear here.</p>
           </div>
         </div>
 

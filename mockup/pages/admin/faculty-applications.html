@@ -58,12 +58,12 @@
             <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" stroke-width="1.33"/>
             <path d="M10.5 10.5L14 14" stroke="#8A837A" stroke-width="1.33" stroke-linecap="round"/>
           </svg>
-          <input type="text" class="search-input" placeholder="Search by faculty name or keyword...">
+          <input aria-label="Search by faculty name or keyword" type="text" class="search-input" placeholder="Search by faculty name or keyword...">
         </div>
 
         <div class="controls-actions">
           <div class="dropdown-container type">
-            <select class="dropdown-select">
+            <select aria-label="Filter by account role" class="dropdown-select">
               <option>Type: All</option>
               <option>Faculty</option>
               <option>Admin</option>
@@ -74,7 +74,7 @@
           </div>
 
           <div class="dropdown-container sort">
-            <select class="dropdown-select">
+            <select aria-label="Sort by submission date" class="dropdown-select">
               <option>Oldest</option>
               <option>Newest</option>
             </select>
@@ -100,7 +100,7 @@
 
             <div class="table-body">
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+                <div class="td-cell checkbox-cell"><input aria-label="Select faculty application: e.vance@university.edu" type="checkbox" class="custom-checkbox"></div>
                 <div class="td-cell col-name">Dr. Eleanor Vance</div>
                 <div class="td-cell col-email">e.vance@university.edu</div>
                 <div class="td-cell col-dept">Department of Computer Science</div>
@@ -110,7 +110,7 @@
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+                <div class="td-cell checkbox-cell"><input aria-label="Select faculty application: m.brody@university.edu" type="checkbox" class="custom-checkbox"></div>
                 <div class="td-cell col-name">Prof. Marcus Brody</div>
                 <div class="td-cell col-email">m.brody@university.edu</div>
                 <div class="td-cell col-dept">Department of Information Technology</div>
@@ -120,7 +120,7 @@
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+                <div class="td-cell checkbox-cell"><input aria-label="Select faculty application: s.almansoor@university.edu" type="checkbox" class="custom-checkbox"></div>
                 <div class="td-cell col-name">Dr. Sophia Al-Mansoor</div>
                 <div class="td-cell col-email">s.almansoor@university.edu</div>
                 <div class="td-cell col-dept">Department of Applied Mathematics</div>
@@ -130,7 +130,7 @@
               </div>
 
               <div class="table-row">
-                <div class="td-cell checkbox-cell"><input type="checkbox" class="custom-checkbox"></div>
+                <div class="td-cell checkbox-cell"><input aria-label="Select faculty application: a.pendelton@university.edu" type="checkbox" class="custom-checkbox"></div>
                 <div class="td-cell col-name">Prof. Arthur Pendelton</div>
                 <div class="td-cell col-email">a.pendelton@university.edu</div>
                 <div class="td-cell col-dept">Department of Biological Sciences</div>
@@ -139,6 +139,10 @@
                 <div class="td-cell col-date">2026-09-05</div>
               </div>
             </div>
+          </div>
+          <div class="ui-empty-state" role="status" aria-live="polite" hidden>
+            <h2 class="ui-empty-state__title" data-empty-title>No pending faculty applications</h2>
+            <p class="ui-empty-state__description" data-empty-description>Faculty applications awaiting review will appear here.</p>
           </div>
         </div>
 

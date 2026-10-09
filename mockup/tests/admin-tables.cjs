@@ -37,6 +37,12 @@ adminPages.forEach(page => {
     totalErrors++;
   }
 
+  const emptyState = content.match(/<div class="ui-empty-state" role="status" aria-live="polite" hidden>[\s\S]*?<h2 class="ui-empty-state__title" data-empty-title>([^<]+)<\/h2>[\s\S]*?<p class="ui-empty-state__description" data-empty-description>([^<]+)<\/p>/);
+  if (!emptyState || !emptyState[1].trim() || !emptyState[2].trim()) {
+    console.error(`  ERROR: ${page} is missing an accessible empty state with a title and description!`);
+    totalErrors++;
+  }
+
   if (isFlex) {
     const headerStart = content.indexOf('<div class="table-header-row">');
     const bodyStart = content.indexOf('class="table-body"', headerStart);
@@ -81,6 +87,14 @@ adminPages.forEach(page => {
     });
   }
 });
+
+const dashboard = fs.readFileSync(path.join('mockup', 'pages', 'admin', 'dashboard.html'), 'utf8');
+if (!dashboard.includes('class="ui-empty-state" role="status" aria-live="polite" hidden') ||
+    !dashboard.includes('No pending applications') ||
+    !dashboard.includes('assets/js/admin-table.js')) {
+  console.error('  ERROR: dashboard approval table is missing its controlled empty state!');
+  totalErrors++;
+}
 
 console.log(`\n========================================`);
 console.log(`Table check complete. Total errors: ${totalErrors}`);

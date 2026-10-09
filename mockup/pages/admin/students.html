@@ -48,7 +48,7 @@
             <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" stroke-width="1.33"/>
             <path d="M10.5 10.5L14 14" stroke="#8A837A" stroke-width="1.33" stroke-linecap="round"/>
           </svg>
-          <input id="searchInput" type="text" class="search-input" placeholder="Search by student id or name...">
+          <input aria-label="Search by student id or name" id="searchInput" type="text" class="search-input" placeholder="Search by student id or name...">
         </div>
 
         <div class="controls-actions">
@@ -57,7 +57,7 @@
             <span class="queue-counter">3</span>
           </a>
           <div class="dropdown-container program">
-            <select id="programFilter" class="dropdown-select">
+            <select aria-label="Filter by program" id="programFilter" class="dropdown-select">
               <option value="all">Program: All</option>
               <option>BS in Computer Science</option>
               <option>BS in Computer Engineering</option>
@@ -151,6 +151,10 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="ui-empty-state" role="status" aria-live="polite" hidden>
+            <h2 class="ui-empty-state__title" data-empty-title>No students yet</h2>
+            <p class="ui-empty-state__description" data-empty-description>Student records will appear here when they are added.</p>
           </div>
         </div>
 

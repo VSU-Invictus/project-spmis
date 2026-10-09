@@ -601,7 +601,9 @@ const programs = [
                 );
                 $("#entity-list").innerHTML = filtered.length
                     ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
-                    : '<p class="empty">No matching entries. Try another name.</p>';
+                    : list.length
+                        ? '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No matching programs</h2><p class="ui-empty-state__description">Try another program name.</p></div>'
+                        : '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No programs yet</h2><p class="ui-empty-state__description">Approved programs will appear here.</p></div>';
                               }, 300);
               }
             $("#entity-search").oninput = render;
