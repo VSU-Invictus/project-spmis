@@ -80,6 +80,13 @@
   vertical-align: middle;
 }
 
+/* Reduced-motion safety */
+@media (prefers-reduced-motion: reduce) {
+  #roster-results .skeleton {
+    animation: none !important;
+  }
+}
+
 /* ---- Former inline styles (specificity boosted to match inline priority) ---- */
 .is-b512c98:not(#\#):not(#\#) { display: flex; align-items: center; gap: var(--space-4, 10px); }
 .is-052ff0c:not(#\#):not(#\#) { width: 18px; height: 18px; }

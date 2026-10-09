@@ -11,7 +11,7 @@
   padding-top: 18px !important;
   padding-right: var(--space-8, 20px) !important;
   padding-bottom: 18px !important;
-  padding-left: var(--space-10, 28px) !important;
+  padding-left: var(--space-9, 24px) !important;
   width: 22%;
 }
 
@@ -41,9 +41,12 @@
 #application-list th:nth-child(5):last-child,
 #application-list td:nth-child(5):last-child {
   padding-top: 18px !important;
-  padding-right: var(--space-10, 28px) !important;
+  padding-right: var(--space-9, 24px) !important;
   padding-bottom: 18px !important;
   width: auto;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 /* Reduced-motion safety */

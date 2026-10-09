@@ -82,7 +82,7 @@
         row.className = 'table-row';
         row.dataset.name = value.toLowerCase();
         row.dataset.status = 'approved';
-        row.innerHTML = `<div class="td-cell col-program">${value}</div><div class="td-cell col-status text-center"><span class="badge-pill badge-approved">Approved</span></div><div class="td-cell col-action text-right"><div class="action-group"><button class="pill-btn edit-btn" type="button">Edit</button> <button class="pill-btn remove-btn" type="button">Remove</button></div></div>`;
+        row.innerHTML = `<div class="td-cell col-program">${value}</div><div class="td-cell col-status text-center"><span class="ui-badge ui-badge--success"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>Approved</span></div><div class="td-cell col-action text-right"><div class="action-group"><button class="pill-btn edit-btn" type="button">Edit</button> <button class="pill-btn remove-btn" type="button">Remove</button></div></div>`;
         tableBody.prepend(row);
         closeModal(entityModal);
         setTimeout(() => showToast('Program Created Successfully'), 120);

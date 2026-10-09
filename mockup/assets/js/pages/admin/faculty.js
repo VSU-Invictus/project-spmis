@@ -28,8 +28,10 @@
       setTimeout(() => toast.classList.remove('show'), 2200);
     }
     function roleBadge(role) {
-      const cls = role === 'admin' ? 'badge-admin' : 'badge-faculty';
-      return '<span class="badge-pill ' + cls + '">' + role + '</span>';
+      const isAdm = (role || '').toLowerCase() === 'admin';
+      const variant = isAdm ? 'destructive' : 'info';
+      const label = isAdm ? 'Admin' : 'Faculty';
+      return '<span class="ui-badge ui-badge--' + variant + '">' + label + '</span>';
     }
 
     function filterRows() {
