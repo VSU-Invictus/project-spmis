@@ -446,25 +446,20 @@ const programs = [
 
             // Populate programs in modal
             const programSelect = document.getElementById("program");
+            if (programSelect && (!programSelect.children.length || programSelect.children.length < programs.length)) {
+                programSelect.innerHTML = programs.map(p => `<option value="${p}">${p}</option>`).join("");
+            }
+            const modalBody = document.getElementById("register-modal-body");
+            if (modalBody) {
+                modalBody.addEventListener("click", (e) => e.stopPropagation());
+            }
             if (programSelect) {
-                programSelect.innerHTML = programs.map(p => `<option>${p}</option>`).join("");
+                programSelect.addEventListener("click", (e) => e.stopPropagation());
+                programSelect.addEventListener("change", (e) => e.stopPropagation());
             }
 
             const regForm = document.getElementById("registration-form");
-            const regSuccess = document.getElementById("registration-success");
             const cancelBtn = document.getElementById("cancel-register-btn");
-            const modalDoneBtn = document.getElementById("modal-done-btn");
-
-            if (cancelBtn) {
-                cancelBtn.addEventListener("click", () => registerModal.close());
-            }
-            if (modalDoneBtn) {
-                modalDoneBtn.addEventListener("click", () => {
-                    registerModal.close();
-                    if (regForm) regForm.hidden = false;
-                    if (regSuccess) regSuccess.hidden = true;
-                });
-            }
 
             if (regForm) {
                 regForm.onsubmit = (e) => {
@@ -496,8 +491,8 @@ const programs = [
                         program: $("#program").value,
                     };
                     addApplication("Student registration", full(payload), payload);
-                    regForm.hidden = true;
-                    if (regSuccess) regSuccess.hidden = false;
+                    regForm.reset();
+                    closeModal(true);
                 };
             }
 
@@ -507,9 +502,14 @@ const programs = [
             }
 
             function openModal(updateRoute = true) {
+                const regStatus = document.getElementById("registration-status");
+                if (regStatus) regStatus.textContent = "";
                 if (!registerModal.open) {
                     registerModal.showModal();
                 }
+                setTimeout(() => {
+                    document.getElementById("student-id")?.focus();
+                }, 50);
                 if (updateRoute) {
                     const url = new URL(window.location.href);
                     url.searchParams.set("register", "true");
@@ -521,6 +521,7 @@ const programs = [
                 if (registerModal.open) {
                     registerModal.close();
                 }
+                openRegisterBtn?.focus();
                 if (updateRoute) {
                     const url = new URL(window.location.href);
                     if (url.searchParams.has("register") || url.searchParams.get("modal") === "register" || url.hash === "#register") {
@@ -545,17 +546,17 @@ const programs = [
             if (cancelBtn) {
                 cancelBtn.addEventListener("click", () => closeModal(true));
             }
-            if (modalDoneBtn) {
-                modalDoneBtn.addEventListener("click", () => {
-                    closeModal(true);
-                    if (regForm) regForm.hidden = false;
-                    if (regSuccess) regSuccess.hidden = true;
-                });
-            }
             if (registerModal) {
                 registerModal.addEventListener("click", (e) => {
+                    // Only handle clicks directly on the dialog backdrop
+                    if (e.target !== registerModal) return;
                     const rect = registerModal.getBoundingClientRect();
-                    const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+                    const isInDialog = (
+                        rect.top <= e.clientY &&
+                        e.clientY <= rect.top + rect.height &&
+                        rect.left <= e.clientX &&
+                        e.clientX <= rect.left + rect.width
+                    );
                     if (!isInDialog) {
                         closeModal(true);
                     }
