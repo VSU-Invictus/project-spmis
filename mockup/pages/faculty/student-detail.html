@@ -10,7 +10,7 @@
     <script src="../../assets/js/faculty-sidebar.js"></script>
     <style>
         /* Faculty layout and components. Shared colors come from assets/css/global.css. */
-    html.dark {
+        html.dark {
             color-scheme: dark;
         }
 
@@ -19,16 +19,16 @@
         }
 
         body {
-      margin: 0;
-      background: var(--background);
-      color: var(--foreground);
-      font: 14px/1.6 var(--font-sans);
-      padding: 0;
-      height: 100vh;
-      min-height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-    }
+            margin: 0;
+            background: var(--background);
+            color: var(--foreground);
+            font: 14px/1.6 var(--font-sans);
+            padding: 0;
+            height: 100vh;
+            min-height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
 
         a {
             color: var(--primary);
@@ -76,17 +76,17 @@
         }
 
         .app {
-      width: 100vw;
-      max-width: 100vw;
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      
-      box-sizing: border-box;
-      border-radius: 0;
-      overflow: hidden;
-      background: var(--background);
-    }
+            width: 100vw;
+            max-width: 100vw;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+
+            box-sizing: border-box;
+            border-radius: 0;
+            overflow: hidden;
+            background: var(--background);
+        }
 
         .sidebar {
             width: 250px;
@@ -421,6 +421,45 @@
             border-left-color: var(--sidebar-foreground);
         }
 
+        /* AI Review Summary: reuses the shared card surface, border, radius,
+            typography, and spacing tokens. The sparkle marks AI-generated text. */
+        .ai-summary-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .ai-summary-heading h2 {
+            margin: 0;
+        }
+
+        .ai-summary-sparkle {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            color: var(--primary);
+        }
+
+        .ai-summary-body {
+            white-space: normal;
+            margin: 0 0 16px;
+            line-height: 1.7;
+        }
+
+        .ai-summary-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            padding-top: 14px;
+            border-top: 1px solid var(--ui-surface-border);
+        }
+
+        .ai-summary-meta small {
+            color: var(--ui-surface-muted-text);
+        }
+
         details {
             border-top: 1px solid var(--border);
             padding-top: 12px;
@@ -517,14 +556,14 @@
         }
 
         .skip {
-        position: absolute;
-        left: 20px;
-        top: -80px;
-        background: var(--primary, #D97251);
-        color: var(--primary-foreground, #FFFFFF);
-        padding: 12px;
-        z-index: 10;
-      }
+            position: absolute;
+            left: 20px;
+            top: -80px;
+            background: var(--primary, #D97251);
+            color: var(--primary-foreground, #FFFFFF);
+            padding: 12px;
+            z-index: 10;
+        }
 
         .skip:focus {
             top: 10px;
@@ -692,13 +731,13 @@
         }
 
         .card,
-    .table-wrap,
-    dialog {
-      color: var(--ui-surface-text);
-      background: var(--ui-surface);
-      border: 1px solid var(--ui-surface-border);
-      border-radius: 12px;
-    }
+        .table-wrap,
+        dialog {
+            color: var(--ui-surface-text);
+            background: var(--ui-surface);
+            border: 1px solid var(--ui-surface-border);
+            border-radius: 12px;
+        }
 
         .card h2,
         .card h3,
@@ -713,37 +752,38 @@
         }
 
         input,
-    select,
-    textarea {
-      background: var(--muted);
-      color: var(--foreground);
-      border: 1px solid var(--input);
-    }
+        select,
+        textarea {
+            background: var(--muted);
+            color: var(--foreground);
+            border: 1px solid var(--input);
+        }
 
         input::placeholder,
         textarea::placeholder {
-            color: var(--muted-foreground); opacity: 1;
+            color: var(--muted-foreground);
+            opacity: 1;
         }
 
         input[readonly] {
-      color: var(--muted-foreground);
-      background: var(--card);
-    }
+            color: var(--muted-foreground);
+            background: var(--card);
+        }
 
         .card input,
-    .card select,
-    .card textarea,
-    dialog input,
-    dialog textarea {
-      background: var(--muted);
-    }
+        .card select,
+        .card textarea,
+        dialog input,
+        dialog textarea {
+            background: var(--muted);
+        }
 
         button.secondary,
-    .button.secondary {
-      background: var(--ui-surface-muted);
-      color: var(--ui-surface-text);
-      border: 1px solid var(--ui-surface-border);
-    }
+        .button.secondary {
+            background: var(--ui-surface-muted);
+            color: var(--ui-surface-text);
+            border: 1px solid var(--ui-surface-border);
+        }
 
         button,
         .button {
@@ -770,7 +810,9 @@
             top: 16px;
             width: 26px;
             height: 26px;
-            background: var(--ui-surface-muted); border: 1px solid var(--ui-surface-border); color: var(--primary);
+            background: var(--ui-surface-muted);
+            border: 1px solid var(--ui-surface-border);
+            color: var(--primary);
             border-radius: 50%;
             text-align: center;
             line-height: 26px;
@@ -785,25 +827,25 @@
         }
 
         th {
-      background: var(--ui-surface-muted);
-      color: var(--ui-surface-text);
-      font-family: var(--font-sans);
-      font-size: 12px;
-      letter-spacing: 0;
-      text-transform: none;
-    }
+            background: var(--ui-surface-muted);
+            color: var(--ui-surface-text);
+            font-family: var(--font-sans);
+            font-size: 12px;
+            letter-spacing: 0;
+            text-transform: none;
+        }
 
         td {
-      font-size: 13px;
-      color: var(--ui-surface-text);
-      padding: 18px 16px;
-      border-color: var(--ui-surface-border);
-    }
+            font-size: 13px;
+            color: var(--ui-surface-text);
+            padding: 18px 16px;
+            border-color: var(--ui-surface-border);
+        }
 
         td:first-child {
-      color: var(--ui-surface-text);
-      font-weight: 550;
-    }
+            color: var(--ui-surface-text);
+            font-weight: 550;
+        }
 
         td a {
             color: var(--primary);
@@ -811,8 +853,8 @@
         }
 
         td small {
-      color: var(--ui-surface-muted-text);
-    }
+            color: var(--ui-surface-muted-text);
+        }
 
         tbody tr:last-child td {
             border-bottom: 0;
@@ -831,30 +873,30 @@
         }
 
         .badge {
-      background: color-mix(in srgb, var(--primary) 14%, var(--card));
-      color: var(--primary);
-      border-radius: 20px;
-      white-space: nowrap;
-    }
+            background: color-mix(in srgb, var(--primary) 14%, var(--card));
+            color: var(--primary);
+            border-radius: 20px;
+            white-space: nowrap;
+        }
 
         .badge.approved {
-      background: #1e3324;
-      color: #81c784;
-    }
+            background: #1e3324;
+            color: #81c784;
+        }
 
         .badge.rejected {
-      background: #3a2022;
-      color: #fca5a5;
-    }
+            background: #3a2022;
+            color: #fca5a5;
+        }
 
         .tag {
-      background: var(--ui-surface-muted);
-      color: var(--ui-surface-text);
-      border: 1px solid var(--ui-surface-border);
-      border-radius: 20px;
-      font-size: 11px;
-      margin-bottom: 3px;
-    }
+            background: var(--ui-surface-muted);
+            color: var(--ui-surface-text);
+            border: 1px solid var(--ui-surface-border);
+            border-radius: 20px;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
 
         .pagination {
             justify-content: flex-end;
@@ -953,11 +995,11 @@
         }
 
         .quick-links a {
-      background: var(--ui-surface-muted);
-      color: var(--ui-surface-text);
-      border: 1px solid var(--ui-surface-border);
-      padding: 16px;
-    }
+            background: var(--ui-surface-muted);
+            color: var(--ui-surface-text);
+            border: 1px solid var(--ui-surface-border);
+            padding: 16px;
+        }
 
         .quick-links small {
             font-size: 12px;
@@ -993,12 +1035,12 @@
         }
 
         .chat-prompts button {
-      background: var(--ui-surface-muted);
-      color: var(--ui-surface-text);
-      font-size: 13px;
-      font-weight: 550;
-      border: 1px solid var(--ui-surface-border);
-    }
+            background: var(--ui-surface-muted);
+            color: var(--ui-surface-text);
+            font-size: 13px;
+            font-weight: 550;
+            border: 1px solid var(--ui-surface-border);
+        }
 
         .chat-prompts small {
             display: block;
@@ -1023,16 +1065,16 @@
         }
 
         .message {
-      background: var(--ui-surface-muted);
-      border: 1px solid var(--ui-surface-border);
-      color: var(--ui-surface-text);
-      font-size: 13px;
-    }
+            background: var(--ui-surface-muted);
+            border: 1px solid var(--ui-surface-border);
+            color: var(--ui-surface-text);
+            font-size: 13px;
+        }
 
         .message.user {
-      background: color-mix(in srgb, var(--primary) 18%, var(--card));
-      color: var(--primary-foreground);
-    }
+            background: color-mix(in srgb, var(--primary) 18%, var(--card));
+            color: var(--primary-foreground);
+        }
 
         .message.user strong {
             color: white;
@@ -1047,17 +1089,17 @@
         }
 
         .chat-context .avatar {
-      width: 54px;
-      height: 54px;
-      margin: 20px auto 12px;
-      border-radius: 50%;
-      background: var(--ui-surface-muted);
-      border: 1px solid var(--ui-surface-border);
-      color: var(--primary);
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-    }
+            width: 54px;
+            height: 54px;
+            margin: 20px auto 12px;
+            border-radius: 50%;
+            background: var(--ui-surface-muted);
+            border: 1px solid var(--ui-surface-border);
+            color: var(--primary);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+        }
 
         .chat-context h3,
         .chat-context>p {
@@ -1147,86 +1189,113 @@
 <body data-page="student-detail">
     <a href="#main" class="skip">Skip to content</a>
     <div class="app">
-            <aside class="sidebar" id="sidebar-menu" data-component="sidebar-faculty">
-      <div class="flex flex-col gap-1">
-        <div class="brand-header">
-          <h1 class="brand-title">Faculty Portal</h1>
-        </div>
-        <nav class="nav" id="sidebar-nav" aria-label="Faculty navigation">
-        <a href="dashboard.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" /><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" /><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" /><rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
-          </svg>
-          <span>Dashboard</span>
-        </a>
-        <a href="students.html" class="nav-btn-active" aria-current="page">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          <span>Students</span>
-        </a>
-        <a href="chat.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-3 2V11.5a9.5 9.5 0 0 1 19 0Z"></path><path d="m12 6 1.3 3.7L17 11l-3.7 1.3L12 16l-1.3-3.7L7 11l3.7-1.3Z"></path>
-          </svg>
-          <span>AI Chat Assistant</span>
-        </a>
-        <a href="programs.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          </svg>
-          <span>Programs</span>
-        </a>
-        <a href="departments.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><polygon points="12 2 3 10 21 10"></polygon><line x1="7" y1="21" x2="7" y2="10"></line><line x1="12" y1="21" x2="12" y2="10"></line><line x1="17" y1="21" x2="17" y2="10"></line>
-          </svg>
-          <span>Departments</span>
-        </a>
-        <a href="applications.html" class="nav-btn-inactive">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14h6"></path><path d="M9 18h6"></path><path d="M9 10h.01"></path>
-          </svg>
-          <span>Applications</span>
-        </a>
-        </nav>
-      </div>
+        <aside class="sidebar" id="sidebar-menu" data-component="sidebar-faculty">
+            <div class="flex flex-col gap-1">
+                <div class="brand-header">
+                    <h1 class="brand-title">Faculty Portal</h1>
+                </div>
+                <nav class="nav" id="sidebar-nav" aria-label="Faculty navigation">
+                    <a href="dashboard.html" class="nav-btn-inactive">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                            <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
+                            <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
+                            <rect x="11" y="11" width="6.5" height="6.5" rx="1.5" />
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="students.html" class="nav-btn-active" aria-current="page">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>Students</span>
+                    </a>
+                    <a href="chat.html" class="nav-btn-inactive">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-3 2V11.5a9.5 9.5 0 0 1 19 0Z"></path>
+                            <path d="m12 6 1.3 3.7L17 11l-3.7 1.3L12 16l-1.3-3.7L7 11l3.7-1.3Z"></path>
+                        </svg>
+                        <span>AI Chat Assistant</span>
+                    </a>
+                    <a href="programs.html" class="nav-btn-inactive">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        <span>Programs</span>
+                    </a>
+                    <a href="departments.html" class="nav-btn-inactive">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <line x1="3" y1="21" x2="21" y2="21"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                            <polygon points="12 2 3 10 21 10"></polygon>
+                            <line x1="7" y1="21" x2="7" y2="10"></line>
+                            <line x1="12" y1="21" x2="12" y2="10"></line>
+                            <line x1="17" y1="21" x2="17" y2="10"></line>
+                        </svg>
+                        <span>Departments</span>
+                    </a>
+                    <a href="applications.html" class="nav-btn-inactive">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            <path d="M9 14h6"></path>
+                            <path d="M9 18h6"></path>
+                            <path d="M9 10h.01"></path>
+                        </svg>
+                        <span>Applications</span>
+                    </a>
+                </nav>
+            </div>
 
-      <div class="sidebar-footer">
-        <div class="sidebar-divider"></div>
-        <div class="sidebar-account-card">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <div class="sidebar-avatar">
-              <span>A</span>
+            <div class="sidebar-footer">
+                <div class="sidebar-divider"></div>
+                <div class="sidebar-account-card">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="sidebar-avatar">
+                            <span>A</span>
+                        </div>
+                        <div class="sidebar-account-details">
+                            <span class="sidebar-account-name" data-name>Alex Morgan</span>
+                            <span class="sidebar-account-role">Faculty member</span>
+                        </div>
+                    </div>
+                    <button type="button" class="sidebar-logout-btn logout-btn" aria-label="Log out" title="Log out">
+                        <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.8" aria-hidden="true">
+                            <path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <div class="sidebar-account-details">
-              <span class="sidebar-account-name" data-name>Alex Morgan</span>
-              <span class="sidebar-account-role">Faculty member</span>
-            </div>
-          </div>
-          <button type="button" class="sidebar-logout-btn logout-btn" aria-label="Log out" title="Log out">
-            <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </aside>
+        </aside>
         <main id="main">
-      <!-- Top Brand Header Bar -->
-      <div class="top-header-bar">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 10px; height: 10px; border-radius: 50%; background: #D97251;"></div>
-          <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #A0988E;">FACULTY PORTAL / STUDENT DETAIL</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; color: #A0988E;">
-          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
-            System Live
-          </span>
-          <span style="font-size: 11px; color: #A0988E;">AY 2026-2027</span>
-        </div>
-      </div>
+            <!-- Top Brand Header Bar -->
+            <div class="top-header-bar">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #D97251;"></div>
+                    <span
+                        style="font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #A0988E;">FACULTY
+                        PORTAL / STUDENT DETAIL</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; color: #A0988E;">
+                    <span
+                        style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: #3d3d3a; border: 1px solid #484844;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+                        System Live
+                    </span>
+                    <span style="font-size: 11px; color: #A0988E;">AY 2026-2027</span>
+                </div>
+            </div>
             <a href="students.html">← Back to students</a>
             <div class="header">
                 <div>
@@ -1248,6 +1317,36 @@
                     <dt>Program</dt>
                     <dd data-student-program>BS Computer Science</dd>
                 </dl>
+            </section>
+            <section class="card" aria-labelledby="ai-summary-title">
+                <div class="ai-summary-heading">
+                    <svg class="ai-summary-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                        focusable="false">
+                        <path
+                            d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z">
+                        </path>
+                        <path d="M20 3v4"></path>
+                        <path d="M22 5h-4"></path>
+                        <path d="M4 17v2"></path>
+                        <path d="M5 18H3"></path>
+                    </svg>
+                    <h2 id="ai-summary-title">AI Review Summary</h2>
+                </div>
+                <p class="ai-summary-body">
+                    <span data-student-name>Sam Lee Parker</span> has shown consistent
+                    strengths across recent faculty reviews, with recurring themes of
+                    research planning, teamwork, and clear communication. Contributors
+                    describe a structured approach to project work and a willingness to
+                    support peers during collaborative activities. This summary reflects a
+                    small number of active reviews and should be read as a general
+                    impression rather than a complete assessment.
+                </p>
+                <div class="ai-summary-meta">
+                    <span class="ui-badge ui-badge--neutral">AI-generated</span>
+                    <small id="ai-summary-source">Based on 2 active reviews · Hidden and deleted reviews are
+                        excluded</small>
+                </div>
             </section>
             <div class="between">
                 <h2>Visible reviews</h2>
@@ -1294,12 +1393,12 @@
                     interactions.
                 </p>
             </noscript>
-              <!-- Workspace Footer -->
-      <footer class="workspace-footer">
-        <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
-        <span>System Version 2.4.0</span>
-      </footer>
-    </main>
+            <!-- Workspace Footer -->
+            <footer class="workspace-footer">
+                <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
+                <span>System Version 2.4.0</span>
+            </footer>
+        </main>
     </div>
     <script>
         /* Local demonstration only. All records are fictional and stored for this tab. */
@@ -1507,21 +1606,21 @@
             { id: "24-1-00019", first: "Dakota", middle: "", last: "Jackson", program: "BS Information Systems" },
             { id: "24-1-00020", first: "Peyton", middle: "S", last: "White", program: "BS Computer Engineering" }
         ];
-const programs = [
-    "BS Computer Science",
-    "BS Computer Engineering",
-    "BS Information Systems",
-    "BS Data Science",
-    "BS Artificial Intelligence",
-    "BS Cybersecurity",
-    "BS Software Engineering",
-    "BA Digital Media",
-    "BS Applied Mathematics",
-    "BA Game Design",
-    "BS Physics",
-    "BS Chemistry",
-    "BS Biology"
-];
+        const programs = [
+            "BS Computer Science",
+            "BS Computer Engineering",
+            "BS Information Systems",
+            "BS Data Science",
+            "BS Artificial Intelligence",
+            "BS Cybersecurity",
+            "BS Software Engineering",
+            "BA Digital Media",
+            "BS Applied Mathematics",
+            "BA Game Design",
+            "BS Physics",
+            "BS Chemistry",
+            "BS Biology"
+        ];
         const departments = [
             "Computer Science",
             "Engineering",
@@ -1765,6 +1864,12 @@ const programs = [
                                 )
                                 .join("") ||
                             '<div class="card empty">No visible reviews yet. Be the first to write one.</div>';
+                        const activeCount = state.reviews.filter(
+                            (r) => r.student === selected.id && r.status === "active",
+                        ).length;
+                        const source = $("#ai-summary-source");
+                        if (source)
+                            source.textContent = `Based on ${activeCount} active review${activeCount === 1 ? "" : "s"} · Hidden and deleted reviews are excluded`;
                     }
                     let editing, deleting;
                     $("#reviews").onclick = (e) => {
@@ -2048,9 +2153,9 @@ const programs = [
             if (!host) return;
             const controls = document.createElement("div");
             controls.className = "ui-table-pagination";
-          controls.style.cssText = "border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;";
+            controls.style.cssText = "border-top: none; padding: 1rem 0; display: flex; justify-content: space-between; background: transparent; align-items: center; flex-wrap: wrap; gap: 1rem;";
             controls.innerHTML =
-            '<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;"><span style="color: var(--muted-foreground); font-size: 0.875rem;"></span><div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;"><div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"><span>Rows per page</span><div style="position: relative; display: flex; align-items: center;"><select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem;"><option value="5" selected>5</option><option value="10">10</option><option value="20">20</option></select><svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><span role="status" style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"></span><div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;"><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Previous</button><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Next</button></div></div></div>';
+                '<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;"><span style="color: var(--muted-foreground); font-size: 0.875rem;"></span><div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;"><div style="display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"><span>Rows per page</span><div style="position: relative; display: flex; align-items: center;"><select class="ui-select-pill" aria-label="Rows per page" style="min-width: 4rem;"><option value="5" selected>5</option><option value="10">10</option><option value="20">20</option></select><svg style="position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><span role="status" style="color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500;"></span><div class="ui-table-pagination-nav" style="gap: 0.5rem; display: flex;"><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Previous</button><button class="ui-btn ui-btn-outline" style="min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md); font-size: 0.8125rem;" type="button">Next</button></div></div></div>';
             host.after(controls);
             let current = 1;
             const size = controls.querySelector("select"),
@@ -2144,7 +2249,7 @@ const programs = [
     </script>
     <script>
         /* The shared HTML is authoritative when served over HTTP. The inline sidebar
-     keeps navigation available when opening the mockup directly from disk. */
+    keeps navigation available when opening the mockup directly from disk. */
         (() => {
             const componentUrl = new URL(
                 "../../components/navigation/sidebar-faculty.html",
@@ -2212,6 +2317,3 @@ const programs = [
 </body>
 
 </html>
-
-
-
