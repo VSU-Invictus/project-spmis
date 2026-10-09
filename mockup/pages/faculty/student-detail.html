@@ -196,6 +196,38 @@
             margin-bottom: 0;
         }
 
+        /* Student profile back navigation */
+        .back-to-students {
+            display: inline-flex;
+            align-items: center;
+            align-self: flex-start;
+            gap: 5px;
+            width: fit-content;
+            color: var(--primary);
+            text-decoration: none;
+            text-underline-offset: 4px;
+        }
+
+        .back-to-students .arrow {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .back-to-students:hover,
+        .back-to-students:focus-visible {
+            color: var(--primary);
+        }
+
+        .back-to-students:hover .back-text,
+        .back-to-students:focus-visible .back-text {
+            text-decoration: underline;
+        }
+
+        .back-to-students:hover .arrow,
+        .back-to-students:focus-visible .arrow {
+            transform: translateX(-4px);
+        }
+
         .notice {
             background: color-mix(in srgb, var(--primary) 10%, var(--card));
             border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--border));
@@ -1296,7 +1328,10 @@
                     <span style="font-size: 11px; color: #A0988E;">AY 2026-2027</span>
                 </div>
             </div>
-            <a href="students.html">← Back to students</a>
+            <a href="students.html" class="back-to-students">
+                <span class="arrow">←</span>
+                <span class="back-text">Back to students</span>
+            </a>
             <div class="header">
                 <div>
 
