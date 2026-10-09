@@ -423,6 +423,79 @@
   background-color: #FFFFFF !important;
 }
 
+.ui-table {
+  table-layout: auto !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+/* Force all cells back to table-cell display (overrides any obfuscated is-* rules) */
+.ui-table th,
+.ui-table td {
+  display: table-cell !important;
+  vertical-align: middle !important;
+}
+
+/* Student ID column: fixed width, nowrap, no shrink */
+.ui-table th.col-id,
+.ui-table td.col-id {
+  width: 130px !important;
+  min-width: 130px !important;
+  max-width: 130px !important;
+  white-space: nowrap !important;
+  padding: 0 12px !important;
+}
+
+.ui-table td.col-id code,
+.ui-table td.col-id .ui-text-mono {
+  white-space: nowrap !important;
+  display: inline !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  writing-mode: horizontal-tb !important;
+}
+
+/* Action column: fixed width, nowrap */
+.ui-table th.col-action,
+.ui-table td.col-action {
+  width: 120px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
+  white-space: nowrap !important;
+  padding: 0 12px !important;
+}
+
+/* Student column: flexible */
+.ui-table th:nth-child(2),
+.ui-table td:nth-child(2) {
+  width: 22% !important;
+  min-width: 180px !important;
+}
+
+/* Program column: flexible */
+.ui-table th:nth-child(4),
+.ui-table td:nth-child(4) {
+  width: 20% !important;
+  min-width: 160px !important;
+  white-space: normal !important;
+}
+
+/* Year Level column: fixed */
+.ui-table th:nth-child(5),
+.ui-table td:nth-child(5) {
+  width: 90px !important;
+  min-width: 90px !important;
+  white-space: nowrap !important;
+}
+
+/* Status column: fixed */
+.ui-table th:nth-child(6),
+.ui-table td:nth-child(6) {
+  width: 110px !important;
+  min-width: 110px !important;
+  white-space: nowrap !important;
+}
+
 /* Table Header Select-All Checkbox when partially selected (indeterminate): Dark Charcoal Squircle (#30302E) with WHITE Checkmark */
 :is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:indeterminate,
 .select-all-checkbox:indeterminate {
