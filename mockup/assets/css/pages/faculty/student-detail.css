@@ -200,3 +200,8 @@
   color: var(--color-text-muted, #A0988E);
   margin: 0;
 }
+
+/* Vertical spacing between review cards */
+#reviews > .review + .review {
+  margin-top: var(--space-6, 14px);
+}
