@@ -438,15 +438,16 @@ const programs = [
                             }
                         )
                         .join("")}</tbody></table></div>`
-                    : '<div class="empty-state" role="status"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><p style="margin: 8px 0 4px; font-weight: 500; color: var(--foreground);">No records matching your search or filters found.</p><p style="margin: 0 0 16px; font-size: 13px; color: var(--muted-foreground);">Try adjusting your query or resetting the active filters.</p><button type="button" class="empty-state-btn" id="empty-clear">Clear all filters</button></div>';
+                    : students.length
+                        ? '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No matching students</h2><p class="ui-empty-state__description">Try another review keyword or clear your filters.</p><button class="ui-btn ui-btn-outline" id="empty-clear" type="button">Clear filters</button></div>'
+                        : '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No students yet</h2><p class="ui-empty-state__description">Student records will appear here when they are added.</p></div>';
                 if ($("#page-label")) {
-                    $("#page-label").innerHTML = matches.length ? `Page ${current} of ${total} &middot; ${matches.length} entries` : "0 entries";
+                    $("#page-label").innerHTML = matches.length ? `Page ${current} of ${total} &middot; ${matches.length} entries` : "0 students";
                 }
                 if ($("#previous")) $("#previous").disabled = current <= 1;
                 if ($("#next")) $("#next").disabled = current >= total || matches.length === 0;
                 if ($("#empty-clear")) $("#empty-clear").onclick = clear;
             }
-
             function loadStudents() {
                 clearTimeout(timer);
                 const skelCount = Math.min(Math.max(3, size || 5), 5);

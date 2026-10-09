@@ -237,10 +237,11 @@
     const rejection = document.createElement('div');
     rejection.className = 'table-row queue-rejection-row';
     rejection.setAttribute('role', 'row');
+    const reasonId = `queue-rejection-${Math.random().toString(36).slice(2)}`;
     rejection.innerHTML = `
       <div class="td-cell queue-rejection-cell" role="cell" colspan="5" aria-colspan="5">
-        <label for="queue-rejection-${Math.random().toString(36).slice(2)}">Reason for rejection</label>
-        <textarea placeholder="Enter reason here..." required></textarea>
+        <label for="${reasonId}">Reason for rejection</label>
+        <textarea id="${reasonId}" placeholder="Enter reason here..." required></textarea>
         <div class="queue-rejection-actions">
           <button type="button" class="pill-btn modal-cancel">Close</button>
           <button type="button" class="pill-btn queue-confirm-reject">Reject</button>

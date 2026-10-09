@@ -53,12 +53,12 @@
                   <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" stroke-width="1.33"/>
                   <path d="M10.5 10.5L14 14" stroke="#8A837A" stroke-width="1.33" stroke-linecap="round"/>
                 </svg>
-                <input id="search" type="search" class="search-input" placeholder="Search by student name or keyword..." />
+                <input aria-label="Search by student name or keyword" id="search" type="search" class="search-input" placeholder="Search by student name or keyword..." />
               </div>
 
               <div class="controls-actions">
                 <div class="dropdown-container department">
-                  <select id="department" class="dropdown-select">
+                  <select aria-label="Filter by department" id="department" class="dropdown-select">
                     <option value="">Department: All</option>
                     <option>Computer Science</option>
                     <option>Engineering</option>
@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="dropdown-container tag">
-                  <select id="tag" class="dropdown-select">
+                  <select aria-label="Filter by review tag" id="tag" class="dropdown-select">
                     <option value="">Tag: All</option>
                   </select>
                   <svg class="dropdown-chevron" viewBox="0 0 14 14" fill="none">
@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="dropdown-container owner">
-                  <select id="owner" class="dropdown-select">
+                  <select aria-label="Filter by faculty contributor" id="owner" class="dropdown-select">
                     <option value="">Faculty: All</option>
                     <option value="self">You</option>
                     <option value="other">Jamie Rivera</option>
@@ -99,7 +99,7 @@
                     <div class="is-b57eafe">
                       <span>Rows per page</span>
                       <div class="is-e0dd7f8">
-                        <select class="ui-select-pill is-daab64f" id="rows-per-page">
+                        <select aria-label="Rows per page" class="ui-select-pill is-daab64f" id="rows-per-page">
 <option value="5" selected>5</option><option value="10">10</option><option value="20">20</option></select>
                         <svg class="is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                       </div>

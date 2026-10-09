@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 <!-- Active development updates -->
 
+### Removed
+- **Auth:** Reverted the added dashboard preview links and account-chooser redesign, restoring the existing Admin Portal and Faculty Portal routing in the mockup.
+- **Cleanup:** Removed seven unreferenced HTML files from `mockup/components/`: `modal-add-edit-entity.html`, `modal-approval-confirm.html`, `modal-approval-queue.html`, `modal-delete-confirm.html`, `modal-rejection-reason.html`, `table-approval-queue.html`, and `table-management-roster.html`. Four were empty placeholders; three were unused modal fragments. The active footer, both sidebars, and page/script-defined modals and tables remain available.
+
 ### Added
+- **UI:** Added record-specific, accessible empty states to admin approval queues, management tables, the dashboard approval table, and faculty Students, Applications, Programs, and Departments tables. Empty collections and filtered zero-result views now show distinct messages.
 - **UI:** Added Action Confirmation Alert blocks (`.ui-alert`, `.ui-alert--warning`, `.ui-alert--info`) to Portal Modals to safeguard users from accidental approvals or rejections, providing clear context before state mutations.
 - **UI:** Added confirmation Accept Modal (`#acceptModal`) across Admin applications tables (`faculty-applications.html`, `student-applications.html`, `department-applications.html`, `program-applications.html`) with applicant summary breakdown to prevent accidental single-click approvals.
 - **UI:** Added zero-blink smooth page transitions across admin portal pages using the View Transitions API (`view-transition-name: portal-sidebar`) and link hover prefetching (`bd915b5`).
@@ -82,6 +87,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Docs:** Documented the Tag Cluster & Overflow Counter pattern and uniform tag borders in `docs/DESIGN_SYSTEM.md` and `mockup/pages/design-system.html` (`2c7ab3f`).
 
 ### Fixed
+- **A11y:** Named 61 previously unlabeled controls across admin and faculty pages, the living style guide, and the generated queue rejection panel. Added descriptive search/filter/chat names, application-specific checkbox names, and a valid label association for the editable review field and rejection textareas.
 - **UI:** Restored the interactive hover effect on Faculty Chat prompt cards (`mockup/pages/faculty/chat.html`, `mockup/pages/design-system.html`, and `mockup/assets/css/components.css`) with terracotta orange border (`#D97251`), subtle warm background tint, `-2px` vertical lift, and soft elevation shadow; clicking any card (or pressing Enter/Space) automatically sends the prompt into the conversation and triggers automated AI evaluation synthesis. Fixed an uncaught TypeError on non-existent `#retry` that previously blocked script execution and event registration (`c439f2b`, `2c7ab3f`).
 - **UI:** Excluded `#chat-form` from generic form submission success toasts to prevent toast clutter on chat messages (`c439f2b`).
 - **UI:** Updated the "View Full Profile →" button (`.view-profile-btn` / `.ui-chat-context-card .ui-btn-outline`) across `chat.html`, `design-system.html`, and `components.css` to transition its text, border, and trailing animated arrow (`&rarr;`) to terracotta orange (`var(--primary, #D97251)`) on hover (`c439f2b`, `2c7ab3f`).

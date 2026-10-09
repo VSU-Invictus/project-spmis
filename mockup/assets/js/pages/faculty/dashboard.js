@@ -276,31 +276,72 @@ const departments = [
       });
       save();
     }
+    function renderRecentReviews() {
+      const host = $("#recent-reviews");
+      if (!host) return;
+      const active = state.reviews
+        .filter((r) => r.status === "active")
+        .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+      host.innerHTML =
+        active
+          .map((r) => {
+            const student = students.find((s) => s.id === r.student);
+            const studentName = student ? full(student) : r.student;
+            const isSelf = r.owner === "self";
+            const contributor = isSelf ? state.name : r.author;
+            const contributorMarkup =
+              esc(contributor) +
+              (isSelf
+                ? ' <span class="review-feed-you">· You</span>'
+                : "");
+            const studentMarkup = student
+              ? '<a class="ui-link-neutral review-feed-student" href="student-detail.html?id=' +
+                encodeURIComponent(student.id) +
+                '">' +
+                esc(studentName) +
+                "</a>"
+              : esc(studentName);
+            const tags = r.tags
+              .map(
+                (t) =>
+                  `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`,
+              )
+              .join("");
+            return (
+              '<article class="review-feed-item">' +
+              '<div class="review-feed-head">' +
+              '<div class="review-feed-meta">' +
+              '<span class="review-feed-contributor">' +
+              contributorMarkup +
+              "</span>" +
+              '<span class="review-feed-sub">Reviewing ' +
+              studentMarkup +
+              " · " +
+              esc(r.department) +
+              " · " +
+              esc(r.date) +
+              "</span>" +
+              "</div>" +
+              '<span class="ui-badge ui-badge--success">Active</span>' +
+              "</div>" +
+              '<p class="review-feed-body">' +
+              esc(r.body) +
+              "</p>" +
+              '<div class="review-feed-tags">' +
+              tags +
+              "</div>" +
+              "</article>"
+            );
+          })
+          .join("") ||
+        '<p class="review-feed-sub">No active reviews to show.</p>';
+    }
     if (page === "dashboard") {
       $("#student-count").textContent = students.length;
       $("#review-count").textContent = state.reviews.filter(
         (r) => r.owner === "self" && r.status !== "deleted",
       ).length;
-      $("#pending-count").textContent = state.applications.filter(
-        (a) => a.status === "pending",
-      ).length;
-      $("#pending-applications").innerHTML =
-        state.applications
-          .filter((a) => a.status === "pending")
-          .slice(0, 3)
-          .map(
-            (a) =>
-              '<div class="pending-item"><div><strong>' +
-              esc(a.type) +
-              " · " +
-              esc(a.name) +
-              "</strong><small>Submitted " +
-              esc(a.date) +
-              "</small></div>" +
-              badge(a.status) +
-              "</div>",
-          )
-          .join("") || "<p>No pending applications.</p>";
+      renderRecentReviews();
     }
     if (page === "students") {
       let current = 1,
@@ -808,46 +849,6 @@ const departments = [
     if (page === "applications") paginateTable("application-list");
     if (page === "programs" || page === "departments")
       paginateTable("entity-list");
-    if (page === "dashboard") {
-      if (!document.querySelector(".dashboard-layout")) {
-        const quick = document.querySelector(".quick-links").closest("section"),
-          pending = document
-            .getElementById("pending-applications")
-            .closest("section");
-        const panels = document.createElement("div");
-        panels.className = "dashboard-layout";
-        quick.before(panels);
-        pending.classList.add("card");
-        panels.append(quick, pending);
-      }
-      if (!document.getElementById("programs-stat")) {
-        const stat = document.createElement("div");
-        stat.id = "programs-stat";
-        stat.className = "ui-card stat";
-        stat.innerHTML =
-          '<span class="muted">Programs</span><strong id="program-count">' +
-          programs.length +
-          '</strong><small>Approved programs</small>';
-        document.querySelector(".stats").append(stat);
-      }
-      document.getElementById("pending-applications").innerHTML =
-        state.applications
-          .filter((a) => a.status === "pending")
-          .slice(0, 3)
-          .map(
-            (a) =>
-              '<div class="pending-item"><div><strong>' +
-              esc(a.type) +
-              " · " +
-              esc(a.name) +
-              "</strong><small>Submitted " +
-              esc(a.date) +
-              "</small></div>" +
-              badge(a.status) +
-              "</div>",
-          )
-          .join("") || "<p>No pending applications.</p>";
-    }
 
     if (page === "chat") {
       document.querySelectorAll("[data-prompt]").forEach(

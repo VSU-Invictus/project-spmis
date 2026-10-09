@@ -65,7 +65,7 @@
           identity is always visible with your review.
         </p>
         <div class="form-group is-d327793">
-          <label class="is-1015caf" for="review-editor">Review text</label>
+          <span class="is-1015caf" id="review-editor-label">Review text</span>
           <div id="editor-container">
             <div class="rich-text-toolbar" role="toolbar" aria-label="Review text formatting">
               <button type="button" class="toolbar-btn" data-format="bold" title="Bold (Ctrl+B)" aria-label="Bold">
@@ -108,11 +108,11 @@
                   <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
                 </svg>
               </button>
-              <input class="is-224b51a" type="file" id="review-attachment-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+              <input aria-label="Attach files to review" class="is-224b51a" type="file" id="review-attachment-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
               <div class="is-27fa88f">Live formatting</div>
             </div>
-            <div id="review-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Describe how you worked with this student and what you observed."></div>
-            <textarea class="is-224b51a" id="review-text" name="body" required></textarea>
+            <div id="review-editor" aria-labelledby="review-editor-label" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Describe how you worked with this student and what you observed."></div>
+            <textarea aria-label="Review text" class="is-224b51a" id="review-text" name="body" required></textarea>
           </div>
           <div class="is-6557632" id="attachment-container">
             <div class="is-f209901">

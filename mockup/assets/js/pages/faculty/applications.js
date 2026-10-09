@@ -275,7 +275,9 @@ const departments = [
       function appTable(items) {
         return items.length
           ? `<div class="table-wrap"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th>Status</th><th>Decision / reason</th></tr></thead><tbody>${appRows(items)}</tbody></table></div>`
-          : '<div class="empty">No applications match this view.</div>';
+          : state.applications.length
+            ? '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No matching applications</h2><p class="ui-empty-state__description">Try another search or status filter.</p></div>'
+            : '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No applications yet</h2><p class="ui-empty-state__description">Submitted applications will appear here.</p></div>';
       }
       function addApplication(type, name, payload) {
         state.applications.unshift({

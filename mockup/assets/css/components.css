@@ -2782,13 +2782,42 @@ html:not(.dark) .skeleton {
 }
 
 .empty-state {
-    display: none !important;
+    display: none;
     padding: 36px 16px;
     text-align: center;
     color: var(--muted-foreground, #A0988E);
     align-items: center;
     justify-content: center;
     gap: 12px;
+}
+
+.ui-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 160px;
+    padding: 32px 16px;
+    text-align: center;
+    color: var(--muted-foreground);
+    font-family: 'Outfit', sans-serif;
+}
+
+.ui-empty-state[hidden] {
+    display: none;
+}
+
+.ui-empty-state__title {
+    margin: 0;
+    color: var(--foreground);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.ui-empty-state__description {
+    margin: 0;
+    font-size: 13px;
 }
 
 .empty-state-btn {

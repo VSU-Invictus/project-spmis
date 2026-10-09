@@ -499,6 +499,14 @@ const programs = [
                         .forEach((e) => {
                             e.innerHTML = renderTagsCluster(studentTags);
                         });
+
+                    const activeReviewCount = state.reviews.filter(
+                        (r) =>
+                            r.student === selected.id && r.status === "active",
+                    ).length;
+                    document
+                        .querySelectorAll("[data-ai-review-count]")
+                        .forEach((e) => (e.textContent = activeReviewCount));
                 }
                 updateStudentMeta();
                 if (page === "new-review")
