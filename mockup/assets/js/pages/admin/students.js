@@ -168,9 +168,6 @@
       filterRows();
     });
 
-    // Cancel remove
-    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
-
     // Close buttons
     document.getElementById('closeStudent')?.addEventListener('click', () => closeModal(studentModal));
     document.getElementById('cancelStudent')?.addEventListener('click', () => closeModal(studentModal));
@@ -196,4 +193,3 @@
     initStudentsPage();
   }
 })();
-
