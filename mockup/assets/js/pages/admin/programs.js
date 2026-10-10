@@ -45,7 +45,7 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
-      if (entityModalTitle) entityModalTitle.textContent = 'Create Program';
+      if (entityModalTitle) entityModalTitle.textContent = 'Add Program';
       if (entityName) entityName.value = '';
       openModal(entityModal);
     });
