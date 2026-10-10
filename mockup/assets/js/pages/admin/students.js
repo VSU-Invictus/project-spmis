@@ -168,13 +168,10 @@
       filterRows();
     });
 
-    // Cancel remove
-    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
-
     // Close buttons
     document.getElementById('closeStudent')?.addEventListener('click', () => closeModal(studentModal));
     document.getElementById('cancelStudent')?.addEventListener('click', () => closeModal(studentModal));
-    document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
+    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
     if (!window.adminTableController && !tableBody?.__tableController) {
       searchInput?.addEventListener('input', filterRows);
       programFilter?.addEventListener('change', filterRows);
@@ -196,4 +193,3 @@
     initStudentsPage();
   }
 })();
-
