@@ -30,17 +30,25 @@
   }
 
   function selectedRows(root = document) {
-    return [...root.querySelectorAll('.table-body .custom-checkbox:checked')]
+    return [...root.querySelectorAll('.table-body .custom-checkbox:checked:not(:disabled)')]
       .map((checkbox) => checkbox.closest('.table-row'))
       .filter(Boolean);
   }
+
+  function visibleRows() {
+    return [...document.querySelectorAll('.table-body > .table-row:not(.skeleton-row)')]
+      .filter((row) => !row.hidden && row.style.display !== 'none' && !row.querySelector('.custom-checkbox')?.disabled);
+  }
+
+  let toastTimer;
 
   function showToast(message) {
     const toast = document.querySelector('#toast');
     if (!toast) return;
     toast.textContent = message;
     toast.classList.add('show');
-    window.setTimeout(() => toast.classList.remove('show'), 3000);
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove('show'), 3000);
   }
 
   function removeQueueParameter() {
@@ -165,32 +173,13 @@
       openQueueModal(modal);
     }
 
-    modal.querySelectorAll('[data-queue-close], .modal-cancel, .modal-close').forEach((button) => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        closeQueueModal(modal);
-      });
-    });
-
-    modal.addEventListener('click', (event) => {
-      if (event.target.closest('[data-queue-close], .modal-close')) {
-        event.preventDefault();
-        closeQueueModal(modal);
-      }
-    });
-
-    // Global document capture listener to ensure close buttons work reliably regardless of event stopPropagation
+    // Keep the capture listener scoped to this queue; other page dialogs have their own close buttons.
     document.addEventListener('click', (event) => {
-      const closeBtn = event.target.closest('[data-queue-close], .modal-close');
-      if (closeBtn) {
-        const targetModal = closeBtn.closest('[data-queue-modal], .modal-overlay') || modal;
-        if (targetModal) {
-          event.preventDefault();
-          event.stopPropagation();
-          closeQueueModal(targetModal);
-        }
-      }
+      const closeBtn = event.target.closest('[data-queue-modal] [data-queue-close]');
+      if (!closeBtn) return;
+      event.preventDefault();
+      event.stopPropagation();
+      closeQueueModal(modal);
     }, true);
 
     window.addEventListener('popstate', () => {
@@ -203,7 +192,7 @@
     });
 
     window.addEventListener('message', (event) => {
-      if (event.data === 'queue-modal-close') {
+      if (event.data === 'queue-modal-close' && event.source === modal.querySelector('iframe')?.contentWindow) {
         closeQueueModal(modal);
       }
     });
@@ -230,52 +219,38 @@
     });
   }
 
-  function addInlineRejection(row, count) {
-    if (!row || row.nextElementSibling?.classList.contains('queue-rejection-row')) {
+  function addInlineRejection(row) {
+    if (!row || row.nextElementSibling?.classList.contains('ui-queue-rejection-row')) {
       return row?.nextElementSibling;
     }
     const rejection = document.createElement('div');
-    rejection.className = 'table-row queue-rejection-row';
+    rejection.className = 'ui-queue-rejection-row';
     rejection.setAttribute('role', 'row');
     const reasonId = `queue-rejection-${Math.random().toString(36).slice(2)}`;
     rejection.innerHTML = `
-      <div class="td-cell queue-rejection-cell" role="cell" colspan="5" aria-colspan="5">
+      <div class="ui-queue-rejection-cell" role="cell">
         <label for="${reasonId}">Reason for rejection</label>
-        <textarea id="${reasonId}" placeholder="Enter reason here..." required></textarea>
-        <div class="queue-rejection-actions">
-          <button type="button" class="pill-btn modal-cancel">Close</button>
-          <button type="button" class="pill-btn queue-confirm-reject">Reject</button>
+        <p class="ui-queue-bulk-message" hidden></p>
+        <textarea id="${reasonId}" placeholder="Enter reason here..." aria-required="true" required></textarea>
+        <div class="ui-queue-rejection-actions">
+          <button type="button" class="ui-btn ui-btn-outline ui-queue-cancel">Close</button>
+          <button type="button" class="ui-btn ui-btn-destructive ui-queue-confirm-reject">Reject</button>
         </div>
       </div>`;
     row.parentElement?.insertBefore(rejection, row.nextElementSibling);
     rejection.__queueRow = row;
-    rejection.querySelector('.modal-cancel')?.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      rejection.remove();
-    });
     return rejection;
   }
 
   function installQueueRows() {
     document.getElementById('rejectModal')?.remove();
-    const rows = [...document.querySelectorAll('.table-body .table-row')];
-    const searchInput = document.querySelector('.search-input');
+    const rows = [...document.querySelectorAll('.table-body > .table-row')];
     const selected = () => selectedRows().length;
     const bulkApprove = document.querySelector('.action-btn-group .pill-btn.approve, .action-btn-group .pill-btn.accept');
     const bulkReject = document.querySelector('.action-btn-group .pill-btn.reject');
-    const actionBar = document.querySelector('.bottom-bar-container .action-btn-group') || document.querySelector('.action-btn-group');
-    const selectAllBtn = document.querySelector('.select-all');
     const headerCheckbox = document.querySelector('.table-header-row .custom-checkbox, .table-header-row .select-all-checkbox');
     const selectionStatus = document.querySelector('.pagination-selection-status');
 
-    let bulkMessage = actionBar?.querySelector('.queue-bulk-rejection-message');
-    if (actionBar && !bulkMessage) {
-      bulkMessage = document.createElement('p');
-      bulkMessage.className = 'queue-bulk-rejection-message';
-      bulkMessage.hidden = true;
-      actionBar.appendChild(bulkMessage);
-    }
     const updateBulkMessage = () => {
       const count = selected();
       if (selectionStatus) {
@@ -285,11 +260,6 @@
           selectionStatus.textContent = '';
         }
       }
-      if (!bulkMessage) return;
-      bulkMessage.hidden = count < 2;
-      bulkMessage.textContent = count > 1
-        ? `This reason will be sent to all ${count} submitters.`
-        : '';
     };
     const updateBulkButtons = () => {
       const hasSelection = selected() > 0;
@@ -298,12 +268,9 @@
       });
     };
     const updateSelectAllBtn = () => {
-      const checkboxes = [...document.querySelectorAll('.table-body .custom-checkbox')];
+      const checkboxes = visibleRows().map((row) => row.querySelector('.custom-checkbox')).filter(Boolean);
       const checkedCount = checkboxes.filter((cb) => cb.checked).length;
       const allChecked = checkboxes.length > 0 && checkedCount === checkboxes.length;
-      if (selectAllBtn) {
-        selectAllBtn.textContent = allChecked ? 'Deselect All' : 'Select All';
-      }
       if (headerCheckbox) {
         headerCheckbox.checked = allChecked;
         headerCheckbox.indeterminate = checkedCount > 0 && !allChecked;
@@ -312,94 +279,78 @@
 
     if (headerCheckbox) {
       headerCheckbox.addEventListener('change', () => {
-        const checkboxes = [...document.querySelectorAll('.table-body .custom-checkbox')];
+        const checkboxes = visibleRows().map((row) => row.querySelector('.custom-checkbox')).filter(Boolean);
         checkboxes.forEach((cb) => {
           cb.checked = headerCheckbox.checked;
           const row = cb.closest('.table-row');
           if (row) row.classList.toggle('checked', cb.checked);
         });
+        document.querySelector('.ui-queue-rejection-row[data-bulk-rejection]')?.remove();
         updateBulkButtons();
         updateBulkMessage();
         updateSelectAllBtn();
       });
     }
 
-    if (selectAllBtn) {
-      selectAllBtn.addEventListener('click', () => {
-        const checkboxes = [...document.querySelectorAll('.table-body .custom-checkbox')];
-        const allChecked = checkboxes.length > 0 && checkboxes.every((cb) => cb.checked);
-        checkboxes.forEach((cb) => {
-          cb.checked = !allChecked;
-          const row = cb.closest('.table-row');
-          if (row) row.classList.toggle('checked', cb.checked);
-        });
-        updateBulkButtons();
-        updateBulkMessage();
-        updateSelectAllBtn();
+    document.addEventListener('ui-table-rendered', updateSelectAllBtn);
+    document.addEventListener('ui-table-view-changing', () => {
+      document.querySelectorAll('.ui-queue-rejection-row').forEach((panel) => panel.remove());
+      rows.forEach((row) => {
+        row.classList.remove('checked');
+        const checkbox = row.querySelector('.custom-checkbox');
+        if (checkbox) checkbox.checked = false;
       });
-    }
-
-    if (!document.querySelector('.table-container')?.__tableController && !window.adminTableController) {
-      searchInput?.addEventListener('input', () => {
-        const query = searchInput.value.trim().toLowerCase();
-        rows.forEach((row) => {
-          const matches = !query || row.textContent.toLowerCase().includes(query);
-          row.hidden = !matches;
-          if (!matches) {
-            row.style.setProperty('display', 'none', 'important');
-          } else {
-            row.style.removeProperty('display');
-          }
-          const rejection = row.nextElementSibling?.classList.contains('queue-rejection-row')
-            ? row.nextElementSibling
-            : null;
-          if (rejection && !matches) rejection.hidden = true;
-        });
-      });
-    }
+      updateBulkButtons();
+      updateBulkMessage();
+      updateSelectAllBtn();
+    });
 
     rows.forEach((row) => {
       const checkbox = row.querySelector('.custom-checkbox');
       if (!checkbox) return;
 
+      const status = row.querySelector('.col-status');
+      const source = row.querySelector('.col-source');
+      if ((status && !/pending/i.test(status.textContent)) || (source && /admin direct/i.test(source.textContent))) {
+        checkbox.disabled = true;
+      }
+
       const actionCell = row.querySelector('.col-actions');
-      if (actionCell && !actionCell.querySelector('.queue-row-actions')) {
+      if (actionCell && !actionCell.querySelector('.ui-queue-row-actions')) {
         const actions = document.createElement('span');
-        actions.className = 'queue-row-actions';
-        actions.innerHTML = '<button type="button" class="pill-btn queue-approve">Approve</button><button type="button" class="pill-btn queue-reject">Reject</button>';
+        actions.className = 'ui-queue-row-actions';
+        actions.innerHTML = '<button type="button" class="ui-btn ui-queue-approve">Approve</button><button type="button" class="ui-btn ui-btn-destructive ui-queue-reject">Reject</button>';
         actionCell.appendChild(actions);
       }
 
-      row.querySelector('.queue-approve')?.addEventListener('click', () => {
-        row.dataset.queueStatus = 'approved';
-        const cb = row.querySelector('.custom-checkbox');
-        if (cb && cb.checked) {
-          cb.checked = false;
-          row.classList.remove('checked');
-          updateBulkButtons();
-          updateBulkMessage();
-          updateSelectAllBtn();
-        }
+      row.querySelector('.ui-queue-approve')?.addEventListener('click', () => {
+        if (checkbox.disabled) return;
+        if (row.nextElementSibling?.classList.contains('ui-queue-rejection-row')) row.nextElementSibling.remove();
+        row.remove();
+        updateBulkButtons();
+        updateBulkMessage();
+        updateSelectAllBtn();
         showToast('Application Approved');
       });
 
       checkbox.addEventListener('change', () => {
         row.classList.toggle('checked', checkbox.checked);
+        document.querySelector('.ui-queue-rejection-row[data-bulk-rejection]')?.remove();
         updateBulkButtons();
         updateBulkMessage();
         updateSelectAllBtn();
       });
 
-      row.querySelector('.queue-reject')?.addEventListener('click', () => {
-        const count = selected() || 1;
-        const existing = row.nextElementSibling?.classList.contains('queue-rejection-row')
+      row.querySelector('.ui-queue-reject')?.addEventListener('click', () => {
+        if (checkbox.disabled) return;
+        const existing = row.nextElementSibling?.classList.contains('ui-queue-rejection-row')
           ? row.nextElementSibling
           : null;
         if (existing?.classList.contains('is-expanded')) {
           existing.querySelector('textarea')?.focus();
           return;
         }
-        const rejection = addInlineRejection(row, count);
+        const rejection = addInlineRejection(row);
         if (!rejection) return;
         rejection.classList.add('is-expanded');
         rejection.querySelector('textarea')?.focus();
@@ -407,13 +358,10 @@
 
       row.addEventListener('click', (event) => {
         if (event.target.tagName === 'INPUT' || event.target.closest('button, a, textarea, select, label')) return;
+        if (checkbox.disabled) return;
         event.stopPropagation();
         checkbox.checked = !checkbox.checked;
-        row.classList.toggle('checked', checkbox.checked);
         checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-        updateBulkButtons();
-        updateBulkMessage();
-        updateSelectAllBtn();
       });
     });
 
@@ -423,10 +371,11 @@
 
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
-      const expanded = document.querySelector('.queue-rejection-row.is-expanded');
+      const expanded = document.querySelector('.ui-queue-rejection-row.is-expanded');
       if (expanded) {
         event.preventDefault();
-        expanded.classList.remove('is-expanded');
+        expanded.remove();
+        bulkReject?.focus();
         return;
       }
       if (isEmbeddedQueue && window.parent !== window) {
@@ -439,7 +388,7 @@
 
     document.addEventListener('click', (event) => {
       const modalClose = event.target.closest('[data-queue-close], .ui-modal-close, .modal-close');
-      if (modalClose && !modalClose.closest('.queue-rejection-actions')) {
+      if (modalClose) {
         if (isEmbeddedQueue && window.parent !== window) {
           event.preventDefault();
           event.stopPropagation();
@@ -449,39 +398,42 @@
           return;
         }
       }
-      const close = event.target.closest('.queue-rejection-row .modal-cancel');
+      const close = event.target.closest('.ui-queue-rejection-row .ui-queue-cancel');
       if (close) {
         event.preventDefault();
         event.stopPropagation();
-        close.closest('.queue-rejection-row')?.remove();
+        close.closest('.ui-queue-rejection-row')?.remove();
+        bulkReject?.focus();
         return;
       }
-      const confirm = event.target.closest('.queue-confirm-reject');
+      const confirm = event.target.closest('.ui-queue-confirm-reject');
       if (!confirm) return;
-      const panel = confirm.closest('.queue-rejection-row');
+      const panel = confirm.closest('.ui-queue-rejection-row');
       const textarea = panel?.querySelector('textarea');
       if (!textarea?.value.trim()) {
-        textarea?.focus();
+        textarea?.setCustomValidity('Enter a reason for rejection.');
+        textarea?.reportValidity();
         return;
       }
+      textarea.setCustomValidity('');
       const row = panel.__queueRow || panel.previousElementSibling;
-      const rows = panel.__queueRows || (row ? [row] : []);
-      rows.forEach((selectedRow) => {
-        selectedRow.dataset.queueStatus = 'rejected';
-        const cb = selectedRow.querySelector('.custom-checkbox');
-        if (cb) cb.checked = false;
-        selectedRow.classList.remove('checked');
-      });
+      const rows = panel.dataset.bulkRejection ? selectedRows() : (row ? [row] : []);
+      if (!rows.length) return panel.remove();
+      rows.forEach((selectedRow) => selectedRow.remove());
       panel.remove();
       updateBulkButtons();
       updateBulkMessage();
       updateSelectAllBtn();
-      showToast('Application Rejected');
+      showToast(`${rows.length} Application${rows.length === 1 ? '' : 's'} Rejected`);
     }, true);
+
+    document.addEventListener('input', (event) => {
+      if (event.target.matches('.ui-queue-rejection-row textarea')) event.target.setCustomValidity('');
+    });
 
     window.addEventListener('message', (event) => {
       if (event.data !== 'queue-modal-reset') return;
-      document.querySelectorAll('.queue-rejection-row').forEach((panel) => panel.remove());
+      document.querySelectorAll('.ui-queue-rejection-row').forEach((panel) => panel.remove());
       document.querySelectorAll('.table-body .table-row').forEach((row) => {
         row.classList.remove('checked');
         const checkbox = row.querySelector('.custom-checkbox');
@@ -501,11 +453,9 @@
         const count = rows.length;
         if (!count) return showToast('Please select at least one application');
         rows.forEach((row) => {
-          row.dataset.queueStatus = 'approved';
-          const cb = row.querySelector('.custom-checkbox');
-          if (cb) cb.checked = false;
-          row.classList.remove('checked');
+          row.remove();
         });
+        document.querySelectorAll('.ui-queue-rejection-row').forEach((panel) => panel.remove());
         updateBulkButtons();
         updateBulkMessage();
         updateSelectAllBtn();
@@ -518,16 +468,24 @@
         const count = selected();
         if (!count) return showToast('Please select at least one application');
         const rows = selectedRows();
-        const existingBulk = document.querySelector('.queue-rejection-row[data-bulk-rejection]');
-        const rejection = existingBulk || addInlineRejection(rows[0], count);
+        const anchor = rows.find((row) => visibleRows().includes(row));
+        if (!anchor) return showToast('Select an application on this page');
+        const existingBulk = document.querySelector('.ui-queue-rejection-row[data-bulk-rejection]');
+        const rejection = existingBulk || addInlineRejection(anchor);
         if (rejection) {
           if (rejection.classList.contains('is-expanded')) {
             rejection.querySelector('textarea')?.focus();
             return;
           }
           rejection.dataset.bulkRejection = 'true';
-          rows[0].parentElement?.appendChild(rejection);
-          rejection.__queueRows = rows;
+          rejection.__queueRow = anchor;
+          rejection.style.order = '999999';
+          rejection.parentElement.appendChild(rejection);
+          const message = rejection.querySelector('.ui-queue-bulk-message');
+          if (message) {
+            message.hidden = count < 2;
+            message.textContent = count > 1 ? `The same reason applies to all ${count} selected applications.` : '';
+          }
           rejection.classList.add('is-expanded');
           rejection.querySelector('textarea')?.focus();
           rejection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

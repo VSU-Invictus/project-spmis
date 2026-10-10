@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 <!-- Active development updates -->
 
+### Fixed
+- **Admin queues:** Kept inline rejection forms visible through table pagination refreshes in all four application queues. Bulk rejection expands below the last visible table row, while individual rejection stays beside its row. Header selection now applies only to visible, eligible rows; selection resets when the view changes, completed faculty applications and admin-direct students cannot be decided again, and approved or rejected mockup applications leave the queue. Oldest/Newest now sorts by submission date, and queue close handling no longer captures unrelated dialogs.
+
 ### Removed
 - **Auth:** Reverted the added dashboard preview links and account-chooser redesign, restoring the existing Admin Portal and Faculty Portal routing in the mockup.
 - **Cleanup:** Removed seven unreferenced HTML files from `mockup/components/`: `modal-add-edit-entity.html`, `modal-approval-confirm.html`, `modal-approval-queue.html`, `modal-delete-confirm.html`, `modal-rejection-reason.html`, `table-approval-queue.html`, and `table-management-roster.html`. Four were empty placeholders; three were unused modal fragments. The active footer, both sidebars, and page/script-defined modals and tables remain available.
