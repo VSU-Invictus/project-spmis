@@ -248,21 +248,37 @@
 
     <!-- Remove Student Modal -->
     <div id="removeModal" class="modal-overlay">
-      <section class="modal-card compact">
+      <section class="modal-card compact" role="dialog" aria-modal="true" aria-labelledby="removeStudentTitle">
         <div class="modal-header">
           <div class="modal-header-content">
-            <h2 class="modal-title">Remove Student</h2>
-            <p class="modal-subtitle">Confirm permanent deletion of this record.</p>
+            <h2 id="removeStudentTitle" class="modal-title">Remove Student</h2>
           </div>
+
+          <button id="closeRemove" type="button" class="modal-close" aria-label="Close remove student dialog">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
         </div>
 
         <div class="modal-body">
-          <p class="modal-confirm-msg">
-            Are you sure you want to remove this student? This action cannot be undone.
-          </p>
+          <div class="remove-alert" role="alert">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 1.5L14.25 13H1.75L8 1.5Z" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/>
+              <path d="M8 5.5V9" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+              <circle cx="8" cy="11" r=".7" fill="currentColor"/>
+            </svg>
+
+            <div>
+              <strong>Confirm Removal</strong>
+              <p>This action cannot be undone. Please confirm before proceeding.</p>
+            </div>
+          </div>
+
           <div class="modal-actions modal-confirm-actions">
-            <button id="cancelRemove" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
-            <button id="confirmRemove" type="button" class="ui-btn ui-btn-primary modal-submit">Confirm</button>
+            <button id="confirmRemove" type="button" class="ui-btn ui-btn-primary modal-submit">
+              Confirm
+            </button>
           </div>
         </div>
       </section>
@@ -278,4 +294,3 @@
     <script src="../../assets/js/pages/admin/students.js"></script>
 </body>
 </html>
-
