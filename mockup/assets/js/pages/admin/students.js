@@ -171,6 +171,7 @@
     // Close buttons
     document.getElementById('closeStudent')?.addEventListener('click', () => closeModal(studentModal));
     document.getElementById('cancelStudent')?.addEventListener('click', () => closeModal(studentModal));
+    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
     document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
     if (!window.adminTableController && !tableBody?.__tableController) {
       searchInput?.addEventListener('input', filterRows);
