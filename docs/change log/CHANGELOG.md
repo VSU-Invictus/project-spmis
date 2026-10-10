@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Fixed
+- **Admin dashboard:** Left-aligned the approval table's Action heading and Review links with matching cell padding.
+- **Admin dashboard:** Kept the approval queue and activity log as separate card surfaces by renaming their grid wrapper so the shared panel selector cannot color the gap between them.
+- **Admin dashboard:** Renamed the four-card section to "Pending Action Items" and rebuilt the dashboard layout with local token-based CSS so the pending approval table remains visible inside the fixed viewport. The four table review links now open their route-backed queues.
 - **Admin queues:** Kept inline rejection forms visible through table pagination refreshes in all four application queues. Bulk rejection expands below the last visible table row, while individual rejection stays beside its row. Header selection now applies only to visible, eligible rows; selection resets when the view changes, completed faculty applications and admin-direct students cannot be decided again, and approved or rejected mockup applications leave the queue. Oldest/Newest now sorts by submission date, and queue close handling no longer captures unrelated dialogs.
 
 ### Removed

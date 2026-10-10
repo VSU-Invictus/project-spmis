@@ -89,10 +89,13 @@ adminPages.forEach(page => {
 });
 
 const dashboard = fs.readFileSync(path.join('mockup', 'pages', 'admin', 'dashboard.html'), 'utf8');
-if (!dashboard.includes('class="ui-empty-state" role="status" aria-live="polite" hidden') ||
-    !dashboard.includes('No pending applications') ||
-    !dashboard.includes('assets/js/admin-table.js')) {
-  console.error('  ERROR: dashboard approval table is missing its controlled empty state!');
+const dashboardTable = dashboard.match(/<table\b[^>]*>[\s\S]*?<tbody>([\s\S]*?)<\/tbody>[\s\S]*?<\/table>/);
+const dashboardRows = dashboardTable ? (dashboardTable[1].match(/<tr>/g) || []).length : 0;
+if (!dashboard.includes('Pending Action Items') ||
+    dashboardRows !== 4 ||
+    dashboard.includes('assets/js/admin-table.js') ||
+    dashboard.includes('cdn.tailwindcss.com')) {
+  console.error('  ERROR: dashboard must render its four approval rows without the table loader or Tailwind CDN!');
   totalErrors++;
 }
 
