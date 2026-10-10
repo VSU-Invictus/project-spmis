@@ -18,3 +18,58 @@
   padding: 0.875rem var(--space-9, 24px) 0.875rem var(--space-5, 12px); 
   border: none !important;
 }
+
+#removeModal .modal-close {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border, #3E3D39);
+  border-radius: 8px;
+  background: var(--card, #1A1918);
+  color: var(--muted-foreground, #A0988E);
+  cursor: pointer;
+  transition: transform 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+#removeModal .modal-close:hover {
+  border-color: var(--primary, #D97251);
+  color: var(--foreground, #FAF9F5);
+  transform: scale(1.05);
+}
+
+#removeModal .modal-close:active {
+  transform: scale(0.95);
+}
+
+#removeModal .modal-confirm-actions {
+  justify-content: flex-end !important;
+}
+
+#removeModal .remove-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(217, 114, 81, 0.35);
+  border-radius: 8px;
+  background: rgba(217, 114, 81, 0.12);
+  color: var(--primary, #D97251);
+}
+
+#removeModal .remove-alert strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--foreground, #FAF9F5);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+#removeModal .remove-alert p {
+  margin: 0;
+  color: var(--muted-foreground, #A0988E);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
