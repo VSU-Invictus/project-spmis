@@ -931,6 +931,20 @@ html:not(.dark) .modal-btn-confirm {
   line-height: 1.5;
 }
 
+/* Remove modal (Departments / Programs / Faculty): X dismiss + full-width confirm */
+.remove-modal .modal-close {
+  display: inline-flex !important;
+}
+
+.remove-modal .modal-body .ui-alert {
+  margin-bottom: 16px !important;
+}
+
+.remove-modal .modal-body .modal-submit {
+  width: 100% !important;
+  flex: 1 1 auto !important;
+}
+
 
 @keyframes overlayIn {
   from { opacity: 0; }
