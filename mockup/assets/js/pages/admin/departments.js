@@ -10,6 +10,7 @@
     const entityForm = document.getElementById('entityForm');
     const entityName = document.getElementById('entityName');
     const entityModalTitle = document.getElementById('entityModalTitle');
+    const entitySubmit = entityForm?.querySelector('.modal-submit');
     const toast = document.getElementById('toast');
 
     if (!tableBody) return;
@@ -46,6 +47,7 @@
       mode = 'create';
       selectedRow = null;
       if (entityModalTitle) entityModalTitle.textContent = 'Add Department';
+      if (entitySubmit) entitySubmit.textContent = 'Add Department';
       if (entityName) entityName.value = '';
       openModal(entityModal);
     });
@@ -57,6 +59,7 @@
         mode = 'edit';
         selectedRow = row;
         if (entityModalTitle) entityModalTitle.textContent = 'Edit Department';
+        if (entitySubmit) entitySubmit.textContent = 'Confirm';
         const nameCell = row.querySelector('.col-dept') || row.children[0];
         if (entityName) entityName.value = nameCell?.textContent.trim() || '';
         openModal(entityModal);

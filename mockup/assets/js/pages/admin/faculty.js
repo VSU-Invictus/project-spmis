@@ -13,6 +13,7 @@
     const facultyDepartment = document.getElementById('facultyDepartment');
     const facultyRole = document.getElementById('facultyRole');
     const facultyModalTitle = document.getElementById('facultyModalTitle');
+    const facultySubmit = facultyForm?.querySelector('.modal-submit');
     const toast = document.getElementById('toast');
 
     if (!tableBody) return;
@@ -57,6 +58,7 @@
       mode = 'create';
       selectedRow = null;
       if (facultyModalTitle) facultyModalTitle.textContent = 'Add Faculty';
+      if (facultySubmit) facultySubmit.textContent = 'Add Faculty';
       if (facultyName) facultyName.value = '';
       if (facultyEmail) facultyEmail.value = '';
       if (facultyDepartment) facultyDepartment.selectedIndex = 0;
@@ -71,6 +73,7 @@
         mode = 'edit';
         selectedRow = row;
         if (facultyModalTitle) facultyModalTitle.textContent = 'Edit Faculty';
+        if (facultySubmit) facultySubmit.textContent = 'Confirm';
         const nameCell = row.querySelector('.col-name') || row.children[0];
         const emailCell = row.querySelector('.col-email') || row.children[1];
         if (facultyName) facultyName.value = nameCell?.textContent.trim() || '';
