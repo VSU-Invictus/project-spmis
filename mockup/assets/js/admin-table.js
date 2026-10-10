@@ -33,6 +33,8 @@
     }
 
     const isTable = tableBody.tagName.toLowerCase() === 'tbody' || tableBody.tagName.toLowerCase() === 'table';
+    const isApprovalQueue = /\/(faculty|student|program|department)-applications\.html$/.test(window.location.pathname);
+    const queueSort = isApprovalQueue ? document.querySelector('.dropdown-container.sort .dropdown-select') : null;
     const thead = container.querySelector('thead, .table-header-row');
     const colCount = thead ? (thead.querySelectorAll('th, .th-cell').length || 6) : (config.colCount || 6);
 
@@ -95,7 +97,7 @@
 
     function getRows() {
       const rows = Array.from(tableBody.querySelectorAll('tr, .table-row')).filter(
-        r => !r.classList.contains('skeleton-row') && r.parentElement === tableBody
+        r => !r.classList.contains('skeleton-row') && !r.classList.contains('ui-queue-rejection-row') && r.parentElement === tableBody
       );
       rows.forEach(r => {
         if (r.querySelector('input[type="checkbox"]')) {
@@ -110,6 +112,7 @@
     }
 
     function updateCheckboxes() {
+      if (isApprovalQueue) return;
       const visibleRowCheckboxes = getVisibleRowCheckboxes();
       const total = visibleRowCheckboxes.length;
       const checked = visibleRowCheckboxes.filter(cb => cb.checked).length;
@@ -132,7 +135,7 @@
       }
     }
 
-    if (selectAllCb) {
+    if (selectAllCb && !isApprovalQueue) {
       selectAllCb.addEventListener('change', (e) => {
         const visibleRowCheckboxes = getVisibleRowCheckboxes();
         visibleRowCheckboxes.forEach(cb => {
@@ -147,7 +150,7 @@
       });
     }
 
-    if (selectAllBtn) {
+    if (selectAllBtn && !isApprovalQueue) {
       selectAllBtn.addEventListener('click', () => {
         const visibleRowCheckboxes = getVisibleRowCheckboxes();
         const allChecked = visibleRowCheckboxes.length > 0 && visibleRowCheckboxes.every(cb => cb.checked);
@@ -164,6 +167,7 @@
     }
 
     tableBody.addEventListener('change', (e) => {
+      if (isApprovalQueue) return;
       if (e.target && (e.target.classList.contains('row-checkbox') || e.target.type === 'checkbox')) {
         const row = e.target.closest('tr, .table-row');
         if (row) {
@@ -175,6 +179,7 @@
     });
 
     tableBody.addEventListener('click', (e) => {
+      if (isApprovalQueue) return;
       const row = e.target.closest('tr, .table-row');
       if (!row || row.classList.contains('skeleton-row')) return;
       if (e.target.tagName === 'INPUT' || e.target.closest('button, a, select, textarea, label')) return;
@@ -234,6 +239,16 @@
 
         return matchesSearch && matchesFilter;
       });
+
+      if (queueSort) {
+        const direction = queueSort.value.toLowerCase() === 'newest' ? -1 : 1;
+        matchedRows.sort((a, b) => {
+          const first = Date.parse(a.querySelector('.col-date')?.textContent?.trim() || '') || 0;
+          const second = Date.parse(b.querySelector('.col-date')?.textContent?.trim() || '') || 0;
+          return direction * (first - second);
+        });
+        matchedRows.forEach((row, index) => { row.style.order = String(index * 2); });
+      }
 
       const totalMatches = matchedRows.length;
 
@@ -296,6 +311,16 @@
         }
       });
 
+      if (isApprovalQueue) {
+        tableBody.querySelectorAll('.ui-queue-rejection-row').forEach(panel => {
+          const anchorIndex = matchedRows.indexOf(panel.__queueRow);
+          panel.hidden = anchorIndex < 0 || panel.__queueRow.hidden;
+          panel.style.order = panel.dataset.bulkRejection
+            ? String(matchedRows.length * 2 + 1)
+            : String(anchorIndex * 2 + 1);
+        });
+      }
+
       if (emptyState) {
         if (emptyTitle) emptyTitle.textContent = allRows.length ? 'No matching results' : defaultEmptyTitle;
         if (emptyDescription) emptyDescription.textContent = allRows.length
@@ -318,12 +343,15 @@
       }
 
       updateCheckboxes();
+      if (isApprovalQueue) tableBody.dispatchEvent(new Event('ui-table-rendered', { bubbles: true }));
     }
 
     function loadTableWithSkeleton(delay = 250) {
       clearTimeout(filterTimer);
 
-      const rows = Array.from(tableBody.children);
+      if (isApprovalQueue) tableBody.dispatchEvent(new Event('ui-table-view-changing', { bubbles: true }));
+
+      const rows = Array.from(tableBody.children).filter(r => !r.classList.contains('ui-queue-rejection-row'));
       rows.forEach(r => {
         if (r.classList.contains('skeleton-row')) {
           r.remove();
@@ -384,7 +412,7 @@
     const controlsArea = document.querySelector('.controls-container, .controls-actions, .filters');
     if (controlsArea) {
       controlsArea.addEventListener('change', (e) => {
-        if (e.target && e.target.tagName === 'SELECT' && !e.target.classList.contains('ui-select-pill')) {
+        if (e.target && e.target.tagName === 'SELECT' && !e.target.classList.contains('ui-select-pill') && !filterElements.includes(e.target)) {
           currentPage = 1;
           loadTableWithSkeleton(220);
         }

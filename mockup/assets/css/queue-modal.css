@@ -260,6 +260,7 @@ body.queue-embedded .table-body .table-row textarea {
 }
 
 body.queue-embedded .table-body .table-row .pill-btn,
+body.queue-embedded .table-body .table-row .ui-btn,
 body.queue-embedded .table-body .table-row input[type="checkbox"] {
   cursor: pointer !important;
 }
@@ -334,7 +335,7 @@ body.queue-embedded .table-body .table-row > .td-cell:last-child {
   padding-right: var(--space-9, 24px) !important;
 }
 
-body.queue-embedded .queue-row-actions {
+body.queue-embedded .ui-queue-row-actions {
   align-items: center !important;
   justify-content: flex-end !important;
   min-width: 8rem;
@@ -527,18 +528,26 @@ body.queue-embedded .header-container [data-queue-close] {
 }
 
 /* --- 5. REJECTION WORKFLOW --- */
-.queue-rejection-row {
+.ui-queue-rejection-row {
   display: none;
   width: 100%;
 }
 
-.queue-rejection-row.is-expanded {
+.ui-queue-rejection-row.is-expanded {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
   width: 100% !important;
 }
 
-.queue-rejection-cell {
+.ui-queue-rejection-row[hidden] {
+  display: none !important;
+}
+
+.table-body .table-row:has(.custom-checkbox:disabled) {
+  cursor: default !important;
+}
+
+.ui-queue-rejection-cell {
   grid-column: 1 / -1 !important;
   flex: none !important;
   width: 100%;
@@ -550,20 +559,25 @@ body.queue-embedded .header-container [data-queue-close] {
   border-top: 1px solid var(--color-border-main, var(--border));
 }
 
-.queue-rejection-row label,
-.queue-rejection-row p {
+.ui-queue-rejection-row label,
+.ui-queue-rejection-row p {
   display: block;
   margin: 0 0 var(--space-3, 8px);
   color: var(--color-text-main, var(--foreground));
   font: 600 var(--font-size-base, 13px)/1.4 var(--font-sans);
 }
 
-.queue-rejection-row p {
+.ui-queue-rejection-row p {
   color: var(--color-text-muted, var(--muted-foreground));
   font-weight: 500;
 }
 
-.queue-rejection-row textarea {
+.ui-queue-rejection-row [hidden] {
+  display: none !important;
+}
+
+.ui-queue-rejection-row textarea {
+  display: block;
   width: 100%;
   box-sizing: border-box;
   min-height: 5rem;
@@ -576,7 +590,7 @@ body.queue-embedded .header-container [data-queue-close] {
   resize: vertical;
 }
 
-.queue-rejection-row textarea:focus-visible,
+.ui-queue-rejection-row textarea:focus-visible,
 [data-queue-modal]:focus-visible,
 [data-queue-modal] button:focus-visible,
 [data-queue-modal] input:focus-visible {
@@ -584,7 +598,7 @@ body.queue-embedded .header-container [data-queue-close] {
   outline-offset: 2px;
 }
 
-.queue-rejection-row .queue-rejection-actions {
+.ui-queue-rejection-row .ui-queue-rejection-actions {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -603,7 +617,7 @@ body.queue-embedded .action-btn-group {
   flex-wrap: nowrap !important;
 }
 
-.queue-row-actions {
+.ui-queue-row-actions {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
@@ -612,7 +626,7 @@ body.queue-embedded .action-btn-group {
   min-width: 10rem;
 }
 
-.queue-row-actions .pill-btn {
+.ui-queue-row-actions .ui-btn {
   min-height: 2rem;
   width: 4.75rem;
   min-width: 4.75rem;
@@ -624,8 +638,8 @@ body.queue-embedded .action-btn-group {
   flex-direction: row;
 }
 
-.queue-rejection-actions .pill-btn.queue-confirm-reject,
-.queue-rejection-actions .pill-btn.modal-cancel {
+.ui-queue-rejection-actions .ui-queue-confirm-reject,
+.ui-queue-rejection-actions .ui-queue-cancel {
   width: auto;
   min-width: 5rem;
   height: 32px;
@@ -637,32 +651,32 @@ body.queue-embedded .action-btn-group {
   font: 600 var(--font-size-base, 13px)/1 var(--font-sans);
 }
 
-.queue-rejection-actions .pill-btn.queue-confirm-reject {
-  background: var(--color-status-danger, #EF4444);
-  border: 1px solid var(--color-status-danger, #EF4444);
-  color: #FFFFFF;
+.ui-queue-rejection-actions .ui-queue-confirm-reject {
+  background: var(--destructive);
+  border: 1px solid var(--destructive);
+  color: var(--destructive-foreground);
 }
 
-.queue-rejection-actions .pill-btn.modal-cancel {
+.ui-queue-rejection-actions .ui-queue-cancel {
   background: transparent;
-  border: 1px solid var(--color-border-main, var(--border, #383734));
-  color: var(--color-text-main, #FFFFFF);
+  border: 1px solid var(--border);
+  color: var(--foreground);
 }
 
-.queue-row-actions .pill-btn.queue-approve {
-  border-color: var(--color-status-success, #10B981);
-  background: var(--color-status-success, #10B981);
-  color: #FFFFFF;
+.ui-queue-row-actions .ui-queue-approve {
+  border-color: var(--color-status-success);
+  background: var(--color-status-success);
+  color: var(--primary-foreground);
 }
 
-.queue-row-actions .pill-btn.queue-reject {
-  border-color: var(--color-status-danger, #EF4444);
-  background: var(--color-status-danger, #EF4444);
-  color: #FFFFFF;
+.ui-queue-row-actions .ui-queue-reject {
+  border-color: var(--destructive);
+  background: var(--destructive);
+  color: var(--destructive-foreground);
   margin-right: var(--space-3, 8px);
 }
 
-.queue-bulk-rejection-message {
+.ui-queue-bulk-message {
   flex: 1 1 100%;
   margin: 0;
   color: var(--color-text-muted, var(--muted-foreground));
@@ -758,7 +772,7 @@ body.queue-embedded .action-btn-group {
 }
 
 @media (max-width: 700px) {
-  .queue-row-actions {
+  .ui-queue-row-actions {
     justify-content: flex-start;
   }
 }
