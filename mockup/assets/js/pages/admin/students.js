@@ -15,7 +15,6 @@
     const studentLname = document.getElementById('studentLname');
     const studentProgram = document.getElementById('studentProgram');
     const studentModalTitle = document.getElementById('studentModalTitle');
-    const studentSubmit = studentForm?.querySelector('.modal-submit');
     const toast = document.getElementById('toast');
 
     if (!tableBody) return;
@@ -74,8 +73,7 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
-      if (studentModalTitle) studentModalTitle.textContent = 'Add Student';
-      if (studentSubmit) studentSubmit.textContent = 'Add Student';
+      if (studentModalTitle) studentModalTitle.textContent = 'Create Student';
       if (studentId) studentId.value = '';
       if (studentFname) studentFname.value = '';
       if (studentMname) studentMname.value = '';
@@ -93,7 +91,6 @@
         mode = 'edit';
         selectedRow = row;
         if (studentModalTitle) studentModalTitle.textContent = 'Edit Student';
-        if (studentSubmit) studentSubmit.textContent = 'Confirm';
         const cells = row.querySelectorAll('.td-cell');
         if (studentId) studentId.value = cells[0]?.textContent.trim() || '';
         if (studentFname) studentFname.value = cells[1]?.textContent.trim() || '';
