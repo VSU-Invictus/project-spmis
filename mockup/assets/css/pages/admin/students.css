@@ -20,6 +20,11 @@
 }
 
 #removeModal .modal-close {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 1;
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
@@ -34,14 +39,18 @@
   transition: transform 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
+#removeModal .modal-header {
+  position: relative;
+}
+
 #removeModal .modal-close:hover {
   border-color: var(--primary, #D97251);
   color: var(--foreground, #FAF9F5);
-  transform: scale(1.05);
+  transform: translateY(-50%) scale(1.05);
 }
 
 #removeModal .modal-close:active {
-  transform: scale(0.95);
+  transform: translateY(-50%) scale(0.95);
 }
 
 #removeModal .modal-confirm-actions {
