@@ -61,7 +61,7 @@
         mode = 'edit';
         selectedRow = row;
         if (entityModalTitle) entityModalTitle.textContent = 'Edit Program';
-        if (entitySubmit) entitySubmit.textContent = 'Confirm';
+        if (entitySubmit) entitySubmit.textContent = 'Update';
         const nameCell = row.querySelector('.col-program') || row.children[0];
         if (entityName) entityName.value = nameCell?.textContent.trim() || '';
         openModal(entityModal);

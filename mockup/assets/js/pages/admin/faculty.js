@@ -75,7 +75,7 @@
         mode = 'edit';
         selectedRow = row;
         if (facultyModalTitle) facultyModalTitle.textContent = 'Edit Faculty';
-        if (facultySubmit) facultySubmit.textContent = 'Confirm';
+        if (facultySubmit) facultySubmit.textContent = 'Update';
         const nameCell = row.querySelector('.col-name') || row.children[0];
         const emailCell = row.querySelector('.col-email') || row.children[1];
         if (facultyName) facultyName.value = nameCell?.textContent.trim() || '';
