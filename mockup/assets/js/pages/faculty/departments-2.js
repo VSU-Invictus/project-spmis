@@ -9,18 +9,11 @@ function showSuccessToast(message) {
     }
 }
 
-// Auto-wire forms and add buttons for the mockup
+// Auto-wire action buttons for the mockup
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('form').forEach(f => {
-        f.addEventListener('submit', (e) => {
-            e.preventDefault();
-            showSuccessToast('Successfully submitted!');
-        });
-    });
-    
-    // For admin tables or faculty modals
+    // For admin tables or action buttons (excluding modal openers)
     document.querySelectorAll('button').forEach(b => {
-        if(b.textContent.toLowerCase().includes('approve') || b.textContent.toLowerCase().includes('submit') || b.textContent.toLowerCase().includes('propose')) {
+        if(b.textContent.toLowerCase().includes('approve')) {
             b.addEventListener('click', (e) => {
                 if(b.type !== 'submit') {
                     showSuccessToast('Action completed successfully!');
@@ -29,3 +22,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
