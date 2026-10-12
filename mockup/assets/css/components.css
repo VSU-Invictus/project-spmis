@@ -967,7 +967,7 @@ html:not(.dark) .status-live-pill {
     transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
 }
 
-:is(.ui-btn, .button):hover {
+:is(.ui-btn, .button):hover:not(:disabled) {
     background: color-mix(in srgb, var(--primary) 88%, var(--foreground));
 }
 
@@ -1137,9 +1137,19 @@ html:not(.dark) .status-live-pill {
     color: var(--foreground);
 }
 
-:is(.ui-btn-outline, .button.secondary, button.secondary):hover {
+:is(.ui-btn-outline, .button.secondary, button.secondary):hover:not(:disabled) {
     background: var(--accent);
     color: var(--accent-foreground);
+}
+
+:is(.ui-btn-outline, .button.secondary, button.secondary):disabled,
+:is(.ui-btn-outline, .button.secondary, button.secondary)[disabled] {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .ui-btn-destructive {
@@ -3203,6 +3213,13 @@ html:not(.dark) .modal-close:hover {
     border-color: #C5C0B6 !important;
 }
 
+/* Primary entity-creation/action buttons maintain text contrast (override global a:hover) */
+:is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)),
+:is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)):hover,
+:is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)) :is(svg, i, span) {
+    color: #000000 !important;
+}
+
 /* Light mode: primary entity-creation/action buttons use white text + icon */
 html:not(.dark) :is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)),
 html:not(.dark) :is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)):hover,
@@ -3652,6 +3669,19 @@ html:not(.dark) .section-container .pill-btn.edit-btn:hover {
     color: var(--primary, #D97251) !important;
 }
 
+/* Review Cards Tag Spacing */
+.review-tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.review-tags .ui-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
 /* Faculty Status Pills & Badges */
 .table-wrap .ui-badge,
 .table-wrap .badge {
@@ -4083,10 +4113,23 @@ html:not(.dark) .admin-top-header .status-badge {
 
 .ui-table-pagination-nav :is(.ui-btn, button, .secondary):disabled,
 .ui-table-pagination .is-b38e363:disabled {
-  opacity: 0.4 !important;
+  opacity: 0.5 !important;
   cursor: not-allowed !important;
+  pointer-events: none !important;
   border-color: var(--color-border-subtle, #2B2A27) !important;
   color: var(--color-text-muted, #6C655D) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.ui-table-pagination-nav :is(.ui-btn, button, .secondary):disabled:hover,
+.ui-table-pagination .is-b38e363:disabled:hover {
+  background: transparent !important;
+  border-color: var(--color-border-subtle, #2B2A27) !important;
+  color: var(--color-text-muted, #6C655D) !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 

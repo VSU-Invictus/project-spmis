@@ -675,6 +675,13 @@ const departments = [
           $("#proposal-dialog").close();
           $("#proposal-status").textContent =
             "Application submitted. The approved list stays unchanged until an admin approves your proposal.";
+          if (typeof showSuccessToast === "function") {
+            showSuccessToast(
+              original
+                ? "Department edit application submitted!"
+                : "Department proposal submitted successfully!"
+            );
+          }
         };
         $("#entity-name").oninput = () =>
           $("#entity-name").setCustomValidity("");

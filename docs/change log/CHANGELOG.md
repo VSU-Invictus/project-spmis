@@ -7,6 +7,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Fixed
+- **Faculty Portal (Students & Proposal Pages):** Addressed QA and pull request review comments:
+  - Fixed premature toast notifications on the "Propose Program" and "Propose Department" buttons, ensuring success toasts deliver exclusively after valid application submission in their respective proposal modals.
+  - Removed the right arrow from the "Write review" button on the Student Detail page, removed the hover translateY movement for a steady interaction, and fixed the hover state so button text maintains high contrast and does not turn orange on hover.
+  - Added horizontal spacing and gap between review tags so they no longer touch each other.
+  - Eliminated the orange focus outline on the left, right, and bottom sides of the review description editor box.
+  - Tightened vertical spacing between input fields in the Register Student modal to make the form compact and cohesive.
+  - Aligned the Edit Review feature with Write Review by connecting the review kebab menu Edit action to `new-review.html` in edit mode, mirroring the exact rich text toolbar, word count counter, file attachments, interactive tag chips, and toast workflow.
+  - Standardized Previous/Next pagination buttons to the Outline Action button variant and eliminated hover effects on disabled action buttons with 50% opacity.
+  - Re-aligned Register Student modal actions so Cancel (`.ui-btn-outline`) is placed directly beside Submit application (`.ui-btn-primary`) at the bottom right.
+  - Enhanced Write a Review page with a section divider separating student info and review text, aligned the "Back to student" link with design system interactive action links, grouped Cancel beside Publish review at the bottom right, and added a success toast notification upon publishing.
+  - Upgraded Student Detail page with the primary header "Student Information & Reviews", replaced bottom review action buttons with a three-dot kebab dropdown menu beside the status badge (Edit, Hide, Delete), added rich-text formatting support to the review edit modal, upgraded the delete confirmation dialog to the Design System decision modal architecture with a warning alert and full-width confirm action, and applied generous padding and non-overlapping card spacing.
 - **Admin dashboard:** Left-aligned the approval table's Action heading and Review links with matching cell padding.
 - **Admin dashboard:** Kept the approval queue and activity log as separate card surfaces by renaming their grid wrapper so the shared panel selector cannot color the gap between them.
 - **Admin dashboard:** Renamed the four-card section to "Pending Action Items" and rebuilt the dashboard layout with local token-based CSS so the pending approval table remains visible inside the fixed viewport. The four table review links now open their route-backed queues.
