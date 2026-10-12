@@ -15,6 +15,7 @@
     const studentLname = document.getElementById('studentLname');
     const studentProgram = document.getElementById('studentProgram');
     const studentModalTitle = document.getElementById('studentModalTitle');
+    const saveStudent = document.getElementById('saveStudent');
     const toast = document.getElementById('toast');
 
     if (!tableBody) return;
@@ -73,12 +74,13 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
-      if (studentModalTitle) studentModalTitle.textContent = 'Create Student';
+      if (studentModalTitle) studentModalTitle.textContent = 'Add Student';
       if (studentId) studentId.value = '';
       if (studentFname) studentFname.value = '';
       if (studentMname) studentMname.value = '';
       if (studentLname) studentLname.value = '';
       if (studentProgram) studentProgram.selectedIndex = 0;
+      if (saveStudent) saveStudent.textContent = 'Add Student';
       openModal(studentModal);
     });
 
@@ -97,6 +99,7 @@
         if (studentMname) studentMname.value = cells[2]?.textContent.trim() || '';
         if (studentLname) studentLname.value = cells[3]?.textContent.trim() || '';
         if (studentProgram) studentProgram.value = cells[4]?.textContent.trim() || '';
+        if (saveStudent) saveStudent.textContent = 'Update Student';
         openModal(studentModal);
       }
 
@@ -168,13 +171,10 @@
       filterRows();
     });
 
-    // Cancel remove
-    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
-
     // Close buttons
     document.getElementById('closeStudent')?.addEventListener('click', () => closeModal(studentModal));
     document.getElementById('cancelStudent')?.addEventListener('click', () => closeModal(studentModal));
-    document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
+    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
     if (!window.adminTableController && !tableBody?.__tableController) {
       searchInput?.addEventListener('input', filterRows);
       programFilter?.addEventListener('change', filterRows);
@@ -196,4 +196,3 @@
     initStudentsPage();
   }
 })();
-
