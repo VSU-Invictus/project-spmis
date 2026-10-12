@@ -60,6 +60,52 @@
   font-family: var(--font-number);
 }
 
+/* Write Review Button Styling and Hover Contrast */
+#new-review-link,
+a#new-review-link.ui-btn-primary {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+  border-radius: var(--radius-md, 8px) !important;
+  background: var(--primary, #D97251) !important;
+  color: #000000 !important;
+  border: 1px solid var(--primary, #D97251) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: opacity 150ms ease, transform 150ms ease !important;
+}
+
+#new-review-link:hover,
+#new-review-link:focus,
+#new-review-link:active,
+a#new-review-link.ui-btn-primary:hover,
+a#new-review-link.ui-btn-primary:focus,
+a#new-review-link.ui-btn-primary:active {
+  color: #000000 !important;
+  background: var(--primary, #D97251) !important;
+  opacity: 0.92 !important;
+  transform: translateY(-1px) !important;
+}
+
+html:not(.dark) #new-review-link,
+html:not(.dark) a#new-review-link.ui-btn-primary {
+  color: #FFFFFF !important;
+}
+
+html:not(.dark) #new-review-link:hover,
+html:not(.dark) #new-review-link:focus,
+html:not(.dark) #new-review-link:active,
+html:not(.dark) a#new-review-link.ui-btn-primary:hover,
+html:not(.dark) a#new-review-link.ui-btn-primary:focus,
+html:not(.dark) a#new-review-link.ui-btn-primary:active {
+  color: #FFFFFF !important;
+  opacity: 0.92 !important;
+}
+
 /* Outline & Destructive Buttons for Review Actions */
 .review .actions {
   display: flex;
@@ -347,6 +393,8 @@ dialog .modal-actions .ui-btn-outline:hover {
   border-radius: var(--radius-sm, 6px);
   cursor: pointer;
   text-align: left;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
   transition: background 150ms ease, color 150ms ease;
 }
 
@@ -503,7 +551,9 @@ dialog.ui-modal .modal-body {
 }
 
 .review-rich-editor:focus {
-  border-color: var(--primary, #D97251);
+  outline: none;
+  border-color: var(--border, #383734);
+  box-shadow: none;
 }
 
 .review-rich-editor ul,
