@@ -73,7 +73,7 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
-      if (studentModalTitle) studentModalTitle.textContent = 'Create Student';
+      if (studentModalTitle) studentModalTitle.textContent = 'Add Student';
       if (studentId) studentId.value = '';
       if (studentFname) studentFname.value = '';
       if (studentMname) studentMname.value = '';
