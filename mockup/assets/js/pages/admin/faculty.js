@@ -142,7 +142,6 @@
     });
 
     document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
-    document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
     document.getElementById('closeFaculty')?.addEventListener('click', () => closeModal(facultyModal));
     document.getElementById('cancelFaculty')?.addEventListener('click', () => closeModal(facultyModal));
     if (!window.adminTableController && !tableBody?.__tableController) {
