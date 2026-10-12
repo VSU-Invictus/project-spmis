@@ -3669,6 +3669,19 @@ html:not(.dark) .section-container .pill-btn.edit-btn:hover {
     color: var(--primary, #D97251) !important;
 }
 
+/* Review Cards Tag Spacing */
+.review-tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.review-tags .ui-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
 /* Faculty Status Pills & Badges */
 .table-wrap .ui-badge,
 .table-wrap .badge {
