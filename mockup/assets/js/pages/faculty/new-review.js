@@ -455,6 +455,9 @@ if (page === "student-detail" || page === "new-review") {
           history: [],
         });
         save();
+        try {
+          sessionStorage.setItem("spmis-toast", "Review published successfully!");
+        } catch (_) {}
         location.href = "student-detail.html?id=" + selected.id;
       };
     if (page === "new-review") {
