@@ -129,16 +129,7 @@
       const department = facultyDepartment?.value || '';
       const role = facultyRole?.value || 'faculty';
       if (!name || !email) return;
-
-      const submitMode = mode;
-      const submitRow = selectedRow;
-      const isEdit = submitMode === 'edit' && !!submitRow;
-      window.AdminEntityConfirm?.open({
-        mode: isEdit ? 'edit' : 'create',
-        entity: 'Faculty',
-        record: name,
-        onConfirm: () => performSubmit({ name, email, department, role }, submitMode, submitRow)
-      });
+      performSubmit({ name, email, department, role }, mode, selectedRow);
     });
 
     document.getElementById('confirmRemove')?.addEventListener('click', () => {

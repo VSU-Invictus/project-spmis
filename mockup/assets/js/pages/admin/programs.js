@@ -96,15 +96,7 @@
       event.preventDefault();
       const value = entityName?.value.trim();
       if (!value) return;
-      const submitMode = mode;
-      const submitRow = selectedRow;
-      const isEdit = submitMode === 'edit' && !!submitRow;
-      window.AdminEntityConfirm?.open({
-        mode: isEdit ? 'edit' : 'create',
-        entity: 'Program',
-        record: value,
-        onConfirm: () => performSubmit(value, submitMode, submitRow)
-      });
+      performSubmit(value, mode, selectedRow);
     });
 
     document.getElementById('confirmRemove')?.addEventListener('click', () => {
