@@ -17,13 +17,15 @@
     let mode = 'create';
     let selectedRow = null;
 
+    let toastTimer;
     function openModal(modal) { if (modal) modal.classList.add('show'); }
     function closeModal(modal) { if (modal) modal.classList.remove('show'); }
     function showToast(message) {
       if (!toast) return;
       toast.textContent = message;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2200);
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
     function filterRows() {
