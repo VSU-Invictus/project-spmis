@@ -70,14 +70,11 @@
       }
     });
 
-    entityForm?.addEventListener('submit', event => {
-      event.preventDefault();
-      const value = entityName?.value.trim();
-      if (!value) return;
-      if (mode === 'edit' && selectedRow) {
-        const nameCell = selectedRow.querySelector('.col-dept') || selectedRow.children[0];
+    function performSubmit(value, submitMode, submitRow) {
+      if (submitMode === 'edit' && submitRow) {
+        const nameCell = submitRow.querySelector('.col-dept') || submitRow.children[0];
         if (nameCell) nameCell.textContent = value;
-        selectedRow.dataset.name = value.toLowerCase();
+        submitRow.dataset.name = value.toLowerCase();
         closeModal(entityModal);
         setTimeout(() => showToast('Department Updated Successfully'), 120);
       } else {
@@ -91,6 +88,21 @@
         setTimeout(() => showToast('Department Created Successfully'), 120);
       }
       filterRows();
+    }
+
+    entityForm?.addEventListener('submit', event => {
+      event.preventDefault();
+      const value = entityName?.value.trim();
+      if (!value) return;
+      const submitMode = mode;
+      const submitRow = selectedRow;
+      const isEdit = submitMode === 'edit' && !!submitRow;
+      window.AdminEntityConfirm?.open({
+        mode: isEdit ? 'edit' : 'create',
+        entity: 'Department',
+        record: value,
+        onConfirm: () => performSubmit(value, submitMode, submitRow)
+      });
     });
 
     document.getElementById('confirmRemove')?.addEventListener('click', () => {

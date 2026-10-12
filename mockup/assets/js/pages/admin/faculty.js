@@ -88,23 +88,17 @@
       }
     });
 
-    facultyForm?.addEventListener('submit', event => {
-      event.preventDefault();
-      const name = facultyName?.value.trim();
-      const email = facultyEmail?.value.trim();
-      const department = facultyDepartment?.value || '';
-      const role = facultyRole?.value || 'faculty';
-      if (!name || !email) return;
-
-      if (mode === 'edit' && selectedRow) {
-        selectedRow.dataset.name = name.toLowerCase();
-        selectedRow.dataset.email = email.toLowerCase();
-        selectedRow.dataset.department = department;
-        selectedRow.dataset.role = role;
-        const nameCell = selectedRow.querySelector('.col-name') || selectedRow.children[0];
-        const emailCell = selectedRow.querySelector('.col-email') || selectedRow.children[1];
-        const deptCell = selectedRow.querySelector('.col-dept') || selectedRow.children[2];
-        const roleCell = selectedRow.querySelector('.col-role') || selectedRow.children[3];
+    function performSubmit(data, submitMode, submitRow) {
+      const { name, email, department, role } = data;
+      if (submitMode === 'edit' && submitRow) {
+        submitRow.dataset.name = name.toLowerCase();
+        submitRow.dataset.email = email.toLowerCase();
+        submitRow.dataset.department = department;
+        submitRow.dataset.role = role;
+        const nameCell = submitRow.querySelector('.col-name') || submitRow.children[0];
+        const emailCell = submitRow.querySelector('.col-email') || submitRow.children[1];
+        const deptCell = submitRow.querySelector('.col-dept') || submitRow.children[2];
+        const roleCell = submitRow.querySelector('.col-role') || submitRow.children[3];
         if (nameCell) nameCell.textContent = name;
         if (emailCell) emailCell.textContent = email;
         if (deptCell) deptCell.textContent = department;
@@ -124,6 +118,25 @@
         setTimeout(() => showToast('Faculty Added Successfully'), 120);
       }
       filterRows();
+    }
+
+    facultyForm?.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = facultyName?.value.trim();
+      const email = facultyEmail?.value.trim();
+      const department = facultyDepartment?.value || '';
+      const role = facultyRole?.value || 'faculty';
+      if (!name || !email) return;
+
+      const submitMode = mode;
+      const submitRow = selectedRow;
+      const isEdit = submitMode === 'edit' && !!submitRow;
+      window.AdminEntityConfirm?.open({
+        mode: isEdit ? 'edit' : 'create',
+        entity: 'Faculty',
+        record: name,
+        onConfirm: () => performSubmit({ name, email, department, role }, submitMode, submitRow)
+      });
     });
 
     document.getElementById('confirmRemove')?.addEventListener('click', () => {
