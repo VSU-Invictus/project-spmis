@@ -19,6 +19,7 @@
     if (!tableBody) return;
     let mode = 'create';
     let selectedRow = null;
+    let originalRecord = null;
 
     let toastTimer;
     function openModal(modal) { if (modal) modal.classList.add('show'); }
@@ -59,9 +60,10 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
+      originalRecord = null;
       if (facultyModalTitle) facultyModalTitle.textContent = 'Add Faculty';
       if (facultySubmit) facultySubmit.textContent = 'Add Faculty';
-      if (facultyName) facultyName.value = '';
+      if (facultyName) { facultyName.value = ''; facultyName.setCustomValidity(''); }
       if (facultyEmail) facultyEmail.value = '';
       if (facultyDepartment) facultyDepartment.selectedIndex = 0;
       if (facultyRole) facultyRole.value = 'faculty';
@@ -78,10 +80,15 @@
         if (facultySubmit) facultySubmit.textContent = 'Update';
         const nameCell = row.querySelector('.col-name') || row.children[0];
         const emailCell = row.querySelector('.col-email') || row.children[1];
-        if (facultyName) facultyName.value = nameCell?.textContent.trim() || '';
-        if (facultyEmail) facultyEmail.value = emailCell?.textContent.trim() || '';
-        if (facultyDepartment) facultyDepartment.value = row.dataset.department || '';
-        if (facultyRole) facultyRole.value = row.dataset.role || 'faculty';
+        const name = nameCell?.textContent.trim() || '';
+        const email = emailCell?.textContent.trim() || '';
+        const department = row.dataset.department || '';
+        const role = row.dataset.role || 'faculty';
+        originalRecord = { name, email, department, role };
+        if (facultyName) { facultyName.value = name; facultyName.setCustomValidity(''); }
+        if (facultyEmail) facultyEmail.value = email;
+        if (facultyDepartment) facultyDepartment.value = department;
+        if (facultyRole) facultyRole.value = role;
         openModal(facultyModal);
       }
       if (event.target.classList.contains('remove-btn')) {
@@ -129,7 +136,24 @@
       const department = facultyDepartment?.value || '';
       const role = facultyRole?.value || 'faculty';
       if (!name || !email) return;
+      if (
+        mode === 'edit' &&
+        originalRecord &&
+        name === originalRecord.name &&
+        email === originalRecord.email &&
+        department === originalRecord.department &&
+        role === originalRecord.role
+      ) {
+        facultyName.setCustomValidity('Please enter a new, distinct value before updating.');
+        facultyName.reportValidity();
+        return;
+      }
       performSubmit({ name, email, department, role }, mode, selectedRow);
+    });
+
+    [facultyName, facultyEmail, facultyDepartment, facultyRole].forEach(field => {
+      field?.addEventListener('input', () => facultyName?.setCustomValidity(''));
+      field?.addEventListener('change', () => facultyName?.setCustomValidity(''));
     });
 
     document.getElementById('confirmRemove')?.addEventListener('click', () => {

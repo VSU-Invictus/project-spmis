@@ -16,6 +16,7 @@
     if (!tableBody) return;
     let mode = 'create';
     let selectedRow = null;
+    let originalName = '';
 
     let toastTimer;
     function openModal(modal) { if (modal) modal.classList.add('show'); }
@@ -48,9 +49,10 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
+      originalName = '';
       if (entityModalTitle) entityModalTitle.textContent = 'Add Department';
       if (entitySubmit) entitySubmit.textContent = 'Add Department';
-      if (entityName) entityName.value = '';
+      if (entityName) { entityName.value = ''; entityName.setCustomValidity(''); }
       openModal(entityModal);
     });
 
@@ -63,7 +65,8 @@
         if (entityModalTitle) entityModalTitle.textContent = 'Edit Department';
         if (entitySubmit) entitySubmit.textContent = 'Update';
         const nameCell = row.querySelector('.col-dept') || row.children[0];
-        if (entityName) entityName.value = nameCell?.textContent.trim() || '';
+        originalName = nameCell?.textContent.trim() || '';
+        if (entityName) { entityName.value = originalName; entityName.setCustomValidity(''); }
         openModal(entityModal);
       }
       if (event.target.classList.contains('remove-btn')) {
@@ -96,8 +99,15 @@
       event.preventDefault();
       const value = entityName?.value.trim();
       if (!value) return;
+      if (mode === 'edit' && value === originalName) {
+        entityName.setCustomValidity('Please enter a new, distinct name before updating.');
+        entityName.reportValidity();
+        return;
+      }
       performSubmit(value, mode, selectedRow);
     });
+
+    entityName?.addEventListener('input', () => entityName.setCustomValidity(''));
 
     document.getElementById('confirmRemove')?.addEventListener('click', () => {
       if (!selectedRow) return;
