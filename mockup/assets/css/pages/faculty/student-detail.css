@@ -251,12 +251,315 @@ dialog .modal-actions .ui-btn-outline:hover {
   margin: 0;
 }
 
-/* Vertical spacing between review cards */
-#reviews > .review + .review {
-  margin-top: var(--space-6, 14px);
+/* Primary Header */
+.header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--foreground, #FAF9F5);
+  font-family: var(--font-sans);
 }
 
-/* Spacing between the final review card and the footer */
-#reviews > .review:last-child {
-  margin-bottom: var(--space-6, 14px);
+/* Review Cards Padding & Non-Overlapping Spacing */
+#reviews > .review {
+  padding: var(--space-8, 20px) var(--space-9, 24px) !important;
+  margin-bottom: var(--space-6, 16px) !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  background: var(--color-card, #1F1E1D) !important;
+  border: 1px solid var(--color-border-subtle, #2E2D2A) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
 }
+
+#reviews > .review:last-child {
+  margin-bottom: var(--space-8, 20px) !important;
+}
+
+/* Three-dot Kebab Menu beside Active/Hidden Badge */
+.review-header-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.ui-dropdown-menu-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ui-btn-kebab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 6px);
+  color: var(--color-text-muted, #A0988E);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.ui-btn-kebab:hover,
+.ui-btn-kebab[aria-expanded="true"] {
+  background: var(--muted, rgba(255, 255, 255, 0.08));
+  color: var(--foreground, #FAF9F5);
+  border-color: var(--border, #383734);
+}
+
+.ui-kebab-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: var(--z-dropdown, 50);
+  min-width: 130px;
+  background: var(--card, #21201E);
+  border: 1px solid var(--border, #383734);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 4px 10px -2px rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ui-kebab-menu[hidden] {
+  display: none !important;
+}
+
+.ui-kebab-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 0.8125rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  color: var(--foreground, #FAF9F5);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  text-align: left;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.ui-kebab-item svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.ui-kebab-item:hover {
+  background: color-mix(in srgb, var(--primary) 12%, var(--card));
+  color: var(--primary);
+}
+
+.ui-kebab-item--danger {
+  color: var(--destructive, #EF4444);
+}
+
+.ui-kebab-item--danger:hover {
+  background: color-mix(in srgb, var(--destructive, #EF4444) 14%, var(--card));
+  color: var(--destructive, #EF4444);
+}
+
+/* Dialog Container - Design System Architecture */
+dialog.ui-modal {
+  width: min(520px, calc(100% - 32px)) !important;
+  max-width: 520px !important;
+  padding: 0 !important;
+  background: var(--card, #21201E) !important;
+  border: 1px solid var(--border, #383734) !important;
+  border-radius: var(--radius-xl, 16px) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6), 0 8px 16px -4px rgba(0, 0, 0, 0.4) !important;
+  overflow: hidden !important;
+  margin: auto !important;
+  position: fixed !important;
+  inset: 0 !important;
+  font-family: var(--font-sans) !important;
+}
+
+dialog.ui-modal::backdrop {
+  background: rgba(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+dialog.ui-modal .modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  padding: 14px 18px 12px !important;
+  border-bottom: 1px solid var(--border, #383734) !important;
+  gap: 12px !important;
+}
+
+dialog.ui-modal .modal-title {
+  margin: 0 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--foreground, #FAF9F5) !important;
+  line-height: 1.25 !important;
+}
+
+dialog.ui-modal .modal-subtitle {
+  margin: 2px 0 0 !important;
+  font-size: 0.75rem !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  line-height: 1.3 !important;
+}
+
+dialog.ui-modal .modal-close {
+  background: transparent !important;
+  border: none !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--radius-sm, 6px) !important;
+  transition: color 150ms ease, background-color 150ms ease !important;
+}
+
+dialog.ui-modal .modal-close:hover {
+  color: var(--foreground, #FAF9F5) !important;
+  background: var(--muted, rgba(255, 255, 255, 0.08)) !important;
+}
+
+dialog.ui-modal .modal-body {
+  padding: 16px 18px 18px !important;
+}
+
+/* Edit Review Rich-Text Toolbar & Editor */
+#edit-dialog .rich-text-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  padding: var(--space-2, 6px) var(--space-3, 8px);
+  background: var(--ui-surface-muted, var(--color-card, #2B2A27));
+  border: 1px solid var(--border, #383734);
+  border-bottom: 1px solid var(--border, #383734);
+  border-top-left-radius: var(--radius-sm, 6px);
+  border-top-right-radius: var(--radius-sm, 6px);
+}
+
+#edit-dialog .toolbar-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 4px 6px;
+  color: var(--foreground);
+  cursor: pointer;
+  border-radius: var(--radius-xs, 4px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+#edit-dialog .toolbar-btn:hover {
+  background: color-mix(in srgb, var(--primary) 14%, var(--card));
+  border-color: color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+#edit-dialog .toolbar-btn.active {
+  background: color-mix(in srgb, var(--primary) 22%, var(--card));
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+#edit-dialog .toolbar-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--border, #383734);
+  margin: 0 4px;
+}
+
+.review-rich-editor {
+  min-height: 120px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  background: var(--background, #1C1B1A);
+  border: 1px solid var(--border, #383734);
+  border-top: none;
+  border-bottom-left-radius: var(--radius-sm, 6px);
+  border-bottom-right-radius: var(--radius-sm, 6px);
+  color: var(--foreground, #FAF9F5);
+  line-height: 1.6;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  word-break: break-word;
+}
+
+.review-rich-editor:focus {
+  border-color: var(--primary, #D97251);
+}
+
+.review-rich-editor ul,
+.review-rich-editor ol,
+.review-body ul,
+.review-body ol {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+
+.review-rich-editor li,
+.review-body li {
+  margin: 2px 0;
+}
+
+/* Confirmation modal action - single full-width button */
+.modal-actions-confirm {
+  margin-top: 16px;
+}
+
+.modal-actions-confirm .modal-submit {
+  width: 100% !important;
+  height: 38px !important;
+  background: var(--primary, #D97251) !important;
+  color: #000000 !important;
+  border: 1px solid var(--primary, #D97251) !important;
+  border-radius: var(--radius-md, 8px) !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  font-family: var(--font-sans) !important;
+  cursor: pointer !important;
+  transition: opacity 150ms ease, transform 150ms ease !important;
+}
+
+html:not(.dark) .modal-actions-confirm .modal-submit {
+  color: #FFFFFF !important;
+}
+
+.modal-actions-confirm .modal-submit:hover {
+  opacity: 0.92 !important;
+  transform: translateY(-1px) !important;
+}
+
+.modal-actions-confirm .modal-submit:active {
+  transform: translateY(0) !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
