@@ -10,19 +10,25 @@
     const entityForm = document.getElementById('entityForm');
     const entityName = document.getElementById('entityName');
     const entityModalTitle = document.getElementById('entityModalTitle');
+    const entitySubmit = entityForm?.querySelector('.modal-submit');
+    const entityEditNotice = document.getElementById('entityEditNotice');
+    const entityAddNotice = document.getElementById('entityAddNotice');
     const toast = document.getElementById('toast');
 
     if (!tableBody) return;
     let mode = 'create';
     let selectedRow = null;
+    let originalName = '';
 
+    let toastTimer;
     function openModal(modal) { if (modal) modal.classList.add('show'); }
     function closeModal(modal) { if (modal) modal.classList.remove('show'); }
     function showToast(message) {
       if (!toast) return;
       toast.textContent = message;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2200);
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
     function filterRows() {
@@ -45,8 +51,12 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
-      if (entityModalTitle) entityModalTitle.textContent = 'Create Program';
-      if (entityName) entityName.value = '';
+      originalName = '';
+      if (entityModalTitle) entityModalTitle.textContent = 'Add Program';
+      if (entitySubmit) entitySubmit.textContent = 'Add Program';
+      if (entityEditNotice) entityEditNotice.hidden = true;
+      if (entityAddNotice) entityAddNotice.hidden = false;
+      if (entityName) { entityName.value = ''; entityName.setCustomValidity(''); }
       openModal(entityModal);
     });
 
@@ -57,8 +67,12 @@
         mode = 'edit';
         selectedRow = row;
         if (entityModalTitle) entityModalTitle.textContent = 'Edit Program';
+        if (entitySubmit) entitySubmit.textContent = 'Update';
+        if (entityEditNotice) entityEditNotice.hidden = false;
+        if (entityAddNotice) entityAddNotice.hidden = true;
         const nameCell = row.querySelector('.col-program') || row.children[0];
-        if (entityName) entityName.value = nameCell?.textContent.trim() || '';
+        originalName = nameCell?.textContent.trim() || '';
+        if (entityName) { entityName.value = originalName; entityName.setCustomValidity(''); }
         openModal(entityModal);
       }
       if (event.target.classList.contains('remove-btn')) {
@@ -67,14 +81,11 @@
       }
     });
 
-    entityForm?.addEventListener('submit', event => {
-      event.preventDefault();
-      const value = entityName?.value.trim();
-      if (!value) return;
-      if (mode === 'edit' && selectedRow) {
-        const nameCell = selectedRow.querySelector('.col-program') || selectedRow.children[0];
+    function performSubmit(value, submitMode, submitRow) {
+      if (submitMode === 'edit' && submitRow) {
+        const nameCell = submitRow.querySelector('.col-program') || submitRow.children[0];
         if (nameCell) nameCell.textContent = value;
-        selectedRow.dataset.name = value.toLowerCase();
+        submitRow.dataset.name = value.toLowerCase();
         closeModal(entityModal);
         setTimeout(() => showToast('Program Updated Successfully'), 120);
       } else {
@@ -88,7 +99,21 @@
         setTimeout(() => showToast('Program Created Successfully'), 120);
       }
       filterRows();
+    }
+
+    entityForm?.addEventListener('submit', event => {
+      event.preventDefault();
+      const value = entityName?.value.trim();
+      if (!value) return;
+      if (mode === 'edit' && value === originalName) {
+        entityName.setCustomValidity('Please enter a new, distinct name before updating.');
+        entityName.reportValidity();
+        return;
+      }
+      performSubmit(value, mode, selectedRow);
     });
+
+    entityName?.addEventListener('input', () => entityName.setCustomValidity(''));
 
     document.getElementById('confirmRemove')?.addEventListener('click', () => {
       if (!selectedRow) return;
@@ -100,7 +125,6 @@
     });
 
     document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
-    document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
     document.getElementById('closeEntity')?.addEventListener('click', () => closeModal(entityModal));
     document.getElementById('cancelEntity')?.addEventListener('click', () => closeModal(entityModal));
     if (!window.adminTableController && !tableBody?.__tableController) {

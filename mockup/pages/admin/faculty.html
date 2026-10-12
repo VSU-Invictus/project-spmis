@@ -187,6 +187,30 @@
         </div>
 
         <form id="facultyForm" class="modal-form">
+          <div id="facultyEditNotice" class="ui-alert ui-alert--info" role="status" hidden>
+            <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <div class="ui-alert-content">
+              <span class="ui-alert-title">Confirm Update</span>
+              <span class="ui-alert-desc">You are about to update this faculty record. Review the details below before saving your changes.</span>
+            </div>
+          </div>
+
+          <div id="facultyAddNotice" class="ui-alert ui-alert--info" role="status" hidden>
+            <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <div class="ui-alert-content">
+              <span class="ui-alert-title">Confirm Addition</span>
+              <span class="ui-alert-desc">You are about to add this faculty record. Review the details below before proceeding.</span>
+            </div>
+          </div>
+
           <div class="ui-form-group">
             <label for="facultyName" class="ui-form-label">Full Name</label>
             <input id="facultyName" type="text" class="ui-input" placeholder="e.g. Dr. Jane Doe" required>
@@ -227,14 +251,14 @@
 
           <div class="modal-actions">
             <button id="cancelFaculty" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
-            <button type="submit" class="ui-btn ui-btn-primary modal-submit">Save Faculty</button>
+            <button type="submit" class="ui-btn ui-btn-primary modal-submit">Add Faculty</button>
           </div>
         </form>
       </section>
     </div>
 
     <div id="removeModal" class="modal-overlay">
-      <section class="modal-card compact">
+      <section class="modal-card compact remove-modal">
         <div class="modal-header">
           <div class="modal-header-content">
             <h2 class="modal-title">Remove Faculty</h2>
@@ -243,10 +267,18 @@
         </div>
 
         <div class="modal-body">
-          <p class="modal-confirm-msg">
-            Are you sure you want to remove this faculty member? This action cannot be undone.
-          </p>
-          <div class="modal-actions modal-confirm-actions">
+          <div class="ui-alert ui-alert--warning" role="alert">
+            <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div class="ui-alert-content">
+              <span class="ui-alert-title">Confirm Removal</span>
+              <span class="ui-alert-desc">Are you sure you want to remove this faculty member? This action cannot be undone.</span>
+            </div>
+          </div>
+          <div class="modal-actions">
             <button id="cancelRemove" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
             <button id="confirmRemove" type="button" class="ui-btn ui-btn-primary modal-submit">Confirm</button>
           </div>
