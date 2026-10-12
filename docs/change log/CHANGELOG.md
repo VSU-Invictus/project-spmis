@@ -7,7 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Fixed
-- **Faculty Portal (Students Page):** Addressed QA concerns across the Students roster and review workflow:
+- **Faculty Portal (Students & Proposal Pages):** Addressed QA and pull request review comments:
+  - Fixed premature toast notifications on the "Propose Program" and "Propose Department" buttons, ensuring success toasts deliver exclusively after valid application submission in their respective proposal modals.
+  - Removed the right arrow from the "Write review" button on the Student Detail page and fixed the hover state so button text maintains high contrast and does not turn orange on hover.
+  - Eliminated the orange focus outline on the left, right, and bottom sides of the review description editor box.
+  - Tightened vertical spacing between input fields in the Register Student modal to make the form compact and cohesive.
+  - Aligned the Edit Review feature with Write Review by connecting the review kebab menu Edit action to `new-review.html` in edit mode, mirroring the exact rich text toolbar, word count counter, file attachments, interactive tag chips, and toast workflow.
   - Standardized Previous/Next pagination buttons to the Outline Action button variant and eliminated hover effects on disabled action buttons with 50% opacity.
   - Re-aligned Register Student modal actions so Cancel (`.ui-btn-outline`) is placed directly beside Submit application (`.ui-btn-primary`) at the bottom right.
   - Enhanced Write a Review page with a section divider separating student info and review text, aligned the "Back to student" link with design system interactive action links, grouped Cancel beside Publish review at the bottom right, and added a success toast notification upon publishing.
