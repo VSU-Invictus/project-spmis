@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Admin queues:** Kept inline rejection forms visible through table pagination refreshes in all four application queues. Bulk rejection expands below the last visible table row, while individual rejection stays beside its row. Header selection now applies only to visible, eligible rows; selection resets when the view changes, completed faculty applications and admin-direct students cannot be decided again, and approved or rejected mockup applications leave the queue. Oldest/Newest now sorts by submission date, and queue close handling no longer captures unrelated dialogs.
 
 ### Removed
+- **Admin student queue:** Removed the Registration Source column, source filter, and admin-direct sample entries because only faculty applications require approval; admin student management uses direct CRUD. Adjusted table width and pagination for the 12 remaining faculty applications (`7d6d71d`).
 - **Auth:** Reverted the added dashboard preview links and account-chooser redesign, restoring the existing Admin Portal and Faculty Portal routing in the mockup.
 - **Cleanup:** Removed seven unreferenced HTML files from `mockup/components/`: `modal-add-edit-entity.html`, `modal-approval-confirm.html`, `modal-approval-queue.html`, `modal-delete-confirm.html`, `modal-rejection-reason.html`, `table-approval-queue.html`, and `table-management-roster.html`. Four were empty placeholders; three were unused modal fragments. The active footer, both sidebars, and page/script-defined modals and tables remain available.
 
@@ -50,6 +51,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Added Tag Cluster & Overflow component (`.ui-tags-cluster`, `.ui-tags-more`, `.ui-tags-popover`) limiting visible badges to 2 with an interactive `+N` badge that reveals remaining tags on hover or click.
 
 ### Changed
+- **Admin students:** Renamed the add modal title from "Create Student" to "Add Student" (`79cbb2f`).
+- **Admin students:** Aligned the student modal with the Faculty Register Student form by placing First Name and Last Name together and Middle Name below. The submit button now reads "Add Student" when adding and "Update Student" when editing (`9a7e39a`).
 - **UI:** Standardized Portal Modals across `components.css`, `design-system.html`, and Admin application pages (`faculty-applications.html`, `student-applications.html`, `department-applications.html`, `program-applications.html`) to strictly follow the **Standard Card** container specification (`background: var(--card)`, `border: 1px solid var(--border)` with 16px radius and dark shadow), eliminating light `#444746` backgrounds and outer terracotta borders (`2c7ab3f`, `f52e935`).
 - **UI:** Standardized modal form inputs, dropdowns, and textareas to use standard form controls with a thin lighter-shade border (`border: 1px solid var(--input)`), muted background (`var(--muted)`), and 10px radius (`2c7ab3f`, `f52e935`).
 - **UI:** Upgraded the "Reason for rejection" field to support vertical manual resizing and dynamic auto-expansion on input, and enforced it as a mandatory field with required indicators (`*`) and client-side validation before confirmation (`2c7ab3f`, `f52e935`).
