@@ -228,13 +228,14 @@ dialog#register-student-modal[open] {
 .modal-form {
   display: flex !important;
   flex-direction: column !important;
+  gap: 10px !important;
 }
 
 .modal-form .ui-form-group {
   display: flex !important;
   flex-direction: column !important;
   gap: 3px !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 0 !important;
 }
 
 .modal-form .ui-form-label {
@@ -254,7 +255,7 @@ dialog#register-student-modal[open] {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   gap: 10px !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 0 !important;
 }
 
 .modal-form .ui-form-grid--2 .ui-form-group {
