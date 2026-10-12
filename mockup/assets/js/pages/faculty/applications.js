@@ -782,32 +782,28 @@ const departments = [
 
           let limit = 5;
           if (size) {
-            if (totalEntries <= 5) {
-              if (rowsGroup) rowsGroup.style.display = "none";
-              limit = 5;
+            if (rowsGroup) rowsGroup.style.display = "";
+            let allowedSizes = [5];
+            if (totalEntries >= 20) {
+              allowedSizes = [5, 10, 20];
+            } else if (totalEntries >= 10) {
+              allowedSizes = [5, 10];
             } else {
-              if (rowsGroup) rowsGroup.style.display = "";
-              let allowedSizes = [];
-              if (totalEntries > 5 && totalEntries <= 10) {
-                allowedSizes = [5];
-              } else if (totalEntries > 10 && totalEntries <= 20) {
-                allowedSizes = [5, 10];
-              } else {
-                allowedSizes = [5, 10, 20];
-              }
+              allowedSizes = [5];
+            }
+            size.disabled = totalEntries <= 5;
 
-              const currentVal = parseInt(size.value, 10) || 5;
-              size.innerHTML = allowedSizes
-                .map((opt) => `<option value="${opt}">${opt}</option>`)
-                .join("");
+            const currentVal = parseInt(size.value, 10) || 5;
+            size.innerHTML = allowedSizes
+              .map((opt) => `<option value="${opt}">${opt}</option>`)
+              .join("");
 
-              if (allowedSizes.includes(currentVal)) {
-                size.value = String(currentVal);
-                limit = currentVal;
-              } else {
-                limit = allowedSizes[0];
-                size.value = String(limit);
-              }
+            if (allowedSizes.includes(currentVal)) {
+              size.value = String(currentVal);
+              limit = currentVal;
+            } else {
+              limit = allowedSizes[0];
+              size.value = String(limit);
             }
           }
 

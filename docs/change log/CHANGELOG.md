@@ -67,6 +67,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Replaced the markdown Write/Preview tabbed interface with inline live visual formatting.
 - **UI:** Routed standalone register student links directly into the student table modal overlay.
 - **UI:** Unified all four admin proposal tables with the design-system table layout, spacing, typography, action buttons, status chips, checked-row state, and responsive widths (`2e07cc7`).
+- **UI** Aligned header and row widths across all four tables, centered Faculty Role/Status and Program/Department Request Type, and added matching right alignment and padding for Faculty Registered Date (`612f426`). Tightened the Proposed By column spacing in Program and Department proposals (`3f5dc97`).
 - **UI:** Applied design-system chip styling to proposal registration, request-type, role, and status badges (`a36c2e7`).
 - **UI:** Standardized approval and rejection controls, including side-by-side row actions and selection-aware bulk actions (`2bf5185`).
 - **UI:** Aligned dashboard pending-queue counts with the proposal rows shown in each queue (`2e07cc7`).
