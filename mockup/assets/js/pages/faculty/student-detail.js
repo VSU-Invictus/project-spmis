@@ -540,6 +540,39 @@ const programs = [
                         $("#review-text").setCustomValidity("");
                 if (page === "student-detail") {
                     $("#new-review-link").href = "new-review.html?id=" + selected.id;
+                    function renderRichText(text) {
+                        if (!text) return "";
+                        if (/<(strong|b|em|i|ul|ol|li|p|br|div)[\s>]/i.test(text)) {
+                            return text;
+                        }
+                        let safe = esc(text);
+                        safe = safe.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+                        safe = safe.replace(/\*([^*\n]+?)\*/g, "<em>$1</em>");
+                        const lines = safe.split(/\r?\n/);
+                        let inUl = false, inOl = false;
+                        const result = [];
+                        for (const line of lines) {
+                            const ulMatch = line.match(/^[-*]\s+(.*)$/);
+                            const olMatch = line.match(/^\d+\.\s+(.*)$/);
+                            if (ulMatch) {
+                                if (inOl) { result.push("</ol>"); inOl = false; }
+                                if (!inUl) { result.push("<ul>"); inUl = true; }
+                                result.push(`<li>${ulMatch[1]}</li>`);
+                            } else if (olMatch) {
+                                if (inUl) { result.push("</ul>"); inUl = false; }
+                                if (!inOl) { result.push("<ol>"); inOl = true; }
+                                result.push(`<li>${olMatch[1]}</li>`);
+                            } else {
+                                if (inUl) { result.push("</ul>"); inUl = false; }
+                                if (inOl) { result.push("</ol>"); inOl = false; }
+                                result.push(line);
+                            }
+                        }
+                        if (inUl) result.push("</ul>");
+                        if (inOl) result.push("</ol>");
+                        return result.join("<br>");
+                    }
+
                     function renderReviews() {
                         updateStudentMeta();
                         const visible = state.reviews.filter(
@@ -551,13 +584,131 @@ const programs = [
                         $("#reviews").innerHTML =
                             visible
                                 .map(
-                                    (r) =>
-                                        `<article class="ui-card review ${r.status ==="hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions is-82e88f3"><button class="ui-btn ui-btn-outline" data-edit="${r.id}">Edit</button><button class="ui-btn ui-btn-outline" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="ui-btn ui-btn-destructive" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                                    (r) => {
+                                        const statusBadge = r.status === "hidden"
+                                            ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>'
+                                            : '<span class="ui-badge ui-badge--success">Active</span>';
+                                        const kebabMenu = r.owner === "self" ? `
+                                            <div class="ui-dropdown-menu-container">
+                                                <button type="button" class="ui-btn-kebab" data-kebab="${r.id}" aria-label="Review options" aria-haspopup="true" aria-expanded="false" title="Review options">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="1.5"></circle>
+                                                        <circle cx="19" cy="12" r="1.5"></circle>
+                                                        <circle cx="5" cy="12" r="1.5"></circle>
+                                                    </svg>
+                                                </button>
+                                                <div class="ui-kebab-menu" id="kebab-menu-${r.id}" role="menu" hidden>
+                                                    <button type="button" class="ui-kebab-item" data-edit="${r.id}" role="menuitem">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                                        <span>Edit</span>
+                                                    </button>
+                                                    <button type="button" class="ui-kebab-item" data-toggle="${r.id}" role="menuitem">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${r.status === "hidden" ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>' : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'}</svg>
+                                                        <span>${r.status === "hidden" ? "Unhide" : "Hide"}</span>
+                                                    </button>
+                                                    <button type="button" class="ui-kebab-item ui-kebab-item--danger" data-delete="${r.id}" role="menuitem">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                                        <span>Delete</span>
+                                                    </button>
+                                                </div>
+                                            </div>` : "";
+                                        return `<article class="ui-card review ${r.status ==="hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div><div class="review-header-right">${statusBadge}${kebabMenu}</div></div><div class="review-body">${renderRichText(r.body)}</div><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><div class="review-body">${renderRichText(h.body)}</div><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details></article>`;
+                                    }
                                 )
                                 .join("") ||
                             '<div class="ui-card empty">No visible reviews yet. Be the first to write one.</div>';
                     }
                     let editing, deleting;
+
+                    // Close any open kebab menus on document click
+                    document.addEventListener("click", (e) => {
+                        const btn = e.target.closest("[data-kebab]");
+                        const openMenus = document.querySelectorAll(".ui-kebab-menu:not([hidden])");
+                        if (btn) {
+                            e.stopPropagation();
+                            const id = btn.dataset.kebab;
+                            const menu = document.getElementById("kebab-menu-" + id);
+                            openMenus.forEach(m => {
+                                if (m !== menu) {
+                                    m.hidden = true;
+                                    const b = document.querySelector(`[data-kebab="${m.id.replace('kebab-menu-', '')}"]`);
+                                    if (b) b.setAttribute("aria-expanded", "false");
+                                }
+                            });
+                            if (menu) {
+                                const isHidden = menu.hidden;
+                                menu.hidden = !isHidden;
+                                btn.setAttribute("aria-expanded", String(isHidden));
+                            }
+                            return;
+                        }
+                        if (!e.target.closest(".ui-kebab-menu")) {
+                            openMenus.forEach(m => {
+                                m.hidden = true;
+                                const b = document.querySelector(`[data-kebab="${m.id.replace('kebab-menu-', '')}"]`);
+                                if (b) b.setAttribute("aria-expanded", "false");
+                            });
+                        }
+                    });
+
+                    // Edit modal rich text editor controls
+                    const editEditor = document.getElementById("edit-editor");
+                    const editBody = document.getElementById("edit-body");
+
+                    function syncEditEditorContent() {
+                        if (!editEditor) return;
+                        const html = editEditor.innerHTML.trim();
+                        const text = editEditor.innerText.trim();
+                        if (editBody) editBody.value = text ? html : "";
+                        if (editBody) editBody.setCustomValidity("");
+                        updateEditToolbarState();
+                    }
+
+                    function updateEditToolbarState() {
+                        document.querySelectorAll(".toolbar-btn[data-edit-format]").forEach(btn => {
+                            const format = btn.dataset.editFormat;
+                            let isActive = false;
+                            try {
+                                if (format === "bold") isActive = document.queryCommandState("bold");
+                                else if (format === "italic") isActive = document.queryCommandState("italic");
+                                else if (format === "bullet") isActive = document.queryCommandState("insertUnorderedList");
+                                else if (format === "number") isActive = document.queryCommandState("insertOrderedList");
+                            } catch (_) {}
+                            btn.classList.toggle("active", isActive);
+                        });
+                    }
+
+                    if (editEditor) {
+                        editEditor.addEventListener("input", syncEditEditorContent);
+                        editEditor.addEventListener("keyup", updateEditToolbarState);
+                        editEditor.addEventListener("mouseup", updateEditToolbarState);
+                        editEditor.addEventListener("focus", updateEditToolbarState);
+                    }
+
+                    document.querySelectorAll(".toolbar-btn[data-edit-format]").forEach(btn => {
+                        btn.addEventListener("mousedown", (e) => e.preventDefault());
+                        btn.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            const format = btn.dataset.editFormat;
+                            if (!format || !editEditor) return;
+                            editEditor.focus();
+                            if (format === "bold") document.execCommand("bold", false, null);
+                            else if (format === "italic") document.execCommand("italic", false, null);
+                            else if (format === "bullet") document.execCommand("insertUnorderedList", false, null);
+                            else if (format === "number") document.execCommand("insertOrderedList", false, null);
+                            updateEditToolbarState();
+                            syncEditEditorContent();
+                        });
+                    });
+
+                    // Dialog close triggers
+                    document.querySelectorAll("dialog [data-close]").forEach(btn => {
+                        btn.addEventListener("click", () => {
+                            const dlg = btn.closest("dialog");
+                            if (dlg) dlg.close();
+                        });
+                    });
+
                     $("#reviews").onclick = (e) => {
                         const b = e.target.closest("button");
                         if (!b) return;
@@ -570,6 +721,9 @@ const programs = [
                                 r.status = r.status === "active" ? "hidden" : "active";
                                 save();
                                 renderReviews();
+                                if (typeof showSuccessToast === "function") {
+                                    showSuccessToast(r.status === "hidden" ? "Review hidden from public roster." : "Review restored to active view.");
+                                }
                             }
                         }
                         if (b.dataset.edit) {
@@ -577,9 +731,11 @@ const programs = [
                                 (r) => r.id === Number(b.dataset.edit) && r.owner === "self",
                             );
                             if (editing) {
-                                $("#edit-body").value = editing.body;
-                                $("#edit-tags").value = editing.tags.join(" ");
+                                if (editEditor) editEditor.innerHTML = editing.body;
+                                if (editBody) editBody.value = editing.body;
+                                $("#edit-tags").value = editing.tags.join(", ");
                                 $("#edit-dialog").showModal();
+                                updateEditToolbarState();
                             }
                         }
                         if (b.dataset.delete) {
@@ -587,11 +743,16 @@ const programs = [
                             $("#delete-dialog").showModal();
                         }
                     };
+
                     $("#edit-form").onsubmit = (e) => {
                         e.preventDefault();
-                        if (!$("#edit-body").value.trim()) {
-                            $("#edit-body").setCustomValidity("Enter review text.");
-                            $("#edit-body").reportValidity();
+                        const content = editBody ? editBody.value.trim() : "";
+                        if (!content) {
+                            if (editEditor) editEditor.focus();
+                            if (editBody) {
+                                editBody.setCustomValidity("Enter review text.");
+                                editBody.reportValidity();
+                            }
                             return;
                         }
                         editing.history.unshift({
@@ -599,15 +760,21 @@ const programs = [
                             body: editing.body,
                             tags: [...editing.tags],
                         });
-                        editing.body = $("#edit-body").value.trim();
+                        editing.body = content;
                         editing.tags = normalizeTags($("#edit-tags").value);
                         editing.date = localDate();
                         save();
                         $("#edit-dialog").close();
                         renderReviews();
+                        if (typeof showSuccessToast === "function") {
+                            showSuccessToast("Review updated successfully!");
+                        }
                     };
-                    $("#edit-body").oninput = () =>
-                        $("#edit-body").setCustomValidity("");
+
+                    if (editBody) {
+                        editBody.oninput = () => editBody.setCustomValidity("");
+                    }
+
                     $("#confirm-delete").onclick = () => {
                         const r = state.reviews.find(
                             (r) => r.id === deleting && r.owner === "self",
@@ -616,7 +783,24 @@ const programs = [
                         save();
                         $("#delete-dialog").close();
                         renderReviews();
+                        if (typeof showSuccessToast === "function") {
+                            showSuccessToast("Review deleted successfully!");
+                        }
                     };
+
+                    // Check for pending success toast from new-review page
+                    try {
+                        const pendingToast = sessionStorage.getItem("spmis-toast");
+                        if (pendingToast) {
+                            sessionStorage.removeItem("spmis-toast");
+                            setTimeout(() => {
+                                if (typeof showSuccessToast === "function") {
+                                    showSuccessToast(pendingToast);
+                                }
+                            }, 100);
+                        }
+                    } catch (_) {}
+
                     renderReviews();
                 }
             }
