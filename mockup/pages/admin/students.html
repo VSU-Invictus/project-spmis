@@ -211,14 +211,15 @@
             </div>
 
             <div class="ui-form-group">
-              <label for="studentMname" class="ui-form-label">Middle Name</label>
-              <input id="studentMname" type="text" class="ui-input" placeholder="Optional">
+              <label for="studentLname" class="ui-form-label">Last Name</label>
+              <input id="studentLname" type="text" class="ui-input" placeholder="e.g. Doe" required>
             </div>
           </div>
 
           <div class="ui-form-group">
-            <label for="studentLname" class="ui-form-label">Last Name</label>
-            <input id="studentLname" type="text" class="ui-input" placeholder="e.g. Doe" required>
+            <label for="studentMname" class="ui-form-label">Middle Name</label>
+            <input id="studentMname" type="text" class="ui-input" placeholder="Optional">
+            
           </div>
 
           <div class="ui-form-group">
@@ -240,7 +241,7 @@
 
           <div class="modal-actions">
             <button id="cancelStudent" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
-            <button type="submit" class="ui-btn ui-btn-primary modal-submit">Save Student</button>
+            <button id="saveStudent" type="submit" class="ui-btn ui-btn-primary modal-submit">Save Student</button>
           </div>
         </form>
       </section>
