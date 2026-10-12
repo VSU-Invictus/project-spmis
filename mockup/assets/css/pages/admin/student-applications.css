@@ -3,6 +3,22 @@
   min-width: 960px;
 }
 
+/* Keep the embedded header and data rows the same width so column edges align. */
+body.queue-embedded .table-scroll .table-header-row,
+body.queue-embedded .table-scroll .table-body .table-row {
+  width: 100% !important;
+  min-width: 960px !important;
+  max-width: none !important;
+}
+
+.table-header-row .th-cell.col-source,
+.table-body .td-cell.col-source,
+body.queue-embedded .table-header-row .th-cell.col-source,
+body.queue-embedded .table-body .td-cell.col-source {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
 .th-cell.col-id, .td-cell.col-id { flex: 159 1 0; }
 .th-cell.col-name, .td-cell.col-name { flex: 241 1 0; }
 .th-cell.col-program, .td-cell.col-program { flex: 275 1 0; }
