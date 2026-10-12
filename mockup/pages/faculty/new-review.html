@@ -40,26 +40,24 @@
         </div>
       </div>
       <a href="student-detail.html" data-student-link class="ui-link-neutral back-link">
-        <span class="arrow-nudge">
-          <span class="arrow">&larr;</span>
-        </span>
-        <span class="back-link-text">Back to student</span>
+        <span class="arrow">&larr;</span> Back to student
       </a>
       <div class="header">
         <div>
 
-          <h1>Write a review</h1>
-          <p>Share an assessment grounded in your work with this student.</p>
+          <h1 id="review-page-title">Write a review</h1>
+          <p id="review-page-subtitle">Share an assessment grounded in your work with this student.</p>
         </div>
       </div>
       <form id="review-form" class="narrow card">
-        <section>
+        <section class="review-student-header">
           <h2 data-student-name>Sam Lee Parker</h2>
           <p class="muted">
             <span data-student-id>24-1-00001</span> ·
             <span data-student-program>BS Computer Science</span>
           </p>
         </section>
+        <hr class="review-divider" />
         <p>
           Contributing as <strong data-name>Alex Morgan</strong>. Your
           identity is always visible with your review.
@@ -140,13 +138,13 @@
           </small>
           <input type="hidden" id="review-tags" name="tags" value="" />
         </div>
-        <p class="muted">
+        <p id="review-footer-note" class="muted">
           A new review is active immediately. You can edit, hide, or delete
           your own review from the student page.
         </p>
-        <div class="actions">
-          <a class="ui-btn ui-btn-outline" href="student-detail.html" data-student-link>Cancel</a>
-          <button class="ui-btn" type="submit">Publish review</button>
+        <div class="actions review-actions">
+          <a class="ui-btn ui-btn-outline" href="student-detail.html" data-student-link id="cancel-review-btn">Cancel</a>
+          <button class="ui-btn ui-btn-primary" type="submit" id="submit-review-btn">Publish review</button>
         </div>
       </form>
       <noscript>

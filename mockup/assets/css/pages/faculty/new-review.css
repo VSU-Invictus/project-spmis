@@ -1,5 +1,54 @@
 /* Faculty New Review Specific Styles */
 
+/* Divider between student info and review text */
+.review-divider {
+  border: none;
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  margin: var(--space-6, 16px) 0;
+  width: 100%;
+}
+
+/* Action buttons side-by-side at bottom right */
+.review-actions,
+form.narrow .actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-top: 24px !important;
+}
+
+.review-actions .ui-btn {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 18px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-md, 8px) !important;
+  cursor: pointer !important;
+}
+
+.review-actions .ui-btn-primary {
+  background: var(--primary, #D97251) !important;
+  color: #000000 !important;
+  border: 1px solid var(--primary, #D97251) !important;
+}
+
+html:not(.dark) .review-actions .ui-btn-primary {
+  color: #FFFFFF !important;
+}
+
+.review-actions .ui-btn-outline {
+  background: transparent !important;
+  border: 1px solid var(--border, #383734) !important;
+  color: var(--foreground, #FAF9F5) !important;
+}
+
+.review-actions .ui-btn-outline:hover {
+  background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
 .rich-text-toolbar,
 .toolbar {
   display: flex;
@@ -65,7 +114,9 @@
 }
 
 #review-editor:focus {
-  border-color: var(--color-primary-base, #D97251);
+  outline: none;
+  border-color: var(--input, var(--color-border-main, #383734));
+  box-shadow: none;
 }
 
 #review-editor:empty:before,

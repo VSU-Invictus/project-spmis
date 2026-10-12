@@ -18,5 +18,55 @@
 .is-daab64f:not(#\#):not(#\#) { min-width: 4rem; }
 .is-4b97db6:not(#\#):not(#\#) { position: absolute; right: 0.6rem; pointer-events: none; opacity: 0.6; }
 .is-12b4142:not(#\#):not(#\#) { color: var(--color-text-muted, #A0988E); font-size: 0.875rem; font-weight: var(--font-weight-medium, 500); }
-.is-49e15c7:not(#\#):not(#\#) { gap: 0.5rem; display: flex; }
 .is-b38e363:not(#\#):not(#\#) { min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md, 10px); font-size: 0.8125rem; }
+
+.modal-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: 18px !important;
+  padding-top: 0 !important;
+}
+
+.modal-actions .ui-btn {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 16px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-md, 8px) !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  flex: initial !important;
+  width: auto !important;
+}
+
+.modal-actions .ui-btn-primary {
+  background: var(--primary, #D97251) !important;
+  color: #000000 !important;
+  border: 1px solid var(--primary, #D97251) !important;
+  transition: opacity 150ms ease, transform 150ms ease !important;
+}
+
+html:not(.dark) .modal-actions .ui-btn-primary {
+  color: #FFFFFF !important;
+}
+
+.modal-actions .ui-btn-primary:hover {
+  opacity: 0.92 !important;
+  transform: translateY(-1px) !important;
+}
+
+.modal-actions .ui-btn-outline {
+  background: transparent !important;
+  border: 1px solid var(--border, #383734) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  transition: background-color 150ms ease, border-color 150ms ease !important;
+}
+
+.modal-actions .ui-btn-outline:hover {
+  background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+

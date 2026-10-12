@@ -397,32 +397,28 @@ const programs = [
 
                 const totalMatches = matches.length;
                 if (rowsPerPageEl) {
-                    if (totalMatches <= 5) {
-                        if (rowsPerPageGroup) rowsPerPageGroup.style.display = "none";
-                        size = 5;
+                    if (rowsPerPageGroup) rowsPerPageGroup.style.display = "";
+                    let allowedSizes = [5];
+                    if (totalMatches >= 20) {
+                        allowedSizes = [5, 10, 20];
+                    } else if (totalMatches >= 10) {
+                        allowedSizes = [5, 10];
                     } else {
-                        if (rowsPerPageGroup) rowsPerPageGroup.style.display = "";
-                        let allowedSizes = [];
-                        if (totalMatches > 5 && totalMatches <= 10) {
-                            allowedSizes = [5];
-                        } else if (totalMatches > 10 && totalMatches <= 20) {
-                            allowedSizes = [5, 10];
-                        } else {
-                            allowedSizes = [5, 10, 20];
-                        }
+                        allowedSizes = [5];
+                    }
+                    rowsPerPageEl.disabled = totalMatches <= 5;
 
-                        const currentVal = parseInt(rowsPerPageEl.value, 10) || 5;
-                        rowsPerPageEl.innerHTML = allowedSizes
-                            .map((opt) => `<option value="${opt}">${opt}</option>`)
-                            .join("");
+                    const currentVal = parseInt(rowsPerPageEl.value, 10) || 5;
+                    rowsPerPageEl.innerHTML = allowedSizes
+                        .map((opt) => `<option value="${opt}">${opt}</option>`)
+                        .join("");
 
-                        if (allowedSizes.includes(currentVal)) {
-                            rowsPerPageEl.value = String(currentVal);
-                            size = currentVal;
-                        } else {
-                            size = allowedSizes[0];
-                            rowsPerPageEl.value = String(size);
-                        }
+                    if (allowedSizes.includes(currentVal)) {
+                        rowsPerPageEl.value = String(currentVal);
+                        size = currentVal;
+                    } else {
+                        size = allowedSizes[0];
+                        rowsPerPageEl.value = String(size);
                     }
                 }
 
@@ -567,6 +563,9 @@ const programs = [
                     addApplication("Student registration", full(payload), payload);
                     regForm.reset();
                     closeModal(true);
+                    if (typeof showSuccessToast === 'function') {
+                        showSuccessToast("Student registration application submitted!");
+                    }
                 };
             }
 
@@ -693,6 +692,14 @@ const programs = [
                         $("#review-text").setCustomValidity("");
                 if (page === "student-detail") {
                     $("#new-review-link").href = "new-review.html?id=" + selected.id;
+                    function renderRichText(text) {
+                        if (!text) return "";
+                        if (/<(strong|b|em|i|ul|ol|li|p|br|div)[\s>]/i.test(text)) return text;
+                        let safe = esc(text);
+                        safe = safe.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+                        safe = safe.replace(/\*([^*\n]+?)\*/g, "<em>$1</em>");
+                        return safe;
+                    }
                     function renderReviews() {
                         const visible = state.reviews.filter(
                             (r) =>
@@ -703,8 +710,30 @@ const programs = [
                         $("#reviews").innerHTML =
                             visible
                                 .map(
-                                    (r) =>
-                                        `<article class="ui-card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions is-82e88f3"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                                    (r) => {
+                                        const statusBadge = r.status === "hidden"
+                                            ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>'
+                                            : '<span class="ui-badge ui-badge--success">Active</span>';
+                                        const kebabMenu = r.owner === "self" ? `
+                                            <div class="ui-dropdown-menu-container">
+                                                <button type="button" class="ui-btn-kebab" data-kebab="${r.id}" aria-label="Review options" aria-haspopup="true" aria-expanded="false" title="Review options">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="1.5"></circle>
+                                                        <circle cx="19" cy="12" r="1.5"></circle>
+                                                        <circle cx="5" cy="12" r="1.5"></circle>
+                                                    </svg>
+                                                </button>
+                                                <div class="ui-kebab-menu" id="kebab-menu-${r.id}" role="menu" hidden>
+                                                    <a href="new-review.html?id=${selected.id}&edit=${r.id}" class="ui-kebab-item" data-edit="${r.id}" role="menuitem">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                                        <span>Edit</span>
+                                                    </a>
+                                                    <button type="button" class="ui-kebab-item" data-toggle="${r.id}" role="menuitem">${r.status === "hidden" ? "Unhide" : "Hide"}</button>
+                                                    <button type="button" class="ui-kebab-item ui-kebab-item--danger" data-delete="${r.id}" role="menuitem">Delete</button>
+                                                </div>
+                                            </div>` : "";
+                                        return `<article class="ui-card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div><div class="review-header-right">${statusBadge}${kebabMenu}</div></div><p class="review-body">${renderRichText(r.body)}</p><div class="review-tags">${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${renderRichText(h.body)}</p><p class="muted tags-list">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details></article>`;
+                                    }
                                 )
                                 .join("") ||
                             '<div class="ui-card empty">No visible reviews yet. Be the first to write one.</div>';
@@ -725,14 +754,8 @@ const programs = [
                             }
                         }
                         if (b.dataset.edit) {
-                            editing = state.reviews.find(
-                                (r) => r.id === Number(b.dataset.edit) && r.owner === "self",
-                            );
-                            if (editing) {
-                                $("#edit-body").value = editing.body;
-                                $("#edit-tags").value = editing.tags.join(", ");
-                                $("#edit-dialog").showModal();
-                            }
+                            location.href = `new-review.html?id=${selected.id}&edit=${b.dataset.edit}`;
+                            return;
                         }
                         if (b.dataset.delete) {
                             deleting = Number(b.dataset.delete);
@@ -1004,27 +1027,52 @@ const programs = [
             host.after(controls);
             let current = 1;
             const size = controls.querySelector("select"),
+                rowsGroup = controls.querySelector(".is-b57eafe"),
                 buttons = controls.querySelectorAll("button"),
                 info = controls.querySelector("[role=status]");
             function update() {
-                const rows = [...host.querySelectorAll("tbody tr")],
-                    limit = Number(size.value),
-                    pages = Math.max(1, Math.ceil(rows.length / limit));
+                const rows = [...host.querySelectorAll("tbody tr:not(.skeleton-row)")];
+                const totalEntries = rows.length;
+
+                let limit = 5;
+                if (size) {
+                    if (rowsGroup) rowsGroup.style.display = "";
+                    let allowedSizes = [5];
+                    if (totalEntries >= 20) {
+                        allowedSizes = [5, 10, 20];
+                    } else if (totalEntries >= 10) {
+                        allowedSizes = [5, 10];
+                    } else {
+                        allowedSizes = [5];
+                    }
+                    size.disabled = totalEntries <= 5;
+
+                    const currentVal = parseInt(size.value, 10) || 5;
+                    size.innerHTML = allowedSizes
+                        .map((opt) => `<option value="${opt}">${opt}</option>`)
+                        .join("");
+
+                    if (allowedSizes.includes(currentVal)) {
+                        size.value = String(currentVal);
+                        limit = currentVal;
+                    } else {
+                        limit = allowedSizes[0];
+                        size.value = String(limit);
+                    }
+                }
+
+                const pages = Math.max(1, Math.ceil(totalEntries / limit));
                 current = Math.min(current, pages);
                 rows.forEach(
                     (row, i) =>
                         (row.hidden = i < (current - 1) * limit || i >= current * limit),
                 );
                 info.textContent =
-                    "Page " +
-                    current +
-                    " of " +
-                    pages +
-                    " · " +
-                    rows.length +
-                    " entries";
-                buttons[0].disabled = current === 1;
-                buttons[1].disabled = current === pages;
+                    totalEntries > 0
+                        ? "Page " + current + " of " + pages + " · " + totalEntries + " entries"
+                        : "0 entries";
+                buttons[0].disabled = current <= 1;
+                buttons[1].disabled = current >= pages || totalEntries === 0;
             }
             buttons[0].onclick = () => {
                 current--;

@@ -16,8 +16,11 @@
         links.forEach((link) => {
           const href = (link.getAttribute('href') || '').split('/').pop();
           const navKey = (link.dataset.navKey || '').toLowerCase();
-          const targetKey = targetPage.replace('.html', '').toLowerCase();
-          const isActive = href === targetPage || navKey === targetKey || (targetKey.startsWith(navKey) && navKey !== 'dashboard');
+          const isActive = href === targetPage || navKey === targetKey || 
+            (navKey === 'students' && targetKey.startsWith('student')) ||
+            (navKey === 'departments' && targetKey.startsWith('department')) ||
+            (navKey === 'programs' && targetKey.startsWith('program')) ||
+            (navKey === 'faculty' && targetKey.startsWith('faculty'));
 
           link.classList.remove('nav-btn-active', 'font-bold', 'shadow-sm', 'nav-btn-inactive', 'font-semibold');
           if (isActive) {

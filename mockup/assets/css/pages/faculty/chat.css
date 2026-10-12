@@ -1,27 +1,81 @@
 /* Faculty Chat Specific Styles */
 
+/* ---- Prompt quick-links (matching Dashboard Quick Links without arrow animation) ---- */
+.ui-chat-prompts,
 .chat-prompts {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-5, 14px);
-  margin: var(--space-9, 24px) 0;
+  gap: 12px;
+  width: 100%;
 }
 
+.ui-chat-prompts .ui-chat-prompt-card,
+.ui-chat-prompts .quick-link-item,
 .chat-prompts button {
-  background: var(--ui-surface-muted, var(--color-card, #2B2A27));
-  color: var(--ui-surface-text, var(--color-text-main, #FFFFFF));
-  font-size: var(--font-size-base, 13px);
-  font-weight: var(--font-weight-medium, 550);
-  border: 1px solid var(--ui-surface-border, var(--color-border-main, #383734));
-  border-radius: var(--radius-md, 10px);
-  padding: var(--space-3, 10px) var(--space-4, 12px);
-  text-align: left;
-  cursor: pointer;
-  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding: 14px 16px !important;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: var(--radius-md, 10px) !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  min-height: 64px !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  transition: box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease, background-color var(--transition-fast) !important;
 }
 
-.chat-prompts button:hover {
-  border-color: var(--color-primary-base, #D97251);
+.ui-chat-prompts .ui-chat-prompt-card:hover,
+.ui-chat-prompts .quick-link-item:hover,
+.ui-chat-prompts .ui-chat-prompt-card:focus-visible,
+.ui-chat-prompts .quick-link-item:focus-visible,
+.chat-prompts button:hover,
+.chat-prompts button:focus-visible {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: var(--primary, #D97251) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.ui-chat-prompts h3,
+.ui-chat-prompts .ui-chat-prompt-card h3 {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #FFFFFF !important;
+  margin: 0 0 4px 0 !important;
+  line-height: 1.3 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transition: color 150ms ease !important;
+}
+
+.ui-chat-prompts .ui-chat-prompt-card:hover h3,
+.ui-chat-prompts .quick-link-item:hover h3,
+.ui-chat-prompts .ui-chat-prompt-card:focus-visible h3,
+.ui-chat-prompts .quick-link-item:focus-visible h3 {
+  color: var(--primary, #D97251) !important;
+}
+
+.ui-chat-prompts .arrow {
+  display: none !important;
+}
+
+.ui-chat-prompts p,
+.ui-chat-prompts .ui-chat-prompt-card p {
+  font-size: 12px !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .chat-prompts small {
@@ -110,7 +164,8 @@
 }
 
 @media (max-width: 850px) {
-  .chat-prompts {
+  .chat-prompts,
+  .ui-chat-prompts {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -119,7 +174,9 @@
   .chat-columns {
     grid-template-columns: 1fr;
   }
-  .chat-prompts {
+  .chat-prompts,
+  .ui-chat-prompts {
+    grid-template-columns: 1fr;
     gap: var(--space-4, 10px);
   }
 }

@@ -8,6 +8,7 @@
 }
 
 .section-container.ui-dashboard-main {
+  --ui-dashboard-padding-inline: 24px;
   min-width: 0 !important;
   min-height: 0 !important;
   overflow: hidden !important;
@@ -32,7 +33,10 @@
   flex-direction: column;
   gap: calc(var(--spacing) * 4);
   min-height: 0;
-  width: 100%;
+  /* Extend the scroll area through the main padding to the canvas edge. */
+  width: calc(100% + var(--ui-dashboard-padding-inline));
+  margin-right: calc(-1 * var(--ui-dashboard-padding-inline));
+  padding-right: var(--ui-dashboard-padding-inline);
   overflow-y: auto;
 }
 
@@ -67,7 +71,7 @@
 .ui-dashboard-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: calc(var(--spacing) * 4);
+  gap: calc(var(--spacing) * 5);
 }
 
 .ui-dashboard-main .ui-dashboard-metrics a.ui-dashboard-metric {
@@ -75,15 +79,11 @@
   flex-direction: column;
   justify-content: space-between;
   min-width: 0;
-  min-height: 96px;
-  padding: calc(var(--spacing) * 4);
+  min-height: 148px;
+  padding: calc(var(--spacing) * 6);
+  gap: calc(var(--spacing) * 5);
   color: var(--foreground) !important;
   text-decoration: none;
-  box-shadow: none;
-}
-
-.ui-dashboard-metric:hover {
-  border-color: var(--primary) !important;
 }
 
 .ui-dashboard-metric:focus-visible,
@@ -93,44 +93,65 @@
   outline-offset: 2px;
 }
 
-.ui-dashboard-metric-top,
-.ui-dashboard-metric-bottom {
+.ui-dashboard-metric-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: calc(var(--spacing) * 2);
+  color: var(--foreground);
+  font-size: 0.9375rem;
+  font-weight: 600;
 }
 
-.ui-dashboard-metric-top {
-  color: var(--muted-foreground);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.ui-dashboard-metric-top .ui-card-title {
+  color: inherit;
+  font: inherit;
 }
 
-.ui-dashboard-dot {
-  flex: 0 0 0.5rem;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
+.ui-dashboard-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
-.ui-dashboard-dot--student { background: var(--color-status-warning); }
-.ui-dashboard-dot--department { background: var(--primary); }
-.ui-dashboard-dot--program { background: var(--color-status-info); }
-.ui-dashboard-dot--faculty { background: var(--color-status-success); }
+.ui-dashboard-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.ui-dashboard-icon--student { color: var(--color-status-warning); }
+.ui-dashboard-icon--department { color: var(--primary); }
+.ui-dashboard-icon--program { color: var(--color-status-info); }
+.ui-dashboard-icon--faculty { color: var(--color-status-success); }
 
 .ui-dashboard-metric-bottom strong {
   font-family: 'Geist Mono', monospace;
-  font-size: 1.875rem;
+  font-size: 2rem;
   line-height: 1;
   font-weight: 600;
 }
 
-.ui-dashboard-metric-bottom small {
+.ui-dashboard-metric-bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: calc(var(--spacing) * 2);
+  margin-top: auto;
+}
+
+.ui-dashboard-metric .ui-dashboard-metric-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  align-self: end;
   color: var(--primary);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -281,6 +302,12 @@
   border-color: var(--border) !important;
 }
 
+@media (max-width: 1400px) {
+  .ui-dashboard-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 1100px) {
   .ui-dashboard-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -304,6 +331,7 @@
   }
 
   .section-container.ui-dashboard-main {
+    --ui-dashboard-padding-inline: calc(var(--spacing) * 3);
     width: 100% !important;
     padding: calc(var(--spacing) * 3) !important;
     gap: calc(var(--spacing) * 2);
@@ -347,12 +375,12 @@
   }
 
   .ui-dashboard-main .ui-dashboard-metrics a.ui-dashboard-metric {
-    min-height: 72px;
-    padding: calc(var(--spacing) * 3);
+    min-height: 128px;
+    padding: calc(var(--spacing) * 4);
   }
 
   .ui-dashboard-metric-bottom strong {
-    font-size: 1.5rem;
+    font-size: 1.875rem;
   }
 
   .ui-dashboard-panel-header > span,
@@ -362,6 +390,12 @@
 
   .ui-dashboard-grid {
     grid-template-rows: auto;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 900px), (max-width: 560px) {
+  .ui-dashboard-metrics {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -377,10 +411,6 @@
 
   .ui-dashboard-intro h1 {
     font-size: 1.5rem;
-  }
-
-  .ui-dashboard-main .ui-dashboard-metrics a.ui-dashboard-metric {
-    min-height: 72px;
   }
 
   .ui-dashboard-content {

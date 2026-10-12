@@ -253,37 +253,33 @@
       const totalMatches = matchedRows.length;
 
       // Dynamic Rows Per Page rules:
-      // - If entries <= 5: no rows per page dropdown (hidden)
-      // - If 5 < entries <= 10: only option 5
-      // - If 10 < entries <= 20: options 5 and 10
-      // - If entries > 20: options 5, 10, and 20
+      // - If entries < 5: dropdown is disabled, option 5
+      // - If 5 to 9 entries: only option 5
+      // - If 10 to 19 entries: options 5 and 10
+      // - If 20 and so on entries: options 5, 10, and 20
       if (rowsPerPageSelect) {
-        if (totalMatches <= 5) {
-          if (rowsPerPageGroup) rowsPerPageGroup.style.display = 'none';
-          pageSize = 5;
+        if (rowsPerPageGroup) rowsPerPageGroup.style.display = '';
+        let allowedSizes = [5];
+        if (totalMatches >= 20) {
+          allowedSizes = [5, 10, 20];
+        } else if (totalMatches >= 10) {
+          allowedSizes = [5, 10];
         } else {
-          if (rowsPerPageGroup) rowsPerPageGroup.style.display = '';
-          let allowedSizes = [];
-          if (totalMatches > 5 && totalMatches <= 10) {
-            allowedSizes = [5];
-          } else if (totalMatches > 10 && totalMatches <= 20) {
-            allowedSizes = [5, 10];
-          } else {
-            allowedSizes = [5, 10, 20];
-          }
+          allowedSizes = [5];
+        }
+        rowsPerPageSelect.disabled = totalMatches <= 5;
 
-          const currentVal = parseInt(rowsPerPageSelect.value, 10) || 5;
-          rowsPerPageSelect.innerHTML = allowedSizes
-            .map(opt => `<option value="${opt}">${opt}</option>`)
-            .join('');
+        const currentVal = parseInt(rowsPerPageSelect.value, 10) || 5;
+        rowsPerPageSelect.innerHTML = allowedSizes
+          .map(opt => `<option value="${opt}">${opt}</option>`)
+          .join('');
 
-          if (allowedSizes.includes(currentVal)) {
-            rowsPerPageSelect.value = String(currentVal);
-            pageSize = currentVal;
-          } else {
-            pageSize = allowedSizes[0];
-            rowsPerPageSelect.value = String(pageSize);
-          }
+        if (allowedSizes.includes(currentVal)) {
+          rowsPerPageSelect.value = String(currentVal);
+          pageSize = currentVal;
+        } else {
+          pageSize = allowedSizes[0];
+          rowsPerPageSelect.value = String(pageSize);
         }
       }
 
