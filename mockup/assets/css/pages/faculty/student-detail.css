@@ -76,7 +76,8 @@ a#new-review-link.ui-btn-primary {
   border: 1px solid var(--primary, #D97251) !important;
   text-decoration: none !important;
   cursor: pointer !important;
-  transition: opacity 150ms ease, transform 150ms ease !important;
+  transition: opacity 150ms ease !important;
+  transform: none !important;
 }
 
 #new-review-link:hover,
@@ -88,7 +89,7 @@ a#new-review-link.ui-btn-primary:active {
   color: #000000 !important;
   background: var(--primary, #D97251) !important;
   opacity: 0.92 !important;
-  transform: translateY(-1px) !important;
+  transform: none !important;
 }
 
 html:not(.dark) #new-review-link,
@@ -320,6 +321,21 @@ dialog .modal-actions .ui-btn-outline:hover {
 
 #reviews > .review:last-child {
   margin-bottom: var(--space-8, 20px) !important;
+}
+
+/* Review Tags Spacing */
+.review-tags,
+.review > div:has(.ui-badge) {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.review-tags .ui-badge,
+.review .ui-badge {
+  display: inline-flex !important;
+  align-items: center !important;
 }
 
 /* Three-dot Kebab Menu beside Active/Hidden Badge */
