@@ -45,8 +45,8 @@
       <div class="header">
         <div>
 
-          <h1>Write a review</h1>
-          <p>Share an assessment grounded in your work with this student.</p>
+          <h1 id="review-page-title">Write a review</h1>
+          <p id="review-page-subtitle">Share an assessment grounded in your work with this student.</p>
         </div>
       </div>
       <form id="review-form" class="narrow card">
@@ -138,13 +138,13 @@
           </small>
           <input type="hidden" id="review-tags" name="tags" value="" />
         </div>
-        <p class="muted">
+        <p id="review-footer-note" class="muted">
           A new review is active immediately. You can edit, hide, or delete
           your own review from the student page.
         </p>
         <div class="actions review-actions">
-          <a class="ui-btn ui-btn-outline" href="student-detail.html" data-student-link>Cancel</a>
-          <button class="ui-btn ui-btn-primary" type="submit">Publish review</button>
+          <a class="ui-btn ui-btn-outline" href="student-detail.html" data-student-link id="cancel-review-btn">Cancel</a>
+          <button class="ui-btn ui-btn-primary" type="submit" id="submit-review-btn">Publish review</button>
         </div>
       </form>
       <noscript>

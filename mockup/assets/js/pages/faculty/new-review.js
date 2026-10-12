@@ -395,9 +395,14 @@ if (page === "students") {
     tags.map((t) => `<option>${esc(t)}</option>`).join("");
   render();
 }
+const searchParams = new URLSearchParams(location.search);
+const editId = Number(searchParams.get("edit") || searchParams.get("reviewId") || searchParams.get("review"));
+const existingReview = editId ? state.reviews.find(r => r.id === editId && r.owner === "self") : null;
+const isEditMode = Boolean(existingReview);
+const studentIdParam = searchParams.get("id");
 const selected =
   students.find(
-    (s) => s.id === new URLSearchParams(location.search).get("id"),
+    (s) => s.id === (studentIdParam || (existingReview ? existingReview.student : null)),
   ) || (!location.search ? students[0] : null);
 if (page === "student-detail" || page === "new-review") {
   if (!selected) {
@@ -416,6 +421,19 @@ if (page === "student-detail" || page === "new-review") {
     document
       .querySelectorAll("[data-student-link]")
       .forEach((e) => (e.href = "student-detail.html?id=" + selected.id));
+
+    if (page === "new-review" && isEditMode) {
+      document.title = "Edit Review | Faculty Portal";
+      const h1 = document.querySelector("#review-page-title") || document.querySelector(".header h1");
+      if (h1) h1.textContent = "Edit review";
+      const headerP = document.querySelector("#review-page-subtitle") || document.querySelector(".header p");
+      if (headerP) headerP.textContent = "The previous version remains in the inline edit history for anyone who can view this review. Visibility stays unchanged.";
+      const footerNote = document.querySelector("#review-footer-note") || document.querySelector("#review-form > p.muted");
+      if (footerNote) footerNote.textContent = "A review update is active immediately. You can view previous versions in edit history from the student page.";
+      const submitBtn = document.querySelector("#submit-review-btn") || document.querySelector("#review-form button[type='submit']");
+      if (submitBtn) submitBtn.textContent = "Save changes";
+    }
+
     let attachedFiles = [];
     if (page === "new-review")
       $("#review-form").onsubmit = (e) => {
@@ -441,6 +459,25 @@ if (page === "student-detail" || page === "new-review") {
           return;
         }
         const body = editor ? editor.innerHTML : plainText;
+
+        if (isEditMode && existingReview) {
+          existingReview.history.unshift({
+            date: existingReview.date,
+            body: existingReview.body,
+            tags: [...existingReview.tags],
+          });
+          existingReview.body = body;
+          existingReview.tags = normalizeTags($("#review-tags").value);
+          existingReview.attachments = attachedFiles ? attachedFiles.map((f) => f.name) : [];
+          existingReview.date = localDate();
+          save();
+          try {
+            sessionStorage.setItem("spmis-toast", "Review updated successfully!");
+          } catch (_) {}
+          location.href = "student-detail.html?id=" + selected.id;
+          return;
+        }
+
         state.reviews.unshift({
           id: Date.now(),
           student: selected.id,
@@ -813,6 +850,29 @@ if (page === "student-detail" || page === "new-review") {
             tagSuggestions.style.display = "none";
           }
         });
+      }
+
+      if (isEditMode && existingReview) {
+        if (editor) {
+          editor.innerHTML = existingReview.body;
+          syncEditorContent();
+        }
+        if (reviewText) {
+          reviewText.value = existingReview.body;
+        }
+        if (Array.isArray(existingReview.attachments) && existingReview.attachments.length) {
+          attachedFiles = existingReview.attachments.map(name => ({ name, size: 51200 }));
+          updateAttachmentDisplay();
+        }
+        if (Array.isArray(existingReview.tags)) {
+          existingReview.tags.forEach(t => {
+            if (t && !currentTags.includes(t)) {
+              currentTags.push(t);
+            }
+          });
+          if (hiddenTagsInput) hiddenTagsInput.value = currentTags.join(", ");
+          renderTagChips();
+        }
       }
     }
     if (page === "student-detail") {

@@ -728,7 +728,10 @@ const programs = [
                                                     </svg>
                                                 </button>
                                                 <div class="ui-kebab-menu" id="kebab-menu-${r.id}" role="menu" hidden>
-                                                    <button type="button" class="ui-kebab-item" data-edit="${r.id}" role="menuitem">Edit</button>
+                                                    <a href="new-review.html?id=${selected.id}&edit=${r.id}" class="ui-kebab-item" data-edit="${r.id}" role="menuitem">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                                        <span>Edit</span>
+                                                    </a>
                                                     <button type="button" class="ui-kebab-item" data-toggle="${r.id}" role="menuitem">${r.status === "hidden" ? "Unhide" : "Hide"}</button>
                                                     <button type="button" class="ui-kebab-item ui-kebab-item--danger" data-delete="${r.id}" role="menuitem">Delete</button>
                                                 </div>
@@ -755,14 +758,8 @@ const programs = [
                             }
                         }
                         if (b.dataset.edit) {
-                            editing = state.reviews.find(
-                                (r) => r.id === Number(b.dataset.edit) && r.owner === "self",
-                            );
-                            if (editing) {
-                                $("#edit-body").value = editing.body;
-                                $("#edit-tags").value = editing.tags.join(", ");
-                                $("#edit-dialog").showModal();
-                            }
+                            location.href = `new-review.html?id=${selected.id}&edit=${b.dataset.edit}`;
+                            return;
                         }
                         if (b.dataset.delete) {
                             deleting = Number(b.dataset.delete);
