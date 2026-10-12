@@ -45,21 +45,71 @@
         <section class="ui-dashboard-overview" aria-labelledby="pending-items-heading">
           <h2 id="pending-items-heading">Pending Action Items</h2>
           <div class="ui-dashboard-metrics">
-            <a href="dashboard.html?queue=student" data-queue-open="student" class="ui-card ui-dashboard-metric">
-              <span class="ui-dashboard-metric-top"><span>Students</span><span class="ui-dashboard-dot ui-dashboard-dot--student" aria-hidden="true"></span></span>
-              <span class="ui-dashboard-metric-bottom"><strong>4</strong><small>Requires review</small></span>
+            <a href="dashboard.html?queue=student" data-queue-open="student" class="ui-card ui-card-interactive ui-dashboard-metric">
+              <span class="ui-dashboard-metric-top">
+                <span class="ui-card-title">Students</span>
+                <span class="ui-dashboard-icon ui-dashboard-icon--student" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </span>
+              </span>
+              <span class="ui-dashboard-metric-bottom">
+                <strong>4</strong>
+                <span class="ui-text-muted ui-dashboard-metric-action">Requires review <span class="arrow" aria-hidden="true">&rarr;</span></span>
+              </span>
             </a>
-            <a href="dashboard.html?queue=department" data-queue-open="department" class="ui-card ui-dashboard-metric">
-              <span class="ui-dashboard-metric-top"><span>Departments</span><span class="ui-dashboard-dot ui-dashboard-dot--department" aria-hidden="true"></span></span>
-              <span class="ui-dashboard-metric-bottom"><strong>5</strong><small>Requires review</small></span>
+            <a href="dashboard.html?queue=department" data-queue-open="department" class="ui-card ui-card-interactive ui-dashboard-metric">
+              <span class="ui-dashboard-metric-top">
+                <span class="ui-card-title">Departments</span>
+                <span class="ui-dashboard-icon ui-dashboard-icon--department" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="21" x2="21" y2="21"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <polygon points="12 2 3 10 21 10"></polygon>
+                    <line x1="7" y1="21" x2="7" y2="10"></line>
+                    <line x1="12" y1="21" x2="12" y2="10"></line>
+                    <line x1="17" y1="21" x2="17" y2="10"></line>
+                  </svg>
+                </span>
+              </span>
+              <span class="ui-dashboard-metric-bottom">
+                <strong>5</strong>
+                <span class="ui-text-muted ui-dashboard-metric-action">Requires review <span class="arrow" aria-hidden="true">&rarr;</span></span>
+              </span>
             </a>
-            <a href="dashboard.html?queue=program" data-queue-open="program" class="ui-card ui-dashboard-metric">
-              <span class="ui-dashboard-metric-top"><span>Programs</span><span class="ui-dashboard-dot ui-dashboard-dot--program" aria-hidden="true"></span></span>
-              <span class="ui-dashboard-metric-bottom"><strong>5</strong><small>Requires review</small></span>
+            <a href="dashboard.html?queue=program" data-queue-open="program" class="ui-card ui-card-interactive ui-dashboard-metric">
+              <span class="ui-dashboard-metric-top">
+                <span class="ui-card-title">Programs</span>
+                <span class="ui-dashboard-icon ui-dashboard-icon--program" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </span>
+              </span>
+              <span class="ui-dashboard-metric-bottom">
+                <strong>5</strong>
+                <span class="ui-text-muted ui-dashboard-metric-action">Requires review <span class="arrow" aria-hidden="true">&rarr;</span></span>
+              </span>
             </a>
-            <a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="ui-card ui-dashboard-metric">
-              <span class="ui-dashboard-metric-top"><span>Faculty</span><span class="ui-dashboard-dot ui-dashboard-dot--faculty" aria-hidden="true"></span></span>
-              <span class="ui-dashboard-metric-bottom"><strong>4</strong><small>Requires review</small></span>
+            <a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="ui-card ui-card-interactive ui-dashboard-metric">
+              <span class="ui-dashboard-metric-top">
+                <span class="ui-card-title">Faculty</span>
+                <span class="ui-dashboard-icon ui-dashboard-icon--faculty" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </span>
+              </span>
+              <span class="ui-dashboard-metric-bottom">
+                <strong>4</strong>
+                <span class="ui-text-muted ui-dashboard-metric-action">Requires review <span class="arrow" aria-hidden="true">&rarr;</span></span>
+              </span>
             </a>
           </div>
         </section>
