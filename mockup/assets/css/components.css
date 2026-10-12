@@ -967,7 +967,7 @@ html:not(.dark) .status-live-pill {
     transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
 }
 
-:is(.ui-btn, .button):hover {
+:is(.ui-btn, .button):hover:not(:disabled) {
     background: color-mix(in srgb, var(--primary) 88%, var(--foreground));
 }
 
@@ -1137,9 +1137,19 @@ html:not(.dark) .status-live-pill {
     color: var(--foreground);
 }
 
-:is(.ui-btn-outline, .button.secondary, button.secondary):hover {
+:is(.ui-btn-outline, .button.secondary, button.secondary):hover:not(:disabled) {
     background: var(--accent);
     color: var(--accent-foreground);
+}
+
+:is(.ui-btn-outline, .button.secondary, button.secondary):disabled,
+:is(.ui-btn-outline, .button.secondary, button.secondary)[disabled] {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .ui-btn-destructive {
@@ -4075,10 +4085,23 @@ html:not(.dark) .admin-top-header .status-badge {
 
 .ui-table-pagination-nav :is(.ui-btn, button, .secondary):disabled,
 .ui-table-pagination .is-b38e363:disabled {
-  opacity: 0.4 !important;
+  opacity: 0.5 !important;
   cursor: not-allowed !important;
+  pointer-events: none !important;
   border-color: var(--color-border-subtle, #2B2A27) !important;
   color: var(--color-text-muted, #6C655D) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.ui-table-pagination-nav :is(.ui-btn, button, .secondary):disabled:hover,
+.ui-table-pagination .is-b38e363:disabled:hover {
+  background: transparent !important;
+  border-color: var(--color-border-subtle, #2B2A27) !important;
+  color: var(--color-text-muted, #6C655D) !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 

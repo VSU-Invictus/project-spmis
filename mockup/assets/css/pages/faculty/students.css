@@ -107,6 +107,30 @@
 .is-12b4142:not(#\#):not(#\#) { color: var(--color-text-muted, #A0988E); font-size: 0.875rem; font-weight: var(--font-weight-medium, 500); }
 .is-49e15c7:not(#\#):not(#\#) { gap: 0.5rem; display: flex; }
 .is-b38e363:not(#\#):not(#\#) { min-height: 2rem; padding: 0 1rem; border-radius: var(--radius-md, 10px); font-size: 0.8125rem; }
+
+/* Outline Action Button disabled state for pagination controls */
+.ui-table-pagination-nav .ui-btn:disabled,
+.ui-table-pagination-nav .ui-btn[disabled],
+.ui-table-pagination-nav .is-b38e363:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  border-color: var(--border, #383734) !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.ui-table-pagination-nav .ui-btn:disabled:hover,
+.ui-table-pagination-nav .ui-btn[disabled]:hover,
+.ui-table-pagination-nav .is-b38e363:disabled:hover {
+  background: transparent !important;
+  border-color: var(--border, #383734) !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
 /* ==========================================================================
    Register Student Modal (.register-modal) - Design System Specification
    ========================================================================== */
