@@ -50,7 +50,7 @@
             <nav class="nav flex flex-col gap-[3px]" id="sidebar-nav" aria-label="Admin navigation">
 
                 <!-- 1. Dashboard -->
-                <a href="../../pages/admin/dashboard.html" data-nav-key="dashboard" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/dashboard.html" data-nav-key="dashboard" target="_parent"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor"
                         stroke-width="2">
@@ -63,7 +63,7 @@
                 </a>
 
                 <!-- 2. Students -->
-                <a href="../../pages/admin/students.html" data-nav-key="students" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/students.html" data-nav-key="students" target="_parent"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -75,7 +75,7 @@
                 </a>
 
                 <!-- 3. Departments -->
-                <a href="../../pages/admin/departments.html" data-nav-key="departments" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/departments.html" data-nav-key="departments" target="_parent"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="21" x2="21" y2="21"></line>
@@ -89,7 +89,7 @@
                 </a>
 
                 <!-- 4. Programs -->
-                <a href="../../pages/admin/programs.html" data-nav-key="programs" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/programs.html" data-nav-key="programs" target="_parent"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -99,7 +99,7 @@
                 </a>
 
                 <!-- 5. Faculty -->
-                <a href="../../pages/admin/faculty.html" data-nav-key="faculty" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/faculty.html" data-nav-key="faculty" target="_parent"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -109,7 +109,7 @@
                 </a>
 
                 <!-- 6. Audit Log -->
-                <a href="../../pages/admin/audit-log.html" data-nav-key="audit-log" onclick="setActiveNav(this)"
+                <a href="../../pages/admin/audit-log.html" data-nav-key="audit-log" target="_parent"
                     class="nav-btn-inactive min-h-[40px] px-3.5 rounded-2xl flex items-center gap-[12px] text-[13px] font-semibold transition-all">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -159,11 +159,15 @@
                 nav.classList.remove('nav-btn-active');
                 nav.classList.add('nav-btn-inactive');
                 nav.removeAttribute('aria-current');
+                const svg = nav.querySelector('svg');
+                if (svg) svg.setAttribute('stroke', 'currentColor');
             });
 
             element.classList.remove('nav-btn-inactive');
             element.classList.add('nav-btn-active');
             element.setAttribute('aria-current', 'page');
+            const svg = element.querySelector('svg');
+            if (svg) svg.setAttribute('stroke', '#000000');
         }
 
         // Determine the current page from the iframe query string or parent window path so the correct sidebar item stays selected.
@@ -179,12 +183,32 @@
             }
         }
         if (!activeKey || activeKey === 'index') activeKey = 'dashboard';
+        if (activeKey.startsWith('student')) activeKey = 'students';
+        if (activeKey.startsWith('department')) activeKey = 'departments';
+        if (activeKey.startsWith('program')) activeKey = 'programs';
+        if (activeKey.startsWith('faculty')) activeKey = 'faculty';
 
         document.querySelectorAll('#sidebar-nav a').forEach(link => {
             const key = (link.dataset.navKey || '').toLowerCase();
             if (key === activeKey) {
                 setActiveNav(link);
             }
+        });
+
+        // Smooth parent window navigation
+        document.querySelectorAll('#sidebar-nav a').forEach(link => {
+            link.addEventListener('click', (event) => {
+                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                setActiveNav(link);
+                window.setTimeout(() => {
+                    if (window.parent && window.parent !== window) {
+                        window.parent.location.href = link.href;
+                    } else {
+                        window.location.href = link.href;
+                    }
+                }, 100);
+            });
         });
 
         // Custom Logout Dialog logic
