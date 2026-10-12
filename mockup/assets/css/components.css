@@ -4022,6 +4022,14 @@ html:not(.dark) .admin-top-header .status-badge {
   border-color: var(--color-primary-base, #D97251) !important;
 }
 
+.ui-select-pill:disabled,
+.ui-table-pagination select:disabled,
+.ui-table-pagination .is-daab64f:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
 .pagination-select-chevron,
 .ui-table-pagination .is-4b97db6 {
   position: absolute !important;

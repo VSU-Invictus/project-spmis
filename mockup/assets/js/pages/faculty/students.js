@@ -397,32 +397,28 @@ const programs = [
 
                 const totalMatches = matches.length;
                 if (rowsPerPageEl) {
-                    if (totalMatches <= 5) {
-                        if (rowsPerPageGroup) rowsPerPageGroup.style.display = "none";
-                        size = 5;
+                    if (rowsPerPageGroup) rowsPerPageGroup.style.display = "";
+                    let allowedSizes = [5];
+                    if (totalMatches >= 20) {
+                        allowedSizes = [5, 10, 20];
+                    } else if (totalMatches >= 10) {
+                        allowedSizes = [5, 10];
                     } else {
-                        if (rowsPerPageGroup) rowsPerPageGroup.style.display = "";
-                        let allowedSizes = [];
-                        if (totalMatches > 5 && totalMatches <= 10) {
-                            allowedSizes = [5];
-                        } else if (totalMatches > 10 && totalMatches <= 20) {
-                            allowedSizes = [5, 10];
-                        } else {
-                            allowedSizes = [5, 10, 20];
-                        }
+                        allowedSizes = [5];
+                    }
+                    rowsPerPageEl.disabled = totalMatches <= 5;
 
-                        const currentVal = parseInt(rowsPerPageEl.value, 10) || 5;
-                        rowsPerPageEl.innerHTML = allowedSizes
-                            .map((opt) => `<option value="${opt}">${opt}</option>`)
-                            .join("");
+                    const currentVal = parseInt(rowsPerPageEl.value, 10) || 5;
+                    rowsPerPageEl.innerHTML = allowedSizes
+                        .map((opt) => `<option value="${opt}">${opt}</option>`)
+                        .join("");
 
-                        if (allowedSizes.includes(currentVal)) {
-                            rowsPerPageEl.value = String(currentVal);
-                            size = currentVal;
-                        } else {
-                            size = allowedSizes[0];
-                            rowsPerPageEl.value = String(size);
-                        }
+                    if (allowedSizes.includes(currentVal)) {
+                        rowsPerPageEl.value = String(currentVal);
+                        size = currentVal;
+                    } else {
+                        size = allowedSizes[0];
+                        rowsPerPageEl.value = String(size);
                     }
                 }
 
@@ -1004,27 +1000,52 @@ const programs = [
             host.after(controls);
             let current = 1;
             const size = controls.querySelector("select"),
+                rowsGroup = controls.querySelector(".is-b57eafe"),
                 buttons = controls.querySelectorAll("button"),
                 info = controls.querySelector("[role=status]");
             function update() {
-                const rows = [...host.querySelectorAll("tbody tr")],
-                    limit = Number(size.value),
-                    pages = Math.max(1, Math.ceil(rows.length / limit));
+                const rows = [...host.querySelectorAll("tbody tr:not(.skeleton-row)")];
+                const totalEntries = rows.length;
+
+                let limit = 5;
+                if (size) {
+                    if (rowsGroup) rowsGroup.style.display = "";
+                    let allowedSizes = [5];
+                    if (totalEntries >= 20) {
+                        allowedSizes = [5, 10, 20];
+                    } else if (totalEntries >= 10) {
+                        allowedSizes = [5, 10];
+                    } else {
+                        allowedSizes = [5];
+                    }
+                    size.disabled = totalEntries <= 5;
+
+                    const currentVal = parseInt(size.value, 10) || 5;
+                    size.innerHTML = allowedSizes
+                        .map((opt) => `<option value="${opt}">${opt}</option>`)
+                        .join("");
+
+                    if (allowedSizes.includes(currentVal)) {
+                        size.value = String(currentVal);
+                        limit = currentVal;
+                    } else {
+                        limit = allowedSizes[0];
+                        size.value = String(limit);
+                    }
+                }
+
+                const pages = Math.max(1, Math.ceil(totalEntries / limit));
                 current = Math.min(current, pages);
                 rows.forEach(
                     (row, i) =>
                         (row.hidden = i < (current - 1) * limit || i >= current * limit),
                 );
                 info.textContent =
-                    "Page " +
-                    current +
-                    " of " +
-                    pages +
-                    " · " +
-                    rows.length +
-                    " entries";
-                buttons[0].disabled = current === 1;
-                buttons[1].disabled = current === pages;
+                    totalEntries > 0
+                        ? "Page " + current + " of " + pages + " · " + totalEntries + " entries"
+                        : "0 entries";
+                buttons[0].disabled = current <= 1;
+                buttons[1].disabled = current >= pages || totalEntries === 0;
             }
             buttons[0].onclick = () => {
                 current--;
