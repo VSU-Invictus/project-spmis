@@ -164,16 +164,16 @@ body[data-page="dashboard"] .stats,
   box-sizing: border-box !important;
   margin: 0 !important;
   min-height: 64px !important;
-  transition: background-color var(--transition-fast), border-color var(--transition-fast) !important;
+  transition: box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease, background-color var(--transition-fast) !important;
 }
 
 .quick-links a:hover,
 .quick-links .quick-link-item:hover,
 .quick-links .ui-card:hover {
   background: rgba(255, 255, 255, 0.04) !important;
-  border-color: rgba(255, 255, 255, 0.16) !important;
-  transform: none !important;
-  box-shadow: none !important;
+  border-color: var(--primary) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
 .quick-links .ui-card-header,
@@ -203,17 +203,29 @@ body[data-page="dashboard"] .stats,
   color: #FFFFFF !important;
   margin: 0 0 4px 0 !important;
   line-height: 1.3 !important;
+  transition: color 150ms ease !important;
+}
+
+.quick-links a:hover :is(h3, .ui-card-title),
+.quick-links .quick-link-item:hover :is(h3, .ui-card-title),
+.quick-links .ui-card:hover :is(h3, .ui-card-title),
+.quick-links a:focus-visible :is(h3, .ui-card-title) {
+  color: var(--primary, #D97251) !important;
 }
 
 .quick-links .arrow {
   display: inline-block;
-  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, color 150ms ease;
   margin-left: 2px;
-  color: #FFFFFF !important;
+  color: inherit !important;
 }
 
-.quick-links a:hover .arrow {
+.quick-links a:hover .arrow,
+.quick-links .quick-link-item:hover .arrow,
+.quick-links .ui-card:hover .arrow,
+.quick-links a:focus-visible .arrow {
   transform: translateX(4px);
+  color: var(--primary, #D97251) !important;
 }
 
 .quick-links p,
