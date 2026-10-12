@@ -567,6 +567,9 @@ const programs = [
                     addApplication("Student registration", full(payload), payload);
                     regForm.reset();
                     closeModal(true);
+                    if (typeof showSuccessToast === 'function') {
+                        showSuccessToast("Student registration application submitted!");
+                    }
                 };
             }
 
@@ -693,6 +696,14 @@ const programs = [
                         $("#review-text").setCustomValidity("");
                 if (page === "student-detail") {
                     $("#new-review-link").href = "new-review.html?id=" + selected.id;
+                    function renderRichText(text) {
+                        if (!text) return "";
+                        if (/<(strong|b|em|i|ul|ol|li|p|br|div)[\s>]/i.test(text)) return text;
+                        let safe = esc(text);
+                        safe = safe.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+                        safe = safe.replace(/\*([^*\n]+?)\*/g, "<em>$1</em>");
+                        return safe;
+                    }
                     function renderReviews() {
                         const visible = state.reviews.filter(
                             (r) =>
@@ -703,8 +714,27 @@ const programs = [
                         $("#reviews").innerHTML =
                             visible
                                 .map(
-                                    (r) =>
-                                        `<article class="ui-card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions is-82e88f3"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                                    (r) => {
+                                        const statusBadge = r.status === "hidden"
+                                            ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>'
+                                            : '<span class="ui-badge ui-badge--success">Active</span>';
+                                        const kebabMenu = r.owner === "self" ? `
+                                            <div class="ui-dropdown-menu-container">
+                                                <button type="button" class="ui-btn-kebab" data-kebab="${r.id}" aria-label="Review options" aria-haspopup="true" aria-expanded="false" title="Review options">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="1.5"></circle>
+                                                        <circle cx="19" cy="12" r="1.5"></circle>
+                                                        <circle cx="5" cy="12" r="1.5"></circle>
+                                                    </svg>
+                                                </button>
+                                                <div class="ui-kebab-menu" id="kebab-menu-${r.id}" role="menu" hidden>
+                                                    <button type="button" class="ui-kebab-item" data-edit="${r.id}" role="menuitem">Edit</button>
+                                                    <button type="button" class="ui-kebab-item" data-toggle="${r.id}" role="menuitem">${r.status === "hidden" ? "Unhide" : "Hide"}</button>
+                                                    <button type="button" class="ui-kebab-item ui-kebab-item--danger" data-delete="${r.id}" role="menuitem">Delete</button>
+                                                </div>
+                                            </div>` : "";
+                                        return `<article class="ui-card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div><div class="review-header-right">${statusBadge}${kebabMenu}</div></div><p class="review-body">${renderRichText(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${renderRichText(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details></article>`;
+                                    }
                                 )
                                 .join("") ||
                             '<div class="ui-card empty">No visible reviews yet. Be the first to write one.</div>';
