@@ -936,6 +936,11 @@ html:not(.dark) .modal-btn-confirm {
   margin-bottom: 16px !important;
 }
 
+/* Edit modal (Departments / Programs / Faculty): confirmation notice */
+.modal-form .ui-alert[hidden] {
+  display: none;
+}
+
 @keyframes overlayIn {
   from { opacity: 0; }
   to { opacity: 1; }

@@ -11,6 +11,7 @@
     const entityName = document.getElementById('entityName');
     const entityModalTitle = document.getElementById('entityModalTitle');
     const entitySubmit = entityForm?.querySelector('.modal-submit');
+    const entityEditNotice = document.getElementById('entityEditNotice');
     const toast = document.getElementById('toast');
 
     if (!tableBody) return;
@@ -52,6 +53,7 @@
       originalName = '';
       if (entityModalTitle) entityModalTitle.textContent = 'Add Program';
       if (entitySubmit) entitySubmit.textContent = 'Add Program';
+      if (entityEditNotice) entityEditNotice.hidden = true;
       if (entityName) { entityName.value = ''; entityName.setCustomValidity(''); }
       openModal(entityModal);
     });
@@ -64,6 +66,7 @@
         selectedRow = row;
         if (entityModalTitle) entityModalTitle.textContent = 'Edit Program';
         if (entitySubmit) entitySubmit.textContent = 'Update';
+        if (entityEditNotice) entityEditNotice.hidden = false;
         const nameCell = row.querySelector('.col-program') || row.children[0];
         originalName = nameCell?.textContent.trim() || '';
         if (entityName) { entityName.value = originalName; entityName.setCustomValidity(''); }
