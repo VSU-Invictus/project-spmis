@@ -114,7 +114,9 @@ html:not(.dark) .review-actions .ui-btn-primary {
 }
 
 #review-editor:focus {
-  border-color: var(--color-primary-base, #D97251);
+  outline: none;
+  border-color: var(--input, var(--color-border-main, #383734));
+  box-shadow: none;
 }
 
 #review-editor:empty:before,
