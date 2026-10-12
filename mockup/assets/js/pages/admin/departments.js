@@ -12,6 +12,7 @@
     const entityModalTitle = document.getElementById('entityModalTitle');
     const entitySubmit = entityForm?.querySelector('.modal-submit');
     const entityEditNotice = document.getElementById('entityEditNotice');
+    const entityAddNotice = document.getElementById('entityAddNotice');
     const toast = document.getElementById('toast');
 
     if (!tableBody) return;
@@ -54,6 +55,7 @@
       if (entityModalTitle) entityModalTitle.textContent = 'Add Department';
       if (entitySubmit) entitySubmit.textContent = 'Add Department';
       if (entityEditNotice) entityEditNotice.hidden = true;
+      if (entityAddNotice) entityAddNotice.hidden = false;
       if (entityName) { entityName.value = ''; entityName.setCustomValidity(''); }
       openModal(entityModal);
     });
@@ -67,6 +69,7 @@
         if (entityModalTitle) entityModalTitle.textContent = 'Edit Department';
         if (entitySubmit) entitySubmit.textContent = 'Update';
         if (entityEditNotice) entityEditNotice.hidden = false;
+        if (entityAddNotice) entityAddNotice.hidden = true;
         const nameCell = row.querySelector('.col-dept') || row.children[0];
         originalName = nameCell?.textContent.trim() || '';
         if (entityName) { entityName.value = originalName; entityName.setCustomValidity(''); }
