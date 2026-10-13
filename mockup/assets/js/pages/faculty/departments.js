@@ -274,7 +274,7 @@ const departments = [
       }
       function appTable(items) {
         return items.length
-          ? `<div class="table-wrap"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th>Status</th><th>Decision / reason</th></tr></thead><tbody>${appRows(items)}</tbody></table></div>`
+          ? `<div class="table-wrap"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th class=\"ui-table-heading-center\">Status</th><th>Decision / reason</th></tr></thead><tbody>${appRows(items)}</tbody></table></div>`
           : '<div class="empty">No applications match this view.</div>';
       }
       function addApplication(type, name, payload) {
@@ -348,7 +348,7 @@ const departments = [
           const total = Math.max(1, Math.ceil(matches.length / size));
           current = Math.min(current, total);
           $("#roster-results").innerHTML = matches.length
-            ? `<div class="table-wrap"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th>Action</th></tr></thead><tbody>${matches
+            ? `<div class="table-wrap"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th class=\"ui-table-heading-center\">Action</th></tr></thead><tbody>${matches
                 .slice((current - 1) * size, current * size)
                 .map(
                   (s) =>
@@ -606,14 +606,14 @@ const departments = [
         let original = "";
         let listTimer;
               function render() {
-                  $("#entity-list").innerHTML = `<div class="table-wrap" role="status" aria-label="Loading"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th><th>Action</th></tr></thead><tbody><tr class="skeleton-row"><td colspan="3"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="3"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="3"><div class="skeleton"></div></td></tr></tbody></table></div>`;
+                  $("#entity-list").innerHTML = `<div class="table-wrap" role="status" aria-label="Loading"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th class=\"ui-table-heading-center\">Status</th><th class=\"ui-table-heading-center\">Action</th></tr></thead><tbody><tr class="skeleton-row"><td colspan="3"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="3"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="3"><div class="skeleton"></div></td></tr></tbody></table></div>`;
                   clearTimeout(listTimer);
                   listTimer = setTimeout(() => {
           const filtered = list.filter((p) =>
             p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
           );
           $("#entity-list").innerHTML = filtered.length
-            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th><th>Action</th></tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td><td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td></tr>`).join("")}</tbody></table></div>`
+            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th class=\"ui-table-heading-center\">Status</th><th class=\"ui-table-heading-center\">Action</th></tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td><td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td></tr>`).join("")}</tbody></table></div>`
             : list.length
               ? '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No matching departments</h2><p class="ui-empty-state__description">Try another department name.</p></div>'
               : '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No departments yet</h2><p class="ui-empty-state__description">Approved departments will appear here.</p></div>';

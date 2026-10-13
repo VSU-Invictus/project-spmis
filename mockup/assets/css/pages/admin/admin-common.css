@@ -310,27 +310,6 @@ body.queue-embedded .section-container {
   transform: translateY(-1px);
 }
 
-.queue-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 38px;
-  padding: 0 var(--space-8, 20px);
-  border-radius: var(--radius-lg, 12px);
-  background: var(--color-status-success, #10B981);
-  color: var(--color-primary-white, #FFFFFF);
-  font-size: var(--font-size-sm, 12px);
-  font-weight: var(--font-weight-medium, 500);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
-}
-
-.queue-button:hover {
-  background: #059669;
-  transform: translateY(-1px);
-}
-
 /* --- 3. DATA TABLES & ROW CELLS --- */
 .table-margin-container {
   padding: var(--space-4, 12px) 0 var(--space-0, 0);
@@ -931,7 +910,7 @@ html:not(.dark) .modal-btn-confirm {
   line-height: 1.5;
 }
 
-/* Remove modal (Departments / Programs / Faculty): Cancel + Confirm actions */
+/* Remove modal (Students / Departments / Programs / Faculty): Cancel + Confirm actions */
 .remove-modal .modal-body .ui-alert {
   margin-bottom: 16px !important;
 }

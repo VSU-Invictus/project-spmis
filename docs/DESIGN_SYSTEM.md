@@ -791,10 +791,11 @@ For any standalone page under `mockup/pages/`, include the stylesheets in the `<
 ## Table Column Helpers
 
 - `.col-id` - tight, nowrap (Student ID).
-- `.col-action` - tight, left-aligned header and cells, nowrap; links/buttons (View, Review ->, Write review ->) never wrap.
+- `.col-action` - tight, centered, nowrap; links/buttons (View, Review ->, Write review ->) never wrap.
+- `.ui-table-heading-center` - identifies Action, Actions, and Status columns so their titles and body cells are centered with symmetric horizontal padding, including when they are the rightmost column.
 - `.col-60` / `.col-20` - Name / Status / Action tables use 60/20/20.
 - `.col-flex` - Student Name and Program share remaining width equally; Review Tags keep current ratio.
-- First and last columns hug table edges.
+- First and last columns hug table edges. The rightmost column's title and values are right-aligned, except Action and Status columns, which are centered.
 
 ## Light Mode Notes
 

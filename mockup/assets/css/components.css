@@ -1030,14 +1030,14 @@ html:not(.dark) .status-live-pill {
     white-space: nowrap !important;
     cursor: pointer !important;
     transform: none !important;
-    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease !important;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease !important;
 }
 
 :is(.queue-button, .ui-btn.queue-button):hover {
     background: var(--accent) !important;
     color: var(--accent-foreground) !important;
     border-color: var(--border) !important;
-    transform: translateY(-1px) !important;
+    transform: none !important;
 }
 
 :is(.queue-button, .ui-btn.queue-button) .queue-counter {
@@ -1056,11 +1056,6 @@ html:not(.dark) .status-live-pill {
     line-height: 1 !important;
     font-family: var(--font-sans) !important;
     transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease !important;
-}
-
-:is(.queue-button, .ui-btn.queue-button):hover .queue-counter {
-    background: var(--card) !important;
-    border-color: var(--border) !important;
 }
 
 /* Number & Identifier Primitives (Aligned to Design System Sans Standard) */
@@ -3410,6 +3405,46 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
 
 .section-container :is(.table-container, .ui-table-wrap) :is(th, td, .th-cell, .td-cell).text-right {
     text-align: right !important;
+}
+
+/* Center Action and Status titles. */
+:is(th, .th-cell).ui-table-heading-center,
+table thead th.ui-table-heading-center,
+.section-container :is(.table-container, .ui-table-wrap) :is(th, .th-cell).ui-table-heading-center {
+    text-align: center !important;
+    justify-content: center !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    left: 0 !important;
+}
+
+/* Default alignment for the final column; Action and Status override below. */
+table tr > :is(th, td):last-child:not([colspan]),
+.table-header-row > .th-cell:last-child,
+.table-row > .td-cell:last-child,
+.section-container :is(.table-container, .ui-table-wrap, .table-wrap) :is(th, td, .th-cell, .td-cell):last-child:not([colspan]) {
+    text-align: right !important;
+    justify-content: flex-end !important;
+}
+
+/* Center entire Action and Status columns, including rightmost columns. */
+.section-container :is(.table-container, .ui-table-wrap, .table-wrap) :is(.table-header-row, .table-row) > :is(.th-cell, .td-cell):is(.col-action, .col-action-type, .col-status, .ui-table-heading-center),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(1)) > :is(thead, tbody) > tr > :is(th, td):nth-child(1):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(2)) > :is(thead, tbody) > tr > :is(th, td):nth-child(2):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(3)) > :is(thead, tbody) > tr > :is(th, td):nth-child(3):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(4)) > :is(thead, tbody) > tr > :is(th, td):nth-child(4):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(5)) > :is(thead, tbody) > tr > :is(th, td):nth-child(5):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(6)) > :is(thead, tbody) > tr > :is(th, td):nth-child(6):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(7)) > :is(thead, tbody) > tr > :is(th, td):nth-child(7):not([colspan]) {
+    text-align: center !important;
+    justify-content: center !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    left: 0 !important;
+}
+
+.section-container :is(.table-container, .ui-table-wrap) .td-cell.col-action > .action-group {
+    justify-content: center !important;
 }
 
 /* Checkbox column positioning & spacing */

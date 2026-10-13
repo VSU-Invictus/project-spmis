@@ -310,7 +310,7 @@ const programs = [
         }
         function appTable(items) {
             return items.length
-                ? `<div class="table-wrap"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th>Status</th><th>Decision / reason</th></tr></thead><tbody>${appRows(items)}</tbody></table></div>`
+                ? `<div class="table-wrap"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th class=\"ui-table-heading-center\">Status</th><th>Decision / reason</th></tr></thead><tbody>${appRows(items)}</tbody></table></div>`
                 : '<div class="empty">No applications match this view.</div>';
         }
         function addApplication(type, name, payload) {
@@ -384,7 +384,7 @@ const programs = [
                 const total = Math.max(1, Math.ceil(matches.length / size));
                 current = Math.min(current, total);
                 $("#roster-results").innerHTML = matches.length
-                    ? `<div class="table-wrap"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th>Action</th></tr></thead><tbody>${matches
+                    ? `<div class="table-wrap"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th class=\"ui-table-heading-center\">Action</th></tr></thead><tbody>${matches
                         .slice((current - 1) * size, current * size)
                         .map(
                             (s) =>
@@ -866,7 +866,7 @@ const programs = [
                     p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
                 );
                 $("#entity-list").innerHTML = filtered.length
-                    ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
+                    ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th class=\"ui-table-heading-center\">Status</th>${isProgram ? "<th class=\"ui-table-heading-center\">Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
                     : '<p class="empty">No matching entries. Try another name.</p>';
             }
             $("#entity-search").oninput = render;
