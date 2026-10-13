@@ -29,10 +29,12 @@
   justify-content: center;
 }
 
-.th-cell.col-target, .td-cell.col-target {
+.section-container .table-container :is(.table-header-row, .table-row) > :is(.th-cell, .td-cell).col-target {
   flex: 280 1 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding-right: var(--space-9, 24px);
+  text-align: center !important;
+  justify-content: center !important;
+  padding-left: var(--space-9, 24px) !important;
+  padding-right: var(--space-9, 24px) !important;
 }
