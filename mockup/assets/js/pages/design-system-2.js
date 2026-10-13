@@ -1,6 +1,49 @@
 /* Extracted from pages/design-system.html */
 // Wire Interactive Style Guide Demos: Skeleton Loading, Modals & Toasts
 document.addEventListener('DOMContentLoaded', () => {
+  const textLoadingButton = document.getElementById('demo-simulate-text-loading-btn');
+  const textLoadingLabel = document.getElementById('demo-text-loading-label');
+  const textLoadingStatus = document.getElementById('demo-text-loading-status');
+  const loadingTexts = document.querySelectorAll('#demo-text-loading-grid [data-text-loading-demo]');
+
+  if (textLoadingButton && textLoadingLabel && textLoadingStatus && loadingTexts.length) {
+    textLoadingButton.addEventListener('click', () => {
+      if (textLoadingButton.disabled) return;
+      textLoadingButton.disabled = true;
+      textLoadingLabel.textContent = 'Loading texts…';
+      textLoadingStatus.textContent = 'Loading typography examples…';
+
+      const placeholders = Array.from(loadingTexts, text => {
+        const style = getComputedStyle(text);
+        const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.4;
+        const lineCount = Math.max(1, Math.round(text.getBoundingClientRect().height / lineHeight));
+        const overlay = document.createElement('span');
+        overlay.className = 'ui-text-loading-placeholder';
+        overlay.setAttribute('aria-hidden', 'true');
+        for (let line = 0; line < lineCount; line++) {
+          const bar = document.createElement('span');
+          bar.className = 'ui-skeleton ui-skeleton--text-line';
+          overlay.appendChild(bar);
+        }
+        text.appendChild(overlay);
+        text.classList.add('ui-text--loading');
+        text.setAttribute('aria-busy', 'true');
+        return { text, overlay };
+      });
+
+      setTimeout(() => {
+        placeholders.forEach(({ text, overlay }) => {
+          text.classList.remove('ui-text--loading');
+          text.setAttribute('aria-busy', 'false');
+          overlay.remove();
+        });
+        textLoadingButton.disabled = false;
+        textLoadingLabel.textContent = 'Simulate Skeleton Loading (280ms)';
+        textLoadingStatus.textContent = 'Typography examples loaded. You can preview again.';
+      }, 280);
+    });
+  }
+
   // Card previews keep their content in place to avoid layout shifts.
   const cardLoadingButton = document.getElementById('demo-simulate-card-loading-btn');
   const cardLoadingLabel = document.getElementById('demo-card-loading-label');

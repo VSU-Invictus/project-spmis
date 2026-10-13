@@ -2764,6 +2764,34 @@ tr:nth-last-child(-n+2) .ui-tags-popover,
     border-radius: var(--radius-full);
 }
 
+/* Text stays in the document flow so wrapped lines keep their dimensions. */
+.ui-text--loading {
+    position: relative;
+}
+
+.ui-text--loading > .ui-text-loading-content {
+    visibility: hidden;
+}
+
+.ui-text-loading-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.ui-skeleton--text-line {
+    height: 0.75em;
+    border-radius: var(--radius-sm);
+}
+
+.ui-text-loading-placeholder > .ui-skeleton:last-child:not(:first-child) {
+    width: 65%;
+}
+
 .ui-loading-placeholder {
     display: none;
     position: absolute;

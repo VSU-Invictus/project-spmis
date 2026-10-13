@@ -108,6 +108,12 @@ To maintain backward compatibility with legacy markup while enabling full theme 
 - `--font-mono`: `Geist Mono, monospace` for IDs, codes, numerical metrics, and audit timestamps.
 - `--tracking-normal`: Default letter spacing (`0em`).
 
+### Text Skeleton Loading
+
+The Typography section provides a right-aligned **Simulate Skeleton Loading (280ms)** button matching the Cards and Tables previews. It covers heading scales, captions, body and muted paragraphs, monospace values, and sample labels.
+
+Keep the original text inside `.ui-text-loading-content` and add `.ui-text--loading` to its heading or paragraph while pending. Append an `aria-hidden="true"` `.ui-text-loading-placeholder` containing `.ui-skeleton.ui-skeleton--text-line` spans, one per wrapped text line. The absolute overlay preserves the original line wrapping and spacing; its bars scale with the text's font size, and the last line of a multiline block is shorter. Set `aria-busy="true"` on each example and announce loading through a separate status. On completion, remove the overlay and loading class and set `aria-busy="false"`. Shared skeleton colors adapt to both themes, and reduced-motion preferences disable shimmer.
+
 ### Spacing Scale
 
 The base spacing unit is `--spacing: 0.25rem` (4px):

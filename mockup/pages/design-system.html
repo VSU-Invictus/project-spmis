@@ -154,44 +154,51 @@
         <h2 class="ui-section-title">Typography</h2>
         <span class="ui-section-desc">Outfit font family with Geist Mono for codes and tabular metrics</span>
       </div>
-      <div class="ui-grid ui-grid-cols-2">
+      <div class="ui-demo-loading-toolbar">
+        <span id="demo-text-loading-status" class="ui-text-muted" role="status" aria-live="polite" aria-atomic="true">Preview loading without changing text spacing.</span>
+        <button type="button" id="demo-simulate-text-loading-btn" class="ui-btn ui-btn-outline ui-demo-simulate-button" aria-controls="demo-text-loading-grid">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span id="demo-text-loading-label">Simulate Skeleton Loading (280ms)</span>
+        </button>
+      </div>
+      <div class="ui-grid ui-grid-cols-2" id="demo-text-loading-grid">
         <div class="ui-typography-sample">
-          <span class="ui-btn-label">Headings Scale</span>
+          <span class="ui-btn-label" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Headings Scale</span></span>
           <div>
-            <h1 class="ui-heading-1">Primary Heading 1 (Display Title)</h1>
-            <p class="ui-text-caption">30px &middot; Font-weight 800 &middot; Letter-spacing -0.025em &middot; <code>var(--foreground)</code></p>
+            <h1 class="ui-heading-1" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Primary Heading 1 (Display Title)</span></h1>
+            <p class="ui-text-caption" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">30px &middot; Font-weight 800 &middot; Letter-spacing -0.025em &middot; <code>var(--foreground)</code></span></p>
           </div>
           <div>
-            <h2 class="ui-heading-2">Secondary Heading 2 (Section Title)</h2>
-            <p class="ui-text-caption">22px &middot; Font-weight 700 &middot; Letter-spacing -0.02em &middot; <code>var(--foreground)</code></p>
+            <h2 class="ui-heading-2" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Secondary Heading 2 (Section Title)</span></h2>
+            <p class="ui-text-caption" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">22px &middot; Font-weight 700 &middot; Letter-spacing -0.02em &middot; <code>var(--foreground)</code></span></p>
           </div>
           <div>
-            <h3 class="ui-heading-3">Tertiary Heading 3 (Card &amp; Panel Header)</h3>
-            <p class="ui-text-caption">18px &middot; Font-weight 600 &middot; <code>var(--card-foreground)</code></p>
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Tertiary Heading 3 (Card &amp; Panel Header)</span></h3>
+            <p class="ui-text-caption" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">18px &middot; Font-weight 600 &middot; <code>var(--card-foreground)</code></span></p>
           </div>
         </div>
 
         <div class="ui-typography-sample">
-          <span class="ui-btn-label">Paragraph &amp; Muted Hierarchy</span>
+          <span class="ui-btn-label" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Paragraph &amp; Muted Hierarchy</span></span>
           <div>
-            <h3 class="ui-heading-3">Primary Paragraph Text</h3>
-            <p class="ui-text">
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Primary Paragraph Text</span></h3>
+            <p class="ui-text" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
               SPMIS provides a unified academic progress management portal with warm surfaces and clear hierarchy.
               Primary text is styled with <code>var(--foreground)</code> to maintain optimal readability and comfortable contrast.
-            </p>
+            </span></p>
           </div>
           <div>
-            <h3 class="ui-heading-3">Muted Descriptive Text</h3>
-            <p class="ui-text-muted">
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Muted Descriptive Text</span></h3>
+            <p class="ui-text-muted" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
               Secondary details, audit timestamps, and status explanations utilize <code>var(--muted-foreground)</code>
               to establish quiet visual depth without distracting from critical operational data.
-            </p>
+            </span></p>
           </div>
           <div>
-            <h3 class="ui-heading-3">Monospace Data Text</h3>
-            <p class="ui-text-mono">
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Monospace Data Text</span></h3>
+            <p class="ui-text-mono" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
               Student ID: 24-1-00001 &middot; Roster Count: 2,850 &middot; Status: VERIFIED_OK
-            </p>
+            </span></p>
           </div>
         </div>
       </div>
