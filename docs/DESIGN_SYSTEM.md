@@ -114,6 +114,8 @@ The Typography section provides a right-aligned **Simulate Skeleton Loading (280
 
 Keep the original text inside `.ui-text-loading-content` and add `.ui-text--loading` to its heading or paragraph while pending. Append an `aria-hidden="true"` `.ui-text-loading-placeholder` containing `.ui-skeleton.ui-skeleton--text-line` spans, one per wrapped text line. The absolute overlay preserves the original line wrapping and spacing; its bars scale with the text's font size, and the last line of a multiline block is shorter. Set `aria-busy="true"` on each example and announce loading through a separate status. On completion, remove the overlay and loading class and set `aria-busy="false"`. Shared skeleton colors adapt to both themes, and reduced-motion preferences disable shimmer.
 
+Every Admin, Faculty, and Auth route already loads `assets/js/card-loading.js`, which also applies this treatment to visible headings, paragraphs, captions, muted/monospace text, and breadcrumb/year labels during the shared 280ms initial loading phase. Add `data-text-loading` to opt in other text containers. Content inside a loading card or table uses its existing skeleton; navigation, controls and their labels, forms, dialogs, hidden content, live announcements, and focused elements remain available. Only outer text containers get overlays. On completion, the controller restores the original text nodes and `aria-busy` attributes, removes temporary wrappers/placeholders, and preserves any newer text rendered during loading.
+
 ### Spacing Scale
 
 The base spacing unit is `--spacing: 0.25rem` (4px):

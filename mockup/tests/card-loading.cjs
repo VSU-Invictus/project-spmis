@@ -15,6 +15,7 @@ class Element {
     this.inert = false;
     this.textContent = '';
     this.visible = true;
+    this.height = 24;
     this.classList = {
       contains: name => this.className.split(' ').includes(name),
       add: name => { this.className += ` ${name}`; },
@@ -24,14 +25,31 @@ class Element {
   setAttribute(name, value) { this.attributes.set(name, value); }
   getAttribute(name) { return this.attributes.get(name) ?? null; }
   removeAttribute(name) { this.attributes.delete(name); }
-  appendChild(child) { child.parentElement = this; this.children.push(child); return child; }
-  remove() { this.parentElement.children = this.parentElement.children.filter(child => child !== this); }
+  get parentNode() { return this.parentElement; }
+  get childNodes() { return this.children; }
+  get firstChild() { return this.children[0]; }
+  appendChild(child) {
+    if (child.parentElement) child.remove();
+    child.parentElement = this;
+    this.children.push(child);
+    return child;
+  }
+  insertBefore(child, reference) {
+    if (child.parentElement) child.remove();
+    child.parentElement = this;
+    this.children.splice(this.children.indexOf(reference), 0, child);
+  }
+  remove() {
+    if (this.parentElement) this.parentElement.children = this.parentElement.children.filter(child => child !== this);
+    this.parentElement = null;
+  }
   contains(element) { return this === element || this.children.some(child => child.contains(element)); }
   matches(selector) {
     return selector.split(',').some(part => {
       const value = part.trim();
       if (value.startsWith('.')) return this.classList.contains(value.slice(1));
-      if (value === '[role="dialog"]') return this.getAttribute('role') === 'dialog';
+      const attribute = value.match(/^\[([^=\]]+)(?:="([^"]*)")?\]$/);
+      if (attribute) return attribute[2] === undefined ? this.attributes.has(attribute[1]) : this.getAttribute(attribute[1]) === attribute[2];
       if (value.startsWith('[')) return this.attributes.has(value.slice(1, -1));
       return this.tagName === value;
     });
@@ -46,6 +64,7 @@ class Element {
     return null;
   }
   getClientRects() { return this.visible ? [{}] : []; }
+  getBoundingClientRect() { return { height: this.height }; }
 }
 
 function fixture(readyState = 'interactive') {
@@ -65,7 +84,10 @@ function fixture(readyState = 'interactive') {
       return matches;
     }
   };
-  const window = { setTimeout: (handler, delay) => timers.push({ handler, delay }) };
+  const window = {
+    setTimeout: (handler, delay) => timers.push({ handler, delay }),
+    getComputedStyle: () => ({ fontSize: '16px', lineHeight: '24px' })
+  };
   const context = vm.createContext({ document, window, queueMicrotask: handler => microtasks.push(handler) });
   return {
     body, document, timers, listeners,
@@ -142,12 +164,72 @@ empty.flush();
 assert.equal(empty.timers.length, 0, 'Table-only routes must leave their existing loader in control');
 assert.equal(empty.body.querySelector('.ui-loading-status'), null);
 
+const page = fixture();
+function addText(parent, tag = 'p', classes = '') {
+  const text = parent.appendChild(new Element(tag, classes));
+  text.textContent = 'Original page text';
+  text.appendChild(new Element('code')).textContent = '24-1-00001';
+  return text;
+}
+const heading = addText(page.body, 'h1');
+const inlineCode = heading.children[0];
+const paragraph = addText(page.body);
+paragraph.height = 72;
+paragraph.setAttribute('aria-busy', 'false');
+const nestedCaption = addText(paragraph, 'small');
+const cardText = addText(page.body.appendChild(new Element('section', 'ui-card')));
+const tableText = addText(page.body.appendChild(new Element('div', 'ui-table-wrap')));
+const navText = addText(page.body.appendChild(new Element('nav')));
+const formText = addText(page.body.appendChild(new Element('form')));
+const modalText = addText(page.body.appendChild(new Element('div', 'modal-backdrop')));
+const liveText = addText(page.body);
+liveText.setAttribute('role', 'status');
+const hiddenText = addText(page.body);
+hiddenText.setAttribute('aria-hidden', 'true');
+const linkText = addText(page.body);
+linkText.appendChild(new Element('a'));
+const focusedText = addText(page.body);
+page.document.activeElement = focusedText.children[0];
+page.run();
+page.listeners.DOMContentLoaded();
+page.flush();
+assert.equal(page.timers.length, 1, 'Cards and typography must share one 280ms loading phase');
+assert.equal(page.timers[0].delay, 280);
+assert.equal(heading.getAttribute('aria-busy'), 'true');
+assert.equal(heading.children[0].children[0], inlineCode, 'Loading must retain the original inline nodes');
+assert.equal(paragraph.children[1].children.length, 3, 'Match the rendered paragraph line count');
+assert.equal(paragraph.children[1].getAttribute('aria-hidden'), 'true');
+assert.equal(nestedCaption.getAttribute('aria-busy'), null, 'Nested captions must not receive duplicate overlays');
+for (const text of [cardText, tableText, navText, formText, modalText, liveText, hiddenText, linkText, focusedText]) {
+  assert.equal(text.getAttribute('aria-busy'), null, 'Other loaders, controls, navigation, dialogs, live status, and focus stay untouched');
+}
+page.timers[0].handler();
+assert.deepEqual(heading.children, [inlineCode], 'Restore the original DOM structure without cloning or replacing inline nodes');
+assert.equal(heading.getAttribute('aria-busy'), null);
+assert.equal(paragraph.getAttribute('aria-busy'), 'false');
+assert.equal(paragraph.querySelector('.ui-text-loading-content'), null);
+assert.equal(paragraph.querySelector('.ui-text-loading-placeholder'), null);
+assert.equal(page.body.querySelector('.ui-loading-status').textContent, 'Page details loaded.');
+
+const textOnly = fixture('complete');
+const updated = addText(textOnly.body, 'h2');
+textOnly.run();
+textOnly.flush();
+assert.equal(textOnly.timers.length, 1, 'Text-only pages also need skeleton loading');
+updated.children.slice().forEach(child => child.remove());
+const newer = updated.appendChild(new Element('span'));
+newer.textContent = 'Newer page data';
+textOnly.timers[0].handler();
+assert.deepEqual(updated.children, [newer], 'Do not overwrite a newer page render with the original loading content');
+assert.equal(updated.classList.contains('ui-text--loading'), false);
+
 let routes = 0;
 for (const group of ['admin', 'faculty', 'auth']) {
   const directory = path.join(__dirname, '../pages', group);
   for (const file of fs.readdirSync(directory).filter(file => file.endsWith('.html'))) {
     const html = fs.readFileSync(path.join(directory, file), 'utf8');
     assert.equal((html.match(/src="\.\.\/\.\.\/assets\/js\/card-loading\.js" defer/g) || []).length, 1, `${group}/${file} must include the shared loader exactly once`);
+    assert.match(html, /href="\.\.\/\.\.\/assets\/css\/components\.css(?:\?[^\"]*)?"/, `${group}/${file} must load the shared text skeleton styles`);
     routes++;
   }
 }
@@ -155,4 +237,4 @@ assert.equal(routes, 26);
 const css = fs.readFileSync(path.join(__dirname, '../assets/css/components.css'), 'utf8');
 assert.match(css, /:is\(\.ui-card--loading, \.ui-loading-active\) > \.ui-loading-placeholder\s*\{[^}]*position:\s*absolute;/,
   'The overlay must stay out of layout even when auth styles position all direct card children relatively');
-console.log('Card loading lifecycle, accessibility, exclusions, preserved content, and all 26 route integrations passed.');
+console.log('Card/text loading lifecycle, line counts, accessibility, exclusions, preserved nodes/newer content, and all 26 route integrations passed.');
