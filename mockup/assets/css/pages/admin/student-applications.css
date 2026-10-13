@@ -1,0 +1,17 @@
+/* Student Applications Queue Column Widths */
+.table-scroll :is(.table-header-row, .table-row) {
+  min-width: 740px;
+}
+
+/* Keep the embedded header and data rows the same width so column edges align. */
+body.queue-embedded .table-scroll .table-header-row,
+body.queue-embedded .table-scroll .table-body .table-row {
+  width: 100% !important;
+  min-width: 740px !important;
+  max-width: none !important;
+}
+
+.th-cell.col-id, .td-cell.col-id { flex: 159 1 0; }
+.th-cell.col-name, .td-cell.col-name { flex: 241 1 0; }
+.th-cell.col-program, .td-cell.col-program { flex: 275 1 0; }
+.th-cell.col-date, .td-cell.col-date { flex: 164 1 0; }

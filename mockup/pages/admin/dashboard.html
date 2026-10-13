@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - System Metrics &amp; Approvals</title>
+  <link rel="stylesheet" href="../../assets/css/design-system.css">
+  <link rel="stylesheet" href="../../assets/css/global.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/pages/admin/admin-common.css">
+  <link rel="stylesheet" href="../../assets/css/pages/admin/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/queue-modal.css">
+  <script src="../../assets/js/logout-confirmation.js" defer></script>
+  <script src="../../assets/js/card-loading.js" defer></script>
+</head>
+<body>
+  <div class="app-canvas ui-dashboard-app">
+    <iframe src="../../components/navigation/sidebar-admin.html?active=dashboard" id="sidebar-frame" class="sidebar-frame ui-dashboard-sidebar" title="Admin Sidebar"></iframe>
+
+    <main class="section-container ui-dashboard-main">
+      <div class="admin-top-header ui-dashboard-top-header">
+        <div class="header-left ui-dashboard-header-left">
+          <span class="red-dot ui-dashboard-header-dot" aria-hidden="true"></span>
+          <span class="breadcrumb-text ui-dashboard-breadcrumb">Admin Portal / Overview</span>
+        </div>
+        <div class="header-right ui-dashboard-header-right">
+          <span class="status-badge ui-dashboard-status"><span class="green-dot ui-dashboard-live-dot" aria-hidden="true"></span>System Live</span>
+          <span class="ay-text ui-dashboard-academic-year">AY 2026-2027</span>
+        </div>
+      </div>
+
+      <nav class="ui-dashboard-mobile-nav" aria-label="Admin pages">
+        <a href="dashboard.html" aria-current="page">Overview</a>
+        <a href="students.html">Students</a>
+        <a href="departments.html">Departments</a>
+        <a href="programs.html">Programs</a>
+        <a href="faculty.html">Faculty</a>
+        <a href="audit-log.html">Logs</a>
+      </nav>
+
+      <div class="ui-dashboard-content">
+        <header class="ui-dashboard-intro">
+          <h1>Dashboard</h1>
+          <p>System-wide metrics and real-time pending queue summaries.</p>
+        </header>
+
+        <section class="ui-dashboard-overview" aria-labelledby="pending-items-heading">
+          <h2 id="pending-items-heading">Pending Action Items</h2>
+          <div class="ui-dashboard-metrics">
+            <a href="dashboard.html?queue=student" data-queue-open="student" class="ui-card ui-card-interactive ui-dashboard-metric">
+              <span class="ui-dashboard-metric-top">
+                <span class="ui-card-title">Students</span>
+                <span class="ui-dashboard-icon ui-dashboard-icon--student" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </span>
+              </span>
+              <span class="ui-dashboard-metric-bottom">
+                <strong>4</strong>
+                <span class="ui-text-muted ui-dashboard-metric-action">Requires review <span class="arrow" aria-hidden="true">&rarr;</span></span>
+              </span>
+            </a>
+            <a href="dashboard.html?queue=department" data-queue-open="department" class="ui-card ui-card-interactive ui-dashboard-metric">
+              <span class="ui-dashboard-metric-top">
+                <span class="ui-card-title">Departments</span>
+                <span class="ui-dashboard-icon ui-dashboard-icon--department" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="21" x2="21" y2="21"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <polygon points="12 2 3 10 21 10"></polygon>
+                    <line x1="7" y1="21" x2="7" y2="10"></line>
+                    <line x1="12" y1="21" x2="12" y2="10"></line>
+                    <line x1="17" y1="21" x2="17" y2="10"></line>
+                  </svg>
+                </span>
+              </span>
+              <span class="ui-dashboard-metric-bottom">
+                <strong>5</strong>
+                <span class="ui-text-muted ui-dashboard-metric-action">Requires review <span class="arrow" aria-hidden="true">&rarr;</span></span>
+              </span>
+            </a>
+            <a href="dashboard.html?queue=program" data-queue-open="program" class="ui-card ui-card-interactive ui-dashboard-metric">
+              <span class="ui-dashboard-metric-top">
+                <span class="ui-card-title">Programs</span>
+                <span class="ui-dashboard-icon ui-dashboard-icon--program" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </span>
+              </span>
+              <span class="ui-dashboard-metric-bottom">
+                <strong>5</strong>
+                <span class="ui-text-muted ui-dashboard-metric-action">Requires review <span class="arrow" aria-hidden="true">&rarr;</span></span>
+              </span>
+            </a>
+            <a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="ui-card ui-card-interactive ui-dashboard-metric">
+              <span class="ui-dashboard-metric-top">
+                <span class="ui-card-title">Faculty</span>
+                <span class="ui-dashboard-icon ui-dashboard-icon--faculty" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </span>
+              </span>
+              <span class="ui-dashboard-metric-bottom">
+                <strong>4</strong>
+                <span class="ui-text-muted ui-dashboard-metric-action">Requires review <span class="arrow" aria-hidden="true">&rarr;</span></span>
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <div class="ui-dashboard-grid">
+          <section class="ui-card ui-dashboard-panel ui-dashboard-queue-panel" aria-labelledby="queue-heading">
+            <div class="ui-dashboard-panel-header">
+              <h2 id="queue-heading">Pending Approval Queue</h2>
+              <span>Requires System-Admin Action</span>
+            </div>
+
+            <div class="ui-table-wrap ui-dashboard-table-wrap" role="region" aria-label="Pending approval applications" tabindex="0">
+              <table class="ui-table ui-dashboard-table" aria-label="Pending approval applications">
+                <thead>
+                  <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Applicant / Title</th>
+                    <th scope="col">Department / Context</th>
+                    <th scope="col">Submitted</th>
+                    <th class="ui-table-heading-center" scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="ui-badge ui-badge--info">Faculty</span></td>
+                    <td>Dr. Eleanor Vance</td>
+                    <td>Computer Science</td>
+                    <td class="ui-dashboard-date">2026-09-10</td>
+                    <td><a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="ui-link-neutral ui-dashboard-review">Review <span class="arrow" aria-hidden="true">&rarr;</span></a></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ui-badge ui-badge--warning">Student</span></td>
+                    <td>Radz Ponce Moreno</td>
+                    <td>BS Computer Science</td>
+                    <td class="ui-dashboard-date">2026-09-10</td>
+                    <td><a href="dashboard.html?queue=student" data-queue-open="student" class="ui-link-neutral ui-dashboard-review">Review <span class="arrow" aria-hidden="true">&rarr;</span></a></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ui-badge ui-badge--cyan">Program</span></td>
+                    <td>BS Data Science</td>
+                    <td>New Addition</td>
+                    <td class="ui-dashboard-date">2026-09-09</td>
+                    <td><a href="dashboard.html?queue=program" data-queue-open="program" class="ui-link-neutral ui-dashboard-review">Review <span class="arrow" aria-hidden="true">&rarr;</span></a></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ui-badge ui-badge--info">Faculty</span></td>
+                    <td>Dr. Sophia Al-Mansoor</td>
+                    <td>Applied Mathematics</td>
+                    <td class="ui-dashboard-date">2026-09-08</td>
+                    <td><a href="dashboard.html?queue=faculty" data-queue-open="faculty" class="ui-link-neutral ui-dashboard-review">Review <span class="arrow" aria-hidden="true">&rarr;</span></a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <aside class="ui-card ui-dashboard-panel ui-dashboard-activity-panel" aria-labelledby="activity-heading">
+            <div class="ui-dashboard-panel-header">
+              <h2 id="activity-heading">System Activity Log</h2>
+              <span>Recent Audits</span>
+            </div>
+            <div class="ui-dashboard-activity-list">
+              <article class="ui-dashboard-activity-item"><div><h3>User Permissions Updated</h3><span class="ui-dashboard-time">10m ago</span></div><p>Admin updated role for Prof. Miller</p></article>
+              <article class="ui-dashboard-activity-item"><div><h3>Batch Students Enrolled</h3><span class="ui-dashboard-time">1h ago</span></div><p>18 new BS CS student profiles</p></article>
+              <article class="ui-dashboard-activity-item"><div><h3>System Backup Completed</h3><span class="ui-dashboard-time">3h ago</span></div><p>Automated database backup #1049</p></article>
+            </div>
+            <div class="ui-dashboard-activity-footer">
+              <span>Showing 3 of 128 logs</span>
+              <a href="audit-log.html" class="ui-link-neutral">View All Logs <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <footer class="admin-footer ui-dashboard-footer">
+        <span>&copy; 2026 Admin Portal. All rights reserved.</span>
+        <span>System Version 0.1.0</span>
+      </footer>
+    </main>
+  </div>
+
+  <script src="../../assets/js/admin-sidebar.js"></script>
+  <script src="../../assets/js/queue-modal.js"></script>
+</body>
+</html>
