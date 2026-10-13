@@ -1,11 +1,78 @@
 /* Faculty Applications Queue Column Widths */
+.controls-container {
+  margin-bottom: var(--space-6, 16px);
+}
+
+.table-margin-container {
+  margin-top: 0;
+}
+
+/* Center only the Role and Status headers and values in the embedded queue. */
+body.queue-embedded .table-header-row .th-cell:is(.col-role, .col-status),
+body.queue-embedded .table-body .td-cell:is(.col-role, .col-status) {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
 .table-scroll :is(.table-header-row, .table-row) {
   min-width: 1000px;
+}
+
+/* Keep the embedded header and data rows the same width so column edges align. */
+body.queue-embedded .table-scroll .table-header-row,
+body.queue-embedded .table-scroll .table-body .table-row {
+  width: 100% !important;
+  min-width: 1000px !important;
+  max-width: none !important;
 }
 
 .th-cell.col-name, .td-cell.col-name { flex: 200 1 0; }
 .th-cell.col-email, .td-cell.col-email { flex: 210 1 0; }
 .th-cell.col-dept, .td-cell.col-dept { flex: 230 1 0; }
-.th-cell.col-role, .td-cell.col-role { flex: 120 1 0; }
-.th-cell.col-status, .td-cell.col-status { flex: 120 1 0; }
-.th-cell.col-date, .td-cell.col-date { flex: 140 1 0; }
+.th-cell.col-role, .td-cell.col-role { flex: 0 0 120px !important; width: 120px !important; }
+.th-cell.col-status, .td-cell.col-status { flex: 0 0 120px !important; width: 120px !important; }
+.th-cell.col-date, .td-cell.col-date {
+  flex: 0 0 140px !important;
+  width: 140px !important;
+  padding-right: 1.5rem;
+}
+
+.th-cell.col-role,
+.td-cell.col-role,
+.th-cell.col-status,
+.td-cell.col-status,
+.th-cell.col-date,
+.td-cell.col-date {
+  justify-content: center !important;
+  text-align: center !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  position: relative;
+  left: 0.25rem;
+}
+
+.td-cell.col-role > .badge-pill,
+.td-cell.col-status > .badge-pill {
+  margin-inline: auto;
+}
+
+.th-cell.col-date,
+.td-cell.col-date {
+  left: -0.5rem;
+}
+
+.th-cell.col-date,
+body.queue-embedded .table-header-row .th-cell.col-date {
+  left: 0;
+  padding-right: var(--space-9, 24px) !important;
+  justify-content: flex-end !important;
+  text-align: right !important;
+}
+
+.td-cell.col-date,
+body.queue-embedded .table-body .td-cell.col-date {
+  left: 0;
+  padding-right: var(--space-9, 24px) !important;
+  justify-content: flex-end !important;
+  text-align: right !important;
+}

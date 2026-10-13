@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../../assets/css/components.css?v=9" />
   <script src="../../assets/js/faculty-sidebar.js"></script>
   <link rel="stylesheet" href="../../assets/css/pages/faculty/chat.css" />
+  <script src="../../assets/js/card-loading.js" defer></script>
 </head>
 <body data-page="chat">
   <a href="#main" class="skip">Skip to content</a>
@@ -47,21 +48,21 @@
           Refer to students by ID or program instead so the assistant can help without exposing personal data.</p>
       </div>
       <div class="ui-chat-prompts is-35d063e">
-        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have research experience?">
-          <span>Research experience</span>
-          <small>Explore faculty assessments</small>
+        <div class="ui-chat-prompt-card quick-link-item ui-card-interactive" role="button" tabindex="0" data-prompt="Which students have research experience?">
+          <h3>Research experience</h3>
+          <p>Explore faculty assessments</p>
         </div>
-        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students show teamwork?">
-          <span>Teamwork</span>
-          <small>Ask across student records</small>
+        <div class="ui-chat-prompt-card quick-link-item ui-card-interactive" role="button" tabindex="0" data-prompt="Which students show teamwork?">
+          <h3>Teamwork</h3>
+          <p>Ask across student records</p>
         </div>
-        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Find reviews mentioning communication.">
-          <span>Communication</span>
-          <small>Find relevant review excerpts</small>
+        <div class="ui-chat-prompt-card quick-link-item ui-card-interactive" role="button" tabindex="0" data-prompt="Find reviews mentioning communication.">
+          <h3>Communication</h3>
+          <p>Find relevant review excerpts</p>
         </div>
-        <div class="ui-chat-prompt-card" role="button" tabindex="0" data-prompt="Which students have robotics experience?">
-          <span>Robotics</span>
-          <small>Explore project experience</small>
+        <div class="ui-chat-prompt-card quick-link-item ui-card-interactive" role="button" tabindex="0" data-prompt="Which students have robotics experience?">
+          <h3>Robotics</h3>
+          <p>Explore project experience</p>
         </div>
       </div>
       <div class="ui-chat-columns">
@@ -120,7 +121,7 @@
           </div>
         </div>
         <!-- Right: Student Quick File Context Card -->
-        <div class="ui-chat-context-card">
+        <div class="ui-chat-context-card" data-card-loading>
           <div class="ui-chat-context-avatar">SP</div>
           <h3 class="ui-heading-3 is-e2b74ba">Sam Lee Parker</h3>
           <p class="ui-text-muted is-4909155">ID: 24-1-00001</p>
@@ -143,12 +144,12 @@
           </a>
         </div>
       </div>
-      <p class="muted">Use contributor assessments as context for your own decisions. Read full reviews and edit histories from the student roster.</p>
       <noscript><p class="notice">Enable JavaScript to display sample lists and use the mock interactions.</p></noscript>
+      <p class="muted application-footer-note">Use contributor assessments as context for your own decisions. Read full reviews and edit histories from the student roster.</p>
       <!-- Workspace Footer -->
       <footer class="workspace-footer">
         <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
-        <span>System Version 2.4.0</span>
+        <span>System Version 0.1.0</span>
       </footer>
     </main>
   </div>

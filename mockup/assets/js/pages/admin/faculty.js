@@ -13,23 +13,31 @@
     const facultyDepartment = document.getElementById('facultyDepartment');
     const facultyRole = document.getElementById('facultyRole');
     const facultyModalTitle = document.getElementById('facultyModalTitle');
+    const facultySubmit = facultyForm?.querySelector('.modal-submit');
+    const facultyEditNotice = document.getElementById('facultyEditNotice');
+    const facultyAddNotice = document.getElementById('facultyAddNotice');
     const toast = document.getElementById('toast');
 
     if (!tableBody) return;
     let mode = 'create';
     let selectedRow = null;
+    let originalRecord = null;
 
+    let toastTimer;
     function openModal(modal) { if (modal) modal.classList.add('show'); }
     function closeModal(modal) { if (modal) modal.classList.remove('show'); }
     function showToast(message) {
       if (!toast) return;
       toast.textContent = message;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2200);
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove('show'), 3000);
     }
     function roleBadge(role) {
-      const cls = role === 'admin' ? 'badge-admin' : 'badge-faculty';
-      return '<span class="badge-pill ' + cls + '">' + role + '</span>';
+      const isAdm = (role || '').toLowerCase() === 'admin';
+      const variant = isAdm ? 'destructive' : 'info';
+      const label = isAdm ? 'Admin' : 'Faculty';
+      return '<span class="ui-badge ui-badge--' + variant + '">' + label + '</span>';
     }
 
     function filterRows() {
@@ -54,8 +62,12 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
+      originalRecord = null;
       if (facultyModalTitle) facultyModalTitle.textContent = 'Add Faculty';
-      if (facultyName) facultyName.value = '';
+      if (facultySubmit) facultySubmit.textContent = 'Add Faculty';
+      if (facultyEditNotice) facultyEditNotice.hidden = true;
+      if (facultyAddNotice) facultyAddNotice.hidden = false;
+      if (facultyName) { facultyName.value = ''; facultyName.setCustomValidity(''); }
       if (facultyEmail) facultyEmail.value = '';
       if (facultyDepartment) facultyDepartment.selectedIndex = 0;
       if (facultyRole) facultyRole.value = 'faculty';
@@ -69,12 +81,20 @@
         mode = 'edit';
         selectedRow = row;
         if (facultyModalTitle) facultyModalTitle.textContent = 'Edit Faculty';
+        if (facultySubmit) facultySubmit.textContent = 'Update';
+        if (facultyEditNotice) facultyEditNotice.hidden = false;
+        if (facultyAddNotice) facultyAddNotice.hidden = true;
         const nameCell = row.querySelector('.col-name') || row.children[0];
         const emailCell = row.querySelector('.col-email') || row.children[1];
-        if (facultyName) facultyName.value = nameCell?.textContent.trim() || '';
-        if (facultyEmail) facultyEmail.value = emailCell?.textContent.trim() || '';
-        if (facultyDepartment) facultyDepartment.value = row.dataset.department || '';
-        if (facultyRole) facultyRole.value = row.dataset.role || 'faculty';
+        const name = nameCell?.textContent.trim() || '';
+        const email = emailCell?.textContent.trim() || '';
+        const department = row.dataset.department || '';
+        const role = row.dataset.role || 'faculty';
+        originalRecord = { name, email, department, role };
+        if (facultyName) { facultyName.value = name; facultyName.setCustomValidity(''); }
+        if (facultyEmail) facultyEmail.value = email;
+        if (facultyDepartment) facultyDepartment.value = department;
+        if (facultyRole) facultyRole.value = role;
         openModal(facultyModal);
       }
       if (event.target.classList.contains('remove-btn')) {
@@ -83,23 +103,17 @@
       }
     });
 
-    facultyForm?.addEventListener('submit', event => {
-      event.preventDefault();
-      const name = facultyName?.value.trim();
-      const email = facultyEmail?.value.trim();
-      const department = facultyDepartment?.value || '';
-      const role = facultyRole?.value || 'faculty';
-      if (!name || !email) return;
-
-      if (mode === 'edit' && selectedRow) {
-        selectedRow.dataset.name = name.toLowerCase();
-        selectedRow.dataset.email = email.toLowerCase();
-        selectedRow.dataset.department = department;
-        selectedRow.dataset.role = role;
-        const nameCell = selectedRow.querySelector('.col-name') || selectedRow.children[0];
-        const emailCell = selectedRow.querySelector('.col-email') || selectedRow.children[1];
-        const deptCell = selectedRow.querySelector('.col-dept') || selectedRow.children[2];
-        const roleCell = selectedRow.querySelector('.col-role') || selectedRow.children[3];
+    function performSubmit(data, submitMode, submitRow) {
+      const { name, email, department, role } = data;
+      if (submitMode === 'edit' && submitRow) {
+        submitRow.dataset.name = name.toLowerCase();
+        submitRow.dataset.email = email.toLowerCase();
+        submitRow.dataset.department = department;
+        submitRow.dataset.role = role;
+        const nameCell = submitRow.querySelector('.col-name') || submitRow.children[0];
+        const emailCell = submitRow.querySelector('.col-email') || submitRow.children[1];
+        const deptCell = submitRow.querySelector('.col-dept') || submitRow.children[2];
+        const roleCell = submitRow.querySelector('.col-role') || submitRow.children[3];
         if (nameCell) nameCell.textContent = name;
         if (emailCell) emailCell.textContent = email;
         if (deptCell) deptCell.textContent = department;
@@ -119,6 +133,33 @@
         setTimeout(() => showToast('Faculty Added Successfully'), 120);
       }
       filterRows();
+    }
+
+    facultyForm?.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = facultyName?.value.trim();
+      const email = facultyEmail?.value.trim();
+      const department = facultyDepartment?.value || '';
+      const role = facultyRole?.value || 'faculty';
+      if (!name || !email) return;
+      if (
+        mode === 'edit' &&
+        originalRecord &&
+        name === originalRecord.name &&
+        email === originalRecord.email &&
+        department === originalRecord.department &&
+        role === originalRecord.role
+      ) {
+        facultyName.setCustomValidity('Please enter a new, distinct value before updating.');
+        facultyName.reportValidity();
+        return;
+      }
+      performSubmit({ name, email, department, role }, mode, selectedRow);
+    });
+
+    [facultyName, facultyEmail, facultyDepartment, facultyRole].forEach(field => {
+      field?.addEventListener('input', () => facultyName?.setCustomValidity(''));
+      field?.addEventListener('change', () => facultyName?.setCustomValidity(''));
     });
 
     document.getElementById('confirmRemove')?.addEventListener('click', () => {
@@ -132,14 +173,12 @@
 
     document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
     document.getElementById('closeFaculty')?.addEventListener('click', () => closeModal(facultyModal));
+    document.getElementById('cancelFaculty')?.addEventListener('click', () => closeModal(facultyModal));
     if (!window.adminTableController && !tableBody?.__tableController) {
       searchInput?.addEventListener('input', filterRows);
       departmentFilter?.addEventListener('change', filterRows);
     }
 
-    [facultyModal, removeModal].forEach(modal => {
-      modal?.addEventListener('click', event => { if (event.target === modal) closeModal(modal); });
-    });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') { closeModal(facultyModal); closeModal(removeModal); }
     });

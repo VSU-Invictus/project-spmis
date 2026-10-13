@@ -1,6 +1,80 @@
 /* Extracted from pages/design-system.html */
 // Wire Interactive Style Guide Demos: Skeleton Loading, Modals & Toasts
 document.addEventListener('DOMContentLoaded', () => {
+  const textLoadingButton = document.getElementById('demo-simulate-text-loading-btn');
+  const textLoadingLabel = document.getElementById('demo-text-loading-label');
+  const textLoadingStatus = document.getElementById('demo-text-loading-status');
+  const loadingTexts = document.querySelectorAll('#demo-text-loading-grid [data-text-loading-demo]');
+
+  if (textLoadingButton && textLoadingLabel && textLoadingStatus && loadingTexts.length) {
+    textLoadingButton.addEventListener('click', () => {
+      if (textLoadingButton.disabled) return;
+      textLoadingButton.disabled = true;
+      textLoadingLabel.textContent = 'Loading texts…';
+      textLoadingStatus.textContent = 'Loading typography examples…';
+
+      const placeholders = Array.from(loadingTexts, text => {
+        const style = getComputedStyle(text);
+        const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.4;
+        const lineCount = Math.max(1, Math.round(text.getBoundingClientRect().height / lineHeight));
+        const overlay = document.createElement('span');
+        overlay.className = 'ui-text-loading-placeholder';
+        overlay.setAttribute('aria-hidden', 'true');
+        for (let line = 0; line < lineCount; line++) {
+          const bar = document.createElement('span');
+          bar.className = 'ui-skeleton ui-skeleton--text-line';
+          overlay.appendChild(bar);
+        }
+        text.appendChild(overlay);
+        text.classList.add('ui-text--loading');
+        text.setAttribute('aria-busy', 'true');
+        return { text, overlay };
+      });
+
+      setTimeout(() => {
+        placeholders.forEach(({ text, overlay }) => {
+          text.classList.remove('ui-text--loading');
+          text.setAttribute('aria-busy', 'false');
+          overlay.remove();
+        });
+        textLoadingButton.disabled = false;
+        textLoadingLabel.textContent = 'Simulate Skeleton Loading (280ms)';
+        textLoadingStatus.textContent = 'Typography examples loaded. You can preview again.';
+      }, 280);
+    });
+  }
+
+  // Card previews keep their content in place to avoid layout shifts.
+  const cardLoadingButton = document.getElementById('demo-simulate-card-loading-btn');
+  const cardLoadingLabel = document.getElementById('demo-card-loading-label');
+  const cardLoadingStatus = document.getElementById('demo-card-loading-status');
+  const loadingCards = document.querySelectorAll('#demo-card-loading-grid [data-card-loading-demo]');
+
+  if (cardLoadingButton && cardLoadingLabel && cardLoadingStatus && loadingCards.length) {
+    cardLoadingButton.addEventListener('click', () => {
+      if (cardLoadingButton.disabled) return;
+      cardLoadingButton.disabled = true;
+      cardLoadingLabel.textContent = 'Loading cards…';
+      cardLoadingStatus.textContent = 'Loading standard, KPI, and interactive cards…';
+      loadingCards.forEach(card => {
+        card.classList.add('ui-card--loading');
+        card.setAttribute('aria-busy', 'true');
+        card.inert = true;
+      });
+
+      setTimeout(() => {
+        loadingCards.forEach(card => {
+          card.classList.remove('ui-card--loading');
+          card.setAttribute('aria-busy', 'false');
+          card.inert = false;
+        });
+        cardLoadingButton.disabled = false;
+        cardLoadingLabel.textContent = 'Simulate Skeleton Loading (280ms)';
+        cardLoadingStatus.textContent = 'Card examples loaded. You can preview again.';
+      }, 280);
+    });
+  }
+
   // 1. Skeleton Simulation Demo
   const skelBtn = document.getElementById('demo-simulate-skeleton-btn');
   const tableWrap = document.querySelector('.ui-table-wrap');
@@ -28,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (i < 5) r.style.display = '';
         });
         skelBtn.disabled = false;
-      }, 320);
+      }, 280);
     });
   }
 
@@ -59,9 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     closeRejectBtn.addEventListener('click', () => rejectModal.classList.remove('active'));
   }
   if (rejectModal) {
-    rejectModal.addEventListener('click', (e) => {
-      if (e.target === rejectModal) rejectModal.classList.remove('active');
-    });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && rejectModal.classList.contains('active')) {
         rejectModal.classList.remove('active');

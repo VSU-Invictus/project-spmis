@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="../../assets/css/background/pixel.css">
+    <link rel="stylesheet" href="../../assets/css/background/grid.css">
     <link rel="stylesheet" href="../../assets/css/pages/auth/signup.css">
 
     <title>SPMIS - Sign Up</title>
+  <script src="../../assets/js/card-loading.js" defer></script>
 </head>
 <body class="bg-grid">
     <div class="auth-shell">
         <div class="auth-split">
             <!-- LEFT: brand card with the SPMIS logo here -->
-            <aside class="brand-card">
+            <aside class="brand-card" data-card-loading>
                 <a href="#" class="brand-logo" aria-label="SPMIS">
                     <img src="../../assets/icons/SPMIS.png" alt="SPMIS" />
                 </a>
@@ -42,7 +43,7 @@
             </aside>
 
             <!-- RIGHT: auth card with terracotta top/bottom accents -->
-            <section class="auth-card">
+            <section class="auth-card" data-card-loading>
                 <div class="auth-card-body">
                     <h2 class="auth-card-title">Create Account</h2>
                     <p class="auth-card-sub">Join SPMIS to manage your academic journey.</p>

@@ -1,4 +1,32 @@
 /* Extracted from pages/design-system.html */
+.ui-demo-loading-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-7);
+  margin-bottom: var(--space-12);
+}
+
+.ui-demo-loading-toolbar > .ui-btn {
+  margin-inline-start: auto;
+}
+
+.ui-demo-simulate-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: calc(var(--space-8) + var(--space-7));
+  inline-size: calc(var(--space-12) * 8);
+  max-inline-size: 100%;
+  padding: var(--space-1) var(--space-6);
+  font-size: calc(var(--font-size-base) - 0.5px);
+  gap: var(--space-2);
+}
+
+.ui-demo-simulate-button > svg {
+  flex-shrink: 0;
+}
+
     /* Living Style Guide Showcase Layout */
     body {
       background-color: var(--background);
@@ -1276,7 +1304,6 @@ html:not(.dark) .brand-footer {
 .is-009cc8c:not(#\#):not(#\#) { color: var(--primary); }
 .is-bd0475c:not(#\#):not(#\#) { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem; }
 .is-02ab777:not(#\#):not(#\#) { font-size: 0.8125rem; color: var(--muted-foreground); }
-.is-e8bc875:not(#\#):not(#\#) { min-height: 2.25rem; padding: 0.25rem 0.875rem; font-size: 0.78125rem; display: inline-flex; align-items: center; gap: 6px; }
 .is-479236c:not(#\#):not(#\#) { width: 40px; }
 .is-d3c8577:not(#\#):not(#\#) { display: block; font-size: 0.875rem; color: var(--foreground); }
 .is-06185fd:not(#\#):not(#\#) { font-size: 0.75rem; color: var(--muted-foreground); }

@@ -236,6 +236,8 @@ const programs = [
             "Business Administration"
         ];
         const getColor = (t) => ({ research: "purple", robotics: "rose", teamwork: "amber", communication: "cyan", algorithms: "cyan", leadership: "amber" }[t.toLowerCase()] || "neutral");
+        const full = (s) =>
+            s ? `${s.first || ""} ${s.middle ? s.middle + " " : ""}${s.last || ""}`.trim() : "";
         function renderTagsCluster(tags) {
             if (!tags || tags.length === 0) {
                 return '<span class="ui-badge ui-badge--neutral">No active reviews</span>';
@@ -285,9 +287,20 @@ const programs = [
                 e.target.setAttribute("aria-expanded", isOpen ? "true" : "false");
             }
         });
-        const full = (s) =>
-            `${s.first} ${s.middle ? s.middle + " " : ""}${s.last}`;
-        const badge = (s) => `<span class="ui-badge ui-badge--${s === 'approved' ? 'success' : s === 'pending' ? 'warning' : s === 'rejected' ? 'destructive' : 'neutral'}">${esc(s[0].toUpperCase() + s.slice(1))}</span>`;
+        const statusIcons = {
+            approved: `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+            active: `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+            pending: `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`,
+            rejected: `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+            "in progress": `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`
+        };
+        const badge = (s) => {
+            const st = (s || "").toLowerCase();
+            const variant = (st === "approved" || st === "active") ? "success" : st === "pending" ? "warning" : st === "rejected" ? "destructive" : st === "in progress" ? "info" : "neutral";
+            const icon = statusIcons[st] || "";
+            const label = esc(s ? (s[0].toUpperCase() + s.slice(1)) : "");
+            return `<span class="ui-badge ui-badge--${variant}">${icon}${label}</span>`;
+        };
         document
             .querySelectorAll("[data-name]")
             .forEach((e) => (e.textContent = state.name));
@@ -310,7 +323,7 @@ const programs = [
         }
         function appTable(items) {
             return items.length
-                ? `<div class="table-wrap"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th>Status</th><th>Decision / reason</th></tr></thead><tbody>${appRows(items)}</tbody></table></div>`
+                ? `<div class="table-wrap"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th class=\"ui-table-heading-center\">Status</th><th>Decision / reason</th></tr></thead><tbody>${appRows(items)}</tbody></table></div>`
                 : '<div class="empty">No applications match this view.</div>';
         }
         function addApplication(type, name, payload) {
@@ -340,18 +353,24 @@ const programs = [
         if (page === "students") {
             let current = 1,
                 timer;
-            let size = parseInt(document.getElementById("rows-per-page").value) || 5;
-            document.getElementById("rows-per-page").addEventListener("change", (e) => {
-                size = parseInt(e.target.value);
-                current = 1;
-                render();
-            });
+            const rowsPerPageEl = document.getElementById("rows-per-page");
+            const rowsPerPageGroup = rowsPerPageEl ? rowsPerPageEl.closest(".is-b57eafe") : null;
+            let size = parseInt(rowsPerPageEl ? rowsPerPageEl.value : 5, 10) || 5;
+            if (rowsPerPageEl) {
+                rowsPerPageEl.addEventListener("change", (e) => {
+                    size = parseInt(e.target.value, 10) || 5;
+                    current = 1;
+                    loadStudents();
+                });
+            }
             function render() {
-                const search = $("#search").value.trim().toLowerCase(),
-                    dept = $("#department").value,
-                    tag = $("#tag").value,
-                    owner = $("#owner").value;
+                const search = ($("#search")?.value || "").trim().toLowerCase(),
+                    dept = $("#department")?.value || "",
+                    tag = $("#tag")?.value || "",
+                    owner = $("#owner")?.value || "";
                 const matches = students.filter((s) => {
+                    const fullName = full(s).toLowerCase();
+                    const sId = (s.id || "").toLowerCase();
                     const reviews = state.reviews.filter(
                         (r) => r.student === s.id && r.status === "active",
                     );
@@ -360,8 +379,8 @@ const programs = [
                         !tag &&
                         !owner &&
                         (!search ||
-                            full(s).toLowerCase().includes(search) ||
-                            s.id.toLowerCase().includes(search))
+                            fullName.includes(search) ||
+                            sId.includes(search))
                     )
                         return true;
                     return reviews.some(
@@ -370,15 +389,43 @@ const programs = [
                             (!tag || r.tags.includes(tag)) &&
                             (!owner || r.owner === owner) &&
                             (!search ||
-                                r.body.toLowerCase().includes(search) ||
-                                full(s).toLowerCase().includes(search) ||
-                                s.id.toLowerCase().includes(search)),
+                                (r.body || "").toLowerCase().includes(search) ||
+                                fullName.includes(search) ||
+                                sId.includes(search)),
                     );
                 });
-                const total = Math.max(1, Math.ceil(matches.length / size));
+
+                const totalMatches = matches.length;
+                if (rowsPerPageEl) {
+                    if (rowsPerPageGroup) rowsPerPageGroup.style.display = "";
+                    let allowedSizes = [5];
+                    if (totalMatches >= 20) {
+                        allowedSizes = [5, 10, 20];
+                    } else if (totalMatches >= 10) {
+                        allowedSizes = [5, 10];
+                    } else {
+                        allowedSizes = [5];
+                    }
+                    rowsPerPageEl.disabled = totalMatches <= 5;
+
+                    const currentVal = parseInt(rowsPerPageEl.value, 10) || 5;
+                    rowsPerPageEl.innerHTML = allowedSizes
+                        .map((opt) => `<option value="${opt}">${opt}</option>`)
+                        .join("");
+
+                    if (allowedSizes.includes(currentVal)) {
+                        rowsPerPageEl.value = String(currentVal);
+                        size = currentVal;
+                    } else {
+                        size = allowedSizes[0];
+                        rowsPerPageEl.value = String(size);
+                    }
+                }
+
+                const total = Math.max(1, Math.ceil(totalMatches / size));
                 current = Math.min(current, total);
                 $("#roster-results").innerHTML = matches.length
-                    ? `<div class="table-wrap"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th>Action</th></tr></thead><tbody>${matches
+                    ? `<div class="table-wrap"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th class=\"ui-table-heading-center\">Action</th></tr></thead><tbody>${matches
                         .slice((current - 1) * size, current * size)
                         .map(
                             (s) => {
@@ -390,45 +437,66 @@ const programs = [
                     : students.length
                         ? '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No matching students</h2><p class="ui-empty-state__description">Try another review keyword or clear your filters.</p><button class="ui-btn ui-btn-outline" id="empty-clear" type="button">Clear filters</button></div>'
                         : '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No students yet</h2><p class="ui-empty-state__description">Student records will appear here when they are added.</p></div>';
-                $("#page-label").innerHTML = matches.length ? `Page ${current} of ${total} &middot; ${matches.length} entries` : "0 students";
-                $("#previous").disabled = current === 1;
-                $("#next").disabled = current === total;
+                if ($("#page-label")) {
+                    $("#page-label").innerHTML = matches.length ? `Page ${current} of ${total} &middot; ${matches.length} entries` : "0 students";
+                }
+                if ($("#previous")) $("#previous").disabled = current <= 1;
+                if ($("#next")) $("#next").disabled = current >= total || matches.length === 0;
                 if ($("#empty-clear")) $("#empty-clear").onclick = clear;
-            }
-            function clear() {
-                document
-                    .querySelectorAll("#search, #department, #tag, #owner")
-                    .forEach((e) => (e.value = ""));
-                clearTimeout(timer);
-                current = 1;
-                render();
             }
             function loadStudents() {
                 clearTimeout(timer);
+                const skelCount = Math.min(Math.max(3, size || 5), 5);
+                const skelRows = Array.from({ length: skelCount })
+                    .map(() => '<tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr>')
+                    .join('');
                 $("#roster-results").innerHTML =
-                    '<div role="status" aria-label="Loading students"><div class="skeleton"></div><div class="skeleton"></div></div>';
-                $("#page-label").textContent = "Loading students…";
-                $("#previous").disabled = $("#next").disabled = true;
-                timer = setTimeout(render, 300);
+                    `<div class="table-wrap" role="status" aria-label="Loading students"><table><thead><tr><th>Student ID</th><th>Student</th><th>Program</th><th>Visible review tags</th><th class=\"ui-table-heading-center\">Action</th></tr></thead><tbody>${skelRows}</tbody></table></div>`;
+                if ($("#page-label")) $("#page-label").textContent = "Loading entries…";
+                if ($("#previous")) $("#previous").disabled = true;
+                if ($("#next")) $("#next").disabled = true;
+                timer = setTimeout(render, 220);
             }
-            $("#clear-filters").onclick = clear;
-            document
-                .querySelectorAll(".filters input,.filters select")
-                .forEach((e) =>
-                    e.addEventListener("input", () => {
-                        clearTimeout(timer);
-                        current = 1;
+
+            const filterInputs = [
+                document.getElementById("search"),
+                document.getElementById("department"),
+                document.getElementById("tag"),
+                document.getElementById("owner")
+            ].filter(Boolean);
+
+            function clear() {
+                filterInputs.forEach((e) => (e.value = ""));
+                clearTimeout(timer);
+                current = 1;
+                loadStudents();
+            }
+
+            if ($("#clear-filters")) $("#clear-filters").onclick = clear;
+            filterInputs.forEach((e) => {
+                const onFilterChange = () => {
+                    clearTimeout(timer);
+                    current = 1;
+                    loadStudents();
+                };
+                e.addEventListener("input", onFilterChange);
+                e.addEventListener("change", onFilterChange);
+            });
+
+            if ($("#previous")) {
+                $("#previous").onclick = () => {
+                    if (current > 1) {
+                        current--;
                         loadStudents();
-                    }),
-                );
-            $("#previous").onclick = () => {
-                current--;
-                render();
-            };
-            $("#next").onclick = () => {
-                current++;
-                render();
-            };
+                    }
+                };
+            }
+            if ($("#next")) {
+                $("#next").onclick = () => {
+                    current++;
+                    loadStudents();
+                };
+            }
             const tags = [
                 ...new Set(
                     state.reviews
@@ -448,25 +516,20 @@ const programs = [
 
             // Populate programs in modal
             const programSelect = document.getElementById("program");
+            if (programSelect && (!programSelect.children.length || programSelect.children.length < programs.length)) {
+                programSelect.innerHTML = programs.map(p => `<option value="${p}">${p}</option>`).join("");
+            }
+            const modalBody = document.getElementById("register-modal-body");
+            if (modalBody) {
+                modalBody.addEventListener("click", (e) => e.stopPropagation());
+            }
             if (programSelect) {
-                programSelect.innerHTML = programs.map(p => `<option>${p}</option>`).join("");
+                programSelect.addEventListener("click", (e) => e.stopPropagation());
+                programSelect.addEventListener("change", (e) => e.stopPropagation());
             }
 
             const regForm = document.getElementById("registration-form");
-            const regSuccess = document.getElementById("registration-success");
             const cancelBtn = document.getElementById("cancel-register-btn");
-            const modalDoneBtn = document.getElementById("modal-done-btn");
-
-            if (cancelBtn) {
-                cancelBtn.addEventListener("click", () => registerModal.close());
-            }
-            if (modalDoneBtn) {
-                modalDoneBtn.addEventListener("click", () => {
-                    registerModal.close();
-                    if (regForm) regForm.hidden = false;
-                    if (regSuccess) regSuccess.hidden = true;
-                });
-            }
 
             if (regForm) {
                 regForm.onsubmit = (e) => {
@@ -498,8 +561,11 @@ const programs = [
                         program: $("#program").value,
                     };
                     addApplication("Student registration", full(payload), payload);
-                    regForm.hidden = true;
-                    if (regSuccess) regSuccess.hidden = false;
+                    regForm.reset();
+                    closeModal(true);
+                    if (typeof showSuccessToast === 'function') {
+                        showSuccessToast("Student registration application submitted!");
+                    }
                 };
             }
 
@@ -509,9 +575,14 @@ const programs = [
             }
 
             function openModal(updateRoute = true) {
+                const regStatus = document.getElementById("registration-status");
+                if (regStatus) regStatus.textContent = "";
                 if (!registerModal.open) {
                     registerModal.showModal();
                 }
+                setTimeout(() => {
+                    document.getElementById("student-id")?.focus();
+                }, 50);
                 if (updateRoute) {
                     const url = new URL(window.location.href);
                     url.searchParams.set("register", "true");
@@ -523,6 +594,7 @@ const programs = [
                 if (registerModal.open) {
                     registerModal.close();
                 }
+                openRegisterBtn?.focus();
                 if (updateRoute) {
                     const url = new URL(window.location.href);
                     if (url.searchParams.has("register") || url.searchParams.get("modal") === "register" || url.hash === "#register") {
@@ -547,21 +619,7 @@ const programs = [
             if (cancelBtn) {
                 cancelBtn.addEventListener("click", () => closeModal(true));
             }
-            if (modalDoneBtn) {
-                modalDoneBtn.addEventListener("click", () => {
-                    closeModal(true);
-                    if (regForm) regForm.hidden = false;
-                    if (regSuccess) regSuccess.hidden = true;
-                });
-            }
             if (registerModal) {
-                registerModal.addEventListener("click", (e) => {
-                    const rect = registerModal.getBoundingClientRect();
-                    const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
-                    if (!isInDialog) {
-                        closeModal(true);
-                    }
-                });
                 registerModal.addEventListener("cancel", (e) => {
                     e.preventDefault();
                     closeModal(true);
@@ -634,6 +692,14 @@ const programs = [
                         $("#review-text").setCustomValidity("");
                 if (page === "student-detail") {
                     $("#new-review-link").href = "new-review.html?id=" + selected.id;
+                    function renderRichText(text) {
+                        if (!text) return "";
+                        if (/<(strong|b|em|i|ul|ol|li|p|br|div)[\s>]/i.test(text)) return text;
+                        let safe = esc(text);
+                        safe = safe.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+                        safe = safe.replace(/\*([^*\n]+?)\*/g, "<em>$1</em>");
+                        return safe;
+                    }
                     function renderReviews() {
                         const visible = state.reviews.filter(
                             (r) =>
@@ -644,8 +710,30 @@ const programs = [
                         $("#reviews").innerHTML =
                             visible
                                 .map(
-                                    (r) =>
-                                        `<article class="ui-card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div>${r.status === "hidden" ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>' : '<span class="ui-badge ui-badge--success">Active</span>'}</div><p class="review-body">${esc(r.body)}</p><div>${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join("")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${esc(h.body)}</p><p class="muted">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details>${r.owner === "self" ? `<div class="actions is-82e88f3"><button class="secondary" data-edit="${r.id}">Edit</button><button class="secondary" data-toggle="${r.id}">${r.status === "hidden" ? "Unhide" : "Hide"}</button><button class="secondary" data-delete="${r.id}">Delete</button></div>` : ""}</article>`,
+                                    (r) => {
+                                        const statusBadge = r.status === "hidden"
+                                            ? '<span class="ui-badge ui-badge--neutral">Hidden · Only you</span>'
+                                            : '<span class="ui-badge ui-badge--success">Active</span>';
+                                        const kebabMenu = r.owner === "self" ? `
+                                            <div class="ui-dropdown-menu-container">
+                                                <button type="button" class="ui-btn-kebab" data-kebab="${r.id}" aria-label="Review options" aria-haspopup="true" aria-expanded="false" title="Review options">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="1.5"></circle>
+                                                        <circle cx="19" cy="12" r="1.5"></circle>
+                                                        <circle cx="5" cy="12" r="1.5"></circle>
+                                                    </svg>
+                                                </button>
+                                                <div class="ui-kebab-menu" id="kebab-menu-${r.id}" role="menu" hidden>
+                                                    <a href="new-review.html?id=${selected.id}&edit=${r.id}" class="ui-kebab-item" data-edit="${r.id}" role="menuitem">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                                        <span>Edit</span>
+                                                    </a>
+                                                    <button type="button" class="ui-kebab-item" data-toggle="${r.id}" role="menuitem">${r.status === "hidden" ? "Unhide" : "Hide"}</button>
+                                                    <button type="button" class="ui-kebab-item ui-kebab-item--danger" data-delete="${r.id}" role="menuitem">Delete</button>
+                                                </div>
+                                            </div>` : "";
+                                        return `<article class="ui-card review ${r.status === "hidden" ? "hidden-review" : ""}"><div class="between"><div><h3>${esc(r.owner === "self" ? state.name : r.author)} ${r.owner === "self" ? "· You" : ""}</h3><small>${esc(r.department)} · ${esc(r.date)}</small></div><div class="review-header-right">${statusBadge}${kebabMenu}</div></div><p class="review-body">${renderRichText(r.body)}</p><div class="review-tags">${r.tags.map((t) => `<span class="ui-badge ui-badge--${getColor(t)}">${esc(t)}</span>`).join(" ")}</div><details><summary>Edit history (${r.history.length})</summary>${r.history.length ? r.history.map((h) => `<p><small>Previous version · ${esc(h.date)}</small></p><p class="review-body">${renderRichText(h.body)}</p><p class="muted tags-list">Tags: ${esc(h.tags.join(", ") || "None")}</p>`).join("") : '<p class="muted">This review has not been edited.</p>'}</details></article>`;
+                                    }
                                 )
                                 .join("") ||
                             '<div class="ui-card empty">No visible reviews yet. Be the first to write one.</div>';
@@ -666,14 +754,8 @@ const programs = [
                             }
                         }
                         if (b.dataset.edit) {
-                            editing = state.reviews.find(
-                                (r) => r.id === Number(b.dataset.edit) && r.owner === "self",
-                            );
-                            if (editing) {
-                                $("#edit-body").value = editing.body;
-                                $("#edit-tags").value = editing.tags.join(", ");
-                                $("#edit-dialog").showModal();
-                            }
+                            location.href = `new-review.html?id=${selected.id}&edit=${b.dataset.edit}`;
+                            return;
                         }
                         if (b.dataset.delete) {
                             deleting = Number(b.dataset.delete);
@@ -790,7 +872,7 @@ const programs = [
                     p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
                 );
                 $("#entity-list").innerHTML = filtered.length
-                    ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th>Status</th>${isProgram ? "<th>Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
+                    ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th class=\"ui-table-heading-center\">Status</th>${isProgram ? "<th class=\"ui-table-heading-center\">Action</th>" : ""}</tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td>${isProgram ? `<td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`
                     : '<p class="empty">No matching entries. Try another name.</p>';
             }
             $("#entity-search").oninput = render;
@@ -945,27 +1027,52 @@ const programs = [
             host.after(controls);
             let current = 1;
             const size = controls.querySelector("select"),
+                rowsGroup = controls.querySelector(".is-b57eafe"),
                 buttons = controls.querySelectorAll("button"),
                 info = controls.querySelector("[role=status]");
             function update() {
-                const rows = [...host.querySelectorAll("tbody tr")],
-                    limit = Number(size.value),
-                    pages = Math.max(1, Math.ceil(rows.length / limit));
+                const rows = [...host.querySelectorAll("tbody tr:not(.skeleton-row)")];
+                const totalEntries = rows.length;
+
+                let limit = 5;
+                if (size) {
+                    if (rowsGroup) rowsGroup.style.display = "";
+                    let allowedSizes = [5];
+                    if (totalEntries >= 20) {
+                        allowedSizes = [5, 10, 20];
+                    } else if (totalEntries >= 10) {
+                        allowedSizes = [5, 10];
+                    } else {
+                        allowedSizes = [5];
+                    }
+                    size.disabled = totalEntries <= 5;
+
+                    const currentVal = parseInt(size.value, 10) || 5;
+                    size.innerHTML = allowedSizes
+                        .map((opt) => `<option value="${opt}">${opt}</option>`)
+                        .join("");
+
+                    if (allowedSizes.includes(currentVal)) {
+                        size.value = String(currentVal);
+                        limit = currentVal;
+                    } else {
+                        limit = allowedSizes[0];
+                        size.value = String(limit);
+                    }
+                }
+
+                const pages = Math.max(1, Math.ceil(totalEntries / limit));
                 current = Math.min(current, pages);
                 rows.forEach(
                     (row, i) =>
                         (row.hidden = i < (current - 1) * limit || i >= current * limit),
                 );
                 info.textContent =
-                    "Page " +
-                    current +
-                    " of " +
-                    pages +
-                    " · " +
-                    rows.length +
-                    " entries";
-                buttons[0].disabled = current === 1;
-                buttons[1].disabled = current === pages;
+                    totalEntries > 0
+                        ? "Page " + current + " of " + pages + " · " + totalEntries + " entries"
+                        : "0 entries";
+                buttons[0].disabled = current <= 1;
+                buttons[1].disabled = current >= pages || totalEntries === 0;
             }
             buttons[0].onclick = () => {
                 current--;

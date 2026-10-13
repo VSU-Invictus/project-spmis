@@ -11,6 +11,7 @@
     <script src="../../assets/js/pages/faculty/register-student.js"></script>
     <script src="../../assets/js/faculty-sidebar.js"></script>
     <link rel="stylesheet" href="../../assets/css/pages/faculty/register-student.css" />
+  <script src="../../assets/js/card-loading.js" defer></script>
 </head>
 
 <body data-page="register-student">
@@ -67,9 +68,9 @@
                         from the Programs page.</small>
                 </label>
                 <p id="registration-status" role="status"></p>
-                <div class="actions">
-                    <button>Submit application</button>
-                    <a class="button secondary" href="students.html">Cancel</a>
+                <div class="modal-actions">
+                    <a class="ui-btn ui-btn-outline" href="students.html">Cancel</a>
+                    <button class="ui-btn ui-btn-primary" type="submit">Submit application</button>
                 </div>
             </form>
             <section class="ui-card" id="registration-success" hidden>
@@ -90,7 +91,7 @@
               <!-- Workspace Footer -->
       <footer class="workspace-footer">
         <span>&copy; 2026 Faculty Portal. All rights reserved.</span>
-        <span>System Version 2.4.0</span>
+        <span>System Version 0.1.0</span>
       </footer>
     </main>
     </div>

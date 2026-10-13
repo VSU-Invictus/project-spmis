@@ -108,6 +108,14 @@ To maintain backward compatibility with legacy markup while enabling full theme 
 - `--font-mono`: `Geist Mono, monospace` for IDs, codes, numerical metrics, and audit timestamps.
 - `--tracking-normal`: Default letter spacing (`0em`).
 
+### Text Skeleton Loading
+
+The Typography section provides a right-aligned **Simulate Skeleton Loading (280ms)** button matching the Cards and Tables previews. It covers heading scales, captions, body and muted paragraphs, monospace values, and sample labels.
+
+Keep the original text inside `.ui-text-loading-content` and add `.ui-text--loading` to its heading or paragraph while pending. Append an `aria-hidden="true"` `.ui-text-loading-placeholder` containing `.ui-skeleton.ui-skeleton--text-line` spans, one per wrapped text line. The absolute overlay preserves the original line wrapping and spacing; its bars scale with the text's font size, and the last line of a multiline block is shorter. Set `aria-busy="true"` on each example and announce loading through a separate status. On completion, remove the overlay and loading class and set `aria-busy="false"`. Shared skeleton colors adapt to both themes, and reduced-motion preferences disable shimmer.
+
+Every Admin, Faculty, and Auth route already loads `assets/js/card-loading.js`, which also applies this treatment to visible headings, paragraphs, captions, muted/monospace text, and breadcrumb/year labels during the shared 280ms initial loading phase. Add `data-text-loading` to opt in other text containers. Content inside a loading card or table uses its existing skeleton; navigation, controls and their labels, forms, dialogs, hidden content, live announcements, and focused elements remain available. Only outer text containers get overlays. On completion, the controller restores the original text nodes and `aria-busy` attributes, removes temporary wrappers/placeholders, and preserves any newer text rendered during loading.
+
 ### Spacing Scale
 
 The base spacing unit is `--spacing: 0.25rem` (4px):
@@ -173,6 +181,37 @@ Standard card containers, compact metric tiles, and interactive navigation cards
   </a>
 </div>
 ```
+
+#### Card Skeleton Loading
+
+Use `.ui-card--loading` on an existing card while its data is pending. Keep the content in the DOM so the card retains its dimensions; the loading class hides the content and shows an absolutely positioned `.ui-loading-placeholder`. Mark the card `aria-busy="true"` and `inert` to prevent interaction with unfinished content. Announce loading and completion through a separate status outside the inert card.
+
+```html
+<p role="status" aria-live="polite">Loading card details…</p>
+<article class="ui-card ui-card--loading" aria-busy="true" inert>
+  <div class="ui-card-header">
+    <h3 class="ui-card-title">Student overview</h3>
+    <p class="ui-card-description">Student profile and review summary.</p>
+  </div>
+  <div class="ui-card-content">
+    <p class="ui-text">Card content remains in place while loading.</p>
+  </div>
+  <div class="ui-loading-placeholder" aria-hidden="true">
+    <span class="ui-skeleton ui-skeleton--title"></span>
+    <div class="ui-loading-lines">
+      <span class="ui-skeleton"></span>
+      <span class="ui-skeleton ui-skeleton--short"></span>
+    </div>
+  </div>
+</article>
+```
+
+- `.ui-skeleton` provides a full-width text placeholder using `--muted` and `--input`; both themes work without overrides.
+- Use `--title`, `--short`, `--metric`, and `--badge` modifiers for headings, shorter text, KPI values, and status pills. `.ui-loading-row` aligns multiple placeholders horizontally.
+- Shimmer animation is disabled under `prefers-reduced-motion: reduce`.
+- When data arrives, remove `.ui-card--loading` and `inert`, set `aria-busy="false"`, and announce completion. The living guide's Cards section includes a repeatable 280ms simulation for all three card variants, matching the table simulation button.
+
+All Admin, Faculty, and Auth routes load `assets/js/card-loading.js` for a 280ms initial card preview. It discovers `.ui-card` and `.ui-card-interactive` containers, including reviews rendered by page initialization. Legacy auth and information panels opt in with `data-card-loading`; use `data-card-loading="metric"` for KPI placeholders. The controller uses `.ui-loading-active`, an alias for the loading state that avoids triggering legacy `[class*="card"]` layout rules on information panels. Only outer cards are masked, so nested link cards do not receive duplicate overlays. Hidden panels, dialogs, navigation, and cards containing the current keyboard focus are skipped. Existing table loading remains independent. The controller restores each card's original `aria-busy` and `inert` state and removes its temporary placeholder after loading. Content and layout styles stay in place throughout; shimmer respects reduced motion.
 
 ---
 
@@ -757,7 +796,7 @@ Unified layout primitives anchoring the full-screen portal viewport: the persist
 <!-- 3. Pinned Viewport Workspace Footer (.admin-footer / .workspace-footer) -->
 <footer class="admin-footer" style="flex: none !important; height: auto !important; margin-top: auto; padding-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #42423F; font-size: 11px; color: #A0988E; width: 100%; background: transparent;">
   <span>&copy; 2026 Admin Portal. All rights reserved.</span>
-  <span>System Version 2.4.0</span>
+  <span>System Version 0.1.0</span>
 </footer>
 ```
 
@@ -791,10 +830,11 @@ For any standalone page under `mockup/pages/`, include the stylesheets in the `<
 ## Table Column Helpers
 
 - `.col-id` - tight, nowrap (Student ID).
-- `.col-action` - tight, left-aligned header and cells, nowrap; links/buttons (View, Review ->, Write review ->) never wrap.
+- `.col-action` - tight, centered, nowrap; links/buttons (View, Review ->, Write review ->) never wrap.
+- `.ui-table-heading-center` - identifies Action, Actions, and Status columns so their titles and body cells are centered with symmetric horizontal padding, including when they are the rightmost column.
 - `.col-60` / `.col-20` - Name / Status / Action tables use 60/20/20.
 - `.col-flex` - Student Name and Program share remaining width equally; Review Tags keep current ratio.
-- First and last columns hug table edges.
+- First and last columns hug table edges. The rightmost column's title and values are right-aligned, except Action and Status columns, which are centered.
 
 ## Light Mode Notes
 

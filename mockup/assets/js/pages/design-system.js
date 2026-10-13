@@ -214,8 +214,34 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     
     function updateView() {
-      const limit = parseInt(actualSelect.value) || 5;
-      const totalPages = Math.max(1, Math.ceil(rows.length / limit));
+      const totalEntries = rows.length;
+      let limit = 5;
+      if (actualSelect) {
+        let allowedSizes = [5];
+        if (totalEntries >= 20) {
+          allowedSizes = [5, 10, 20];
+        } else if (totalEntries >= 10) {
+          allowedSizes = [5, 10];
+        } else {
+          allowedSizes = [5];
+        }
+        actualSelect.disabled = totalEntries <= 5;
+
+        const currentVal = parseInt(actualSelect.value, 10) || 5;
+        actualSelect.innerHTML = allowedSizes
+          .map(opt => `<option value="${opt}">${opt}</option>`)
+          .join('');
+
+        if (allowedSizes.includes(currentVal)) {
+          actualSelect.value = String(currentVal);
+          limit = currentVal;
+        } else {
+          limit = allowedSizes[0];
+          actualSelect.value = String(limit);
+        }
+      }
+
+      const totalPages = Math.max(1, Math.ceil(totalEntries / limit));
       
       if (currentPage > totalPages) currentPage = totalPages;
       
@@ -233,11 +259,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const spans = Array.from(pagination.querySelectorAll('span'));
       const pageSpan = spans.find(s => s.textContent.trim().startsWith('Page '));
       if (pageSpan) {
-          pageSpan.textContent = `Page ${currentPage} of ${totalPages}`;
+          pageSpan.textContent = `Page ${currentPage} of ${totalPages} · ${totalEntries} entries`;
       }
       
-      if (prevBtn) prevBtn.disabled = currentPage === 1;
-      if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+      if (prevBtn) prevBtn.disabled = currentPage <= 1;
+      if (nextBtn) nextBtn.disabled = currentPage >= totalPages || totalEntries === 0;
     }
     
     actualSelect.addEventListener('change', () => {

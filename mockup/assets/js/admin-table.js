@@ -33,6 +33,8 @@
     }
 
     const isTable = tableBody.tagName.toLowerCase() === 'tbody' || tableBody.tagName.toLowerCase() === 'table';
+    const isApprovalQueue = /\/(faculty|student|program|department)-applications\.html$/.test(window.location.pathname);
+    const queueSort = isApprovalQueue ? document.querySelector('.dropdown-container.sort .dropdown-select') : null;
     const thead = container.querySelector('thead, .table-header-row');
     const colCount = thead ? (thead.querySelectorAll('th, .th-cell').length || 6) : (config.colCount || 6);
 
@@ -47,6 +49,10 @@
     const rowsPerPageSelect = config.rowsPerPage
       ? (typeof config.rowsPerPage === 'string' ? document.querySelector(config.rowsPerPage) : config.rowsPerPage)
       : (paginationEl ? paginationEl.querySelector('.ui-select-pill, select') : document.querySelector('.ui-table-pagination select, #rows-per-page'));
+
+    const rowsPerPageGroup = rowsPerPageSelect
+      ? rowsPerPageSelect.closest('.pagination-rows-per-page, .is-b57eafe')
+      : null;
 
     const pageInfo = config.pageInfo
       ? (typeof config.pageInfo === 'string' ? document.querySelector(config.pageInfo) : config.pageInfo)
@@ -91,7 +97,7 @@
 
     function getRows() {
       const rows = Array.from(tableBody.querySelectorAll('tr, .table-row')).filter(
-        r => !r.classList.contains('skeleton-row') && r.parentElement === tableBody
+        r => !r.classList.contains('skeleton-row') && !r.classList.contains('ui-queue-rejection-row') && r.parentElement === tableBody
       );
       rows.forEach(r => {
         if (r.querySelector('input[type="checkbox"]')) {
@@ -106,6 +112,7 @@
     }
 
     function updateCheckboxes() {
+      if (isApprovalQueue) return;
       const visibleRowCheckboxes = getVisibleRowCheckboxes();
       const total = visibleRowCheckboxes.length;
       const checked = visibleRowCheckboxes.filter(cb => cb.checked).length;
@@ -128,7 +135,7 @@
       }
     }
 
-    if (selectAllCb) {
+    if (selectAllCb && !isApprovalQueue) {
       selectAllCb.addEventListener('change', (e) => {
         const visibleRowCheckboxes = getVisibleRowCheckboxes();
         visibleRowCheckboxes.forEach(cb => {
@@ -143,7 +150,7 @@
       });
     }
 
-    if (selectAllBtn) {
+    if (selectAllBtn && !isApprovalQueue) {
       selectAllBtn.addEventListener('click', () => {
         const visibleRowCheckboxes = getVisibleRowCheckboxes();
         const allChecked = visibleRowCheckboxes.length > 0 && visibleRowCheckboxes.every(cb => cb.checked);
@@ -160,6 +167,7 @@
     }
 
     tableBody.addEventListener('change', (e) => {
+      if (isApprovalQueue) return;
       if (e.target && (e.target.classList.contains('row-checkbox') || e.target.type === 'checkbox')) {
         const row = e.target.closest('tr, .table-row');
         if (row) {
@@ -171,6 +179,7 @@
     });
 
     tableBody.addEventListener('click', (e) => {
+      if (isApprovalQueue) return;
       const row = e.target.closest('tr, .table-row');
       if (!row || row.classList.contains('skeleton-row')) return;
       if (e.target.tagName === 'INPUT' || e.target.closest('button, a, select, textarea, label')) return;
@@ -182,6 +191,8 @@
         updateCheckboxes();
       }
     });
+
+    let lastTotalPages = 1;
 
     function renderRows() {
       const allRows = getRows();
@@ -229,8 +240,51 @@
         return matchesSearch && matchesFilter;
       });
 
+      if (queueSort) {
+        const direction = queueSort.value.toLowerCase() === 'newest' ? -1 : 1;
+        matchedRows.sort((a, b) => {
+          const first = Date.parse(a.querySelector('.col-date')?.textContent?.trim() || '') || 0;
+          const second = Date.parse(b.querySelector('.col-date')?.textContent?.trim() || '') || 0;
+          return direction * (first - second);
+        });
+        matchedRows.forEach((row, index) => { row.style.order = String(index * 2); });
+      }
+
       const totalMatches = matchedRows.length;
+
+      // Dynamic Rows Per Page rules:
+      // - If entries < 5: dropdown is disabled, option 5
+      // - If 5 to 9 entries: only option 5
+      // - If 10 to 19 entries: options 5 and 10
+      // - If 20 and so on entries: options 5, 10, and 20
+      if (rowsPerPageSelect) {
+        if (rowsPerPageGroup) rowsPerPageGroup.style.display = '';
+        let allowedSizes = [5];
+        if (totalMatches >= 20) {
+          allowedSizes = [5, 10, 20];
+        } else if (totalMatches >= 10) {
+          allowedSizes = [5, 10];
+        } else {
+          allowedSizes = [5];
+        }
+        rowsPerPageSelect.disabled = totalMatches <= 5;
+
+        const currentVal = parseInt(rowsPerPageSelect.value, 10) || 5;
+        rowsPerPageSelect.innerHTML = allowedSizes
+          .map(opt => `<option value="${opt}">${opt}</option>`)
+          .join('');
+
+        if (allowedSizes.includes(currentVal)) {
+          rowsPerPageSelect.value = String(currentVal);
+          pageSize = currentVal;
+        } else {
+          pageSize = allowedSizes[0];
+          rowsPerPageSelect.value = String(pageSize);
+        }
+      }
+
       const totalPages = Math.max(1, Math.ceil(totalMatches / pageSize));
+      lastTotalPages = totalPages;
       if (currentPage > totalPages) currentPage = totalPages;
       if (currentPage < 1) currentPage = 1;
 
@@ -238,17 +292,30 @@
       const endIndex = startIndex + pageSize;
 
       allRows.forEach(row => {
-        row.style.display = 'none';
+        row.style.setProperty('display', 'none', 'important');
+        row.hidden = true;
       });
 
       matchedRows.forEach((row, index) => {
         if (index >= startIndex && index < endIndex) {
-          row.style.display = '';
+          row.style.removeProperty('display');
+          row.hidden = false;
           row.classList.add('table-fade-in');
         } else {
-          row.style.display = 'none';
+          row.style.setProperty('display', 'none', 'important');
+          row.hidden = true;
         }
       });
+
+      if (isApprovalQueue) {
+        tableBody.querySelectorAll('.ui-queue-rejection-row').forEach(panel => {
+          const anchorIndex = matchedRows.indexOf(panel.__queueRow);
+          panel.hidden = anchorIndex < 0 || panel.__queueRow.hidden;
+          panel.style.order = panel.dataset.bulkRejection
+            ? String(matchedRows.length * 2 + 1)
+            : String(anchorIndex * 2 + 1);
+        });
+      }
 
       if (emptyState) {
         if (emptyTitle) emptyTitle.textContent = allRows.length ? 'No matching results' : defaultEmptyTitle;
@@ -272,17 +339,21 @@
       }
 
       updateCheckboxes();
+      if (isApprovalQueue) tableBody.dispatchEvent(new Event('ui-table-rendered', { bubbles: true }));
     }
 
     function loadTableWithSkeleton(delay = 250) {
       clearTimeout(filterTimer);
 
-      const rows = Array.from(tableBody.children);
+      if (isApprovalQueue) tableBody.dispatchEvent(new Event('ui-table-view-changing', { bubbles: true }));
+
+      const rows = Array.from(tableBody.children).filter(r => !r.classList.contains('ui-queue-rejection-row'));
       rows.forEach(r => {
         if (r.classList.contains('skeleton-row')) {
           r.remove();
         } else {
-          r.style.display = 'none';
+          r.style.setProperty('display', 'none', 'important');
+          r.hidden = true;
         }
       });
 
@@ -334,6 +405,16 @@
       });
     });
 
+    const controlsArea = document.querySelector('.controls-container, .controls-actions, .filters');
+    if (controlsArea) {
+      controlsArea.addEventListener('change', (e) => {
+        if (e.target && e.target.tagName === 'SELECT' && !e.target.classList.contains('ui-select-pill') && !filterElements.includes(e.target)) {
+          currentPage = 1;
+          loadTableWithSkeleton(220);
+        }
+      });
+    }
+
     // Rows per page listener
     if (rowsPerPageSelect) {
       rowsPerPageSelect.addEventListener('change', () => {
@@ -356,10 +437,7 @@
     // Next page button
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
-        const allRows = getRows();
-        const totalMatches = allRows.length;
-        const totalPages = Math.max(1, Math.ceil(totalMatches / pageSize));
-        if (currentPage < totalPages) {
+        if (currentPage < lastTotalPages) {
           currentPage++;
           loadTableWithSkeleton(180);
         }

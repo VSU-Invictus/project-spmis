@@ -967,7 +967,7 @@ html:not(.dark) .status-live-pill {
     transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
 }
 
-:is(.ui-btn, .button):hover {
+:is(.ui-btn, .button):hover:not(:disabled) {
     background: color-mix(in srgb, var(--primary) 88%, var(--foreground));
 }
 
@@ -1030,14 +1030,14 @@ html:not(.dark) .status-live-pill {
     white-space: nowrap !important;
     cursor: pointer !important;
     transform: none !important;
-    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease !important;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease !important;
 }
 
 :is(.queue-button, .ui-btn.queue-button):hover {
     background: var(--accent) !important;
     color: var(--accent-foreground) !important;
     border-color: var(--border) !important;
-    transform: translateY(-1px) !important;
+    transform: none !important;
 }
 
 :is(.queue-button, .ui-btn.queue-button) .queue-counter {
@@ -1054,18 +1054,14 @@ html:not(.dark) .status-live-pill {
     font-size: 11px !important;
     font-weight: 700 !important;
     line-height: 1 !important;
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
     transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease !important;
 }
 
-:is(.queue-button, .ui-btn.queue-button):hover .queue-counter {
-    background: var(--card) !important;
-    border-color: var(--border) !important;
-}
-
-/* Monospace Number & Identifier Primitives ('Intel One Mono' Standard) */
+/* Number & Identifier Primitives (Aligned to Design System Sans Standard) */
 :is(.font-intel-mono, .number-font, .tabular-nums) {
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
+    font-variant-numeric: tabular-nums;
 }
 
 :is(
@@ -1082,7 +1078,8 @@ html:not(.dark) .status-live-pill {
     #roster-results td:nth-child(1),
     #roster-results th:nth-child(1)
 ) {
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
+    font-variant-numeric: tabular-nums;
 }
 
 :is(
@@ -1094,7 +1091,8 @@ html:not(.dark) .status-live-pill {
     .badge-count,
     .tag-count
 ) {
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
+    font-variant-numeric: tabular-nums;
 }
 
 :is(
@@ -1108,7 +1106,8 @@ html:not(.dark) .status-live-pill {
     #pending-count,
     #programs-stat strong
 ) {
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
+    font-variant-numeric: tabular-nums;
 }
 
 .ui-input:focus-visible {
@@ -1133,9 +1132,19 @@ html:not(.dark) .status-live-pill {
     color: var(--foreground);
 }
 
-:is(.ui-btn-outline, .button.secondary, button.secondary):hover {
+:is(.ui-btn-outline, .button.secondary, button.secondary):hover:not(:disabled) {
     background: var(--accent);
     color: var(--accent-foreground);
+}
+
+:is(.ui-btn-outline, .button.secondary, button.secondary):disabled,
+:is(.ui-btn-outline, .button.secondary, button.secondary)[disabled] {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .ui-btn-destructive {
@@ -2447,6 +2456,7 @@ button:hover .arrow,
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
+    gap: 0.375rem !important;
     padding: 0.25rem 0.625rem !important;
     border-radius: 9999px !important;
     font: 600 0.6875rem/1 var(--font-sans, 'Outfit', sans-serif) !important;
@@ -2456,6 +2466,15 @@ button:hover .arrow,
     line-height: 1.2 !important;
     min-height: 22px !important;
     box-sizing: border-box !important;
+}
+
+:is(.badge-pill, .ui-badge) :is(svg, .ui-icon) {
+    width: 12px !important;
+    height: 12px !important;
+    stroke-width: 2.5 !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
 }
 
 /* Green: Approved, Active, Addition, Created, Review */
@@ -2534,7 +2553,7 @@ button:hover .arrow,
 .ui-tags-more-btn {
     cursor: pointer;
     font-weight: 700 !important;
-    font-family: 'Intel One Mono', monospace !important;
+    font-family: var(--font-sans) !important;
     user-select: none;
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
@@ -2713,40 +2732,172 @@ tr:nth-last-child(-n+2) .ui-tags-popover,
     }
 }
 
+/* Token-based loading placeholders for standard, metric, and link cards. */
+.ui-skeleton {
+    display: block;
+    flex-shrink: 0;
+    width: 100%;
+    height: var(--space-7);
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--muted), var(--input), var(--muted));
+    background-size: 200% 100%;
+    animation: loading 1.2s infinite ease-in-out;
+}
+
+.ui-skeleton--title {
+    width: 65%;
+    height: var(--space-8);
+}
+
+.ui-skeleton--short {
+    width: 45%;
+}
+
+.ui-skeleton--metric {
+    width: 45%;
+    height: var(--space-16);
+}
+
+.ui-skeleton--badge {
+    width: 30%;
+    height: var(--space-9);
+    border-radius: var(--radius-full);
+}
+
+/* Text stays in the document flow so wrapped lines keep their dimensions. */
+.ui-text--loading {
+    position: relative;
+}
+
+.ui-text--loading > .ui-text-loading-content {
+    visibility: hidden;
+}
+
+.ui-text-loading-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.ui-skeleton--text-line {
+    height: 0.75em;
+    border-radius: var(--radius-sm);
+}
+
+.ui-text-loading-placeholder > .ui-skeleton:last-child:not(:first-child) {
+    width: 65%;
+}
+
+.ui-loading-placeholder {
+    display: none;
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    gap: var(--space-7);
+    padding: inherit;
+    overflow: hidden;
+    visibility: visible;
+}
+
+.ui-loading-lines {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.ui-loading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+}
+
+.ui-loading-row > .ui-skeleton {
+    min-width: 0;
+    flex-shrink: 1;
+}
+
+:is(.ui-card--loading, .ui-loading-active) {
+    position: relative;
+    pointer-events: none;
+    transform: none;
+    color: transparent !important;
+}
+
+:is(.ui-card--loading, .ui-loading-active) > :not(.ui-loading-placeholder) {
+    visibility: hidden;
+}
+
+:is(.ui-card--loading, .ui-loading-active) > .ui-loading-placeholder {
+    display: flex;
+    position: absolute;
+}
+
+.ui-loading-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .skeleton {
+    .skeleton,
+    .ui-skeleton {
         animation: none !important;
     }
 }
 
 :is(tr.skeleton-row td, .table-row.skeleton-row .td-cell) {
-    padding: 12px 16px !important;
+    height: 55px !important;
+    padding: 14px 16px !important;
     border-bottom: 1px solid var(--border, #383734) !important;
+    box-sizing: border-box !important;
 }
 
 :is(tr.skeleton-row, .table-row.skeleton-row) {
+    height: 55px !important;
+    min-height: 55px !important;
     background: transparent !important;
 }
 
 :is(.table-row.skeleton-row) {
     display: flex !important;
+    align-items: center !important;
     width: 100% !important;
     border-bottom: 1px solid var(--border, #383734) !important;
 }
 
 :is(.table-row.skeleton-row .td-cell) {
     width: 100% !important;
-    flex: 1 1 100% !important;
+    flex: 1 1 100%;
     display: flex !important;
     flex-direction: column !important;
-    gap: 8px !important;
+    justify-content: center !important;
     border: none !important;
 }
 
 :is(tr.skeleton-row .skeleton, .table-row.skeleton-row .skeleton) {
     height: 20px !important;
-    margin: 4px 0 !important;
+    margin: 0 !important;
     width: 100% !important;
+}
+
+html:not(.dark) .skeleton {
+    background: linear-gradient(90deg,
+            var(--muted, #F4F1EA),
+            var(--input, #E6E0D6),
+            var(--muted, #F4F1EA)) !important;
+    background-size: 200% 100% !important;
 }
 
 @keyframes tableFadeIn {
@@ -3176,6 +3327,13 @@ html:not(.dark) .modal-close:hover {
     border-color: #C5C0B6 !important;
 }
 
+/* Primary entity-creation/action buttons maintain text contrast (override global a:hover) */
+:is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)),
+:is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)):hover,
+:is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)) :is(svg, i, span) {
+    color: #000000 !important;
+}
+
 /* Light mode: primary entity-creation/action buttons use white text + icon */
 html:not(.dark) :is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)),
 html:not(.dark) :is(.btn-add, .add-button, #addButton.ui-btn, .ui-btn-primary, .btn-primary, .modal-submit, a.button:not(.secondary)):hover,
@@ -3281,6 +3439,12 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
     box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.2)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    box-sizing: border-box !important;
 }
 
 .section-container :is(.table-container, .ui-table-wrap) :is(table, .ui-table) {
@@ -3294,6 +3458,8 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
 }
 
 .section-container :is(.table-container, .ui-table-wrap) :is(thead, thead tr, .table-header-row) {
+    height: 48px !important;
+    min-height: 48px !important;
     background: var(--muted, #21201E) !important;
     border-bottom: 1px solid var(--border, #383734) !important;
 }
@@ -3305,7 +3471,8 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
 }
 
 .section-container :is(.table-container, .ui-table-wrap) :is(th, .th-cell) {
-    padding: 0.875rem 1rem !important;
+    height: 48px !important;
+    padding: 14px 16px !important;
     background: var(--muted, #21201E) !important;
     color: var(--muted-foreground, #A0988E) !important;
     font-size: 0.75rem !important;
@@ -3326,7 +3493,8 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
 }
 
 .section-container :is(.table-container, .ui-table-wrap) :is(td, .td-cell) {
-    padding: 0.875rem 1rem !important;
+    height: 55px !important;
+    padding: 14px 16px !important;
     font-size: 0.875rem !important;
     color: var(--card-foreground, #FAF9F5) !important;
     border-bottom: 1px solid var(--border, #383734) !important;
@@ -3341,6 +3509,14 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
     border: none !important;
 }
 
+/* Consistent edge cell paddings matching faculty tables */
+.section-container :is(.table-container, .ui-table-wrap) :is(th, td, .th-cell, .td-cell):first-child:not(:has(input[type="checkbox"])):not(.checkbox-cell) {
+    padding-left: var(--space-9, 24px) !important;
+}
+.section-container :is(.table-container, .ui-table-wrap) :is(th, td, .th-cell, .td-cell):last-child {
+    padding-right: var(--space-9, 24px) !important;
+}
+
 /* Explicit text alignment overrides for table cells */
 .section-container :is(.table-container, .ui-table-wrap) :is(th, td, .th-cell, .td-cell).text-center {
     text-align: center !important;
@@ -3348,6 +3524,46 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
 
 .section-container :is(.table-container, .ui-table-wrap) :is(th, td, .th-cell, .td-cell).text-right {
     text-align: right !important;
+}
+
+/* Center Action and Status titles. */
+:is(th, .th-cell).ui-table-heading-center,
+table thead th.ui-table-heading-center,
+.section-container :is(.table-container, .ui-table-wrap) :is(th, .th-cell).ui-table-heading-center {
+    text-align: center !important;
+    justify-content: center !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    left: 0 !important;
+}
+
+/* Default alignment for the final column; Action and Status override below. */
+table tr > :is(th, td):last-child:not([colspan]),
+.table-header-row > .th-cell:last-child,
+.table-row > .td-cell:last-child,
+.section-container :is(.table-container, .ui-table-wrap, .table-wrap) :is(th, td, .th-cell, .td-cell):last-child:not([colspan]) {
+    text-align: right !important;
+    justify-content: flex-end !important;
+}
+
+/* Center entire Action and Status columns, including rightmost columns. */
+.section-container :is(.table-container, .ui-table-wrap, .table-wrap) :is(.table-header-row, .table-row) > :is(.th-cell, .td-cell):is(.col-action, .col-action-type, .col-status, .ui-table-heading-center),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(1)) > :is(thead, tbody) > tr > :is(th, td):nth-child(1):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(2)) > :is(thead, tbody) > tr > :is(th, td):nth-child(2):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(3)) > :is(thead, tbody) > tr > :is(th, td):nth-child(3):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(4)) > :is(thead, tbody) > tr > :is(th, td):nth-child(4):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(5)) > :is(thead, tbody) > tr > :is(th, td):nth-child(5):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(6)) > :is(thead, tbody) > tr > :is(th, td):nth-child(6):not([colspan]),
+:is(body, .section-container) table:has(> thead > tr > .ui-table-heading-center:nth-child(7)) > :is(thead, tbody) > tr > :is(th, td):nth-child(7):not([colspan]) {
+    text-align: center !important;
+    justify-content: center !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    left: 0 !important;
+}
+
+.section-container :is(.table-container, .ui-table-wrap) .td-cell.col-action > .action-group {
+    justify-content: center !important;
 }
 
 /* Checkbox column positioning & spacing */
@@ -3365,6 +3581,8 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
 }
 
 .section-container :is(.table-container, .ui-table-wrap) :is(tbody tr, .table-row) {
+    height: 55px !important;
+    min-height: 55px !important;
     background: transparent !important;
     border-bottom: 1px solid var(--border, #383734) !important;
     transition: background-color var(--transition-fast, 150ms ease) !important;
@@ -3376,7 +3594,7 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
 
 /* Row Hover: Design system warm terracotta tint */
 .section-container :is(.table-container, .ui-table-wrap) :is(tbody tr:hover, .table-row:hover) {
-    background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card, #2B2A27)) !important;
+    background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
 }
 
 /* Selected row highlight */
@@ -3442,23 +3660,24 @@ table.table-hug :is(th, td):last-child { padding-right: 4px !important; }
 }
 
 /* Light mode support for admin tables */
-html:not(.dark) .section-container .table-container {
-    background: #FAF9F6 !important;
-    border-color: #E2DDD4 !important;
+html:not(.dark) .section-container :is(.table-container, .ui-table-wrap) {
+    background: var(--card, #FAF9F6) !important;
+    border-color: var(--border, #E2DDD4) !important;
 }
 
-html:not(.dark) .section-container .table-container table th {
-    color: #2B2A27 !important;
-    border-bottom-color: #E2DDD4 !important;
+html:not(.dark) .section-container :is(.table-container, .ui-table-wrap) :is(th, .th-cell) {
+    color: var(--foreground, #2B2A27) !important;
+    border-bottom-color: var(--border, #E2DDD4) !important;
+    background: var(--muted, #F4F1EA) !important;
 }
 
-html:not(.dark) .section-container .table-container table td {
-    color: #2B2A27 !important;
-    border-bottom-color: #E2DDD4 !important;
+html:not(.dark) .section-container :is(.table-container, .ui-table-wrap) :is(td, .td-cell) {
+    color: var(--card-foreground, #2B2A27) !important;
+    border-bottom-color: var(--border, #E2DDD4) !important;
 }
 
-html:not(.dark) .section-container .table-container table tbody tr:hover {
-    background: rgba(0, 0, 0, 0.02) !important;
+html:not(.dark) .section-container :is(.table-container, .ui-table-wrap) :is(tbody tr:hover, .table-row:hover) {
+    background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
 }
 
 html:not(.dark) .section-container .pill-btn.edit-btn {
@@ -3483,22 +3702,35 @@ html:not(.dark) .section-container .pill-btn.edit-btn:hover {
     overflow-x: auto !important;
     box-shadow: none !important;
     margin-bottom: 20px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    box-sizing: border-box !important;
 }
 
 .table-wrap table {
     width: 100% !important;
+    min-width: 680px;
     border-collapse: collapse !important;
     background: transparent !important;
     table-layout: fixed !important;
 }
 
 .table-wrap table thead tr {
+    height: 48px !important;
     background: transparent !important;
 }
 
+.table-wrap table tbody tr {
+    height: 55px !important;
+    transition: background-color var(--transition-fast, 150ms ease) !important;
+}
+
 .table-wrap table th {
-    padding-top: 18px !important;
-    padding-bottom: 18px !important;
+    height: 48px !important;
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
     padding-left: 16px !important;
     padding-right: 16px !important;
     background: transparent !important;
@@ -3516,8 +3748,9 @@ html:not(.dark) .section-container .pill-btn.edit-btn:hover {
 }
 
 .table-wrap table td {
-    padding-top: 18px !important;
-    padding-bottom: 18px !important;
+    height: 55px !important;
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
     padding-left: 16px !important;
     padding-right: 16px !important;
     font-size: 13px !important;
@@ -3542,7 +3775,7 @@ html:not(.dark) .section-container .pill-btn.edit-btn:hover {
 }
 
 .table-wrap table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.025) !important;
+    background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
 }
 
 /* Faculty Action Buttons (e.g. Apply to edit) */
@@ -3588,6 +3821,19 @@ html:not(.dark) .section-container .pill-btn.edit-btn:hover {
 .table-wrap td:last-child a.ui-link-neutral:hover,
 .table-wrap td:last-child a:hover {
     color: var(--primary, #D97251) !important;
+}
+
+/* Review Cards Tag Spacing */
+.review-tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.review-tags .ui-badge {
+    display: inline-flex !important;
+    align-items: center !important;
 }
 
 /* Faculty Status Pills & Badges */
@@ -3689,7 +3935,7 @@ html:not(.dark) .table-wrap table td {
 }
 
 html:not(.dark) .table-wrap table tbody tr:hover {
-    background: rgba(0, 0, 0, 0.02) !important;
+    background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
 }
 
 html:not(.dark) .table-wrap [data-propose-edit],
@@ -3960,6 +4206,14 @@ html:not(.dark) .admin-top-header .status-badge {
   border-color: var(--color-primary-base, #D97251) !important;
 }
 
+.ui-select-pill:disabled,
+.ui-table-pagination select:disabled,
+.ui-table-pagination .is-daab64f:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
 .pagination-select-chevron,
 .ui-table-pagination .is-4b97db6 {
   position: absolute !important;
@@ -4013,10 +4267,23 @@ html:not(.dark) .admin-top-header .status-badge {
 
 .ui-table-pagination-nav :is(.ui-btn, button, .secondary):disabled,
 .ui-table-pagination .is-b38e363:disabled {
-  opacity: 0.4 !important;
+  opacity: 0.5 !important;
   cursor: not-allowed !important;
+  pointer-events: none !important;
   border-color: var(--color-border-subtle, #2B2A27) !important;
   color: var(--color-text-muted, #6C655D) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.ui-table-pagination-nav :is(.ui-btn, button, .secondary):disabled:hover,
+.ui-table-pagination .is-b38e363:disabled:hover {
+  background: transparent !important;
+  border-color: var(--color-border-subtle, #2B2A27) !important;
+  color: var(--color-text-muted, #6C655D) !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 

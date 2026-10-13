@@ -15,12 +15,16 @@
     const studentLname = document.getElementById('studentLname');
     const studentProgram = document.getElementById('studentProgram');
     const studentModalTitle = document.getElementById('studentModalTitle');
+    const saveStudent = document.getElementById('saveStudent');
+    const studentEditNotice = document.getElementById('studentEditNotice');
+    const studentAddNotice = document.getElementById('studentAddNotice');
     const toast = document.getElementById('toast');
 
     if (!tableBody) return;
 
     let mode = 'create';
     let selectedRow = null;
+    let originalRecord = null;
 
     function openModal(modal) {
       if (modal) modal.classList.add('show');
@@ -73,12 +77,17 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
-      if (studentModalTitle) studentModalTitle.textContent = 'Create Student';
+      originalRecord = null;
+      studentId?.setCustomValidity('');
+      if (studentEditNotice) studentEditNotice.hidden = true;
+      if (studentAddNotice) studentAddNotice.hidden = false;
+      if (studentModalTitle) studentModalTitle.textContent = 'Add Student';
       if (studentId) studentId.value = '';
       if (studentFname) studentFname.value = '';
       if (studentMname) studentMname.value = '';
       if (studentLname) studentLname.value = '';
       if (studentProgram) studentProgram.selectedIndex = 0;
+      if (saveStudent) saveStudent.textContent = 'Add Student';
       openModal(studentModal);
     });
 
@@ -90,13 +99,23 @@
       if (event.target.classList.contains('edit')) {
         mode = 'edit';
         selectedRow = row;
+        if (studentEditNotice) studentEditNotice.hidden = false;
+        if (studentAddNotice) studentAddNotice.hidden = true;
         if (studentModalTitle) studentModalTitle.textContent = 'Edit Student';
         const cells = row.querySelectorAll('.td-cell');
-        if (studentId) studentId.value = cells[0]?.textContent.trim() || '';
-        if (studentFname) studentFname.value = cells[1]?.textContent.trim() || '';
-        if (studentMname) studentMname.value = cells[2]?.textContent.trim() || '';
-        if (studentLname) studentLname.value = cells[3]?.textContent.trim() || '';
-        if (studentProgram) studentProgram.value = cells[4]?.textContent.trim() || '';
+        originalRecord = {
+          id: cells[0]?.textContent.trim() || '',
+          fname: cells[1]?.textContent.trim() || '',
+          mname: cells[2]?.textContent.trim() || '',
+          lname: cells[3]?.textContent.trim() || '',
+          program: cells[4]?.textContent.trim() || '',
+        };
+        if (studentId) { studentId.value = originalRecord.id; studentId.setCustomValidity(''); }
+        if (studentFname) studentFname.value = originalRecord.fname;
+        if (studentMname) studentMname.value = originalRecord.mname;
+        if (studentLname) studentLname.value = originalRecord.lname;
+        if (studentProgram) studentProgram.value = originalRecord.program;
+        if (saveStudent) saveStudent.textContent = 'Update Student';
         openModal(studentModal);
       }
 
@@ -117,6 +136,20 @@
       const program = studentProgram?.value || '';
 
       if (!id || !fname || !lname) return;
+
+      if (
+        mode === 'edit' &&
+        originalRecord &&
+        id === originalRecord.id &&
+        fname === originalRecord.fname &&
+        mname === originalRecord.mname &&
+        lname === originalRecord.lname &&
+        program === originalRecord.program
+      ) {
+        studentId.setCustomValidity('Please enter a new, distinct value before updating.');
+        studentId.reportValidity();
+        return;
+      }
 
       if (mode === 'edit' && selectedRow) {
         const cells = selectedRow.querySelectorAll('.td-cell');
@@ -158,6 +191,11 @@
       filterRows();
     });
 
+    [studentId, studentFname, studentMname, studentLname, studentProgram].forEach((field) => {
+      field?.addEventListener('input', () => studentId?.setCustomValidity(''));
+      field?.addEventListener('change', () => studentId?.setCustomValidity(''));
+    });
+
     // Confirm remove
     document.getElementById('confirmRemove')?.addEventListener('click', () => {
       if (!selectedRow) return;
@@ -168,23 +206,15 @@
       filterRows();
     });
 
-    // Cancel remove
-    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
-
     // Close buttons
     document.getElementById('closeStudent')?.addEventListener('click', () => closeModal(studentModal));
-    document.getElementById('closeRemove')?.addEventListener('click', () => closeModal(removeModal));
+    document.getElementById('cancelStudent')?.addEventListener('click', () => closeModal(studentModal));
+    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
     if (!window.adminTableController && !tableBody?.__tableController) {
       searchInput?.addEventListener('input', filterRows);
       programFilter?.addEventListener('change', filterRows);
     }
 
-    // Click outside modal to close
-    [studentModal, removeModal].forEach((modal) => {
-      modal?.addEventListener('click', (event) => {
-        if (event.target === modal) closeModal(modal);
-      });
-    });
 
     // Escape key to close
     document.addEventListener('keydown', (event) => {
@@ -201,4 +231,3 @@
     initStudentsPage();
   }
 })();
-

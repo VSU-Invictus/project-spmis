@@ -8,11 +8,12 @@
   padding-left: var(--space-9, 24px);
 }
 
-.th-cell.col-user, .td-cell.col-user {
+.section-container .table-container :is(.table-header-row, .table-row) > :is(.th-cell, .td-cell).col-user {
   flex: 180 1 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  text-align: left !important;
+  justify-content: flex-start !important;
 }
 
 .th-cell.col-action-type, .td-cell.col-action-type {
@@ -29,10 +30,12 @@
   justify-content: center;
 }
 
-.th-cell.col-target, .td-cell.col-target {
+.section-container .table-container :is(.table-header-row, .table-row) > :is(.th-cell, .td-cell).col-target {
   flex: 280 1 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding-right: var(--space-9, 24px);
+  text-align: left !important;
+  justify-content: flex-start !important;
+  padding-left: var(--space-9, 24px) !important;
+  padding-right: var(--space-9, 24px) !important;
 }

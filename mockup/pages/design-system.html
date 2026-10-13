@@ -154,44 +154,51 @@
         <h2 class="ui-section-title">Typography</h2>
         <span class="ui-section-desc">Outfit font family with Geist Mono for codes and tabular metrics</span>
       </div>
-      <div class="ui-grid ui-grid-cols-2">
+      <div class="ui-demo-loading-toolbar">
+        <span id="demo-text-loading-status" class="ui-text-muted" role="status" aria-live="polite" aria-atomic="true">Preview loading without changing text spacing.</span>
+        <button type="button" id="demo-simulate-text-loading-btn" class="ui-btn ui-btn-outline ui-demo-simulate-button" aria-controls="demo-text-loading-grid">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span id="demo-text-loading-label">Simulate Skeleton Loading (280ms)</span>
+        </button>
+      </div>
+      <div class="ui-grid ui-grid-cols-2" id="demo-text-loading-grid">
         <div class="ui-typography-sample">
-          <span class="ui-btn-label">Headings Scale</span>
+          <span class="ui-btn-label" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Headings Scale</span></span>
           <div>
-            <h1 class="ui-heading-1">Primary Heading 1 (Display Title)</h1>
-            <p class="ui-text-caption">30px &middot; Font-weight 800 &middot; Letter-spacing -0.025em &middot; <code>var(--foreground)</code></p>
+            <h1 class="ui-heading-1" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Primary Heading 1 (Display Title)</span></h1>
+            <p class="ui-text-caption" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">30px &middot; Font-weight 800 &middot; Letter-spacing -0.025em &middot; <code>var(--foreground)</code></span></p>
           </div>
           <div>
-            <h2 class="ui-heading-2">Secondary Heading 2 (Section Title)</h2>
-            <p class="ui-text-caption">22px &middot; Font-weight 700 &middot; Letter-spacing -0.02em &middot; <code>var(--foreground)</code></p>
+            <h2 class="ui-heading-2" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Secondary Heading 2 (Section Title)</span></h2>
+            <p class="ui-text-caption" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">22px &middot; Font-weight 700 &middot; Letter-spacing -0.02em &middot; <code>var(--foreground)</code></span></p>
           </div>
           <div>
-            <h3 class="ui-heading-3">Tertiary Heading 3 (Card &amp; Panel Header)</h3>
-            <p class="ui-text-caption">18px &middot; Font-weight 600 &middot; <code>var(--card-foreground)</code></p>
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Tertiary Heading 3 (Card &amp; Panel Header)</span></h3>
+            <p class="ui-text-caption" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">18px &middot; Font-weight 600 &middot; <code>var(--card-foreground)</code></span></p>
           </div>
         </div>
 
         <div class="ui-typography-sample">
-          <span class="ui-btn-label">Paragraph &amp; Muted Hierarchy</span>
+          <span class="ui-btn-label" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Paragraph &amp; Muted Hierarchy</span></span>
           <div>
-            <h3 class="ui-heading-3">Primary Paragraph Text</h3>
-            <p class="ui-text">
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Primary Paragraph Text</span></h3>
+            <p class="ui-text" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
               SPMIS provides a unified academic progress management portal with warm surfaces and clear hierarchy.
               Primary text is styled with <code>var(--foreground)</code> to maintain optimal readability and comfortable contrast.
-            </p>
+            </span></p>
           </div>
           <div>
-            <h3 class="ui-heading-3">Muted Descriptive Text</h3>
-            <p class="ui-text-muted">
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Muted Descriptive Text</span></h3>
+            <p class="ui-text-muted" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
               Secondary details, audit timestamps, and status explanations utilize <code>var(--muted-foreground)</code>
               to establish quiet visual depth without distracting from critical operational data.
-            </p>
+            </span></p>
           </div>
           <div>
-            <h3 class="ui-heading-3">Monospace Data Text</h3>
-            <p class="ui-text-mono">
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Monospace Data Text</span></h3>
+            <p class="ui-text-mono" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
               Student ID: 24-1-00001 &middot; Roster Count: 2,850 &middot; Status: VERIFIED_OK
-            </p>
+            </span></p>
           </div>
         </div>
       </div>
@@ -528,9 +535,16 @@
         <h2 class="ui-section-title">Cards</h2>
         <span class="ui-section-desc">Container primitives: standard card, compact KPI metric card, and interactive link card</span>
       </div>
-      <div class="ui-grid ui-grid-cols-3">
+      <div class="ui-demo-loading-toolbar">
+        <span id="demo-card-loading-status" class="ui-text-muted" role="status" aria-live="polite" aria-atomic="true">Preview loading without changing card dimensions.</span>
+        <button type="button" id="demo-simulate-card-loading-btn" class="ui-btn ui-btn-outline ui-demo-simulate-button" aria-controls="demo-card-loading-grid">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span id="demo-card-loading-label">Simulate Skeleton Loading (280ms)</span>
+        </button>
+      </div>
+      <div class="ui-grid ui-grid-cols-3" id="demo-card-loading-grid">
         <!-- 1. Standard .ui-card with header and body -->
-        <div class="ui-card">
+        <div class="ui-card" data-card-loading-demo aria-busy="false">
           <div class="ui-card-header">
             <h3 class="ui-card-title">Standard Card</h3>
             <p class="ui-card-description">Default <code>.ui-card</code> container for details and panels.</p>
@@ -544,10 +558,20 @@
           <div class="ui-card-footer">
             <span class="ui-text-muted">Updated 10m ago</span>
           </div>
+          <div class="ui-loading-placeholder" aria-hidden="true">
+            <span class="ui-skeleton ui-skeleton--title"></span>
+            <span class="ui-skeleton ui-skeleton--short"></span>
+            <div class="ui-loading-lines">
+              <span class="ui-skeleton"></span>
+              <span class="ui-skeleton"></span>
+              <span class="ui-skeleton ui-skeleton--short"></span>
+            </div>
+            <span class="ui-skeleton ui-skeleton--short"></span>
+          </div>
         </div>
 
         <!-- 2. Compact .ui-card-sm for KPI metrics -->
-        <div class="ui-card ui-card-sm metric-card">
+        <div class="ui-card ui-card-sm metric-card" data-card-loading-demo aria-busy="false">
           <div class="ui-card-header is-ac79cce">
             <p class="metric-card-label">KPI Metric Card (.ui-card-sm)</p>
           </div>
@@ -557,10 +581,19 @@
           </div>
           <p class="metric-card-status">AY 2026-2027</p>
           <p class="ui-card-description">Compact metric summary for dashboard statistics.</p>
+          <div class="ui-loading-placeholder" aria-hidden="true">
+            <span class="ui-skeleton ui-skeleton--title"></span>
+            <div class="ui-loading-row">
+              <span class="ui-skeleton ui-skeleton--metric"></span>
+              <span class="ui-skeleton ui-skeleton--badge"></span>
+            </div>
+            <span class="ui-skeleton ui-skeleton--short"></span>
+            <span class="ui-skeleton"></span>
+          </div>
         </div>
 
         <!-- 3. Interactive .ui-card-interactive on an <a> tag -->
-          <a href="#interactive-target" class="ui-card ui-card-interactive is-90dcd8f">
+          <a href="#interactive-target" class="ui-card ui-card-interactive is-90dcd8f" data-card-loading-demo aria-busy="false">
             <div class="ui-card-header">
               <div class="is-3083282">
                 <h3 class="ui-card-title">Interactive Card Link</h3>
@@ -577,6 +610,19 @@
             <div class="ui-card-footer">
               <span class="ui-text-muted is-009cc8c">Explore workspace <span class="arrow">&rarr;</span></span>
             </div>
+            <div class="ui-loading-placeholder" aria-hidden="true">
+              <div class="ui-loading-row">
+                <span class="ui-skeleton ui-skeleton--title"></span>
+                <span class="ui-skeleton ui-skeleton--badge"></span>
+              </div>
+              <span class="ui-skeleton ui-skeleton--short"></span>
+              <div class="ui-loading-lines">
+                <span class="ui-skeleton"></span>
+                <span class="ui-skeleton"></span>
+                <span class="ui-skeleton ui-skeleton--short"></span>
+              </div>
+              <span class="ui-skeleton ui-skeleton--short"></span>
+            </div>
           </a>
 
 
@@ -591,7 +637,7 @@
       </div>
       <div class="is-bd0475c">
         <span class="is-02ab777">Table features interactive loading shimmers, live row checkboxes, pagination slicing, and empty-state recovery.</span>
-        <button type="button" id="demo-simulate-skeleton-btn" class="ui-btn ui-btn-outline is-e8bc875">
+        <button type="button" id="demo-simulate-skeleton-btn" class="ui-btn ui-btn-outline ui-demo-simulate-button">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
           Simulate Skeleton Loading (280ms)
         </button>
@@ -605,8 +651,8 @@
               <th class="col-id">Student ID</th>
               <th>Program</th>
               <th>Year Level</th>
-              <th>Status</th>
-              <th class="col-action">Action</th>
+              <th class="ui-table-heading-center">Status</th>
+              <th class="col-action ui-table-heading-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -618,10 +664,15 @@
                   <span class="is-06185fd">sam.parker@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00001</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00001</code></td>
               <td>BS Computer Science</td>
               <td>3rd Year</td>
-              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td>
+                <span class="ui-badge ui-badge--success">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Approved / Active
+                </span>
+              </td>
               <td class="col-action">
                 <button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button>
               </td>
@@ -634,10 +685,15 @@
                   <span class="is-06185fd">elena.b@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00042</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00042</code></td>
               <td>BS Information Systems</td>
               <td>2nd Year</td>
-              <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+              <td>
+                <span class="ui-badge ui-badge--warning">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  Pending Review
+                </span>
+              </td>
               <td class="col-action">
                 <a href="#data-tables" class="ui-link-neutral is-a72553f">Review <span class="arrow">&rarr;</span></a>
               </td>
@@ -650,10 +706,15 @@
                   <span class="is-06185fd">r.cruz@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00109</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00109</code></td>
               <td>BS Information Technology</td>
               <td>4th Year</td>
-              <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+              <td>
+                <span class="ui-badge ui-badge--info">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  In Progress
+                </span>
+              </td>
               <td class="col-action">
                 <a href="#data-tables" class="ui-link-neutral is-a72553f">Write review <span class="arrow">&rarr;</span></a>
               </td>
@@ -666,10 +727,15 @@
                   <span class="is-06185fd">adrian.d@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00210</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00210</code></td>
               <td>BS Computer Science</td>
               <td>3rd Year</td>
-              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td>
+                <span class="ui-badge ui-badge--success">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Approved / Active
+                </span>
+              </td>
               <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
             </tr>
             <tr>
@@ -680,10 +746,15 @@
                   <span class="is-06185fd">liam.m@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00211</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00211</code></td>
               <td>BS Information Systems</td>
               <td>1st Year</td>
-              <td><span class="ui-badge ui-badge--info">In Progress</span></td>
+              <td>
+                <span class="ui-badge ui-badge--info">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  In Progress
+                </span>
+              </td>
               <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
             </tr>
             <tr>
@@ -694,10 +765,15 @@
                   <span class="is-06185fd">k.smith@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00212</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00212</code></td>
               <td>BS Computer Engineering</td>
               <td>4th Year</td>
-              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td>
+                <span class="ui-badge ui-badge--success">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Approved / Active
+                </span>
+              </td>
               <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
             </tr>
             <tr>
@@ -708,10 +784,15 @@
                   <span class="is-06185fd">j.taylor@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00213</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00213</code></td>
               <td>BS Computer Science</td>
               <td>2nd Year</td>
-              <td><span class="ui-badge ui-badge--warning">Under Review</span></td>
+              <td>
+                <span class="ui-badge ui-badge--warning">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  Pending Review
+                </span>
+              </td>
               <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
             </tr>
             <tr>
@@ -722,10 +803,15 @@
                   <span class="is-06185fd">m.johnson@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00214</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00214</code></td>
               <td>BS Data Science</td>
               <td>1st Year</td>
-              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td>
+                <span class="ui-badge ui-badge--success">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Approved / Active
+                </span>
+              </td>
               <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
             </tr>
             <tr>
@@ -736,10 +822,15 @@
                   <span class="is-06185fd">e.white@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00215</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00215</code></td>
               <td>BS Artificial Intelligence</td>
               <td>3rd Year</td>
-              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td>
+                <span class="ui-badge ui-badge--success">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Approved / Active
+                </span>
+              </td>
               <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
             </tr>
             <tr>
@@ -750,16 +841,21 @@
                   <span class="is-06185fd">c.brown@vsu.edu.ph</span>
                 </div>
               </td>
-              <td><code class="ui-text-mono">24-1-00216</code></td>
+              <td class="col-id"><code class="ui-text-mono">24-1-00216</code></td>
               <td>BS Computer Science</td>
               <td>4th Year</td>
-              <td><span class="ui-badge ui-badge--success">Approved</span></td>
+              <td>
+                <span class="ui-badge ui-badge--success">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Approved / Active
+                </span>
+              </td>
               <td class="col-action"><button type="button" class="ui-btn ui-btn-outline is-d8d7a34">View</button></td>
             </tr>
           </tbody>
         </table>
         <p class="ui-text-muted is-c67418c">
-          <strong>Column ratio helpers:</strong> <code>.col-id</code> (tight, nowrap), <code>.col-action</code> (tight, left-aligned, nowrap; links/buttons never wrap), <code>.col-60</code> / <code>.col-20</code> for Name/Status/Action tables (60/20/20), <code>.col-flex</code> for columns sharing remaining width equally (Student Name, Program). First and last columns hug the table edges.
+          <strong>Column ratio helpers:</strong> <code>.col-id</code> (tight, nowrap), <code>.col-action</code> (tight, centered, nowrap; links/buttons never wrap), <code>.ui-table-heading-center</code> (centered Action and Status titles and values), <code>.col-60</code> / <code>.col-20</code> for Name/Status/Action tables (60/20/20), <code>.col-flex</code> for columns sharing remaining width equally (Student Name, Program). First and last columns hug the table edges. The rightmost column is right-aligned unless it is an Action or Status column.
         </p>
         <!-- Table Pagination Footer -->
           </div> <!-- Closes ui-table-wrap -->
@@ -772,10 +868,8 @@
               <div class="is-b57eafe">
                 <span>Rows per page</span>
                                                     <div class="is-e0dd7f8">
-                  <select aria-label="Rows per page" class="ui-select-pill is-daab64f">
+                  <select aria-label="Rows per page" class="ui-select-pill is-daab64f" disabled>
                           <option value="5" selected>5</option>
-                          <option value="10">10</option>
-                          <option value="20">20</option>
                         </select>
                   <svg class="is-4b97db6" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
@@ -1260,7 +1354,7 @@
             <div class="is-0eeaf53">↑ Scrollable workspace content sits above this footer</div>
             <footer class="workspace-footer is-e8a73a1">
               <span>&copy; 2026 Academic Management System. All rights reserved.</span>
-              <span>System Version 2.4.0 &middot; AY 2026-2027</span>
+              <span>System Version 0.1.0 &middot; AY 2026-2027</span>
             </footer>
           </div>
           <p class="ui-text-caption">

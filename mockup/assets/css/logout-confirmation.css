@@ -1,0 +1,38 @@
+/* Logout confirmation uses the shared card surface and button primitives. */
+dialog.ui-logout-dialog {
+  position: fixed;
+  inset: 50% auto auto 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100vw - var(--space-12)));
+  max-height: calc(100vh - var(--space-12));
+  overflow: auto;
+  padding: var(--space-9);
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-sans);
+}
+
+.ui-logout-title {
+  margin: 0 0 var(--space-3);
+  color: var(--foreground);
+  font-size: var(--font-size-2xl);
+}
+
+.ui-logout-description {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.ui-logout-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-9);
+}

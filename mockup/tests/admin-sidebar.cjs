@@ -33,7 +33,7 @@ for (const page of adminPages) {
   );
   assert.match(
     html,
-    /<main[\s\S]*?<footer class="admin-footer"[\s\S]*?<\/main>/,
+    /<main[\s\S]*?<footer class="[^"]*\badmin-footer\b[^"]*"[\s\S]*?<\/main>/,
     `${page} must place .admin-footer inside <main>`,
   );
 }

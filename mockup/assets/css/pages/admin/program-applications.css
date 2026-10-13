@@ -3,7 +3,23 @@
   min-width: 880px;
 }
 
+/* Keep the embedded header and data rows the same width so column edges align. */
+body.queue-embedded .table-scroll .table-header-row,
+body.queue-embedded .table-scroll .table-body .table-row {
+  width: 100% !important;
+  min-width: 880px !important;
+  max-width: none !important;
+}
+
+.table-header-row .th-cell.col-type,
+.table-body .td-cell.col-type,
+body.queue-embedded .table-header-row .th-cell.col-type,
+body.queue-embedded .table-body .td-cell.col-type {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
 .th-cell.col-program, .td-cell.col-program { flex: 320 1 0; }
-.th-cell.col-proposed, .td-cell.col-proposed { flex: 200 1 0; }
+.th-cell.col-proposed, .td-cell.col-proposed { flex: 160 1 0; }
 .th-cell.col-type, .td-cell.col-type { flex: 180 1 0; }
 .th-cell.col-date, .td-cell.col-date { flex: 160 1 0; }
