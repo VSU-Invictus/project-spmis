@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Fixed
+- **Logout:** Added a shared Admin and Faculty confirmation modal based on the design system dialog and button components, centered horizontally and vertically in the full page viewport. Sidebars request the modal through a validated window-message bridge so the main page owns the dialog and backdrop, including when mockups are opened from disk with isolated iframe origins. Uses `?logout=true`, supports Cancel, Escape, backdrop dismissal, and browser history, prevents stacked dialogs, and replaces browser confirmation fallbacks. Logout clears the faculty demo session and returns to sign-in only after confirmation.
 - **Faculty Portal (Students & Proposal Pages):** Addressed QA and pull request review comments:
   - Fixed premature toast notifications on the "Propose Program" and "Propose Department" buttons, ensuring success toasts deliver exclusively after valid application submission in their respective proposal modals.
   - Removed the right arrow from the "Write review" button on the Student Detail page, removed the hover translateY movement for a steady interaction, and fixed the hover state so button text maintains high contrast and does not turn orange on hover.
