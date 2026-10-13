@@ -24,6 +24,7 @@
 
     let mode = 'create';
     let selectedRow = null;
+    let originalRecord = null;
 
     function openModal(modal) {
       if (modal) modal.classList.add('show');
@@ -76,6 +77,8 @@
     document.getElementById('addButton')?.addEventListener('click', () => {
       mode = 'create';
       selectedRow = null;
+      originalRecord = null;
+      studentId?.setCustomValidity('');
       if (studentEditNotice) studentEditNotice.hidden = true;
       if (studentAddNotice) studentAddNotice.hidden = false;
       if (studentModalTitle) studentModalTitle.textContent = 'Add Student';
@@ -100,11 +103,18 @@
         if (studentAddNotice) studentAddNotice.hidden = true;
         if (studentModalTitle) studentModalTitle.textContent = 'Edit Student';
         const cells = row.querySelectorAll('.td-cell');
-        if (studentId) studentId.value = cells[0]?.textContent.trim() || '';
-        if (studentFname) studentFname.value = cells[1]?.textContent.trim() || '';
-        if (studentMname) studentMname.value = cells[2]?.textContent.trim() || '';
-        if (studentLname) studentLname.value = cells[3]?.textContent.trim() || '';
-        if (studentProgram) studentProgram.value = cells[4]?.textContent.trim() || '';
+        originalRecord = {
+          id: cells[0]?.textContent.trim() || '',
+          fname: cells[1]?.textContent.trim() || '',
+          mname: cells[2]?.textContent.trim() || '',
+          lname: cells[3]?.textContent.trim() || '',
+          program: cells[4]?.textContent.trim() || '',
+        };
+        if (studentId) { studentId.value = originalRecord.id; studentId.setCustomValidity(''); }
+        if (studentFname) studentFname.value = originalRecord.fname;
+        if (studentMname) studentMname.value = originalRecord.mname;
+        if (studentLname) studentLname.value = originalRecord.lname;
+        if (studentProgram) studentProgram.value = originalRecord.program;
         if (saveStudent) saveStudent.textContent = 'Update Student';
         openModal(studentModal);
       }
@@ -126,6 +136,20 @@
       const program = studentProgram?.value || '';
 
       if (!id || !fname || !lname) return;
+
+      if (
+        mode === 'edit' &&
+        originalRecord &&
+        id === originalRecord.id &&
+        fname === originalRecord.fname &&
+        mname === originalRecord.mname &&
+        lname === originalRecord.lname &&
+        program === originalRecord.program
+      ) {
+        studentId.setCustomValidity('Please enter a new, distinct value before updating.');
+        studentId.reportValidity();
+        return;
+      }
 
       if (mode === 'edit' && selectedRow) {
         const cells = selectedRow.querySelectorAll('.td-cell');
@@ -165,6 +189,11 @@
       }
 
       filterRows();
+    });
+
+    [studentId, studentFname, studentMname, studentLname, studentProgram].forEach((field) => {
+      field?.addEventListener('input', () => studentId?.setCustomValidity(''));
+      field?.addEventListener('change', () => studentId?.setCustomValidity(''));
     });
 
     // Confirm remove
