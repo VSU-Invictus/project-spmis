@@ -203,6 +203,8 @@ Use `.ui-card--loading` on an existing card while its data is pending. Keep the 
 - Shimmer animation is disabled under `prefers-reduced-motion: reduce`.
 - When data arrives, remove `.ui-card--loading` and `inert`, set `aria-busy="false"`, and announce completion. The living guide's Cards section includes a repeatable 280ms simulation for all three card variants, matching the table simulation button.
 
+All Admin, Faculty, and Auth routes load `assets/js/card-loading.js` for a 280ms initial card preview. It discovers `.ui-card` and `.ui-card-interactive` containers, including reviews rendered by page initialization. Legacy auth and information panels opt in with `data-card-loading`; use `data-card-loading="metric"` for KPI placeholders. The controller uses `.ui-loading-active`, an alias for the loading state that avoids triggering legacy `[class*="card"]` layout rules on information panels. Only outer cards are masked, so nested link cards do not receive duplicate overlays. Hidden panels, dialogs, navigation, and cards containing the current keyboard focus are skipped. Existing table loading remains independent. The controller restores each card's original `aria-busy` and `inert` state and removes its temporary placeholder after loading. Content and layout styles stay in place throughout; shimmer respects reduced motion.
+
 ---
 
 ### 2. Buttons & Action Triggers

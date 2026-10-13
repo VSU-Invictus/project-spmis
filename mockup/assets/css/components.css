@@ -2771,6 +2771,8 @@ tr:nth-last-child(-n+2) .ui-tags-popover,
     flex-direction: column;
     gap: var(--space-7);
     padding: inherit;
+    overflow: hidden;
+    visibility: visible;
 }
 
 .ui-loading-lines {
@@ -2792,18 +2794,32 @@ tr:nth-last-child(-n+2) .ui-tags-popover,
     flex-shrink: 1;
 }
 
-.ui-card.ui-card--loading {
+:is(.ui-card--loading, .ui-loading-active) {
     position: relative;
     pointer-events: none;
     transform: none;
+    color: transparent !important;
 }
 
-.ui-card--loading > :not(.ui-loading-placeholder) {
+:is(.ui-card--loading, .ui-loading-active) > :not(.ui-loading-placeholder) {
     visibility: hidden;
 }
 
-.ui-card--loading > .ui-loading-placeholder {
+:is(.ui-card--loading, .ui-loading-active) > .ui-loading-placeholder {
     display: flex;
+    position: absolute;
+}
+
+.ui-loading-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
