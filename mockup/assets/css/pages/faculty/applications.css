@@ -12,14 +12,14 @@
   padding-right: var(--space-8, 20px) !important;
   padding-bottom: 18px !important;
   padding-left: var(--space-9, 24px) !important;
-  width: 22%;
+  width: 20%;
 }
 
 #application-list th:nth-child(2),
 #application-list td:nth-child(2) {
   padding-top: 18px !important;
   padding-bottom: 18px !important;
-  width: 22%;
+  width: 20%;
 }
 
 #application-list th:nth-child(3),
@@ -40,13 +40,23 @@
 
 #application-list th:nth-child(5):last-child,
 #application-list td:nth-child(5):last-child {
+  text-align: left !important;
+  justify-content: flex-start !important;
   padding-top: 18px !important;
+  padding-left: var(--space-5, 12px) !important;
   padding-right: var(--space-9, 24px) !important;
   padding-bottom: 18px !important;
   width: auto;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+}
+
+#application-list td:nth-child(5):last-child {
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere;
+}
+
+#application-list tbody tr:not(.skeleton-row),
+#application-list tbody tr:not(.skeleton-row) > td {
+  height: auto !important;
 }
 
 /* Reduced-motion safety */
