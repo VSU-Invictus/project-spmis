@@ -528,9 +528,16 @@
         <h2 class="ui-section-title">Cards</h2>
         <span class="ui-section-desc">Container primitives: standard card, compact KPI metric card, and interactive link card</span>
       </div>
-      <div class="ui-grid ui-grid-cols-3">
+      <div class="ui-demo-loading-toolbar">
+        <span id="demo-card-loading-status" class="ui-text-muted" role="status" aria-live="polite" aria-atomic="true">Preview loading without changing card dimensions.</span>
+        <button type="button" id="demo-simulate-card-loading-btn" class="ui-btn ui-btn-outline ui-demo-simulate-button" aria-controls="demo-card-loading-grid">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span id="demo-card-loading-label">Simulate Skeleton Loading (280ms)</span>
+        </button>
+      </div>
+      <div class="ui-grid ui-grid-cols-3" id="demo-card-loading-grid">
         <!-- 1. Standard .ui-card with header and body -->
-        <div class="ui-card">
+        <div class="ui-card" data-card-loading-demo aria-busy="false">
           <div class="ui-card-header">
             <h3 class="ui-card-title">Standard Card</h3>
             <p class="ui-card-description">Default <code>.ui-card</code> container for details and panels.</p>
@@ -544,10 +551,20 @@
           <div class="ui-card-footer">
             <span class="ui-text-muted">Updated 10m ago</span>
           </div>
+          <div class="ui-loading-placeholder" aria-hidden="true">
+            <span class="ui-skeleton ui-skeleton--title"></span>
+            <span class="ui-skeleton ui-skeleton--short"></span>
+            <div class="ui-loading-lines">
+              <span class="ui-skeleton"></span>
+              <span class="ui-skeleton"></span>
+              <span class="ui-skeleton ui-skeleton--short"></span>
+            </div>
+            <span class="ui-skeleton ui-skeleton--short"></span>
+          </div>
         </div>
 
         <!-- 2. Compact .ui-card-sm for KPI metrics -->
-        <div class="ui-card ui-card-sm metric-card">
+        <div class="ui-card ui-card-sm metric-card" data-card-loading-demo aria-busy="false">
           <div class="ui-card-header is-ac79cce">
             <p class="metric-card-label">KPI Metric Card (.ui-card-sm)</p>
           </div>
@@ -557,10 +574,19 @@
           </div>
           <p class="metric-card-status">AY 2026-2027</p>
           <p class="ui-card-description">Compact metric summary for dashboard statistics.</p>
+          <div class="ui-loading-placeholder" aria-hidden="true">
+            <span class="ui-skeleton ui-skeleton--title"></span>
+            <div class="ui-loading-row">
+              <span class="ui-skeleton ui-skeleton--metric"></span>
+              <span class="ui-skeleton ui-skeleton--badge"></span>
+            </div>
+            <span class="ui-skeleton ui-skeleton--short"></span>
+            <span class="ui-skeleton"></span>
+          </div>
         </div>
 
         <!-- 3. Interactive .ui-card-interactive on an <a> tag -->
-          <a href="#interactive-target" class="ui-card ui-card-interactive is-90dcd8f">
+          <a href="#interactive-target" class="ui-card ui-card-interactive is-90dcd8f" data-card-loading-demo aria-busy="false">
             <div class="ui-card-header">
               <div class="is-3083282">
                 <h3 class="ui-card-title">Interactive Card Link</h3>
@@ -577,6 +603,19 @@
             <div class="ui-card-footer">
               <span class="ui-text-muted is-009cc8c">Explore workspace <span class="arrow">&rarr;</span></span>
             </div>
+            <div class="ui-loading-placeholder" aria-hidden="true">
+              <div class="ui-loading-row">
+                <span class="ui-skeleton ui-skeleton--title"></span>
+                <span class="ui-skeleton ui-skeleton--badge"></span>
+              </div>
+              <span class="ui-skeleton ui-skeleton--short"></span>
+              <div class="ui-loading-lines">
+                <span class="ui-skeleton"></span>
+                <span class="ui-skeleton"></span>
+                <span class="ui-skeleton ui-skeleton--short"></span>
+              </div>
+              <span class="ui-skeleton ui-skeleton--short"></span>
+            </div>
           </a>
 
 
@@ -591,7 +630,7 @@
       </div>
       <div class="is-bd0475c">
         <span class="is-02ab777">Table features interactive loading shimmers, live row checkboxes, pagination slicing, and empty-state recovery.</span>
-        <button type="button" id="demo-simulate-skeleton-btn" class="ui-btn ui-btn-outline is-e8bc875">
+        <button type="button" id="demo-simulate-skeleton-btn" class="ui-btn ui-btn-outline ui-demo-simulate-button">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
           Simulate Skeleton Loading (280ms)
         </button>

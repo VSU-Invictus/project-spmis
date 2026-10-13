@@ -2732,8 +2732,83 @@ tr:nth-last-child(-n+2) .ui-tags-popover,
     }
 }
 
+/* Token-based loading placeholders for standard, metric, and link cards. */
+.ui-skeleton {
+    display: block;
+    flex-shrink: 0;
+    width: 100%;
+    height: var(--space-7);
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--muted), var(--input), var(--muted));
+    background-size: 200% 100%;
+    animation: loading 1.2s infinite ease-in-out;
+}
+
+.ui-skeleton--title {
+    width: 65%;
+    height: var(--space-8);
+}
+
+.ui-skeleton--short {
+    width: 45%;
+}
+
+.ui-skeleton--metric {
+    width: 45%;
+    height: var(--space-16);
+}
+
+.ui-skeleton--badge {
+    width: 30%;
+    height: var(--space-9);
+    border-radius: var(--radius-full);
+}
+
+.ui-loading-placeholder {
+    display: none;
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    gap: var(--space-7);
+    padding: inherit;
+}
+
+.ui-loading-lines {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.ui-loading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+}
+
+.ui-loading-row > .ui-skeleton {
+    min-width: 0;
+    flex-shrink: 1;
+}
+
+.ui-card.ui-card--loading {
+    position: relative;
+    pointer-events: none;
+    transform: none;
+}
+
+.ui-card--loading > :not(.ui-loading-placeholder) {
+    visibility: hidden;
+}
+
+.ui-card--loading > .ui-loading-placeholder {
+    display: flex;
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .skeleton {
+    .skeleton,
+    .ui-skeleton {
         animation: none !important;
     }
 }

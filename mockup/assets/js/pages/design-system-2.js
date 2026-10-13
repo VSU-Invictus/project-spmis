@@ -1,6 +1,37 @@
 /* Extracted from pages/design-system.html */
 // Wire Interactive Style Guide Demos: Skeleton Loading, Modals & Toasts
 document.addEventListener('DOMContentLoaded', () => {
+  // Card previews keep their content in place to avoid layout shifts.
+  const cardLoadingButton = document.getElementById('demo-simulate-card-loading-btn');
+  const cardLoadingLabel = document.getElementById('demo-card-loading-label');
+  const cardLoadingStatus = document.getElementById('demo-card-loading-status');
+  const loadingCards = document.querySelectorAll('#demo-card-loading-grid [data-card-loading-demo]');
+
+  if (cardLoadingButton && cardLoadingLabel && cardLoadingStatus && loadingCards.length) {
+    cardLoadingButton.addEventListener('click', () => {
+      if (cardLoadingButton.disabled) return;
+      cardLoadingButton.disabled = true;
+      cardLoadingLabel.textContent = 'Loading cards…';
+      cardLoadingStatus.textContent = 'Loading standard, KPI, and interactive cards…';
+      loadingCards.forEach(card => {
+        card.classList.add('ui-card--loading');
+        card.setAttribute('aria-busy', 'true');
+        card.inert = true;
+      });
+
+      setTimeout(() => {
+        loadingCards.forEach(card => {
+          card.classList.remove('ui-card--loading');
+          card.setAttribute('aria-busy', 'false');
+          card.inert = false;
+        });
+        cardLoadingButton.disabled = false;
+        cardLoadingLabel.textContent = 'Simulate Skeleton Loading (280ms)';
+        cardLoadingStatus.textContent = 'Card examples loaded. You can preview again.';
+      }, 280);
+    });
+  }
+
   // 1. Skeleton Simulation Demo
   const skelBtn = document.getElementById('demo-simulate-skeleton-btn');
   const tableWrap = document.querySelector('.ui-table-wrap');
@@ -28,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (i < 5) r.style.display = '';
         });
         skelBtn.disabled = false;
-      }, 320);
+      }, 280);
     });
   }
 

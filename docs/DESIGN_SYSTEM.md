@@ -174,6 +174,35 @@ Standard card containers, compact metric tiles, and interactive navigation cards
 </div>
 ```
 
+#### Card Skeleton Loading
+
+Use `.ui-card--loading` on an existing card while its data is pending. Keep the content in the DOM so the card retains its dimensions; the loading class hides the content and shows an absolutely positioned `.ui-loading-placeholder`. Mark the card `aria-busy="true"` and `inert` to prevent interaction with unfinished content. Announce loading and completion through a separate status outside the inert card.
+
+```html
+<p role="status" aria-live="polite">Loading card details…</p>
+<article class="ui-card ui-card--loading" aria-busy="true" inert>
+  <div class="ui-card-header">
+    <h3 class="ui-card-title">Student overview</h3>
+    <p class="ui-card-description">Student profile and review summary.</p>
+  </div>
+  <div class="ui-card-content">
+    <p class="ui-text">Card content remains in place while loading.</p>
+  </div>
+  <div class="ui-loading-placeholder" aria-hidden="true">
+    <span class="ui-skeleton ui-skeleton--title"></span>
+    <div class="ui-loading-lines">
+      <span class="ui-skeleton"></span>
+      <span class="ui-skeleton ui-skeleton--short"></span>
+    </div>
+  </div>
+</article>
+```
+
+- `.ui-skeleton` provides a full-width text placeholder using `--muted` and `--input`; both themes work without overrides.
+- Use `--title`, `--short`, `--metric`, and `--badge` modifiers for headings, shorter text, KPI values, and status pills. `.ui-loading-row` aligns multiple placeholders horizontally.
+- Shimmer animation is disabled under `prefers-reduced-motion: reduce`.
+- When data arrives, remove `.ui-card--loading` and `inert`, set `aria-busy="false"`, and announce completion. The living guide's Cards section includes a repeatable 280ms simulation for all three card variants, matching the table simulation button.
+
 ---
 
 ### 2. Buttons & Action Triggers
