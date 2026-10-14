@@ -69,8 +69,10 @@ SPMIS implements a dual-theme architecture based on the Claude+ theme from tweak
 | `--foreground` | `oklch(0.3438 0.0269 95.7226)` (~#3A3935) | `oklch(0.9576 0.0027 106.4494)` (~#FAF9F5) | Primary headings & high-contrast text |
 | `--card` | `oklch(0.9665 0.0067 97.3521)` (~#F3F1EB) | `oklch(0.2928 0.0018 106.5092)` (~#2B2A27) | Card, modal & table panel surface |
 | `--card-foreground` | `oklch(0.1908 0.0020 106.5859)` (~#141413) | `oklch(0.9818 0.0054 95.0986)` (~#FAF9F5) | Card body text & titles |
+| `--popover` | `oklch(1.0000 0 0)` (~#FFFFFF) | `oklch(0.3085 0.0035 106.6039)` (~#2E2D2A) | Dropdown menus, tooltips & tag popovers |
+| `--popover-foreground` | `oklch(0.2671 0.0196 98.9390)` (~#262523) | `oklch(0.9211 0.0040 106.4781)` (~#EAE7E0) | Popover body text & titles |
 | `--primary` | `oklch(0.6171 0.1375 39.0427)` (~#D97251) | `oklch(0.6724 0.1308 38.7559)` (~#D97251) | Terracotta primary CTA & active nav |
-| `--primary-foreground` | `oklch(0.1908 0.0020 106.5859)` (#000000) | `oklch(0.1908 0.0020 106.5859)` (#000000) | Bold black text on primary buttons & active nav |
+| `--primary-foreground` | `oklch(1.0000 0 0)` (#FFFFFF) | `oklch(0.1908 0.0020 106.5859)` (#000000) | High-contrast text on primary buttons (white in light, black in dark) |
 | `--secondary` | `oklch(0.9245 0.0138 92.9892)` (~#E5E2DA) | `oklch(0.2213 0.0038 106.7070)` (~#383734) | Secondary buttons & quiet actions |
 | `--secondary-foreground` | `oklch(0.4334 0.0177 98.6048)` (~#4A4843) | `oklch(0.9818 0.0054 95.0986)` (~#FAF9F5) | Text on secondary controls |
 | `--muted` | `oklch(0.9341 0.0153 90.2390)` (~#E9E6DF) | `oklch(0.2213 0.0038 106.7070)` (~#21201E) | Table headers, inputs & recessed wells |
@@ -240,6 +242,18 @@ Interactive button primitives conforming to the unified `.ui-btn` specification,
 <button type="button" class="pill-btn accept">Accept Application</button>
 <button type="button" class="pill-btn reject">Reject Application</button>
 
+<!-- Decision Pills with Active Selection (.has-selection) -->
+<button type="button" class="pill-btn approve has-selection">Approve (3)</button>
+<button type="button" class="pill-btn reject has-selection">Reject (3)</button>
+
+<!-- Standard Modal Close Button Squircle (.ui-modal-close) -->
+<button type="button" class="ui-modal-close modal-close" aria-label="Close dialog">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
+
 <!-- Interactive Neutral Action Link with Sliding Arrow -->
 <a href="#" class="ui-link-neutral">
   Review <span class="arrow">&rarr;</span>
@@ -249,7 +263,8 @@ Interactive button primitives conforming to the unified `.ui-btn` specification,
 #### Specifications:
 - **Primary Entity Add (`.add-button`):** Terracotta background (`#D97251`), white text (`#FFFFFF`, `font-weight: 600`) in light mode / high-contrast primary variant, 38px height (`height: 38px`), consistent SVG plus icon (`14x14`, `stroke-width="2"`, `stroke-linecap="round"`), and 12px border radius.
 - **Action Link (`.ui-link-neutral`):** High-contrast neutral text (`#FAF9F5`) transitioning to terracotta (`#D97251`) on hover, with the `.arrow` smoothly gliding 4px rightward via `transform: translateX(4px)`.
-- **Decision Pills (`.pill-btn`):** Full 9999px radius; Accept uses forest green (`#2c7e39`), Reject uses crimson (`#f9464a`).
+- **Decision Pills (`.pill-btn`):** Full 9999px radius; Approve/Accept uses green outline (`#10B981` / `#2c7e39`), Reject uses red outline (`#EF4444` / `#f9464a`). When table items are checked, `.has-selection` activates a solid filled background with elevated drop shadow (`box-shadow: 0 2px 10px rgba(...)`).
+- **Modal Close Squircle (`.ui-modal-close` / `.modal-close`):** Standard 34px × 34px squircle action button used across all dialogs and modals. Built with `width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--muted-foreground);` with scale(1.05) on hover and scale(0.95) on active press.
 
 ---
 
@@ -614,6 +629,36 @@ Backdrop-blurred modals for application rejections, entity approvals, edits, and
 
   </div>
 </div>
+<!-- 3. Approval Queue Route-Backed Modal (<QueueModal />) -->
+<!-- Container binds to ?queue=<type> parameter; backdrop uses blur(6px) -->
+<div class="modal-overlay" data-queue-modal role="dialog" aria-modal="true" aria-label="Approval queue" style="display: flex;">
+  <section class="modal-container queue-modal-container" role="document">
+    <!-- Standalone Squircle Close Button -->
+    <button type="button" class="modal-close modal-cancel ui-modal-close" data-queue-close aria-label="Close queue modal">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="queue-modal-body" data-queue-modal-body>
+      <!-- Application Queue Workspace Content Renders Directly Here -->
+    </div>
+  </section>
+</div>
+
+<!-- 4. Inline Row Rejection Panel (Binding Rule: No Nested Modals) -->
+<!-- In approval queues, rejections expand inline directly beneath the table row -->
+<div class="ui-queue-rejection-row is-expanded" role="row">
+  <div class="ui-queue-rejection-cell" role="cell">
+    <label for="queue-reject-reason">Reason for rejection</label>
+    <p class="ui-queue-bulk-message">The same reason applies to all 3 selected applications.</p>
+    <textarea id="queue-reject-reason" placeholder="Enter reason here..." aria-required="true" required></textarea>
+    <div class="ui-queue-rejection-actions">
+      <button type="button" class="ui-btn ui-btn-outline ui-queue-cancel">Close</button>
+      <button type="button" class="ui-btn ui-btn-destructive ui-queue-confirm-reject">Reject</button>
+    </div>
+  </div>
+</div>
 ```
 
 #### Behavioral & Accessibility Contract:
@@ -624,6 +669,8 @@ Backdrop-blurred modals for application rejections, entity approvals, edits, and
 - **Primary Action Color:** "Confirm Rejection" uses the primary CTA color (`background: var(--primary, #D97251)`, black text `#000000`, `font-weight: 700`, `border-radius: var(--radius-md, 10px)`).
 - **Accidental Click Prevention Safeguard:** All actionable modals include an action confirmation banner (`.ui-alert--warning` for rejections, `.ui-alert--info` for approvals) explicitly summarizing the irreversible decision and requiring affirmative user confirmation before mutation.
 - **Escape Key & Backdrop Dismissal:** Pressing `Esc` or clicking the darkened backdrop safely dismisses the modal without triggering actions. Scroll lock (`document.body.style.overflow = 'hidden'`) is enforced while modals are open.
+- **Route-Backed Synchronization:** Approval queue modals synchronize open/close state with the `?queue=<type>` URL query parameter (`student`, `faculty`, `program`, `department`). Browser Back and Forward navigation reopens or dismisses the modal without full page reload.
+- **Zero Nested Modals Directive (README §9 & ai-context.md):** No modal may ever open on top of another modal. In approval queues, secondary flows (such as collecting a rejection reason) are captured **inline via table row expansion** (`.ui-queue-rejection-row`) directly inside the modal workspace, preserving keyboard context and mobile legibility.
 
 ---
 
@@ -798,10 +845,29 @@ Unified layout primitives anchoring the full-screen portal viewport: the persist
   <span>&copy; 2026 Admin Portal. All rights reserved.</span>
   <span>System Version 0.1.0</span>
 </footer>
+
+<!-- 4. Global Workspace Header & Live Theme Switcher (.ui-top-bar) -->
+<header class="ui-top-bar">
+  <div class="ui-top-bar-left">
+    <div class="ui-top-bar-dot"></div>
+    <span class="ui-top-bar-breadcrumb">SPMIS DESIGN SYSTEM / LIVING STYLE GUIDE</span>
+  </div>
+  <div class="ui-top-bar-right">
+    <button type="button" id="theme-toggle-btn" class="ui-theme-toggle" aria-label="Toggle theme">
+      <span id="theme-icon">&#127769;</span>
+      <span id="theme-label">Dark Mode</span>
+    </button>
+    <div class="ui-top-bar-badge">
+      <span class="ui-top-bar-pulse"></span>
+      <span>Claude+ Standard</span>
+    </div>
+  </div>
+</header>
 ```
 
 #### Workspace Frame Architecture:
 - **Top Header Bar (`.admin-top-header`):** Anchored at the top of `<main class="section-container">`. Uses `border-bottom: 1px solid #42423F`, an uppercase contextual breadcrumb with a terracotta dot (`#D97251`), and a pulsing green indicator confirming live system status (`#10B981`).
+- **Global Workspace Bar (`.ui-top-bar`):** Full-width utility header anchoring the top of style guides, document viewers, and portal frames. Houses the live theme switch toggle (`#theme-toggle-btn`) and the live system pulse badge (`.ui-top-bar-badge`).
 - **Floating Toast System:** Fixed bottom-right notification element with subtle blur, auto-dismissing after 3 seconds, accessible via `aria-live="polite"`.
 - **Pinned Workspace Footer (`.admin-footer`):** Placed directly at the end of `<main class="section-container">` with `margin-top: auto` and `border-top: 1px solid #42423F`. Because `.section-container` is styled with `display: flex; flex-direction: column; justify-content: space-between; height: 100%; overflow-y: auto;`, the footer stays neatly pinned at the bottom of the viewport without pushing the page into outer window scrolling or overflowing off-screen.
 - **Divider Color Uniformity:** The top header bottom border, bottom footer top border, and sidebar user card divider (`.sidebar-divider`) all strictly use `#42423F`, eliminating misplaced orange lines and creating a cohesive horizontal rhythm across the interface.
