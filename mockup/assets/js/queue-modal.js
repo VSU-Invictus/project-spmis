@@ -92,6 +92,20 @@
     return modal;
   }
 
+  function resolveQueuePagePath(queue) {
+    const filename = queueToPage[queue];
+    if (!filename) return '';
+
+    const pathname = (window.location.pathname || '').replace(/\\/g, '/');
+    if (pathname.includes('/admin/')) {
+      return filename;
+    }
+    if (pathname.includes('/faculty/')) {
+      return `../admin/${filename}`;
+    }
+    return `admin/${filename}`;
+  }
+
   function setQueueModalContent(modal, queue) {
     if (!modal || !queueTypes.has(queue)) return;
 
@@ -100,7 +114,7 @@
     if (title) title.textContent = queueTitles[queue] || 'Pending applications';
     if (!body) return;
 
-    const page = queueToPage[queue];
+    const pagePath = resolveQueuePagePath(queue);
     let frame = body.querySelector('iframe');
     if (!frame) {
       frame = document.createElement('iframe');
@@ -109,7 +123,7 @@
       body.replaceChildren(frame);
     }
 
-    const nextSrc = `${page}?embedded=1`;
+    const nextSrc = `${pagePath}?embedded=1`;
     if (!frame.getAttribute('src')?.endsWith(nextSrc)) {
       frame.src = nextSrc;
     }

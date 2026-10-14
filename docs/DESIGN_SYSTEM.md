@@ -3,7 +3,8 @@
 SPMIS uses the **Claude+** theme from tweakcn as its shared visual foundation. The system is implemented as raw CSS so every HTML page can consume the same tokens and primitives without any build step, bundler, or external framework.
 
 Theme source: [Claude+ registry item](https://tweakcn.com/themes/cmdght103000n04lh3e2ae93r)  
-Living style guide: [`mockup/pages/design-system.html`](file:///c:/Users/monarch/Desktop/project-spmis/mockup/pages/design-system.html)  
+Living style guide (HTML): [`mockup/pages/design-system.html`](file:///c:/Users/monarch/Desktop/project-spmis/mockup/pages/design-system.html)  
+React Design System (TSX): [`app/src/pages/DesignSystemPage.tsx`](file:///c:/Users/monarch/Desktop/project-spmis/app/src/pages/DesignSystemPage.tsx) (`/design-system`)  
 Component Stylesheet: [`mockup/assets/css/components.css`](file:///c:/Users/monarch/Desktop/project-spmis/mockup/assets/css/components.css)  
 Global Stylesheet: [`mockup/assets/css/global.css`](file:///c:/Users/monarch/Desktop/project-spmis/mockup/assets/css/global.css)
 
@@ -246,14 +247,6 @@ Interactive button primitives conforming to the unified `.ui-btn` specification,
 <button type="button" class="pill-btn approve has-selection">Approve (3)</button>
 <button type="button" class="pill-btn reject has-selection">Reject (3)</button>
 
-<!-- Standard Modal Close Button Squircle (.ui-modal-close) -->
-<button type="button" class="ui-modal-close modal-close" aria-label="Close dialog">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
-</button>
-
 <!-- Interactive Neutral Action Link with Sliding Arrow -->
 <a href="#" class="ui-link-neutral">
   Review <span class="arrow">&rarr;</span>
@@ -264,7 +257,6 @@ Interactive button primitives conforming to the unified `.ui-btn` specification,
 - **Primary Entity Add (`.add-button`):** Terracotta background (`#D97251`), white text (`#FFFFFF`, `font-weight: 600`) in light mode / high-contrast primary variant, 38px height (`height: 38px`), consistent SVG plus icon (`14x14`, `stroke-width="2"`, `stroke-linecap="round"`), and 12px border radius.
 - **Action Link (`.ui-link-neutral`):** High-contrast neutral text (`#FAF9F5`) transitioning to terracotta (`#D97251`) on hover, with the `.arrow` smoothly gliding 4px rightward via `transform: translateX(4px)`.
 - **Decision Pills (`.pill-btn`):** Full 9999px radius; Approve/Accept uses green outline (`#10B981` / `#2c7e39`), Reject uses red outline (`#EF4444` / `#f9464a`). When table items are checked, `.has-selection` activates a solid filled background with elevated drop shadow (`box-shadow: 0 2px 10px rgba(...)`).
-- **Modal Close Squircle (`.ui-modal-close` / `.modal-close`):** Standard 34px × 34px squircle action button used across all dialogs and modals. Built with `width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--muted-foreground);` with scale(1.05) on hover and scale(0.95) on active press.
 
 ---
 
@@ -566,70 +558,102 @@ Docked 260px navigation sidebar with active state highlights, user account card,
 
 ### 7. Portal Modals & Confirmation Dialogs
 
-Backdrop-blurred modals for application rejections, entity approvals, edits, and destructive confirmations. Follows the **Standard Card** visual container specification for consistency across portals.
+Backdrop-blurred modal dialogs conforming strictly to the **Admin Portal** (`.modal-card`), **Faculty Portal** (`<dialog>`), and **Approval Queue** (`<QueueModal />`) architectures.
 
 ```html
-<!-- 1. Logout Confirmation Dialog -->
-<dialog class="logout-dialog">
-  <form method="dialog">
-    <h2>Log out?</h2>
-    <p>Are you sure you want to end your current session?</p>
-    <div class="actions">
-      <button type="submit" value="cancel" class="ui-btn ui-btn-outline">Cancel</button>
-      <button type="submit" value="confirm" class="ui-btn ui-btn-primary">Log out</button>
-    </div>
-  </form>
-</dialog>
-
-<!-- 2. Application Action Modal (Standard Card Specification) -->
-<!-- Modal Overlay Backdrop & Container -->
-<div class="modal-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-  
-  <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="background: var(--card, #21201E); border: 1px solid var(--border, #3E3D39); border-radius: var(--radius-lg, 16px); padding: 24px 28px; max-width: 480px; width: 90%; box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6); color: var(--foreground, #FFFFFF);">
-    
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-      <h4 id="modal-title" style="margin: 0; font-size: 18px; font-weight: 700; color: #FFFFFF; font-family: var(--font-sans, 'Outfit');">Reject Application Proposal</h4>
-      <button type="button" class="modal-close-btn" aria-label="Close modal" style="background: transparent; border: none; color: #FFFFFF; font-size: 18px; cursor: pointer; opacity: 0.7;">&times;</button>
-    </div>
-
-    <!-- Accidental Action Safeguard Banner -->
-    <div class="ui-alert ui-alert--warning" role="alert" style="margin-bottom: 16px;">
-      <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-        <line x1="12" y1="9" x2="12" y2="13"/>
-        <line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-      <div class="ui-alert-content">
-        <span class="ui-alert-title">Confirm Rejection Decision</span>
-        <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+<!-- 1. Admin Portal: Entity Management Modal (.modal-card) -->
+<!-- Standard base across Departments, Programs, Faculty, and Students management -->
+<div id="entityModal" class="modal-overlay">
+  <section class="modal-card">
+    <div class="modal-header">
+      <div class="modal-header-content">
+        <h2 id="entityModalTitle" class="modal-title">Add Department</h2>
+        <p class="modal-subtitle">Enter the official department title below.</p>
       </div>
     </div>
 
-    <form class="modal-form" style="display: flex; flex-direction: column; gap: 14px;">
-      <div>
-        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: #FFFFFF;">Selected Application</label>
-        <div style="padding: 10px 14px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: var(--radius-md, 10px); font-size: 13px; color: #FFFFFF;">
-          Dr. Eleanor Vance (Faculty Application)
+    <form id="entityForm" class="modal-form">
+      <!-- Contextual Action Confirmation Notice -->
+      <div class="ui-alert ui-alert--info" role="status">
+        <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <div class="ui-alert-content">
+          <span class="ui-alert-title">Confirm Addition</span>
+          <span class="ui-alert-desc">You are about to add this department record. Review the details below before proceeding.</span>
         </div>
       </div>
 
-      <div>
-        <label style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: #FFFFFF;">
-          <span>Reason for rejection <span style="color: var(--destructive); font-weight: 700;">*</span></span>
-          <span style="font-size: 11px; color: var(--muted-foreground); font-weight: 400;">Expandable</span>
-        </label>
-        <textarea required style="width: 100%; min-height: 90px; max-height: 260px; resize: vertical; padding: 10px 14px; background: var(--muted, #21201E); border: 1px solid var(--input, #43362B); border-radius: var(--radius-md, 10px); font-size: 13px; color: var(--foreground, #FFFFFF); box-sizing: border-box; outline: none; line-height: 1.5;" placeholder="Provide specific justification or deficiency details for rejection..."></textarea>
+      <div class="ui-form-group">
+        <label for="entityName" class="ui-form-label">Department Name</label>
+        <input id="entityName" type="text" class="ui-input" placeholder="e.g. Department of Computer Science" required>
       </div>
 
-      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px;">
-        <button type="button" class="ui-btn ui-btn-outline" style="height: 42px; font-size: 13px; border-radius: var(--radius-md, 10px); padding: 0 18px;">Cancel</button>
-        <button type="submit" class="modal-submit" style="height: 42px; font-size: 13px; background: var(--primary, #D97251); color: #000000; font-weight: 700; border: none; border-radius: var(--radius-md, 10px); padding: 0 20px; cursor: pointer;">Confirm Rejection</button>
+      <div class="modal-actions">
+        <button id="cancelEntity" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
+        <button type="submit" class="ui-btn ui-btn-primary modal-submit">Add Department</button>
       </div>
     </form>
-
-  </div>
+  </section>
 </div>
-<!-- 3. Approval Queue Route-Backed Modal (<QueueModal />) -->
+
+<!-- 2. Admin Portal: Destructive Confirmation Modal (.modal-card.compact.remove-modal) -->
+<!-- Compact 400px removal dialog for permanent record deletions -->
+<div id="removeModal" class="modal-overlay">
+  <section class="modal-card compact remove-modal">
+    <div class="modal-header">
+      <div class="modal-header-content">
+        <h2 class="modal-title">Remove Department</h2>
+        <p class="modal-subtitle">Confirm permanent deletion of this record.</p>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="ui-alert ui-alert--warning" role="alert">
+        <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <div class="ui-alert-content">
+          <span class="ui-alert-title">Confirm Removal</span>
+          <span class="ui-alert-desc">Are you sure you want to remove this department? This action cannot be undone.</span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="cancelRemove" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
+        <button id="confirmRemove" type="button" class="ui-btn ui-btn-primary modal-submit">Confirm</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 3. Faculty Portal: Proposal Modal (<dialog class="proposal-modal">) -->
+<!-- Native <dialog> base with ::backdrop blur for application proposals and registrations -->
+<dialog id="proposal-dialog" class="proposal-modal" aria-labelledby="proposal-title">
+  <div class="modal-header">
+    <div class="modal-header-content">
+      <h2 class="modal-title" id="proposal-title">Propose a department</h2>
+      <p class="modal-subtitle">Your request will be pending until reviewed by an administrator.</p>
+    </div>
+  </div>
+  <div class="modal-body">
+    <form id="proposal-form" class="modal-form">
+      <div class="ui-form-group">
+        <label class="ui-form-label" for="entity-name">Proposed name</label>
+        <input type="text" id="entity-name" class="ui-input" required maxlength="120" placeholder="e.g. Department of Computer Science" autocomplete="off" />
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="ui-btn ui-btn-outline" data-close id="cancel-proposal-btn">Cancel</button>
+        <button type="submit" class="ui-btn ui-btn-primary" id="submit-proposal-btn">Submit application</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- 4. Approval Queue Route-Backed Modal (<QueueModal />) -->
 <!-- Container binds to ?queue=<type> parameter; backdrop uses blur(6px) -->
 <div class="modal-overlay" data-queue-modal role="dialog" aria-modal="true" aria-label="Approval queue" style="display: flex;">
   <section class="modal-container queue-modal-container" role="document">
@@ -646,7 +670,7 @@ Backdrop-blurred modals for application rejections, entity approvals, edits, and
   </section>
 </div>
 
-<!-- 4. Inline Row Rejection Panel (Binding Rule: No Nested Modals) -->
+<!-- 5. Inline Row Rejection Panel (Binding Rule: No Nested Modals) -->
 <!-- In approval queues, rejections expand inline directly beneath the table row -->
 <div class="ui-queue-rejection-row is-expanded" role="row">
   <div class="ui-queue-rejection-cell" role="cell">
@@ -659,18 +683,90 @@ Backdrop-blurred modals for application rejections, entity approvals, edits, and
     </div>
   </div>
 </div>
+
+<!-- 6. Logout Confirmation Dialog -->
+<dialog class="logout-dialog">
+  <form method="dialog">
+    <h2>Log out?</h2>
+    <p>Are you sure you want to end your current session?</p>
+    <div class="actions">
+      <button type="submit" value="cancel" class="ui-btn ui-btn-outline">Cancel</button>
+      <button type="submit" value="confirm" class="ui-btn ui-btn-primary">Log out</button>
+    </div>
+  </form>
+</dialog>
 ```
 
+#### Style Guide Section 9 Architecture (`#portal-modals`):
+In the living style guide (`mockup/pages/design-system.html`), the modal documentation is structured as a compact two-card grid:
+1. **Modal Trigger Buttons (Launchpad Card):** Gathers all buttons that trigger modals into a single card to save space and provide an interactive testing ground:
+   - **Admin Modals:** Open Admin Modal (`#demo-open-admin-modal-btn`), Open Remove Modal (`#demo-open-remove-modal-btn`)
+   - **Faculty Modals:** Open Faculty Modal (`#demo-open-faculty-modal-btn`)
+   - **Approval Queue Modals:** Department, Program, Student, Faculty (`data-queue-open="department|program|student|faculty"`)
+   - **Session Dialogs:** Open Logout Dialog (`#demo-open-logout-btn`)
+2. **Standard Portal Modal Architecture Card:** Contains the unified **Dimensions Token Table** and the **Modal Accessibility & Sizing Contract**. Redundant static mockups (e.g., static Add Department card or static queue modal frame) are omitted to eliminate interface clutter, with all testing performed via the live interactive launchpad.
+
+#### Modal Action Buttons Dimension Specification:
+All modal dialog footers (`.modal-actions`, `.ui-logout-actions`) across the Admin Portal, Faculty Portal, and Design System enforce a unified button dimension standard to ensure pixel-perfect consistency:
+
+| Button Role | Selector | Height | Horizontal Padding | Border Radius | Font Size & Weight | Visual Appearance |
+|---|---|---|---|---|---|---|
+| **Cancel / Secondary** | `.modal-actions .ui-btn-outline`, `.modal-btn-cancel` | `36px` | `16px` | `8px` (`var(--radius-md)`) | `13px` &middot; Semibold (`600`) | Transparent, `border: 1px solid #3E3D39` |
+| **Submit / Confirm** | `.modal-actions .ui-btn-primary`, `.modal-submit`, `.modal-btn-confirm` | `36px` | `16px` | `8px` (`var(--radius-md)`) | `13px` &middot; Bold (`700`) | Terracotta `#D97251`, black text `#000000` |
+| **Destructive Confirm** | `.remove-modal .modal-submit`, `.modal-actions .ui-btn-destructive` | `36px` | `16px` | `8px` (`var(--radius-md)`) | `13px` &middot; Bold (`700`) | Primary `#D97251` or Destructive `#EF4444` |
+| **Queue Bulk Pill (Approve/Reject)** | `.pill-btn.approve`, `.pill-btn.reject` | `32px` | `20px` (`1.25rem`) | `9999px` (Pill) | `13px` &middot; Semibold (`600`) | Emerald `#10B981` (Approve) / Red `#EF4444` (Reject) |
+| **Squircle Close Button** | `.modal-close.ui-modal-close` | `32px × 32px` | `0` (Square aspect) | `8px` (`var(--radius-md)`) | 18px SVG icon | Floating squircle (Hover: `#2E2D2A`) |
+
 #### Behavioral & Accessibility Contract:
-- **Surface Specifications (Standard Card):** Modals follow the Standard Card spec (`background: var(--card, #21201E)`, `border: 1px solid var(--border, #3E3D39)`, border-radius `var(--radius-lg, 16px)`, elevated shadow `0 20px 48px -10px rgba(0, 0, 0, 0.6)`). Out-of-place lighter grey backgrounds and terracotta outer borders are strictly forbidden.
-- **Uniform Form Controls:** Input fields, dropdowns, and textareas use standard form control styling with a thin lighter-shade border (`border: 1px solid var(--input, #43362B)`), muted background (`var(--muted, #21201E)`), and 10px border radius.
-- **Expandable Long Inputs:** Rejection reason textareas support manual vertical expansion (`resize: vertical; min-height: 90px`) and dynamic auto-expansion on keystroke (`scrollHeight` constrained up to 260px) to comfortably cater to long explanations.
-- **Mandatory Rejection Reason:** "Reason for rejection" is marked mandatory with an asterisk (`*`), has the HTML `required` attribute, and client-side validation enforces non-empty input before confirming submission.
-- **Primary Action Color:** "Confirm Rejection" uses the primary CTA color (`background: var(--primary, #D97251)`, black text `#000000`, `font-weight: 700`, `border-radius: var(--radius-md, 10px)`).
-- **Accidental Click Prevention Safeguard:** All actionable modals include an action confirmation banner (`.ui-alert--warning` for rejections, `.ui-alert--info` for approvals) explicitly summarizing the irreversible decision and requiring affirmative user confirmation before mutation.
-- **Escape Key & Backdrop Dismissal:** Pressing `Esc` or clicking the darkened backdrop safely dismisses the modal without triggering actions. Scroll lock (`document.body.style.overflow = 'hidden'`) is enforced while modals are open.
+- **Strict 36px Modal Action Height:** Both primary and outline buttons in `.modal-actions` strictly enforce `height: 36px !important; min-height: 36px !important; padding: 0 16px !important; border-radius: 8px !important; width: auto !important; font-size: 13px !important;`. Full-width `100%` stretching and `42px` button heights in dialog footers are prohibited across all admin rosters and faculty proposal workflows.
+- **Right-Aligned Button Group:** `.modal-actions` aligns buttons to the right (`justify-content: flex-end; gap: 10px; margin-top: 18px; width: 100%;`) with secondary Cancel on the left and primary confirm/submit on the right.
+- **Surface Specifications (Standard Card):** Modals follow the Standard Card spec (`background: var(--card, #1A1918)` in admin, `#21201E` in faculty, `border: 1px solid var(--border, #3E3D39)`, border-radius `var(--radius-xl, 16px)`, elevated shadow `0 20px 48px -10px rgba(0, 0, 0, 0.72)`). Out-of-place lighter grey backgrounds and terracotta outer borders are strictly forbidden.
+- **Header & Typography Standard:** All modals feature `.modal-header` with `border-bottom: 1px solid var(--border, #383734)`, containing `.modal-header-content` with a bold heading (`.modal-title`, `1.0625rem`, `#FFFFFF`) and descriptive caption (`.modal-subtitle`, `0.78125rem`, `#A0988E`).
+- **No Redundant Close 'X' Button:** In standard entity management, proposal, and confirmation modals that provide an explicit **Cancel** outline action (`.ui-btn ui-btn-outline modal-btn-cancel`), the top-right close 'X' button is omitted/hidden (`display: none !important;`) to avoid interface clutter.
+- **Exclusive Squircle Close Button on Queue Modal:** The squircle close button (`.modal-close.ui-modal-close`) is prominently displayed exclusively on the Approval Queue Modal (`<QueueModal />` / `.queue-modal-container`), where the workspace lacks a bottom cancel action.
+- **Uniform Form Controls:** Input fields, dropdowns, and textareas use standard form control styling with a thin border (`border: 1px solid var(--border, #383734)`), background `var(--color-input, #21201E)`, and 8px border radius.
+- **Accidental Click Prevention Safeguard:** Actionable modals include an action confirmation banner (`.ui-alert--info` for additions/updates, `.ui-alert--warning` for destructive removals or physical verifications) summarizing the action before data mutation.
+- **Escape Key & Backdrop Dismissal:** Pressing `Esc` or clicking the dimmed backdrop safely dismisses the modal without triggering actions. Scroll lock (`document.body.style.overflow = 'hidden'`) is enforced while modals are open.
 - **Route-Backed Synchronization:** Approval queue modals synchronize open/close state with the `?queue=<type>` URL query parameter (`student`, `faculty`, `program`, `department`). Browser Back and Forward navigation reopens or dismisses the modal without full page reload.
 - **Zero Nested Modals Directive (README §9 & ai-context.md):** No modal may ever open on top of another modal. In approval queues, secondary flows (such as collecting a rejection reason) are captured **inline via table row expansion** (`.ui-queue-rejection-row`) directly inside the modal workspace, preserving keyboard context and mobile legibility.
+
+#### React TSX Component Architecture (`<QueueModal />`):
+The vanilla approval queue modal has been ported into reusable React components in `app/src/components/queue-modal/`:
+
+1. **Controlled Modal Component (`<QueueModal />`):**
+   ```tsx
+   import { QueueModal } from '@/components/queue-modal';
+
+   <QueueModal
+     open={isOpen}
+     onClose={() => setIsOpen(false)}
+     title="Department Proposals"
+   >
+     <ApplicationQueue type="department" isModal={true} />
+   </QueueModal>
+   ```
+   - Renders into `document.body` via `createPortal`.
+   - Traps Tab key focus inside the dialog while open.
+   - Automatically returns focus to the triggering element on modal close.
+   - Locks background scroll (`document.body.style.overflow = 'hidden'`).
+   - Dismisses cleanly on <kbd>Esc</kbd> or dimmed backdrop click.
+
+2. **Route Parameter Synchronization (`useQueueSearchParam`):**
+   - Synchronizes open queue state directly with React Router's `useSearchParams`:
+   ```tsx
+   const { queue, openQueue, closeQueue } = useQueueSearchParam();
+   // queue: 'department' | 'program' | 'student' | 'faculty' | null
+   ```
+   - Automatically synchronizes with browser Back and Forward navigation buttons.
+
+3. **Global Layout Integration (`<QueueModalHost />`):**
+   - Mounted once inside `AdminLayout` (`app/src/pages/admin.tsx`) to globally handle any URL carrying `?queue=<type>`, rendering `<ApplicationQueue key={queue} type={queue} isModal={true} />` inside `<QueueModal />`.
+
+4. **Context-Aware Iframe Path Resolution (`resolveQueuePagePath`):**
+   - In vanilla mockup environments, `queue-modal.js` resolves embedded queue paths based on caller depth (`admin/<file>` from `pages/design-system.html` vs `<file>` from `pages/admin/` vs `../admin/<file>` from `pages/faculty/`), completely eliminating 404 / "File not found" errors.
+
+5. **Native React Living Style Guide (`DesignSystemPage.tsx`):**
+   - The entire 12-section living style guide from `mockup/pages/design-system.html` is ported 1:1 into `app/src/pages/DesignSystemPage.tsx` (`/design-system`). It features an identical token layout, unified CSS styling, and full native interactivity: live theme toggling, typography and card skeleton loading simulators, tag overflow popovers, interactive student data table with row selection and pagination, docked sidebar navigation showcase, conversational chat thread with prompt dispatch, complete auth split-card with floating validation tooltips, native `<dialog>` and `<QueueModal />` overlays, and toast alerts.
 
 ---
 

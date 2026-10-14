@@ -120,45 +120,110 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3. Modal Previews
-  const rejectModal = document.getElementById('demoRejectModal');
-  const openRejectBtn = document.getElementById('demo-open-reject-modal-btn');
-  const closeRejectBtn = document.getElementById('demoCloseRejectModal');
-  const rejectForm = document.getElementById('demoRejectForm');
+  // 3. Portal Modal Previews (Admin Entity, Admin Remove, Faculty Proposal)
+  // 3A. Admin Entity Modal
+  const adminModal = document.getElementById('demoAdminModal');
+  const openAdminBtn = document.getElementById('demo-open-admin-modal-btn');
+  const cancelAdminBtn = document.getElementById('cancelDemoAdminModal');
+  const adminForm = document.getElementById('demoAdminForm');
 
-  if (openRejectBtn && rejectModal) {
-    openRejectBtn.addEventListener('click', () => rejectModal.classList.add('active'));
+  if (openAdminBtn && adminModal) {
+    openAdminBtn.addEventListener('click', () => adminModal.classList.add('active'));
   }
-  if (closeRejectBtn && rejectModal) {
-    closeRejectBtn.addEventListener('click', () => rejectModal.classList.remove('active'));
+  if (cancelAdminBtn && adminModal) {
+    cancelAdminBtn.addEventListener('click', () => adminModal.classList.remove('active'));
   }
-  if (rejectModal) {
+  if (adminModal) {
+    adminModal.addEventListener('click', (e) => {
+      if (e.target === adminModal) adminModal.classList.remove('active');
+    });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && rejectModal.classList.contains('active')) {
-        rejectModal.classList.remove('active');
+      if (e.key === 'Escape' && adminModal.classList.contains('active')) {
+        adminModal.classList.remove('active');
       }
     });
   }
-  if (rejectForm) {
-    rejectForm.addEventListener('submit', (e) => {
+  if (adminForm) {
+    adminForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const reasonInput = document.getElementById('demoRejectReason');
-      if (!reasonInput || !reasonInput.value.trim()) {
-        showDemoToast('Please provide a reason for rejection before confirming.');
-        if (reasonInput) reasonInput.focus();
-        return;
+      adminModal.classList.remove('active');
+      showDemoToast('Department record saved successfully.');
+    });
+  }
+
+  // 3B. Admin Destructive Remove Modal
+  const removeModal = document.getElementById('demoRemoveModal');
+  const openRemoveBtn = document.getElementById('demo-open-remove-modal-btn');
+  const cancelRemoveBtn = document.getElementById('cancelDemoRemoveModal');
+  const confirmRemoveBtn = document.getElementById('confirmDemoRemoveModal');
+
+  if (openRemoveBtn && removeModal) {
+    openRemoveBtn.addEventListener('click', () => removeModal.classList.add('active'));
+  }
+  if (cancelRemoveBtn && removeModal) {
+    cancelRemoveBtn.addEventListener('click', () => removeModal.classList.remove('active'));
+  }
+  if (confirmRemoveBtn && removeModal) {
+    confirmRemoveBtn.addEventListener('click', () => {
+      removeModal.classList.remove('active');
+      showDemoToast('Department record permanently removed.');
+    });
+  }
+  if (removeModal) {
+    removeModal.addEventListener('click', (e) => {
+      if (e.target === removeModal) removeModal.classList.remove('active');
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && removeModal.classList.contains('active')) {
+        removeModal.classList.remove('active');
       }
-      rejectModal.classList.remove('active');
-      showDemoToast('Application proposal rejected successfully.');
+    });
+  }
+
+  // 3C. Faculty Proposal Modal (<dialog>)
+  const facultyModal = document.getElementById('demoFacultyModal');
+  const openFacultyBtn = document.getElementById('demo-open-faculty-modal-btn');
+  const cancelFacultyBtn = document.getElementById('cancelDemoFacultyModal');
+  const facultyForm = document.getElementById('demoFacultyForm');
+
+  if (openFacultyBtn && facultyModal) {
+    openFacultyBtn.addEventListener('click', () => {
+      if (typeof facultyModal.showModal === 'function') {
+        facultyModal.showModal();
+      } else {
+        facultyModal.setAttribute('open', '');
+      }
+    });
+  }
+  if (cancelFacultyBtn && facultyModal) {
+    cancelFacultyBtn.addEventListener('click', () => {
+      if (typeof facultyModal.close === 'function') {
+        facultyModal.close();
+      } else {
+        facultyModal.removeAttribute('open');
+      }
+    });
+  }
+  if (facultyForm && facultyModal) {
+    facultyForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (typeof facultyModal.close === 'function') {
+        facultyModal.close();
+      } else {
+        facultyModal.removeAttribute('open');
+      }
+      showDemoToast('Proposal submitted to administrator queue.');
     });
   }
 
   // 4. Logout Confirmation Dialog
   const logoutDialog = document.getElementById('demoLogoutDialog');
-  const openLogoutBtn = document.getElementById('demo-open-logout-btn');
-  if (openLogoutBtn && logoutDialog) {
-    openLogoutBtn.addEventListener('click', () => {
-      logoutDialog.showModal();
+  const openLogoutBtns = document.querySelectorAll('#demo-open-logout-btn, [data-open-logout-demo]');
+  if (logoutDialog && openLogoutBtns.length) {
+    openLogoutBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        logoutDialog.showModal();
+      });
     });
   }
 

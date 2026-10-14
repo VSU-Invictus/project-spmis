@@ -1025,3 +1025,55 @@ tr:hover .ui-btn:disabled,
   box-shadow: none !important;
 }
 
+/* ==========================================================================
+   PORTAL MODAL ACTION BUTTON SIZING SPECIFICATION (UNIFIED STANDARD)
+   Enforces identical 36px height, 16px padding, 8px radius across Admin,
+   Faculty, and Design System modals.
+   ========================================================================== */
+.modal-actions .ui-btn,
+.modal-actions .modal-submit,
+.modal-actions .modal-btn-cancel,
+.modal-actions .modal-btn-confirm,
+.modal-actions .ui-btn-primary,
+.modal-actions .ui-btn-outline,
+.proposal-modal .modal-actions .ui-btn,
+.register-modal .modal-actions .ui-btn,
+.remove-modal .modal-actions .ui-btn,
+.modal-card .modal-actions .ui-btn {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding: 0 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--radius-md, 8px) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  width: auto !important;
+  flex: initial !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  text-decoration: none !important;
+  transition: all var(--transition-fast, 150ms ease) !important;
+}
+
+.modal-actions .ui-btn-primary,
+.modal-actions .modal-submit,
+.modal-actions .modal-btn-confirm {
+  background: var(--primary, #D97251) !important;
+  border: 1px solid var(--primary, #D97251) !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.modal-actions .ui-btn-outline,
+.modal-actions .modal-btn-cancel {
+  background: transparent !important;
+  border: 1px solid var(--border, #383734) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  font-weight: 600 !important;
+}
+
+

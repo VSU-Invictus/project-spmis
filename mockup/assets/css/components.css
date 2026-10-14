@@ -3014,6 +3014,190 @@ html:not(.dark) .skeleton {
     padding: 0 !important;
 }
 
+/* --- Admin Portal Modal Card Base --- */
+.modal-card {
+    position: relative;
+    width: min(440px, calc(100vw - 32px));
+    min-height: auto;
+    max-height: calc(100vh - 48px);
+    overflow: hidden;
+    padding: 0 !important;
+    background: var(--card, #1A1918);
+    border: 1px solid var(--border, #3E3D39);
+    border-radius: var(--radius-xl, 16px);
+    box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.72), 0 8px 16px -4px rgba(0, 0, 0, 0.48);
+    animation: modalIn .18s ease-out;
+    box-sizing: border-box;
+    color: var(--foreground, #FFFFFF);
+}
+
+.modal-card.compact {
+    width: min(400px, calc(100vw - 32px));
+    min-height: auto;
+    padding: 0 !important;
+}
+
+.modal-card.faculty,
+.modal-card.student {
+    width: min(460px, calc(100vw - 32px));
+    min-height: auto;
+    padding: 0 !important;
+}
+
+/* --- Faculty Portal Modal Dialog Base --- */
+dialog.proposal-modal,
+dialog.register-modal {
+    display: none;
+    flex-direction: column;
+    width: min(440px, calc(100% - 32px));
+    max-width: 440px;
+    padding: 0 !important;
+    background: var(--card, #21201E) !important;
+    border: 1px solid var(--border, #383734) !important;
+    border-radius: var(--radius-xl, 16px) !important;
+    color: var(--foreground, #FAF9F5) !important;
+    box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6), 0 8px 16px -4px rgba(0, 0, 0, 0.4) !important;
+    overflow: hidden !important;
+    margin: auto !important;
+    position: fixed !important;
+    inset: 0 !important;
+    box-sizing: border-box;
+}
+
+dialog.proposal-modal[open],
+dialog.register-modal[open] {
+    display: flex !important;
+    animation: modalPopIn 200ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+dialog.proposal-modal::backdrop,
+dialog.register-modal::backdrop {
+    background: rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+/* --- Modal Header & Typography Specification --- */
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px 14px !important;
+    border-bottom: 1px solid var(--border, #383734) !important;
+    margin-bottom: 0 !important;
+    box-sizing: border-box;
+}
+
+.modal-header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.modal-header .modal-title,
+.modal-title {
+    color: var(--color-text-main, #FFFFFF);
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-align: left;
+}
+
+.modal-subtitle {
+    color: var(--muted-foreground, #A0988E);
+    font-size: 0.78125rem;
+    margin: 0;
+    line-height: 1.35;
+}
+
+/* Modal Body & Card Form Padding */
+.modal-card .modal-form,
+.modal-card .modal-body,
+.proposal-modal .modal-body,
+.register-modal .modal-body {
+    padding: 16px 20px 20px !important;
+    box-sizing: border-box;
+}
+
+/* Modal Action Buttons Alignment & Unified Dimension Specification (Admin, Faculty, Design System) */
+.modal-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;
+    margin-top: 18px !important;
+    padding-top: 0 !important;
+    width: 100% !important;
+}
+
+.modal-actions .ui-btn,
+.modal-actions .modal-submit,
+.modal-actions .modal-btn-cancel,
+.modal-actions .modal-btn-confirm,
+.modal-actions .ui-btn-primary,
+.modal-actions .ui-btn-outline {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding: 0 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border-radius: var(--radius-md, 8px) !important;
+    width: auto !important;
+    flex: initial !important;
+    box-sizing: border-box !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    text-decoration: none !important;
+    transition: all var(--transition-fast, 150ms ease) !important;
+}
+
+.modal-actions .ui-btn-primary,
+.modal-actions .modal-submit,
+.modal-actions .modal-btn-confirm {
+    background: var(--primary, #D97251) !important;
+    border: 1px solid var(--primary, #D97251) !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+.modal-actions .ui-btn-primary:hover,
+.modal-actions .modal-submit:hover,
+.modal-actions .modal-btn-confirm:hover {
+    opacity: 0.92 !important;
+    transform: translateY(-1px) !important;
+}
+
+.modal-actions .ui-btn-outline,
+.modal-actions .modal-btn-cancel {
+    background: transparent !important;
+    border: 1px solid var(--border, #383734) !important;
+    color: var(--foreground, #FAF9F5) !important;
+    font-weight: 600 !important;
+}
+
+.modal-actions .ui-btn-outline:hover,
+.modal-actions .modal-btn-cancel:hover {
+    background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card, #1A1918)) !important;
+    border-color: var(--primary, #D97251) !important;
+}
+
+/* Hide Close Button in Standard Modals with Cancel Button */
+.modal-card > .modal-close,
+.modal-card .modal-header > .modal-close,
+.proposal-modal .modal-close,
+.register-modal .modal-close {
+    display: none !important;
+}
+
 .modal-close {
     position: absolute;
     top: 18px;
@@ -3034,16 +3218,6 @@ html:not(.dark) .skeleton {
 .modal-close:hover {
     color: var(--foreground, #FFFFFF);
     background: var(--muted, rgba(255, 255, 255, 0.06));
-}
-
-.modal-title {
-    font-family: var(--font-sans, 'Outfit'), sans-serif;
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 28px;
-    color: var(--foreground, #FFFFFF);
-    text-align: left;
-    margin: 0 0 16px;
 }
 
 .modal-form {
@@ -3094,21 +3268,23 @@ html:not(.dark) .skeleton {
 }
 
 .modal-submit {
-    width: 100%;
-    height: 42px;
-    margin: 8px 0 0;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 16px !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background: var(--primary, #D97251) !important;
     border: 1px solid var(--primary, #D97251) !important;
-    border-radius: var(--radius-md, 10px);
+    border-radius: var(--radius-md, 8px) !important;
     font-family: var(--font-sans, 'Outfit'), sans-serif;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13px !important;
     color: #000000 !important;
     cursor: pointer;
     transition: opacity 150ms ease, transform 150ms ease;
+    width: auto !important;
+    box-sizing: border-box;
 }
 
 .modal-submit:hover {

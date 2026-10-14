@@ -1,0 +1,510 @@
+/* ==========================================================================
+   QUEUE MODAL COMPONENT (QueueModal.css)
+   Exact match to mockup/assets/css/queue-modal.css
+   ========================================================================== */
+
+/* --- 1. MODAL OVERLAY & CONTAINERS --- */
+.modal-overlay.queue-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: var(--z-modal, 1000) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+.modal-container.queue-modal-container {
+  position: relative !important;
+  width: min(1120px, calc(100vw - 32px)) !important;
+  max-width: min(1120px, calc(100vw - 32px)) !important;
+  min-width: 0 !important;
+  height: min(840px, calc(100vh - 40px)) !important;
+  max-height: calc(100vh - 40px) !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border: 1px solid var(--color-border-main, #3E3D39) !important;
+  border-radius: var(--radius-xl, 16px) !important;
+  background: var(--color-card, #1A1918) !important;
+  color: var(--color-text-main, #FFFFFF) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72) !important;
+  overflow: hidden !important;
+}
+
+.queue-modal-body {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: var(--color-canvas, #141413) !important;
+}
+
+.queue-modal-sr-title {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+}
+
+/* --- 2. CLOSE BUTTON --- */
+.queue-modal-container .modal-close {
+  position: absolute !important;
+  top: 18px !important;
+  right: 20px !important;
+  z-index: 100 !important;
+  width: 34px !important;
+  height: 34px !important;
+  background: #21201E !important;
+  border: 1px solid #3E3D39 !important;
+  border-radius: var(--radius-md, 8px) !important;
+  color: #A0988E !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  transition: all 150ms ease !important;
+  outline: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  padding: 0 !important;
+}
+
+.queue-modal-container .modal-close:hover {
+  color: #FFFFFF !important;
+  background: #2E2D2A !important;
+  border-color: #4E4D48 !important;
+  transform: scale(1.06);
+}
+
+.queue-modal-container .modal-close:active {
+  transform: scale(0.94);
+}
+
+.queue-modal-container .modal-close svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  pointer-events: none !important;
+  display: block !important;
+}
+
+/* --- 3. EMBEDDED QUEUE WORKSPACE OVERRIDES --- */
+.queue-embedded-workspace .section-container,
+.queue-modal-body .section-container {
+  position: static !important;
+  left: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 24px 28px !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+}
+
+.queue-embedded-workspace .header-container,
+.queue-modal-body .header-container {
+  padding-right: 56px !important;
+  margin-bottom: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.queue-embedded-workspace .heading-title,
+.queue-modal-body .heading-title {
+  margin: 6px 0 10px !important;
+  font-size: 30px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.75px !important;
+  color: #FFFFFF !important;
+}
+
+.queue-embedded-workspace .controls-container,
+.queue-modal-body .controls-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-bottom: 16px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-height: 52px !important;
+  flex-shrink: 0 !important;
+}
+
+.queue-embedded-workspace .table-margin-container,
+.queue-modal-body .table-margin-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 0 !important;
+  overflow-x: auto !important;
+  flex: 1 1 auto !important;
+}
+
+.queue-embedded-workspace .table-container,
+.queue-modal-body .table-container {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  border: 1px solid var(--color-border-main, #383734) !important;
+  border-radius: var(--radius-md, 10px) !important;
+  background: var(--color-card, #2B2A27) !important;
+  color: var(--color-text-main, #FAF9F5) !important;
+  font-family: var(--font-sans, 'Inter', sans-serif) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.queue-embedded-workspace .table-header-row,
+.queue-modal-body .table-header-row {
+  height: 48px !important;
+  min-height: 48px !important;
+  min-width: 0 !important;
+  max-width: 100%;
+  display: flex !important;
+  align-items: stretch !important;
+  background: var(--color-muted, #21201E) !important;
+  border-bottom: 1px solid var(--color-border-main, #383734) !important;
+  color: var(--color-text-main, #FAF9F5) !important;
+  box-sizing: border-box !important;
+}
+
+.queue-embedded-workspace .table-header-row .th-cell,
+.queue-modal-body .table-header-row .th-cell {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  padding: 14px 16px !important;
+  font: 700 0.75rem/1.2 var(--font-sans, 'Inter', sans-serif) !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+  border: none !important;
+}
+
+.queue-embedded-workspace .table-body .table-row,
+.queue-modal-body .table-body .table-row {
+  height: 55px !important;
+  min-height: 52px !important;
+  display: flex !important;
+  align-items: stretch !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  border-top: none !important;
+  border-bottom: 1px solid var(--color-border-main, #383734) !important;
+  color: var(--color-text-main, #FAF9F5) !important;
+  transition: background-color 150ms ease !important;
+  box-sizing: border-box !important;
+}
+
+.queue-embedded-workspace .table-body .table-row:hover,
+.queue-modal-body .table-body .table-row:hover {
+  background: color-mix(in srgb, #D97251 8%, #2B2A27) !important;
+}
+
+.queue-embedded-workspace .table-body .table-row.checked,
+.queue-modal-body .table-body .table-row.checked {
+  background: color-mix(in srgb, #D97251 14%, #2B2A27) !important;
+}
+
+.queue-embedded-workspace .table-body .table-row.checked:hover,
+.queue-modal-body .table-body .table-row.checked:hover {
+  background: color-mix(in srgb, #D97251 18%, #2B2A27) !important;
+}
+
+.queue-embedded-workspace .table-body .td-cell,
+.queue-modal-body .table-body .td-cell {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  padding: 14px 16px !important;
+  font: 500 0.875rem/1.4 var(--font-sans, 'Inter', sans-serif) !important;
+  color: var(--color-text-main, #FAF9F5) !important;
+  box-sizing: border-box !important;
+  border: none !important;
+}
+
+.queue-embedded-workspace :is(.th-cell, .td-cell).checkbox-cell,
+.queue-modal-body :is(.th-cell, .td-cell).checkbox-cell {
+  width: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  flex: 0 0 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 0 !important;
+}
+
+/* --- 4. PAGINATION & ACTION BUTTONS --- */
+.queue-embedded-workspace .ui-table-pagination,
+.queue-modal-body .ui-table-pagination {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 1rem !important;
+  width: 100% !important;
+  padding: 1rem 0 !important;
+  background: transparent !important;
+  border-top: none !important;
+  box-sizing: border-box !important;
+}
+
+.queue-embedded-workspace .pagination-actions-group,
+.queue-modal-body .pagination-actions-group {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.queue-embedded-workspace .action-btn-group,
+.queue-modal-body .action-btn-group {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+}
+
+.queue-embedded-workspace .action-btn-group .pill-btn.approve,
+.queue-modal-body .action-btn-group .pill-btn.approve {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 5.5rem !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 1.25rem !important;
+  border-radius: 9999px !important;
+  border: 1px solid #10B981 !important;
+  background: transparent !important;
+  color: #10B981 !important;
+  font: 600 13px/1 var(--font-sans, 'Inter', sans-serif) !important;
+  cursor: pointer !important;
+  transition: all 150ms ease !important;
+  outline: none !important;
+}
+
+.queue-embedded-workspace .action-btn-group .pill-btn.approve:hover,
+.queue-modal-body .action-btn-group .pill-btn.approve:hover {
+  background: rgba(16, 185, 129, 0.14) !important;
+}
+
+.queue-embedded-workspace .action-btn-group .pill-btn.approve.has-selection,
+.queue-modal-body .action-btn-group .pill-btn.approve.has-selection {
+  background: #10B981 !important;
+  color: #000000 !important;
+  border-color: #10B981 !important;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3) !important;
+}
+
+.queue-embedded-workspace .action-btn-group .pill-btn.approve.has-selection:hover,
+.queue-modal-body .action-btn-group .pill-btn.approve.has-selection:hover {
+  background: #059669 !important;
+  border-color: #059669 !important;
+  color: #000000 !important;
+}
+
+.queue-embedded-workspace .action-btn-group .pill-btn.reject,
+.queue-modal-body .action-btn-group .pill-btn.reject {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 5.5rem !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 1.25rem !important;
+  border-radius: 9999px !important;
+  border: 1px solid #EF4444 !important;
+  background: transparent !important;
+  color: #EF4444 !important;
+  font: 600 13px/1 var(--font-sans, 'Inter', sans-serif) !important;
+  cursor: pointer !important;
+  transition: all 150ms ease !important;
+  outline: none !important;
+}
+
+.queue-embedded-workspace .action-btn-group .pill-btn.reject:hover,
+.queue-modal-body .action-btn-group .pill-btn.reject:hover {
+  background: rgba(239, 68, 68, 0.14) !important;
+}
+
+.queue-embedded-workspace .action-btn-group .pill-btn.reject.has-selection,
+.queue-modal-body .action-btn-group .pill-btn.reject.has-selection {
+  background: #EF4444 !important;
+  color: #FFFFFF !important;
+  border-color: #EF4444 !important;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3) !important;
+}
+
+.queue-embedded-workspace .action-btn-group .pill-btn.reject.has-selection:hover,
+.queue-modal-body .action-btn-group .pill-btn.reject.has-selection:hover {
+  background: #DC2626 !important;
+  border-color: #DC2626 !important;
+  color: #FFFFFF !important;
+}
+
+.queue-embedded-workspace .pagination-selection-status,
+.queue-modal-body .pagination-selection-status {
+  color: #A0988E !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  min-height: 1.25rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+}
+
+/* --- 5. QUEUE CONTAINER & SCOPED COLUMN WIDTHS --- */
+.queue-container {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Department Applications Queue */
+.queue-container.queue-department .table-scroll :is(.table-header-row, .table-row) {
+  min-width: 860px !important;
+  width: 100% !important;
+}
+.queue-container.queue-department :is(.th-cell, .td-cell).col-program { flex: 280 1 0 !important; }
+.queue-container.queue-department :is(.th-cell, .td-cell).col-proposed { flex: 180 1 0 !important; }
+.queue-container.queue-department :is(.th-cell, .td-cell).col-type {
+  flex: 180 1 0 !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.queue-container.queue-department :is(.th-cell, .td-cell).col-date { flex: 160 1 0 !important; }
+
+/* Student Applications Queue */
+.queue-container.queue-student .table-scroll :is(.table-header-row, .table-row) {
+  min-width: 740px !important;
+  width: 100% !important;
+}
+.queue-container.queue-student :is(.th-cell, .td-cell).col-id {
+  flex: 159 1 0 !important;
+  font-family: var(--font-sans, 'Inter', sans-serif) !important;
+  font-size: 0.8125rem !important;
+  letter-spacing: -0.01em !important;
+  color: var(--color-text-main, #FFFFFF) !important;
+  font-variant-numeric: tabular-nums;
+}
+.queue-container.queue-student :is(.th-cell, .td-cell).col-name { flex: 241 1 0 !important; }
+.queue-container.queue-student :is(.th-cell, .td-cell).col-program { flex: 275 1 0 !important; }
+.queue-container.queue-student :is(.th-cell, .td-cell).col-date { flex: 164 1 0 !important; }
+
+/* Program Applications Queue */
+.queue-container.queue-program .table-scroll :is(.table-header-row, .table-row) {
+  min-width: 880px !important;
+  width: 100% !important;
+}
+.queue-container.queue-program :is(.th-cell, .td-cell).col-program { flex: 320 1 0 !important; }
+.queue-container.queue-program :is(.th-cell, .td-cell).col-proposed { flex: 160 1 0 !important; }
+.queue-container.queue-program :is(.th-cell, .td-cell).col-type {
+  flex: 180 1 0 !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.queue-container.queue-program :is(.th-cell, .td-cell).col-date { flex: 160 1 0 !important; }
+
+/* Faculty Applications Queue */
+.queue-container.queue-faculty .table-scroll :is(.table-header-row, .table-row) {
+  min-width: 1000px !important;
+  width: 100% !important;
+}
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-name { flex: 200 1 0 !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-email { flex: 210 1 0 !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-dept { flex: 230 1 0 !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-role {
+  flex: 0 0 120px !important;
+  width: 120px !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-status {
+  flex: 0 0 120px !important;
+  width: 120px !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-date {
+  flex: 0 0 140px !important;
+  width: 140px !important;
+  padding-right: var(--space-9, 24px) !important;
+  justify-content: flex-end !important;
+  text-align: right !important;
+}
+
+/* Ensure rightmost cell has 24px edge padding across all queues */
+.queue-embedded-workspace .table-header-row > .th-cell:last-child,
+.queue-embedded-workspace .table-body .table-row > .td-cell:last-child,
+.queue-modal-body .table-header-row > .th-cell:last-child,
+.queue-modal-body .table-body .table-row > .td-cell:last-child {
+  padding-right: 24px !important;
+}
+
+/* Toast Notification (Exact Match to mockup) */
+.toast {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  transform: translateY(80px) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  background: #1A1918 !important;
+  color: #FFFFFF !important;
+  padding: 12px 18px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid #D97251 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  z-index: 2000 !important;
+  transition: transform 300ms ease, opacity 300ms ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.toast.show {
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
