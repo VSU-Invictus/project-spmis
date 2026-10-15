@@ -4,7 +4,8 @@ SPMIS uses the **Claude+** theme from tweakcn as its shared visual foundation. T
 
 Theme source: [Claude+ registry item](https://tweakcn.com/themes/cmdght103000n04lh3e2ae93r)  
 Living style guide (HTML): [`mockup/pages/design-system.html`](file:///c:/Users/monarch/Desktop/project-spmis/mockup/pages/design-system.html)  
-React Design System (TSX): [`app/src/pages/DesignSystemPage.tsx`](file:///c:/Users/monarch/Desktop/project-spmis/app/src/pages/DesignSystemPage.tsx) (`/design-system`)  
+React Living Styleguide (TSX): [`app/src/pages/StyleguidePage.tsx`](file:///c:/Users/monarch/Desktop/project-spmis/app/src/pages/StyleguidePage.tsx) (`/styleguide`)  
+Modular UI Primitives: [`app/src/components/ui/`](file:///c:/Users/monarch/Desktop/project-spmis/app/src/components/ui/)  
 Component Stylesheet: [`mockup/assets/css/components.css`](file:///c:/Users/monarch/Desktop/project-spmis/mockup/assets/css/components.css)  
 Global Stylesheet: [`mockup/assets/css/global.css`](file:///c:/Users/monarch/Desktop/project-spmis/mockup/assets/css/global.css)
 
@@ -765,8 +766,8 @@ The vanilla approval queue modal has been ported into reusable React components 
 4. **Context-Aware Iframe Path Resolution (`resolveQueuePagePath`):**
    - In vanilla mockup environments, `queue-modal.js` resolves embedded queue paths based on caller depth (`admin/<file>` from `pages/design-system.html` vs `<file>` from `pages/admin/` vs `../admin/<file>` from `pages/faculty/`), completely eliminating 404 / "File not found" errors.
 
-5. **Native React Living Style Guide (`DesignSystemPage.tsx`):**
-   - The entire 12-section living style guide from `mockup/pages/design-system.html` is ported 1:1 into `app/src/pages/DesignSystemPage.tsx` (`/design-system`). It features an identical token layout, unified CSS styling, and full native interactivity: live theme toggling, typography and card skeleton loading simulators, tag overflow popovers, interactive student data table with row selection and pagination, docked sidebar navigation showcase, conversational chat thread with prompt dispatch, complete auth split-card with floating validation tooltips, native `<dialog>` and `<QueueModal />` overlays, and toast alerts.
+5. **Native React Living Styleguide (`StyleguidePage.tsx`):**
+   - The entire 12-section living style guide from `mockup/pages/design-system.html` is ported 1:1 into `app/src/pages/StyleguidePage.tsx` (`/styleguide`). It features an identical token layout, unified CSS styling, global `ThemeProvider` dark/light toggling, and full native interactivity: live theme toggling with persistence, typography and card skeleton loading simulators, tag overflow popovers, interactive student data table with row selection and pagination, docked sidebar navigation showcase, conversational chat thread with prompt dispatch, complete auth split-card with floating validation tooltips, native `<dialog>` and controlled `<QueueModal />` overlays, and toast alerts. Additionally, reusable modular primitives are scaffolded under `app/src/components/ui/` (`Button`, `Badge`, `Card`, `Input`, `Select`, `Checkbox`, `Modal`, `Table`, `Tabs`).
 
 ---
 

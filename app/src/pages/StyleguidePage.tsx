@@ -3,13 +3,13 @@ import { QueueModal } from '../components/queue-modal/QueueModal';
 import { ApplicationQueue } from '../components/application-queue/ApplicationQueue';
 import { QUEUE_TITLES } from '../components/queue-modal/queues';
 import { useQueueSearchParam } from '../components/queue-modal/useQueueSearchParam';
+import { useTheme } from '../context/ThemeContext';
 
 import '../../../mockup/assets/css/design-system.css';
 import '../../../mockup/assets/css/global.css';
 import '../../../mockup/assets/css/components.css';
 import '../../../mockup/assets/css/queue-modal.css';
 import '../../../mockup/assets/css/pages/design-system.css';
-import './DesignSystemPage.css';
 import spmisLogo from '../../../mockup/assets/icons/SPMIS.png';
 
 interface StudentRecord {
@@ -73,8 +73,8 @@ const INITIAL_CHAT_MESSAGES: ChatMessage[] = [
   },
 ];
 
-export default function DesignSystemPage() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+export default function StyleguidePage() {
+  const { toggleTheme, isDark } = useTheme();
 
   // Modal & Queue Routing
   const { queue, openQueue, closeQueue } = useQueueSearchParam();
@@ -145,15 +145,6 @@ export default function DesignSystemPage() {
   const [authKeepSignedIn, setAuthKeepSignedIn] = useState(true);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-
-  // Ensure dark class is synchronized on html
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
 
   // Handle outside click for tag popover
   useEffect(() => {
@@ -338,10 +329,10 @@ export default function DesignSystemPage() {
                 id="theme-toggle-btn"
                 className="ui-theme-toggle"
                 aria-label="Toggle theme"
-                onClick={() => setIsDarkMode(!isDarkMode)}
+                onClick={toggleTheme}
               >
-                <span id="theme-icon">{isDarkMode ? '🌙' : '☀️'}</span>
-                <span id="theme-label">{isDarkMode ? 'Dark Mode' : 'Light Mode'}</span>
+                <span id="theme-icon">{isDark ? '🌙' : '☀️'}</span>
+                <span id="theme-label">{isDark ? 'Dark Mode' : 'Light Mode'}</span>
               </button>
               <div className="ui-top-bar-badge">
                 <span className="ui-top-bar-pulse"></span>
