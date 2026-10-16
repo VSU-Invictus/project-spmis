@@ -10,6 +10,9 @@
 /* --- 2. SUPPORTING COMPONENT STYLESHEETS --- */
 @import '../../mockup/assets/css/components.css';
 @import '../../mockup/assets/css/queue-modal.css';
+@import '../../mockup/assets/css/logout-confirmation.css';
+@import '../../mockup/assets/css/pages/admin/admin-common.css';
+@import '../../mockup/assets/css/pages/admin/dashboard.css';
 @import '../../mockup/assets/css/pages/design-system.css';
 
 /* --- 3. CLAUDE+ DESIGN SYSTEM ROOT TOKENS (LIGHT DEFAULTS) --- */
