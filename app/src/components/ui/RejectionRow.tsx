@@ -1,0 +1,116 @@
+import React, { useEffect, useId, useRef, useState } from 'react';
+import { Button } from './Button';
+import { Label } from './Label';
+
+export interface RejectionRowProps {
+  colSpan?: number;
+  asTableRow?: boolean;
+  bulkCount?: number;
+  initialReason?: string;
+  onCancel: () => void;
+  onConfirm: (reason: string) => void;
+}
+
+export function RejectionRow({
+  colSpan = 6,
+  asTableRow = false,
+  bulkCount,
+  initialReason = '',
+  onCancel,
+  onConfirm,
+}: RejectionRowProps) {
+  const [reason, setReason] = useState(initialReason);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const reasonId = useId();
+
+  useEffect(() => {
+    textareaRef.current?.focus();
+    textareaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, []);
+
+  const handleSubmit = () => {
+    const el = textareaRef.current;
+    if (!reason.trim()) {
+      el?.setCustomValidity('Enter a reason for rejection.');
+      el?.reportValidity();
+      return;
+    }
+    onConfirm(reason.trim());
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      onCancel();
+    }
+  };
+
+  const innerContent = (
+    <>
+      <Label htmlFor={reasonId}>Reason for rejection</Label>
+      {bulkCount && bulkCount > 1 ? (
+        <p className="ui-queue-bulk-message">
+          The same reason applies to all {bulkCount} selected applications.
+        </p>
+      ) : null}
+      <textarea
+        id={reasonId}
+        ref={textareaRef}
+        aria-label="Reason for rejection"
+        placeholder="Enter reason here..."
+        required
+        aria-required="true"
+        value={reason}
+        onChange={(e) => {
+          e.target.setCustomValidity('');
+          setReason(e.target.value);
+        }}
+      />
+      <div className="ui-queue-rejection-actions">
+        <Button
+          variant="outline"
+          className="ui-queue-cancel"
+          onClick={onCancel}
+        >
+          Close
+        </Button>
+        <Button
+          variant="destructive"
+          className="ui-queue-confirm-reject"
+          onClick={handleSubmit}
+        >
+          Reject
+        </Button>
+      </div>
+    </>
+  );
+
+  if (asTableRow) {
+    return (
+      <tr
+        className="ui-queue-rejection-row is-expanded"
+        onKeyDown={handleKeyDown}
+      >
+        <td colSpan={colSpan} className="ui-queue-rejection-cell" style={{ width: '100%' }}>
+          {innerContent}
+        </td>
+      </tr>
+    );
+  }
+
+  return (
+    <div
+      className="ui-queue-rejection-row is-expanded"
+      role="row"
+      data-bulk-rejection={bulkCount && bulkCount > 1 ? 'true' : undefined}
+      style={{ width: '100%', flex: '1 1 100%', gridColumn: '1 / -1' }}
+      onKeyDown={handleKeyDown}
+    >
+      <div className="ui-queue-rejection-cell" role="cell" style={{ width: '100%' }}>
+        {innerContent}
+      </div>
+    </div>
+  );
+}
+

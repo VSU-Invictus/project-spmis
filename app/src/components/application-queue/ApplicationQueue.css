@@ -1,0 +1,32 @@
+/* ApplicationQueue.css */
+
+.queue-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#toast.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translate(-50%, 10px);
+  background: var(--color-card, #2B2A27);
+  color: var(--color-text-main, #FFFFFF);
+  border: 1px solid var(--color-border-main, #3E3D39);
+  padding: 10px 18px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease, transform 150ms ease;
+  z-index: 2000;
+}
+
+#toast.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
