@@ -1,33 +1,46 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useId, useRef } from 'react';
 
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: React.ReactNode;
   indeterminate?: boolean;
+  isSelectAll?: boolean;
+  isRowCheckbox?: boolean;
+  keepSignedIn?: boolean;
   description?: string;
 }
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({
   label,
   indeterminate = false,
+  isSelectAll = false,
+  isRowCheckbox = false,
+  keepSignedIn = false,
   description,
   className = '',
   id,
   checked,
   onChange,
+  onKeyDown,
   disabled,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
   ...props
 }, ref) => {
-  const innerRef = useRef<HTMLInputElement>(null);
+  const generatedId = useId();
+  const checkboxId = id || generatedId;
+  const innerRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    const el = (ref && 'current' in ref ? ref.current : innerRef.current);
-    if (el) {
-      el.indeterminate = Boolean(indeterminate);
+    if (innerRef.current) {
+      innerRef.current.indeterminate = Boolean(indeterminate);
     }
-  }, [indeterminate, ref]);
+  }, [indeterminate]);
 
   const setCombinedRef = (node: HTMLInputElement | null) => {
-    (innerRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
+    innerRef.current = node;
+    if ( node ) {
+      node.indeterminate = Boolean(indeterminate);
+    }
     if (typeof ref === 'function') {
       ref(node);
     } else if (ref) {
@@ -35,15 +48,44 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !disabled && innerRef.current) {
+      e.preventDefault();
+      innerRef.current.click();
+    }
+    onKeyDown?.(e);
+  };
+
+  const resolvedAriaLabel =
+    ariaLabel ||
+    (!label && !ariaLabelledBy
+      ? isSelectAll || indeterminate
+        ? 'Select all rows'
+        : 'Select row'
+      : undefined);
+
+  const roleClass = [
+    'custom-checkbox',
+    isSelectAll || indeterminate ? 'select-all-checkbox' : '',
+    isRowCheckbox ? 'row-checkbox' : '',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   const checkboxElement = (
     <input
       type="checkbox"
       ref={setCombinedRef}
-      id={id}
+      id={checkboxId}
       checked={checked}
       onChange={onChange}
+      onKeyDown={handleKeyDown}
       disabled={disabled}
-      className={`custom-checkbox ${indeterminate ? 'select-all-checkbox' : ''} ${className}`.trim()}
+      aria-label={resolvedAriaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-checked={indeterminate ? 'mixed' : checked}
+      className={roleClass}
       {...props}
     />
   );
@@ -53,15 +95,21 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({
   }
 
   return (
-    <label htmlFor={id} className={`ui-checkbox-label ${disabled ? 'ui-checkbox-label--disabled' : ''}`}>
+    <label
+      htmlFor={checkboxId}
+      className={`ui-checkbox-label ${keepSignedIn ? 'keep-signed-in' : ''} ${disabled ? 'ui-checkbox-label--disabled' : ''}`.trim()}
+    >
       {checkboxElement}
-      <span className="ui-checkbox-content">
-        {label && <span className="ui-checkbox-text">{label}</span>}
-        {description && <small className="ui-checkbox-description">{description}</small>}
-      </span>
+      {keepSignedIn ? (
+        <span className="keep-signed-in-text">{label}</span>
+      ) : (
+        <span className="ui-checkbox-content">
+          {label && <span className="ui-checkbox-text">{label}</span>}
+          {description && <small className="ui-checkbox-description">{description}</small>}
+        </span>
+      )}
     </label>
   );
 });
 
 Checkbox.displayName = 'Checkbox';
-

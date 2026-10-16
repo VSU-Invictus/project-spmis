@@ -1,12 +1,22 @@
 import React, { forwardRef } from 'react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'outline'
+  | 'ghost'
+  | 'destructive'
+  | 'approve'
+  | 'reject'
+  | 'select-all';
+
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   isLoading?: boolean;
+  hasSelection?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
@@ -15,20 +25,28 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
   variant = 'primary',
   size = 'md',
   isLoading = false,
+  hasSelection = false,
   leftIcon,
   rightIcon,
   className = '',
   children,
   disabled,
+  type = 'button',
   ...props
 }, ref) => {
-  const variantClass = variant !== 'primary' ? `ui-btn--${variant}` : 'ui-btn--primary';
-  const sizeClass = size !== 'md' ? `ui-btn--${size}` : '';
+  const isPillAction = variant === 'approve' || variant === 'reject' || variant === 'select-all';
+
+  const variantClass = isPillAction
+    ? `pill-btn ${variant} ${hasSelection ? 'has-selection' : ''}`.trim()
+    : `ui-btn ui-btn--${variant} ui-btn-${variant}`;
+
+  const sizeClass = size !== 'md' ? `ui-btn--${size} ui-btn-${size}` : '';
 
   return (
     <button
       ref={ref}
-      className={`ui-btn ${variantClass} ${sizeClass} ${className}`.trim()}
+      type={type}
+      className={`${variantClass} ${sizeClass} ${className}`.trim()}
       disabled={disabled || isLoading}
       {...props}
     >
@@ -48,7 +66,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
       ) : leftIcon ? (
         <span className="ui-btn-icon-left" style={{ display: 'inline-flex', alignItems: 'center' }}>{leftIcon}</span>
       ) : null}
-      
+
       {children && <span>{children}</span>}
 
       {!isLoading && rightIcon && (
@@ -59,4 +77,3 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
 });
 
 Button.displayName = 'Button';
-
