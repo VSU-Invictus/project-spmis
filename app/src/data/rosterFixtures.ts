@@ -67,3 +67,27 @@ export const FACULTY_FIXTURE: FacultyItem[] = [
   { id: 'fac-4', name: 'Prof. Arthur Pendelton', email: 'a.pendelton@university.edu', department: 'Department of Biological Sciences', role: 'faculty' }
 ];
 
+export interface RosterStudent {
+  id: string;
+  name: string;
+  email: string;
+  program: string;
+  yearLevel: string;
+  statusLabel: string;
+  statusVariant: 'success' | 'warning' | 'info';
+}
+
+export const ROSTER_STUDENTS: RosterStudent[] = [
+  { id: '24-1-00001', name: 'Sam Lee Parker', email: 'sam.parker@vsu.edu.ph', program: 'BS Computer Science', yearLevel: '3rd Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00042', name: 'Elena Bautista', email: 'elena.b@vsu.edu.ph', program: 'BS Information Systems', yearLevel: '2nd Year', statusLabel: 'Pending Review', statusVariant: 'warning' },
+  { id: '24-1-00109', name: 'Rafael Cruz', email: 'r.cruz@vsu.edu.ph', program: 'BS Information Technology', yearLevel: '4th Year', statusLabel: 'In Progress', statusVariant: 'info' },
+  { id: '24-1-00210', name: 'Adrian Davis', email: 'adrian.d@vsu.edu.ph', program: 'BS Computer Science', yearLevel: '3rd Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00211', name: 'Liam Moore', email: 'liam.m@vsu.edu.ph', program: 'BS Information Systems', yearLevel: '1st Year', statusLabel: 'In Progress', statusVariant: 'info' },
+  { id: '24-1-00212', name: 'Kaitlyn Smith', email: 'k.smith@vsu.edu.ph', program: 'BS Computer Engineering', yearLevel: '4th Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00213', name: 'Justin Taylor', email: 'j.taylor@vsu.edu.ph', program: 'BS Computer Science', yearLevel: '2nd Year', statusLabel: 'Pending Review', statusVariant: 'warning' },
+  { id: '24-1-00214', name: 'Mia Johnson', email: 'm.johnson@vsu.edu.ph', program: 'BS Data Science', yearLevel: '1st Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00215', name: 'Ethan White', email: 'e.white@vsu.edu.ph', program: 'BS Artificial Intelligence', yearLevel: '3rd Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00216', name: 'Chloe Brown', email: 'c.brown@vsu.edu.ph', program: 'BS Computer Science', yearLevel: '4th Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+];
+
+
