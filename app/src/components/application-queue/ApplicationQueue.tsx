@@ -1,6 +1,11 @@
-import { Fragment, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { QUEUE_TITLES, type QueueType } from '../queue-modal/queues';
 import { QUEUE_COLUMNS, QUEUE_FIXTURES, type QueueRow } from '../../data/queueFixtures';
+import { Badge } from '../ui/Badge';
+import { Button } from '../ui/Button';
+import { Checkbox } from '../ui/Checkbox';
+import { EmptyState } from '../ui/EmptyState';
+import { RejectionRow } from '../ui/RejectionRow';
 
 export interface ApplicationQueueProps {
   type: QueueType;
@@ -14,37 +19,45 @@ const isActionable = (row: QueueRow) => row.status === 'Pending' && row.source !
 function renderCellContent(colKey: string, val: string) {
   if (colKey === 'type') {
     if (val === 'Edit Existing' || val === 'Edit') {
-      return <span className="ui-badge ui-badge--info">Edit Existing</span>;
+      return <Badge requestType="Edit Existing">Edit Existing</Badge>;
     }
-    return <span className="ui-badge ui-badge--success">Addition</span>;
+    return <Badge requestType="Addition">Addition</Badge>;
   }
   if (colKey === 'role') {
     if (val === 'Admin') {
-      return <span className="ui-badge ui-badge--destructive">Admin</span>;
+      return <Badge variant="destructive">Admin</Badge>;
     }
-    return <span className="ui-badge ui-badge--info">Faculty</span>;
+    return <Badge variant="info">Faculty</Badge>;
   }
   if (colKey === 'status') {
     if (val === 'Pending') {
       return (
-        <span className="ui-badge ui-badge--warning">
-          <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
+        <Badge
+          variant="warning"
+          icon={
+            <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          }
+        >
           Pending
-        </span>
+        </Badge>
       );
     }
     if (val === 'Active' || val === 'Approved') {
       return (
-        <span className="ui-badge ui-badge--success">
-          <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
+        <Badge
+          variant="success"
+          icon={
+            <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          }
+        >
           Active
-        </span>
+        </Badge>
       );
     }
   }
@@ -169,13 +182,6 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
     actionableVisibleRows.every((r) => selected.has(r.id));
   const someVisibleChecked =
     actionableVisibleRows.some((r) => selected.has(r.id)) && !allVisibleChecked;
-
-  const headerRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (headerRef.current) {
-      headerRef.current.indeterminate = someVisibleChecked;
-    }
-  }, [someVisibleChecked]);
 
   const removeRows = (ids: string[]) => {
     const drop = new Set(ids);
@@ -327,275 +333,195 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
           </div>
         </div>
 
-      {/* Table Section */}
-      <div className="table-margin-container">
-        <div className="table-container ui-table-wrap">
-          <div className="table-scroll">
-            {/* Table Header */}
-            <div className="table-header-row" role="row">
-              <div className="th-cell checkbox-cell" role="columnheader">
-                <input
-                  ref={headerRef}
-                  type="checkbox"
-                  aria-label="Select all rows"
-                  className="custom-checkbox select-all-checkbox"
-                  checked={allVisibleChecked}
-                  disabled={!actionableVisibleRows.length}
-                  onChange={toggleAllVisible}
-                />
-              </div>
-              {columns.map((col) => (
-                <div
-                  key={col.key}
-                  className={`th-cell ${col.colClass || ''}`}
-                  role="columnheader"
-                >
-                  {col.label}
+        {/* Table Section */}
+        <div className="table-margin-container">
+          <div className="table-container ui-table-wrap">
+            <div className="table-scroll">
+              {/* Table Header */}
+              <div className="table-header-row" role="row">
+                <div className="th-cell checkbox-cell" role="columnheader">
+                  <Checkbox
+                    isSelectAll
+                    aria-label="Select all rows"
+                    checked={allVisibleChecked}
+                    indeterminate={someVisibleChecked}
+                    disabled={!actionableVisibleRows.length}
+                    onChange={toggleAllVisible}
+                  />
                 </div>
-              ))}
-            </div>
+                {columns.map((col) => (
+                  <div
+                    key={col.key}
+                    className={`th-cell ${col.colClass || ''}`}
+                    role="columnheader"
+                  >
+                    {col.label}
+                  </div>
+                ))}
+              </div>
 
-            {/* Table Body */}
-            <div className="table-body" role="rowgroup">
-              {paginatedRows.map((row) => {
-                const enabled = isActionable(row);
-                const checked = selected.has(row.id);
-                return (
-                  <Fragment key={row.id}>
-                    <div
-                      className={`table-row ${checked ? 'checked' : ''}`}
-                      role="row"
-                      onClick={(e) => {
-                        if ((e.target as HTMLElement).closest('button, a, input, textarea, label')) return;
-                        toggleRow(row);
-                      }}
-                    >
-                      <div className="td-cell checkbox-cell" role="cell">
-                        <input
-                          type="checkbox"
-                          aria-label={`Select application: ${row.cells.name || row.cells.program || row.cells.department || row.id}`}
-                          className="custom-checkbox row-checkbox"
-                          checked={checked}
-                          disabled={!enabled}
-                          onChange={() => toggleRow(row)}
-                        />
-                      </div>
-                      {columns.map((col) => (
-                        <div
-                          key={col.key}
-                          className={`td-cell ${col.colClass || ''}`}
-                          role="cell"
-                        >
-                          {renderCellContent(col.key, row.cells[col.key] || '')}
-                        </div>
-                      ))}
-                    </div>
-
-                    {rejection?.kind === 'row' && rejection.rowId === row.id && (
-                      <InlineRejectionRow
-                        onCancel={closeRejection}
-                        onConfirm={(reason) => {
-                          console.log(`Rejected ${row.id} with reason:`, reason);
-                          confirmReject([row.id]);
+              {/* Table Body */}
+              <div className="table-body" role="rowgroup">
+                {paginatedRows.map((row) => {
+                  const enabled = isActionable(row);
+                  const checked = selected.has(row.id);
+                  return (
+                    <Fragment key={row.id}>
+                      <div
+                        className={`table-row ${checked ? 'checked' : ''}`}
+                        role="row"
+                        onClick={(e) => {
+                          if ((e.target as HTMLElement).closest('button, a, input, textarea, label')) return;
+                          toggleRow(row);
                         }}
-                      />
-                    )}
-                  </Fragment>
-                );
-              })}
+                      >
+                        <div className="td-cell checkbox-cell" role="cell">
+                          <Checkbox
+                            isRowCheckbox
+                            aria-label={`Select application: ${row.cells.name || row.cells.program || row.cells.department || row.id}`}
+                            checked={checked}
+                            disabled={!enabled}
+                            onChange={() => toggleRow(row)}
+                          />
+                        </div>
+                        {columns.map((col) => (
+                          <div
+                            key={col.key}
+                            className={`td-cell ${col.colClass || ''}`}
+                            role="cell"
+                          >
+                            {renderCellContent(col.key, row.cells[col.key] || '')}
+                          </div>
+                        ))}
+                      </div>
 
-              {rejection?.kind === 'bulk' && (
-                <InlineRejectionRow
-                  bulkCount={selected.size}
-                  onCancel={closeRejection}
-                  onConfirm={(reason) => {
-                    console.log(`Bulk rejected ${selected.size} applications with reason:`, reason);
-                    confirmReject([...selected]);
-                  }}
-                />
-              )}
-            </div>
-          </div>
+                      {rejection?.kind === 'row' && rejection.rowId === row.id && (
+                        <RejectionRow
+                          asTableRow={false}
+                          colSpan={columns.length + 1}
+                          onCancel={closeRejection}
+                          onConfirm={(reason) => {
+                            console.log(`Rejected ${row.id} with reason:`, reason);
+                            confirmReject([row.id]);
+                          }}
+                        />
+                      )}
+                    </Fragment>
+                  );
+                })}
 
-          {/* Empty State */}
-          {filteredRows.length === 0 && (
-            <div className="ui-empty-state" role="status" aria-live="polite">
-              <h2 className="ui-empty-state__title" data-empty-title>
-                No pending {type} applications
-              </h2>
-              <p className="ui-empty-state__description" data-empty-description>
-                {type.charAt(0).toUpperCase() + type.slice(1)} applications awaiting review will appear here.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Pagination Action Bar */}
-        <div className="ui-table-pagination is-0272b5f">
-          <div className="pagination-actions-group bottom-bar-container">
-            <div className="action-btn-group">
-              <button
-                className={`pill-btn approve ${selected.size ? 'has-selection' : ''}`}
-                type="button"
-                onClick={bulkApprove}
-              >
-                Approve
-              </button>
-              <button
-                ref={bulkRejectRef}
-                className={`pill-btn reject ${selected.size ? 'has-selection' : ''}`}
-                type="button"
-                onClick={bulkReject}
-              >
-                Reject
-              </button>
-            </div>
-            <span className="pagination-selection-status is-7fbae58" role="status">
-              {selected.size > 0 ? `${selected.size} selected` : ''}
-            </span>
-          </div>
-
-          <div className="pagination-controls-group is-31de0eb">
-            <div className="pagination-rows-per-page is-b57eafe">
-              <span>Rows per page</span>
-              <div className="pagination-select-wrapper is-e0dd7f8">
-                <select
-                  className="ui-select-pill is-daab64f"
-                  aria-label="Rows per page"
-                  value={rowsPerPage}
-                  onChange={(e) => {
-                    setRowsPerPage(Number(e.target.value));
-                    setCurrentPage(1);
-                  }}
-                >
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                </select>
-                <svg
-                  className="pagination-select-chevron is-4b97db6"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
+                {rejection?.kind === 'bulk' && (
+                  <RejectionRow
+                    asTableRow={false}
+                    colSpan={columns.length + 1}
+                    bulkCount={selected.size}
+                    onCancel={closeRejection}
+                    onConfirm={(reason) => {
+                      console.log(`Bulk rejected ${selected.size} applications with reason:`, reason);
+                      confirmReject([...selected]);
+                    }}
+                  />
+                )}
               </div>
             </div>
 
-            <span className="pagination-page-info is-12b4142" role="status">
-              Page {safeCurrentPage} of {totalPages} · {totalEntries} entries
-            </span>
+            {/* Empty State */}
+            {filteredRows.length === 0 && (
+              <EmptyState
+                title={`No pending ${type} applications`}
+                description={`${type.charAt(0).toUpperCase() + type.slice(1)} applications awaiting review will appear here.`}
+              />
+            )}
+          </div>
 
-            <div className="ui-table-pagination-nav is-49e15c7">
-              <button
-                type="button"
-                className="ui-btn ui-btn-outline is-b38e363"
-                disabled={safeCurrentPage <= 1}
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              >
-                Previous
-              </button>
-              <button
-                type="button"
-                className="ui-btn ui-btn-outline is-b38e363"
-                disabled={safeCurrentPage >= totalPages}
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              >
-                Next
-              </button>
+          {/* Pagination Action Bar */}
+          <div className="ui-table-pagination is-0272b5f">
+            <div className="pagination-actions-group bottom-bar-container">
+              <div className="action-btn-group">
+                <Button
+                  variant="approve"
+                  hasSelection={selected.size > 0}
+                  onClick={bulkApprove}
+                >
+                  Approve
+                </Button>
+                <Button
+                  ref={bulkRejectRef}
+                  variant="reject"
+                  hasSelection={selected.size > 0}
+                  onClick={bulkReject}
+                >
+                  Reject
+                </Button>
+              </div>
+              <span className="pagination-selection-status is-7fbae58" role="status">
+                {selected.size > 0 ? `${selected.size} selected` : ''}
+              </span>
+            </div>
+
+            <div className="pagination-controls-group is-31de0eb">
+              <div className="pagination-rows-per-page is-b57eafe">
+                <span>Rows per page</span>
+                <div className="pagination-select-wrapper is-e0dd7f8">
+                  <select
+                    className="ui-select-pill is-daab64f"
+                    aria-label="Rows per page"
+                    value={rowsPerPage}
+                    onChange={(e) => {
+                      setRowsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                  </select>
+                  <svg
+                    className="pagination-select-chevron is-4b97db6"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </div>
+              </div>
+
+              <span className="pagination-page-info is-12b4142" role="status">
+                Page {safeCurrentPage} of {totalPages} · {totalEntries} entries
+              </span>
+
+              <div className="ui-table-pagination-nav is-49e15c7">
+                <Button
+                  variant="outline"
+                  className="is-b38e363"
+                  disabled={safeCurrentPage <= 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  className="is-b38e363"
+                  disabled={safeCurrentPage >= totalPages}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
 
       {/* Toast Notification */}
       <div id="toast" className={`toast ${toast ? 'show' : ''}`} role="status" aria-live="polite">
         {toast}
-      </div>
-    </div>
-  );
-}
-
-interface InlineRejectionRowProps {
-  bulkCount?: number;
-  onCancel: () => void;
-  onConfirm: (reason: string) => void;
-}
-
-function InlineRejectionRow({ bulkCount, onCancel, onConfirm }: InlineRejectionRowProps) {
-  const [reason, setReason] = useState('');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const reasonId = useId();
-
-  useEffect(() => {
-    textareaRef.current?.focus();
-    textareaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, []);
-
-  const handleSubmit = () => {
-    const el = textareaRef.current;
-    if (!reason.trim()) {
-      el?.setCustomValidity('Enter a reason for rejection.');
-      el?.reportValidity();
-      return;
-    }
-    onConfirm(reason.trim());
-  };
-
-  return (
-    <div
-      className="ui-queue-rejection-row is-expanded"
-      role="row"
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          e.stopPropagation();
-          onCancel();
-        }
-      }}
-    >
-      <div className="ui-queue-rejection-cell" role="cell">
-        <label htmlFor={reasonId}>Reason for rejection</label>
-        {bulkCount && bulkCount > 1 ? (
-          <p className="ui-queue-bulk-message">
-            The same reason applies to all {bulkCount} selected applications.
-          </p>
-        ) : null}
-        <textarea
-          id={reasonId}
-          ref={textareaRef}
-          placeholder="Enter reason here..."
-          required
-          aria-required="true"
-          value={reason}
-          onChange={(e) => {
-            e.target.setCustomValidity('');
-            setReason(e.target.value);
-          }}
-        />
-        <div className="ui-queue-rejection-actions">
-          <button
-            type="button"
-            className="ui-btn ui-btn-outline ui-queue-cancel"
-            onClick={onCancel}
-          >
-            Close
-          </button>
-          <button
-            type="button"
-            className="ui-btn ui-btn-destructive ui-queue-confirm-reject"
-            onClick={handleSubmit}
-          >
-            Reject
-          </button>
-        </div>
       </div>
     </div>
   );
