@@ -28,7 +28,7 @@ body:has(.verification-wrapper) {
 }
 
 .title {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: var(--font-size-2xl, 1.6rem);
   font-weight: var(--font-weight-semibold, 600);
   color: var(--color-text-main, #ffffff);

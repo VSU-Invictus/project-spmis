@@ -97,7 +97,7 @@
 
   /* --- 3. TYPOGRAPHY TOKENS --- */
   --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Intel One Mono', 'Geist Mono', ui-monospace, monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --font-number: var(--font-sans);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
@@ -1075,5 +1075,26 @@ tr:hover .ui-btn:disabled,
   color: var(--foreground, #FAF9F5) !important;
   font-weight: 600 !important;
 }
+
+/* Number & Tabular Font Utility */
+.ui-font-number,
+.ui-text-number,
+.ui-table-mono,
+.table-cell--mono,
+[data-student-id],
+.student-id,
+input#student-id,
+.ui-stat-value,
+.ui-metric-value,
+.metric-card-value,
+.ui-dashboard-metric-bottom strong,
+.pagination-selection-status,
+.pagination-page-info,
+.ui-dashboard-date {
+  font-family: var(--font-number) !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: 0.02em;
+}
+
 
 

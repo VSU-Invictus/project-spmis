@@ -108,8 +108,9 @@ To maintain backward compatibility with legacy markup while enabling full theme 
 
 ### Typography Tokens
 
-- `--font-sans`: `Outfit, sans-serif` for interface text, headings, and controls.
-- `--font-mono`: `Geist Mono, monospace` for IDs, codes, numerical metrics, and audit timestamps.
+- `--font-sans`: `Outfit, sans-serif` for interface text, headings, numbers, and controls.
+- `--font-mono`: `ui-monospace, monospace` system monospace for code blocks and raw tokens (`<code>`, `<pre>`).
+- `--font-number`: `var(--font-sans)` (`Outfit, sans-serif`) with `font-variant-numeric: tabular-nums` for all table numbers, IDs, and metric figures.
 - `--tracking-normal`: Default letter spacing (`0em`).
 
 ### Text Skeleton Loading

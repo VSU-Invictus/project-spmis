@@ -130,10 +130,11 @@
 .ui-dashboard-icon--faculty { color: var(--color-status-success); }
 
 .ui-dashboard-metric-bottom strong {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-variant-numeric: tabular-nums;
   font-size: 2rem;
   line-height: 1;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .ui-dashboard-metric-bottom {
@@ -226,7 +227,8 @@
 }
 
 .ui-dashboard-table .ui-dashboard-date {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-variant-numeric: tabular-nums;
   font-size: 0.75rem;
 }
 

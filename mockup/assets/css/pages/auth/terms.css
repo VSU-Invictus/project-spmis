@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 :root {
     --background: #262624;
@@ -7,7 +7,8 @@
     --text: #faf9f5;
     --muted: rgba(250, 249, 245, 0.7);
     --field: #333;
-    --font-mono: 'Geist Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+    --font-mono: ui-monospace, monospace;
 }
 
 * { box-sizing: border-box; margin: 0; }
@@ -25,7 +26,7 @@ body {
     justify-content: flex-start;
 
     color: var(--text);
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     position: relative;
 
     background-color: var(--background);
@@ -86,7 +87,7 @@ body.page-exit {
 }
 
 h1 {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-weight: 500;
     font-size: clamp(2rem, 5vw, 3.25rem);
     line-height: 1.15;
@@ -213,7 +214,7 @@ h1 {
 
 /* ── Typography ── */
 .terms-text {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-size: .9rem;
     line-height: 1.75;
     color: var(--muted);

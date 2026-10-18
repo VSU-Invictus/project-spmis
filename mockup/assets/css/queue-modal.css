@@ -533,7 +533,11 @@ body.queue-embedded .header-container [data-queue-close] {
   width: 100%;
 }
 
-.ui-queue-rejection-row.is-expanded {
+tr.ui-queue-rejection-row.is-expanded {
+  display: table-row !important;
+}
+
+div.ui-queue-rejection-row.is-expanded {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
   width: 100% !important;
@@ -555,8 +559,31 @@ body.queue-embedded .header-container [data-queue-close] {
   min-width: 0 !important;
   display: block !important;
   padding: var(--space-4, 12px) var(--space-7, 16px) var(--space-7, 16px);
-  background: var(--color-muted, var(--muted));
+  background: var(--color-surface-well, #171615);
   border-top: 1px solid var(--color-border-main, var(--border));
+  border-bottom: 1px solid var(--color-border-main, var(--border));
+}
+
+/* Standalone Rejection Preview */
+.ui-queue-rejection-standalone,
+.ui-queue-rejection-row.ui-queue-rejection-standalone {
+  display: block !important;
+  background: var(--card, #21201E) !important;
+  border: 1px solid var(--border, #383734) !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.2)) !important;
+  overflow: hidden !important;
+}
+
+.ui-queue-rejection-cell--standalone,
+.ui-queue-rejection-standalone .ui-queue-rejection-cell {
+  background: var(--card, #21201E) !important;
+  border: none !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  padding: 1.25rem 1.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
 }
 
 .ui-queue-rejection-row label,

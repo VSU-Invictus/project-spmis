@@ -31,14 +31,16 @@
 
 .ui-chat-prompts .ui-chat-prompt-card:hover,
 .ui-chat-prompts .quick-link-item:hover,
+.ui-chat-prompts .ui-card-interactive:hover,
 .ui-chat-prompts .ui-chat-prompt-card:focus-visible,
 .ui-chat-prompts .quick-link-item:focus-visible,
+.ui-chat-prompts .ui-card-interactive:focus-visible,
 .chat-prompts button:hover,
 .chat-prompts button:focus-visible {
   background: rgba(255, 255, 255, 0.04) !important;
   border-color: var(--primary, #D97251) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: var(--shadow-md) !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .ui-chat-prompts h3,

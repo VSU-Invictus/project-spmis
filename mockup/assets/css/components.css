@@ -1059,7 +1059,7 @@ html:not(.dark) .status-live-pill {
 }
 
 /* Number & Identifier Primitives (Aligned to Design System Sans Standard) */
-:is(.font-intel-mono, .number-font, .tabular-nums) {
+:is(.ui-font-number, .ui-text-number, .number-font, .tabular-nums) {
     font-family: var(--font-sans) !important;
     font-variant-numeric: tabular-nums;
 }
@@ -1631,8 +1631,8 @@ html:not(.dark) .status-live-pill {
 .ui-chat-prompt-btn:hover {
     border-color: var(--primary, #D97251) !important;
     background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card)) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+    transform: none !important;
+    box-shadow: none !important;
     cursor: pointer !important;
 }
 
@@ -2233,7 +2233,8 @@ html:not(.dark) .status-live-pill {
     padding: 1rem 1.25rem;
     color: var(--foreground);
     font: 400 0.9375rem/1.5 var(--font-sans);
-    resize: none; overflow-y: hidden;
+    resize: vertical !important;
+    overflow-y: auto !important;
     outline: none;
     transition: border-color 0.2s;
     box-sizing: border-box;
@@ -3388,7 +3389,7 @@ dialog.register-modal::backdrop {
 }
 
 :is(code, kbd, samp, pre, .ui-text-mono, [data-mono], .font-mono) {
-    font-family: var(--font-mono, 'Geist Mono', monospace) !important;
+    font-family: var(--font-mono, ui-monospace, monospace) !important;
 }
 
 /* Footer navigation styling */
@@ -3399,7 +3400,7 @@ dialog.register-modal::backdrop {
     gap: 0.75rem;
     margin-top: 1rem;
     font-size: 0.875rem;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-sans, 'Outfit', sans-serif);
 }
 
 .footer-nav a {
@@ -3583,8 +3584,9 @@ html:not(.dark) table input[type="checkbox"]:indeterminate::after {
 table :is(th, td).col-action {
     text-align: left !important;
     white-space: nowrap !important;
-    width: 140px;
-    padding-right: 4px !important;
+    width: 180px;
+    min-width: 170px;
+    padding-right: var(--space-9, 24px) !important;
 }
 
 table :is(th, td).col-action :is(a, button) { white-space: nowrap !important; }
@@ -4316,7 +4318,7 @@ html:not(.dark) .admin-top-header .status-badge {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  flex-wrap: wrap !important;
+  flex-wrap: nowrap !important;
   gap: 1rem !important;
   width: 100% !important;
   padding: 1rem 0 !important;
@@ -4332,6 +4334,8 @@ html:not(.dark) .admin-top-header .status-badge {
   min-height: 1.25rem !important;
   display: inline-flex !important;
   align-items: center !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 .pagination-controls-group,
@@ -4339,8 +4343,10 @@ html:not(.dark) .admin-top-header .status-badge {
   display: flex !important;
   align-items: center !important;
   gap: 1.5rem !important;
-  flex-wrap: wrap !important;
+  flex-wrap: nowrap !important;
   margin-left: auto !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
 }
 
 .pagination-rows-per-page,

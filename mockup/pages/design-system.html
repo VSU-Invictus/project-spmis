@@ -10,6 +10,35 @@
   <link rel="stylesheet" href="../assets/css/components.css?v=9">
   <link rel="stylesheet" href="../assets/css/queue-modal.css">
   <link rel="stylesheet" href="../assets/css/pages/design-system.css" />
+  <script>
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    window.addEventListener('beforeunload', function () {
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+      window.scrollTo(0, 0);
+    });
+
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 0);
+      setTimeout(function () {
+        window.scrollTo(0, 0);
+      }, 50);
+    });
+  </script>
 </head>
 
 <body>
@@ -153,7 +182,7 @@
     <section class="ui-section" id="typography">
       <div class="ui-section-header">
         <h2 class="ui-section-title">Typography</h2>
-        <span class="ui-section-desc">Outfit font family with Geist Mono for codes and tabular metrics</span>
+        <span class="ui-section-desc">Outfit font family for interface typography and tabular data numerals</span>
       </div>
       <div class="ui-demo-loading-toolbar">
         <span id="demo-text-loading-status" class="ui-text-muted" role="status" aria-live="polite" aria-atomic="true">Preview loading without changing text spacing.</span>
@@ -196,9 +225,9 @@
             </span></p>
           </div>
           <div>
-            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Monospace Data Text</span></h3>
-            <p class="ui-text-mono" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
-              Student ID: 24-1-00001 &middot; Roster Count: 2,850 &middot; Status: VERIFIED_OK
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Tabular Data &amp; Numbers</span></h3>
+            <p class="ui-text" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
+              Student ID: <span class="ui-font-number">24-1-00001</span> &middot; Roster Count: <span class="ui-font-number">2,850</span> &middot; Status: VERIFIED_OK
             </span></p>
           </div>
         </div>
@@ -1309,7 +1338,7 @@
             </section>
         </div>
 
-        <!-- Footer OUTSIDE the card, white, no color change on hover -->
+        <!-- Footer OUTSIDE the card, orange on hover -->
         <div class="auth-footer-outside">
             <span class="legal">
                 <a href="about.html">Contact</a>
