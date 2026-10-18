@@ -27,6 +27,28 @@
   if (isEmbeddedQueue && typeof document !== 'undefined') {
     document.documentElement?.classList.add('queue-embedded');
     if (document.body) document.body.classList.add('queue-embedded');
+    try {
+      if (window.parent && window.parent !== window && window.parent.document?.documentElement) {
+        const isParentDark = window.parent.document.documentElement.classList.contains('dark');
+        document.documentElement.classList.toggle('dark', isParentDark);
+      }
+    } catch (_) {}
+    window.addEventListener('message', (ev) => {
+      if (ev.data && typeof ev.data === 'object' && ev.data.type === 'queue-modal-theme') {
+        document.documentElement.classList.toggle('dark', Boolean(ev.data.dark));
+      }
+    });
+  }
+
+  function syncQueueFrameTheme(frame) {
+    if (!frame) return;
+    const isDark = document.documentElement.classList.contains('dark');
+    try {
+      frame.contentDocument?.documentElement?.classList.toggle('dark', isDark);
+    } catch (_) {}
+    try {
+      frame.contentWindow?.postMessage({ type: 'queue-modal-theme', dark: isDark }, '*');
+    } catch (_) {}
   }
 
   function selectedRows(root = document) {
@@ -89,6 +111,14 @@
         <div class="queue-modal-body" data-queue-modal-body></div>
       </section>`;
     document.body.appendChild(modal);
+
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(() => {
+        syncQueueFrameTheme(modal.querySelector('iframe'));
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    }
+
     return modal;
   }
 
@@ -120,12 +150,15 @@
       frame = document.createElement('iframe');
       frame.className = 'queue-modal-frame';
       frame.title = 'Approval queue';
+      frame.addEventListener('load', () => syncQueueFrameTheme(frame));
       body.replaceChildren(frame);
     }
 
     const nextSrc = `${pagePath}?embedded=1`;
     if (!frame.getAttribute('src')?.endsWith(nextSrc)) {
       frame.src = nextSrc;
+    } else {
+      syncQueueFrameTheme(frame);
     }
   }
 

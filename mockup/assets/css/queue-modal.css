@@ -17,6 +17,10 @@
   backdrop-filter: blur(6px) !important;
 }
 
+html:not(.dark) .modal-overlay {
+  background: rgba(33, 32, 30, 0.45) !important;
+}
+
 .modal-overlay.active,
 .modal-overlay.show {
   display: flex !important;
@@ -46,12 +50,17 @@
   margin: 0 auto !important;
   display: flex !important;
   flex-direction: column !important;
-  border: 1px solid var(--color-border-main, #3E3D39) !important;
+  border: 1px solid var(--border, var(--color-border-main, #3E3D39)) !important;
   border-radius: var(--radius-xl, 16px) !important;
-  background: var(--color-card, #1A1918) !important;
-  color: var(--color-text-main, #FFFFFF) !important;
+  background: var(--card, var(--color-card, #1A1918)) !important;
+  color: var(--foreground, var(--color-text-main, #FFFFFF)) !important;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72) !important;
   overflow: hidden !important;
+}
+
+html:not(.dark) .modal-overlay .queue-modal-container,
+html:not(.dark) .queue-modal-container {
+  box-shadow: 0 20px 48px rgba(33, 32, 30, 0.18), 0 4px 16px rgba(33, 32, 30, 0.08) !important;
 }
 
 .queue-modal-body {
@@ -457,10 +466,10 @@ body.queue-embedded .badge-pill.status-active {
   z-index: 100 !important;
   width: 34px !important;
   height: 34px !important;
-  background: #21201E !important;
-  border: 1px solid #3E3D39 !important;
+  background: var(--muted, #21201E) !important;
+  border: 1px solid var(--border, #3E3D39) !important;
   border-radius: var(--radius-md, 8px) !important;
-  color: #A0988E !important;
+  color: var(--muted-foreground, #A0988E) !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -468,14 +477,14 @@ body.queue-embedded .badge-pill.status-active {
   pointer-events: auto !important;
   transition: all 150ms ease !important;
   outline: none !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.3)) !important;
   padding: 0 !important;
 }
 
 .queue-modal-container .modal-close:hover {
-  color: #FFFFFF !important;
-  background: #2E2D2A !important;
-  border-color: #4E4D48 !important;
+  color: var(--foreground, #FFFFFF) !important;
+  background: var(--accent, #2E2D2A) !important;
+  border-color: var(--border, #4E4D48) !important;
   transform: scale(1.06);
 }
 
