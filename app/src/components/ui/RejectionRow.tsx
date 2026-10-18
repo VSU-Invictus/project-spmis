@@ -1,12 +1,15 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { Button } from './Button';
 import { Label } from './Label';
+import { Textarea } from './Input';
 
 export interface RejectionRowProps {
   colSpan?: number;
   asTableRow?: boolean;
+  standalone?: boolean;
   bulkCount?: number;
   initialReason?: string;
+  className?: string;
   onCancel: () => void;
   onConfirm: (reason: string) => void;
 }
@@ -14,8 +17,10 @@ export interface RejectionRowProps {
 export function RejectionRow({
   colSpan = 6,
   asTableRow = false,
+  standalone = false,
   bulkCount,
   initialReason = '',
+  className = '',
   onCancel,
   onConfirm,
 }: RejectionRowProps) {
@@ -48,16 +53,17 @@ export function RejectionRow({
 
   const innerContent = (
     <>
-      <Label htmlFor={reasonId}>Reason for rejection</Label>
+      <Label htmlFor={reasonId} className="ui-queue-rejection-label">Reason for rejection</Label>
       {bulkCount && bulkCount > 1 ? (
         <p className="ui-queue-bulk-message">
           The same reason applies to all {bulkCount} selected applications.
         </p>
       ) : null}
-      <textarea
+      <Textarea
         id={reasonId}
         ref={textareaRef}
         aria-label="Reason for rejection"
+        className="ui-queue-rejection-textarea"
         placeholder="Enter reason here..."
         required
         aria-required="true"
@@ -89,7 +95,7 @@ export function RejectionRow({
   if (asTableRow) {
     return (
       <tr
-        className="ui-queue-rejection-row is-expanded"
+        className={`ui-queue-rejection-row is-expanded ${className}`.trim()}
         onKeyDown={handleKeyDown}
       >
         <td colSpan={colSpan} className="ui-queue-rejection-cell" style={{ width: '100%' }}>
@@ -99,9 +105,25 @@ export function RejectionRow({
     );
   }
 
+  if (standalone) {
+    return (
+      <div
+        className={`ui-queue-rejection-row ui-queue-rejection-standalone is-expanded ${className}`.trim()}
+        role="region"
+        aria-label="Rejection review panel"
+        data-bulk-rejection={bulkCount && bulkCount > 1 ? 'true' : undefined}
+        onKeyDown={handleKeyDown}
+      >
+        <div className="ui-queue-rejection-cell ui-queue-rejection-cell--standalone">
+          {innerContent}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
-      className="ui-queue-rejection-row is-expanded"
+      className={`ui-queue-rejection-row is-expanded ${className}`.trim()}
       role="row"
       data-bulk-rejection={bulkCount && bulkCount > 1 ? 'true' : undefined}
       style={{ width: '100%', flex: '1 1 100%', gridColumn: '1 / -1' }}

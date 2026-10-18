@@ -6,9 +6,12 @@ export type ButtonVariant =
   | 'outline'
   | 'ghost'
   | 'destructive'
+  | 'add'
   | 'approve'
   | 'reject'
-  | 'select-all';
+  | 'accept'
+  | 'select-all'
+  | 'empty-reset';
 
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
@@ -20,6 +23,12 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
+
+const PlusIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <path d="M7 1V13M1 7H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+);
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
   variant = 'primary',
@@ -34,13 +43,25 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
   type = 'button',
   ...props
 }, ref) => {
-  const isPillAction = variant === 'approve' || variant === 'reject' || variant === 'select-all';
+  const isPillAction =
+    variant === 'approve' ||
+    variant === 'reject' ||
+    variant === 'accept' ||
+    variant === 'select-all';
 
-  const variantClass = isPillAction
-    ? `pill-btn ${variant} ${hasSelection ? 'has-selection' : ''}`.trim()
-    : `ui-btn ui-btn--${variant} ui-btn-${variant}`;
+  let variantClass = '';
+  if (isPillAction) {
+    variantClass = `pill-btn ${variant} ${hasSelection ? 'has-selection' : ''}`.trim();
+  } else if (variant === 'add') {
+    variantClass = 'ui-btn add-button';
+  } else if (variant === 'empty-reset') {
+    variantClass = 'empty-state-btn';
+  } else {
+    variantClass = `ui-btn ui-btn--${variant} ui-btn-${variant}`;
+  }
 
   const sizeClass = size !== 'md' ? `ui-btn--${size} ui-btn-${size}` : '';
+  const resolvedLeftIcon = leftIcon !== undefined ? leftIcon : variant === 'add' ? <PlusIcon /> : null;
 
   return (
     <button
@@ -63,8 +84,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
             <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
           </svg>
         </span>
-      ) : leftIcon ? (
-        <span className="ui-btn-icon-left" style={{ display: 'inline-flex', alignItems: 'center' }}>{leftIcon}</span>
+      ) : resolvedLeftIcon ? (
+        <span className="ui-btn-icon-left" style={{ display: 'inline-flex', alignItems: 'center' }}>{resolvedLeftIcon}</span>
       ) : null}
 
       {children && <span>{children}</span>}
@@ -77,3 +98,25 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
 });
 
 Button.displayName = 'Button';
+
+export interface ActionLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  showArrow?: boolean;
+}
+
+export const ActionLink = forwardRef<HTMLAnchorElement, ActionLinkProps>(({
+  showArrow = true,
+  className = '',
+  children,
+  ...props
+}, ref) => (
+  <a
+    ref={ref}
+    className={`ui-link-neutral ${className}`.trim()}
+    {...props}
+  >
+    {children} {showArrow && <span className="arrow">&rarr;</span>}
+  </a>
+));
+
+ActionLink.displayName = 'ActionLink';
+

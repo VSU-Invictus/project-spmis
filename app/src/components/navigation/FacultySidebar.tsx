@@ -22,7 +22,7 @@ export const FACULTY_NAV_ITEMS: FacultyNavItem[] = [
     label: 'Dashboard',
     href: '/faculty/dashboard',
     icon: (
-      <svg className="w-[18px] h-[18px] shrink-0 is-052ff0c" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg className="w-[18px] h-[18px] shrink-0" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
         <rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" />
         <rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" />
@@ -146,11 +146,12 @@ export function FacultySidebar({
       <aside
         id={embedded ? undefined : 'sidebar-menu'}
         data-component="sidebar-faculty"
-        className={`app-sidebar select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50 ${className}`.trim()}
+        className={`app-sidebar sidebar select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50 ${className}`.trim()}
         style={{
           width: '260px',
           minWidth: '260px',
-          height: embedded ? '480px' : '100vh',
+          maxWidth: '260px',
+          height: embedded ? '500px' : '100vh',
           borderRadius: embedded ? '16px' : 0,
           backgroundColor: 'var(--sidebar)',
           border: embedded ? '1px solid var(--border)' : undefined,

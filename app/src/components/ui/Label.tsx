@@ -15,7 +15,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(({
   return (
     <label
       ref={ref}
-      className={`ui-label ${srOnly ? 'sr-only' : ''} ${className}`.trim()}
+      className={`ui-label ui-form-label ${srOnly ? 'sr-only' : ''} ${className}`.trim()}
       {...props}
     >
       {children}

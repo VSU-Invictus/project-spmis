@@ -13,6 +13,10 @@ export * from './RejectionRow';
 export * from './DataTable';
 export * from './QueueMetricCard';
 export * from './SystemActivityLog';
+export * from './Typography';
+export * from './ShowcaseWidgets';
+export * from './PortalDialogs';
 export * from '../navigation';
 export * from '../queue-modal';
 export * from '../application-queue/ApplicationQueue';
+

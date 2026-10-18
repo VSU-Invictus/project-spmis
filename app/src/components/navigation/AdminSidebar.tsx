@@ -138,90 +138,21 @@ export function AdminSidebar({
     }
   };
 
-  if (embedded) {
-    return (
-      <>
-        <div className={`is-5d36f48 ${className}`.trim()} id="demo-sidebar-container">
-          <div className="is-f235cd8">
-            <div className="is-e3594a7">
-              <span className="brand-title is-2a3fc95">Admin Portal</span>
-            </div>
-
-            <nav className="is-614e369" id="demo-sidebar-nav" aria-label="Admin navigation">
-              {ADMIN_NAV_ITEMS.map((item) => {
-                const isActive = currentActiveKey === item.key;
-                return (
-                  <a
-                    key={item.key}
-                    href={`#${item.key}`}
-                    data-nav-key={item.key}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={isActive ? 'nav-btn-active' : 'nav-btn-inactive'}
-                    onClick={(e) => handleNavClick(e, item)}
-                  >
-                    {item.icon}
-                    <span>{item.label}</span>
-                  </a>
-                );
-              })}
-            </nav>
-          </div>
-
-          <div className="is-3df200c">
-            <div className="account-divider is-612e475"></div>
-            <div className="account-box is-05cc564">
-              <div className="is-63c3252">
-                <div className="is-39f9a79">{userInitial}</div>
-                <div className="is-614e369">
-                  <span className="account-name is-8b9eb77">{userName}</span>
-                  <span className="account-role is-b28f1f4">{userRole}</span>
-                </div>
-              </div>
-              <button
-                ref={logoutBtnRef}
-                type="button"
-                aria-label="Log out"
-                title="Log out"
-                className="ui-sidebar-logout sidebar-logout-btn logout-btn is-3b8f7f7"
-                onClick={handleLogoutTrigger}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                  <path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {!onLogoutClick && (
-          <LogoutModal
-            open={logoutOpen}
-            role="admin"
-            onCancel={() => {
-              setLogoutOpen(false);
-              logoutBtnRef.current?.focus();
-            }}
-            onConfirm={() => {
-              setLogoutOpen(false);
-              onLogoutConfirm?.();
-            }}
-          />
-        )}
-      </>
-    );
-  }
-
   return (
     <>
       <aside
-        id="sidebar-menu"
-        className={`app-sidebar w-[260px] h-screen bg-sidebar border-r border-sidebar-right select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50 ${className}`.trim()}
+        id={embedded ? undefined : 'sidebar-menu'}
+        data-component="sidebar-admin"
+        className={`app-sidebar sidebar select-none flex flex-col justify-between p-4 overflow-y-auto dark-scrollbar z-50 ${className}`.trim()}
         style={{
           width: '260px',
           minWidth: '260px',
-          height: '100vh',
+          maxWidth: '260px',
+          height: embedded ? '500px' : '100vh',
+          borderRadius: embedded ? '16px' : 0,
           backgroundColor: 'var(--sidebar)',
-          borderRight: '1px solid var(--sidebar-border)',
+          border: embedded ? '1px solid var(--border)' : undefined,
+          borderRight: embedded ? undefined : '1px solid var(--sidebar-border)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -236,13 +167,13 @@ export function AdminSidebar({
             </h1>
           </div>
 
-          <nav className="nav" id="sidebar-nav" aria-label="Admin navigation" style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+          <nav className="nav" aria-label="Admin navigation" style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
             {ADMIN_NAV_ITEMS.map((item) => {
               const isActive = currentActiveKey === item.key;
               return (
                 <a
                   key={item.key}
-                  href={item.href}
+                  href={embedded ? `#${item.key}` : item.href}
                   data-nav-key={item.key}
                   aria-current={isActive ? 'page' : undefined}
                   className={isActive ? 'nav-btn-active' : 'nav-btn-inactive'}
@@ -357,4 +288,5 @@ export function AdminSidebar({
     </>
   );
 }
+
 

@@ -46,3 +46,20 @@ export function PortalFooter({
   );
 }
 
+export interface StyleguideFooterProps extends React.HTMLAttributes<HTMLElement> {
+  text?: string;
+}
+
+export function StyleguideFooter({
+  text = 'SPMIS Styleguide • Designed with Semantic Clean Architecture',
+  className = '',
+  ...props
+}: StyleguideFooterProps) {
+  return (
+    <footer className={`ui-footer ${className}`.trim()} {...props}>
+      {text}
+    </footer>
+  );
+}
+
+

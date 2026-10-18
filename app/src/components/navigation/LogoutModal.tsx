@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Button } from '../ui/Button';
 
 export interface LogoutModalProps {
   open?: boolean;
@@ -103,26 +104,27 @@ export function LogoutModal({
           Are you sure you want to end your {role} session? You will return to the sign-in page.
         </p>
         <div className="ui-logout-actions">
-          <button
+          <Button
             ref={cancelBtnRef}
             type="button"
             value="cancel"
-            className="ui-btn ui-btn-outline"
+            variant="outline"
             onClick={handleDismiss}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             value="confirm"
-            className="ui-btn ui-btn-primary"
+            variant="primary"
             onClick={handleConfirm}
           >
             Log out
-          </button>
+          </Button>
         </div>
       </form>
     </dialog>
   );
 }
+
 

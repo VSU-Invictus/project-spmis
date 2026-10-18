@@ -30,7 +30,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
 }, ref) => {
   const generatedId = useId();
   const selectId = id || generatedId;
-  const errorClass = error ? 'ui-select--error' : '';
+  const errorClass = error ? 'ui-input--error ui-select--error' : '';
 
   const resolvedAriaLabel =
     ariaLabel ||
@@ -39,16 +39,26 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
       : undefined);
 
   const selectWrap = (
-    <div className="ui-select-wrap">
+    <div
+      className="ui-select-wrap"
+      style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%' }}
+    >
       <select
         ref={ref}
         id={selectId}
-        className={`ui-select ${errorClass} ${className}`.trim()}
+        className={`ui-input ui-select ${errorClass} ${className}`.trim()}
         disabled={disabled}
         required={required}
         aria-label={resolvedAriaLabel}
         aria-labelledby={ariaLabelledBy}
         {...props}
+        style={{
+          appearance: 'none',
+          WebkitAppearance: 'none',
+          paddingRight: '2.25rem',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          ...props.style,
+        }}
       >
         {options
           ? options.map((opt) => (
@@ -58,6 +68,31 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
             ))
           : children}
       </select>
+      <svg
+        className="ui-select-chevron"
+        viewBox="0 0 14 14"
+        fill="none"
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          right: '0.75rem',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: '14px',
+          height: '14px',
+          pointerEvents: 'none',
+          opacity: 0.65,
+          color: 'var(--foreground)',
+        }}
+      >
+        <path
+          d="M3.5 5.25L7 8.75L10.5 5.25"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
     </div>
   );
 
@@ -66,7 +101,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   }
 
   return (
-    <div className="ui-field">
+    <div className="ui-form-group ui-field">
       <Label htmlFor={selectId} required={required} srOnly={hideLabel}>
         {label}
       </Label>
@@ -76,3 +111,4 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
 });
 
 Select.displayName = 'Select';
+

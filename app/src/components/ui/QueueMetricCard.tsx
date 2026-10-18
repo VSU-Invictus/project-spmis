@@ -85,7 +85,7 @@ export function QueueMetricCard({
       </span>
       <span className="ui-dashboard-metric-bottom">
         <strong>{count}</strong>
-        <span className="ui-text-muted ui-dashboard-metric-action">
+        <span className="ui-dashboard-metric-action ui-link-neutral">
           {actionLabel} <span className="arrow" aria-hidden="true">&rarr;</span>
         </span>
       </span>

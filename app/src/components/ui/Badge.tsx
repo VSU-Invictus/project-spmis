@@ -91,3 +91,84 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(({
 });
 
 Badge.displayName = 'Badge';
+
+export interface TagClusterItem {
+  label: string;
+  variant?: BadgeVariant;
+}
+
+export interface TagClusterProps {
+  tags: TagClusterItem[];
+  maxVisible?: number;
+}
+
+export function TagCluster({ tags, maxVisible = 2 }: TagClusterProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const popoverRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('click', handleOutside);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('click', handleOutside);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, []);
+
+  const visibleTags = tags.slice(0, maxVisible);
+  const extraTags = tags.slice(maxVisible);
+
+  return (
+    <div className="ui-tags-cluster">
+      {visibleTags.map((t, idx) => (
+        <Badge key={idx} variant={t.variant || 'neutral'}>
+          {t.label}
+        </Badge>
+      ))}
+      {extraTags.length > 0 && (
+        <div
+          ref={popoverRef}
+          className={`ui-tags-more ${isOpen ? 'is-open' : ''}`}
+          tabIndex={0}
+          role="button"
+          aria-haspopup="true"
+          aria-expanded={isOpen}
+          aria-label={`${extraTags.length} more tags`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setIsOpen(!isOpen);
+            }
+          }}
+        >
+          <Badge variant="neutral" className="ui-tags-more-btn">
+            +{extraTags.length}
+          </Badge>
+          <div className="ui-tags-popover" role="tooltip">
+            <div className="ui-tags-popover-title">Additional Tags ({extraTags.length})</div>
+            <div className="ui-tags-popover-list">
+              {extraTags.map((t, idx) => (
+                <Badge key={idx} variant={t.variant || 'neutral'}>
+                  {t.label}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+

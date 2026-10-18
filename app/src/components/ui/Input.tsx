@@ -49,11 +49,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     .filter(Boolean)
     .join(' ') || undefined;
 
+  const computedInputStyle: React.CSSProperties = {
+    ...(leftIcon ? { paddingLeft: '2.25rem' } : {}),
+    ...(rightIcon ? { paddingRight: '2.25rem' } : {}),
+    ...props.style,
+  };
+
   const inputElement = (
     <input
       ref={ref}
       id={inputId}
-      className={`ui-input ${errorClass} ${className}`.trim()}
+      className={`ui-input ${leftIcon ? 'ui-input--with-left-icon' : ''} ${rightIcon ? 'ui-input--with-right-icon' : ''} ${errorClass} ${className}`.trim()}
       disabled={disabled}
       required={required}
       placeholder={placeholder}
@@ -62,14 +68,62 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
       aria-invalid={hasError || undefined}
       aria-describedby={describedBy}
       {...props}
+      style={computedInputStyle}
     />
   );
 
   const controlNode = leftIcon || rightIcon ? (
-    <div className={`ui-input-wrapper ${hasError ? 'ui-input-wrapper--error' : ''}`}>
-      {leftIcon && <span className="ui-input-icon ui-input-icon--left" aria-hidden="true">{leftIcon}</span>}
+    <div
+      className={`ui-input-wrapper ${hasError ? 'ui-input-wrapper--error' : ''}`.trim()}
+      style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%' }}
+    >
+      {leftIcon && (
+        <span
+          className="ui-input-icon ui-input-icon--left"
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            left: '0.75rem',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '16px',
+            height: '16px',
+            pointerEvents: 'none',
+            opacity: 0.65,
+            color: 'var(--foreground)',
+            zIndex: 1,
+          }}
+        >
+          {leftIcon}
+        </span>
+      )}
       {inputElement}
-      {rightIcon && <span className="ui-input-icon ui-input-icon--right" aria-hidden="true">{rightIcon}</span>}
+      {rightIcon && (
+        <span
+          className="ui-input-icon ui-input-icon--right"
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            right: '0.75rem',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '16px',
+            height: '16px',
+            pointerEvents: 'none',
+            opacity: 0.65,
+            color: 'var(--foreground)',
+            zIndex: 1,
+          }}
+        >
+          {rightIcon}
+        </span>
+      )}
     </div>
   ) : (
     inputElement
@@ -80,7 +134,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   }
 
   return (
-    <div className="ui-field">
+    <div className="ui-form-group ui-field">
       {label && (
         <Label htmlFor={inputId} required={required} srOnly={hideLabel}>
           {label}
@@ -108,6 +162,10 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   hideLabel?: boolean;
   error?: boolean | string;
   helperText?: React.ReactNode;
+  resize?: 'none' | 'vertical' | 'horizontal' | 'both';
+  minHeight?: number | string;
+  maxHeight?: number | string;
+  autoResize?: boolean;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
@@ -115,21 +173,45 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
   hideLabel = false,
   error,
   helperText,
+  resize = 'vertical',
+  minHeight = '88px',
+  maxHeight,
+  autoResize = false,
   className = '',
   id,
   disabled,
   required,
   placeholder,
+  style,
+  onChange,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   ...props
 }, ref) => {
   const generatedId = useId();
   const textareaId = id || generatedId;
+  const innerRef = React.useRef<HTMLTextAreaElement | null>(null);
   const errorId = `${textareaId}-error`;
   const helperId = `${textareaId}-helper`;
   const hasError = Boolean(error);
-  const errorClass = hasError ? 'ui-textarea--error' : '';
+  const errorClass = hasError ? 'ui-input--error ui-textarea--error' : '';
+
+  const setCombinedRef = (node: HTMLTextAreaElement | null) => {
+    innerRef.current = node;
+    if (typeof ref === 'function') {
+      ref(node);
+    } else if (ref) {
+      (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (autoResize && innerRef.current) {
+      innerRef.current.style.height = 'auto';
+      innerRef.current.style.height = `${innerRef.current.scrollHeight}px`;
+    }
+    onChange?.(e);
+  };
 
   const resolvedAriaLabel =
     ariaLabel ||
@@ -149,9 +231,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
 
   const textareaElement = (
     <textarea
-      ref={ref}
+      ref={setCombinedRef}
       id={textareaId}
-      className={`ui-textarea ${errorClass} ${className}`.trim()}
+      className={`ui-input ui-textarea ${errorClass} ${className}`.trim()}
       disabled={disabled}
       required={required}
       placeholder={placeholder}
@@ -159,6 +241,16 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
       aria-labelledby={ariaLabelledBy}
       aria-invalid={hasError || undefined}
       aria-describedby={describedBy}
+      onChange={handleChange}
+      style={{
+        resize,
+        minHeight,
+        maxHeight,
+        width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+        ...style,
+      }}
       {...props}
     />
   );
@@ -168,7 +260,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
   }
 
   return (
-    <div className="ui-field">
+    <div className="ui-form-group ui-field">
       {label && (
         <Label htmlFor={textareaId} required={required} srOnly={hideLabel}>
           {label}
@@ -190,3 +282,4 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
 });
 
 Textarea.displayName = 'Textarea';
+

@@ -1,10 +1,27 @@
 import React from 'react';
+import { ActionLink } from './Button';
 
 export interface ActivityLogItem {
   id: string;
   title: string;
   time: string;
   description: string;
+}
+
+export interface ActivityLogItemCardProps {
+  item: ActivityLogItem;
+}
+
+export function ActivityLogItemCard({ item }: ActivityLogItemCardProps) {
+  return (
+    <article className="ui-dashboard-activity-item">
+      <div>
+        <h3>{item.title}</h3>
+        <span className="ui-dashboard-time">{item.time}</span>
+      </div>
+      <p>{item.description}</p>
+    </article>
+  );
 }
 
 export interface SystemActivityLogProps {
@@ -58,22 +75,17 @@ export function SystemActivityLog({
       </div>
       <div className="ui-dashboard-activity-list">
         {items.map((item) => (
-          <article key={item.id} className="ui-dashboard-activity-item">
-            <div>
-              <h3>{item.title}</h3>
-              <span className="ui-dashboard-time">{item.time}</span>
-            </div>
-            <p>{item.description}</p>
-          </article>
+          <ActivityLogItemCard key={item.id} item={item} />
         ))}
       </div>
       <div className="ui-dashboard-activity-footer">
         <span>Showing {items.length} of {totalCount} logs</span>
-        <a href={viewAllHref} className="ui-link-neutral" onClick={onViewAll}>
-          View All Logs <span aria-hidden="true">&rarr;</span>
-        </a>
+        <ActionLink href={viewAllHref} onClick={onViewAll}>
+          View All Logs
+        </ActionLink>
       </div>
     </aside>
   );
 }
+
 
