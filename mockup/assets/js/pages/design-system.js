@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           allowedSizes = [5];
         }
-        actualSelect.disabled = totalEntries <= 5;
+        actualSelect.disabled = totalEntries <= 9;
 
         const currentVal = parseInt(actualSelect.value, 10) || 5;
         actualSelect.innerHTML = allowedSizes

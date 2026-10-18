@@ -88,6 +88,20 @@ export const ROSTER_STUDENTS: RosterStudent[] = [
   { id: '24-1-00214', name: 'Mia Johnson', email: 'm.johnson@vsu.edu.ph', program: 'BS Data Science', yearLevel: '1st Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
   { id: '24-1-00215', name: 'Ethan White', email: 'e.white@vsu.edu.ph', program: 'BS Artificial Intelligence', yearLevel: '3rd Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
   { id: '24-1-00216', name: 'Chloe Brown', email: 'c.brown@vsu.edu.ph', program: 'BS Computer Science', yearLevel: '4th Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00217', name: 'Lucas Martin', email: 'l.martin@vsu.edu.ph', program: 'BS Information Systems', yearLevel: '2nd Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00218', name: 'Amelia Harris', email: 'a.harris@vsu.edu.ph', program: 'BS Computer Science', yearLevel: '3rd Year', statusLabel: 'In Progress', statusVariant: 'info' },
+  { id: '24-1-00219', name: 'Oliver Wilson', email: 'o.wilson@vsu.edu.ph', program: 'BS Data Science', yearLevel: '4th Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00220', name: 'Isabella Clark', email: 'i.clark@vsu.edu.ph', program: 'BS Cybersecurity', yearLevel: '1st Year', statusLabel: 'Pending Review', statusVariant: 'warning' },
+  { id: '24-1-00221', name: 'Mason Lewis', email: 'm.lewis@vsu.edu.ph', program: 'BS Software Engineering', yearLevel: '2nd Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00222', name: 'Sophia Walker', email: 's.walker@vsu.edu.ph', program: 'BS Computer Science', yearLevel: '3rd Year', statusLabel: 'In Progress', statusVariant: 'info' },
+  { id: '24-1-00223', name: 'Elijah Hall', email: 'e.hall@vsu.edu.ph', program: 'BS Information Technology', yearLevel: '4th Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00224', name: 'Charlotte Allen', email: 'c.allen@vsu.edu.ph', program: 'BS Artificial Intelligence', yearLevel: '2nd Year', statusLabel: 'Pending Review', statusVariant: 'warning' },
+  { id: '24-1-00225', name: 'Benjamin Young', email: 'b.young@vsu.edu.ph', program: 'BS Computer Engineering', yearLevel: '1st Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00226', name: 'Harper King', email: 'h.king@vsu.edu.ph', program: 'BS Data Science', yearLevel: '3rd Year', statusLabel: 'In Progress', statusVariant: 'info' },
+  { id: '24-1-00227', name: 'James Wright', email: 'j.wright@vsu.edu.ph', program: 'BS Computer Science', yearLevel: '4th Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00228', name: 'Evelyn Scott', email: 'e.scott@vsu.edu.ph', program: 'BS Information Systems', yearLevel: '2nd Year', statusLabel: 'Pending Review', statusVariant: 'warning' },
+  { id: '24-1-00229', name: 'Alexander Green', email: 'a.green@vsu.edu.ph', program: 'BS Cybersecurity', yearLevel: '1st Year', statusLabel: 'Approved / Active', statusVariant: 'success' },
+  { id: '24-1-00230', name: 'Ava Baker', email: 'a.baker@vsu.edu.ph', program: 'BS Software Engineering', yearLevel: '3rd Year', statusLabel: 'In Progress', statusVariant: 'info' },
 ];
 
 

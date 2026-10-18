@@ -21,7 +21,6 @@ export interface DataTableProps<T> {
   selectedIds?: string[] | Set<string>;
   defaultSelectedIds?: string[];
   onSelectionChange?: (selectedIds: string[]) => void;
-  showSelectAllButton?: boolean;
   selectionStatusFormat?: 'rows' | 'compact';
   bulkActions?: React.ReactNode;
   entityName?: string;
@@ -48,12 +47,11 @@ export function DataTable<T>({
   selectedIds: controlledSelectedIds,
   defaultSelectedIds = [],
   onSelectionChange,
-  showSelectAllButton = false,
   selectionStatusFormat = 'rows',
   bulkActions,
   entityName = 'entries',
   defaultPageSize = 5,
-  dynamicPageSizeOptions = false,
+  dynamicPageSizeOptions = true,
   isLoading = false,
   emptyTitle = 'No pending applications',
   emptyDescription = 'Items awaiting review or matching your filters will appear here.',
@@ -90,7 +88,10 @@ export function DataTable<T>({
 
   const totalMatches = data.length;
 
-  // Dynamic Rows Per Page rules ported from mockup/assets/js/admin-table.js
+  // Dynamic Rows Per Page rules:
+  // - If entries <= 9: dropdown is disabled, option [5]
+  // - If 10 to 19 entries: dropdown is enabled, options [5, 10]
+  // - If 20 and above entries: dropdown is enabled, options [5, 10, 20]
   const allowedPageSizes = useMemo(() => {
     if (!dynamicPageSizeOptions) return [5, 10, 20];
     if (totalMatches >= 20) return [5, 10, 20];
@@ -220,7 +221,7 @@ export function DataTable<T>({
                     ))
                   : visibleRows.map((row, rowIdx) => {
                       const rowId = getRowId(row);
-                      const isChecked = selectedSet.has(rowId);
+                      const isChecked = selectable && selectedSet.has(rowId);
                       const canSelect = selectable && checkRowSelectable(row);
                       return (
                         <Fragment key={rowId}>
@@ -314,7 +315,7 @@ export function DataTable<T>({
                     ))
                   : visibleRows.map((row, rowIdx) => {
                       const rowId = getRowId(row);
-                      const isChecked = selectedSet.has(rowId);
+                      const isChecked = selectable && selectedSet.has(rowId);
                       const canSelect = selectable && checkRowSelectable(row);
                       return (
                         <Fragment key={rowId}>
@@ -381,92 +382,173 @@ export function DataTable<T>({
       </div>
 
       {/* Pagination & Bulk Actions Footer */}
-      <div className="ui-table-pagination is-0272b5f">
+      <TablePaginationFooter
+        rowsPerPageSelectId={rowsPerPageSelectId}
+        currentPage={safeCurrentPage}
+        totalPages={totalPages}
+        totalEntries={totalMatches}
+        pageSize={effectivePageSize}
+        dynamicPageSizeOptions={dynamicPageSizeOptions}
+        isLoading={isLoading}
+        entityName={entityName}
+        selectionText={selectionText}
+        bulkActions={bulkActions}
+        onPageSizeChange={(newSize) => {
+          setPageSize(newSize);
+          setCurrentPage(1);
+        }}
+        onPageChange={(newPage) => setCurrentPage(newPage)}
+      />
+    </div>
+  );
+}
+
+export function getAllowedPageSizes(totalEntries: number, dynamic = true): number[] {
+  if (!dynamic) return [5, 10, 20];
+  if (totalEntries >= 20) return [5, 10, 20];
+  if (totalEntries >= 10) return [5, 10];
+  return [5];
+}
+
+export interface RowsPerPageSelectProps {
+  id?: string;
+  value: number;
+  totalEntries: number;
+  dynamic?: boolean;
+  disabled?: boolean;
+  onChange: (newPageSize: number) => void;
+}
+
+export function RowsPerPageSelect({
+  id,
+  value,
+  totalEntries,
+  dynamic = true,
+  disabled = false,
+  onChange,
+}: RowsPerPageSelectProps) {
+  const generatedId = useId();
+  const selectId = id || generatedId;
+  const allowedSizes = getAllowedPageSizes(totalEntries, dynamic);
+  const effectiveValue = allowedSizes.includes(value) ? value : allowedSizes[0];
+  const isDisabled = disabled || (dynamic && totalEntries <= 9);
+
+  return (
+    <div className="pagination-rows-per-page is-b57eafe">
+      <label htmlFor={selectId}>Rows per page</label>
+      <div className="pagination-select-wrapper is-e0dd7f8">
+        <select
+          id={selectId}
+          className="ui-select-pill ui-font-number is-daab64f"
+          aria-label="Rows per page"
+          value={effectiveValue}
+          disabled={isDisabled}
+          onChange={(e) => onChange(Number(e.target.value))}
+        >
+          {allowedSizes.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+        <svg
+          className="pagination-select-chevron is-4b97db6"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+export interface TablePaginationFooterProps {
+  currentPage: number;
+  totalPages: number;
+  totalEntries: number;
+  pageSize: number;
+  onPageSizeChange: (newSize: number) => void;
+  onPageChange: (newPage: number) => void;
+  dynamicPageSizeOptions?: boolean;
+  isLoading?: boolean;
+  entityName?: string;
+  selectionText?: string;
+  bulkActions?: React.ReactNode;
+  rowsPerPageSelectId?: string;
+}
+
+export function TablePaginationFooter({
+  currentPage,
+  totalPages,
+  totalEntries,
+  pageSize,
+  onPageSizeChange,
+  onPageChange,
+  dynamicPageSizeOptions = true,
+  isLoading = false,
+  entityName = 'entries',
+  selectionText = '',
+  bulkActions,
+  rowsPerPageSelectId,
+}: TablePaginationFooterProps) {
+  return (
+    <div className="ui-table-pagination is-0272b5f">
+      {bulkActions ? (
         <div className="pagination-actions-group bottom-bar-container">
-          {(showSelectAllButton || bulkActions) && (
-            <div className="action-btn-group">
-              {showSelectAllButton && selectable && (
-                <Button
-                  variant="select-all"
-                  hasSelection={allVisibleChecked}
-                  onClick={toggleAllVisible}
-                  disabled={selectableVisibleRows.length === 0 || isLoading}
-                >
-                  Select All
-                </Button>
-              )}
-              {bulkActions}
-            </div>
-          )}
-          <span className="pagination-selection-status is-7fbae58" role="status">
+          <div className="action-btn-group">{bulkActions}</div>
+          <span className="pagination-selection-status ui-font-number is-7fbae58" role="status">
             {selectionText}
           </span>
         </div>
+      ) : (
+        <span className="pagination-selection-status ui-font-number is-7fbae58" role="status">
+          {selectionText}
+        </span>
+      )}
 
-        <div className="pagination-controls-group is-31de0eb">
-          <div className="pagination-rows-per-page is-b57eafe">
-            <label htmlFor={rowsPerPageSelectId}>Rows per page</label>
-            <div className="pagination-select-wrapper is-e0dd7f8">
-              <select
-                id={rowsPerPageSelectId}
-                className="ui-select-pill is-daab64f"
-                aria-label="Rows per page"
-                value={effectivePageSize}
-                disabled={dynamicPageSizeOptions && totalMatches <= 5}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-              >
-                {allowedPageSizes.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-              <svg
-                className="pagination-select-chevron is-4b97db6"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </div>
-          </div>
+      <div className="pagination-controls-group is-31de0eb">
+        <RowsPerPageSelect
+          id={rowsPerPageSelectId}
+          value={pageSize}
+          totalEntries={totalEntries}
+          dynamic={dynamicPageSizeOptions}
+          disabled={isLoading}
+          onChange={onPageSizeChange}
+        />
 
-          <span className="pagination-page-info is-12b4142" role="status">
-            {isLoading
-              ? `Loading ${entityName}…`
-              : totalMatches > 0
-              ? `Page ${safeCurrentPage} of ${totalPages} · ${totalMatches} ${entityName}`
-              : `0 ${entityName}`}
-          </span>
+        <span className="pagination-page-info ui-font-number is-12b4142" role="status">
+          {isLoading
+            ? `Loading ${entityName}…`
+            : totalEntries > 0
+            ? `Page ${currentPage} of ${totalPages} · ${totalEntries} ${entityName}`
+            : `0 ${entityName}`}
+        </span>
 
-          <div className="ui-table-pagination-nav is-49e15c7">
-            <Button
-              variant="outline"
-              className="is-b38e363"
-              disabled={isLoading || safeCurrentPage <= 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              className="is-b38e363"
-              disabled={isLoading || safeCurrentPage >= totalPages || totalMatches === 0}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            >
-              Next
-            </Button>
-          </div>
+        <div className="ui-table-pagination-nav is-49e15c7">
+          <Button
+            variant="outline"
+            className="is-b38e363"
+            disabled={isLoading || currentPage <= 1}
+            onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            className="is-b38e363"
+            disabled={isLoading || currentPage >= totalPages || totalEntries === 0}
+            onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          >
+            Next
+          </Button>
         </div>
       </div>
     </div>

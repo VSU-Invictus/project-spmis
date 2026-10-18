@@ -6,6 +6,7 @@ import { Button } from '../ui/Button';
 import { Checkbox } from '../ui/Checkbox';
 import { EmptyState } from '../ui/EmptyState';
 import { RejectionRow } from '../ui/RejectionRow';
+import { TablePaginationFooter } from '../ui/DataTable';
 
 export interface ApplicationQueueProps {
   type: QueueType;
@@ -435,9 +436,19 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
           </div>
 
           {/* Pagination Action Bar */}
-          <div className="ui-table-pagination is-0272b5f">
-            <div className="pagination-actions-group bottom-bar-container">
-              <div className="action-btn-group">
+          <TablePaginationFooter
+            currentPage={safeCurrentPage}
+            totalPages={totalPages}
+            totalEntries={totalEntries}
+            pageSize={rowsPerPage}
+            onPageChange={(page) => setCurrentPage(page)}
+            onPageSizeChange={(size) => {
+              setRowsPerPage(size);
+              setCurrentPage(1);
+            }}
+            selectionText={selected.size > 0 ? `${selected.size} selected` : ''}
+            bulkActions={
+              <>
                 <Button
                   variant="approve"
                   hasSelection={selected.size > 0}
@@ -453,69 +464,9 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
                 >
                   Reject
                 </Button>
-              </div>
-              <span className="pagination-selection-status is-7fbae58" role="status">
-                {selected.size > 0 ? `${selected.size} selected` : ''}
-              </span>
-            </div>
-
-            <div className="pagination-controls-group is-31de0eb">
-              <div className="pagination-rows-per-page is-b57eafe">
-                <span>Rows per page</span>
-                <div className="pagination-select-wrapper is-e0dd7f8">
-                  <select
-                    className="ui-select-pill is-daab64f"
-                    aria-label="Rows per page"
-                    value={rowsPerPage}
-                    onChange={(e) => {
-                      setRowsPerPage(Number(e.target.value));
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                  </select>
-                  <svg
-                    className="pagination-select-chevron is-4b97db6"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </div>
-              </div>
-
-              <span className="pagination-page-info is-12b4142" role="status">
-                Page {safeCurrentPage} of {totalPages} · {totalEntries} entries
-              </span>
-
-              <div className="ui-table-pagination-nav is-49e15c7">
-                <Button
-                  variant="outline"
-                  className="is-b38e363"
-                  disabled={safeCurrentPage <= 1}
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  className="is-b38e363"
-                  disabled={safeCurrentPage >= totalPages}
-                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
-          </div>
+              </>
+            }
+          />
         </div>
       </main>
 
