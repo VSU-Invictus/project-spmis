@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './Button';
+import { Card } from './Card';
 import { Input } from './Input';
-import { Alert } from './ShowcaseWidgets';
+import { TypographyHeading, TypographyText } from './Typography';
+import { Alert, ShowcaseGroupCard } from './ShowcaseWidgets';
+import { useQueueSearchParam, type QueueType } from '../queue-modal';
 
 export interface AdminEntityModalProps {
   open: boolean;
@@ -217,3 +220,203 @@ export function FacultyProposalDialog({
     </dialog>
   );
 }
+
+export interface ModalTriggerLaunchpadProps {
+  onOpenAdminModal: () => void;
+  onOpenRemoveModal: () => void;
+  onOpenFacultyModal: () => void;
+  onOpenLogoutModal: () => void;
+  onOpenQueue?: (queue: QueueType) => void;
+}
+
+export function ModalTriggerLaunchpad({
+  onOpenAdminModal,
+  onOpenRemoveModal,
+  onOpenFacultyModal,
+  onOpenLogoutModal,
+  onOpenQueue,
+}: ModalTriggerLaunchpadProps) {
+  const { openQueue } = useQueueSearchParam();
+  const handleQueueOpen = onOpenQueue ?? openQueue;
+
+  return (
+    <Card className="is-03e275d">
+      <div className="ui-modal-card-header">
+        <TypographyHeading level={3} className="ui-modal-card-heading">
+          Modal Trigger Buttons
+        </TypographyHeading>
+        <TypographyText variant="caption" className="ui-modal-card-sub">
+          Consolidated launchpad gathering all buttons that trigger modal overlays across Admin, Faculty, and Approval Queue workflows.
+        </TypographyText>
+      </div>
+
+      <ShowcaseGroupCard
+        label="Admin Portal Modals (<AdminEntityModal /> & <RemoveConfirmationModal />)"
+        caption={
+          <>
+            Triggers the entity creation modal (<code>.modal-card</code>) or destructive removal confirmation modal (<code>.modal-card.compact.remove-modal</code>).
+          </>
+        }
+        style={{ marginBottom: '14px' }}
+      >
+        <Button id="demo-open-admin-modal-btn" variant="add" className="is-ebaa71c" onClick={onOpenAdminModal}>
+          Open Admin Modal
+        </Button>
+        <Button id="demo-open-remove-modal-btn" variant="outline" className="is-ebaa71c" onClick={onOpenRemoveModal}>
+          Open Remove Modal
+        </Button>
+      </ShowcaseGroupCard>
+
+      <ShowcaseGroupCard
+        label="Faculty Portal Modals (<FacultyProposalDialog />)"
+        caption={
+          <>
+            Triggers the native HTML5 dialog modal (<code>&lt;dialog class=&quot;proposal-modal&quot;&gt;</code>) for department or curriculum proposals.
+          </>
+        }
+        style={{ marginBottom: '14px' }}
+      >
+        <Button id="demo-open-faculty-modal-btn" variant="add" className="is-ebaa71c" onClick={onOpenFacultyModal}>
+          Open Faculty Modal
+        </Button>
+      </ShowcaseGroupCard>
+
+      <ShowcaseGroupCard
+        label="Approval Queue Modals (URL Route-Backed <QueueModal />)"
+        caption={
+          <>
+            Opens <code>&lt;QueueModal /&gt;</code> synchronized with <code>?queue=department|program|student|faculty</code> for URL parameter routing and browser history.
+          </>
+        }
+        style={{ marginBottom: '14px' }}
+      >
+        <Button variant="add" className="is-ebaa71c" onClick={() => handleQueueOpen('department')}>
+          Department Queue
+        </Button>
+        <Button variant="outline" className="is-ebaa71c" onClick={() => handleQueueOpen('program')}>
+          Program Queue
+        </Button>
+        <Button variant="outline" className="is-ebaa71c" onClick={() => handleQueueOpen('student')}>
+          Student Queue
+        </Button>
+        <Button variant="outline" className="is-ebaa71c" onClick={() => handleQueueOpen('faculty')}>
+          Faculty Queue
+        </Button>
+      </ShowcaseGroupCard>
+
+      <ShowcaseGroupCard
+        label="Session & Security Dialogs (<LogoutModal />)"
+        caption={
+          <>
+            Triggers the session termination confirmation dialog (<code>&lt;dialog class=&quot;ui-logout-dialog&quot;&gt;</code>) before signing out.
+          </>
+        }
+      >
+        <Button
+          id="demo-open-logout-btn"
+          variant="outline"
+          className="is-ebaa71c"
+          data-open-logout-demo
+          onClick={onOpenLogoutModal}
+        >
+          Open Logout Dialog
+        </Button>
+      </ShowcaseGroupCard>
+    </Card>
+  );
+}
+
+export interface PortalModalArchitectureCardProps {
+  showAlerts?: boolean;
+}
+
+export function PortalModalArchitectureCard({ showAlerts = true }: PortalModalArchitectureCardProps) {
+  return (
+    <Card className="is-03e275d">
+      <div className="ui-modal-card-header">
+        <TypographyHeading level={3} className="ui-modal-card-heading">
+          Standard Portal Modal Architecture
+        </TypographyHeading>
+        <TypographyText variant="caption" className="ui-modal-card-sub">
+          Shared architecture across Admin Portal (<code>.modal-card</code>) and Faculty Portal (<code>&lt;dialog&gt;</code>).
+        </TypographyText>
+      </div>
+
+      <div className="ui-table-wrap ui-modal-arch-table-wrap">
+        <table className="ui-modal-arch-table">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Height</th>
+              <th>Padding / Radius</th>
+              <th>Typography</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="ui-modal-arch-role">Cancel / Secondary</td>
+              <td><code>36px</code></td>
+              <td><code>0 16px</code> &middot; <code>8px</code></td>
+              <td>13px (600)</td>
+            </tr>
+            <tr>
+              <td className="ui-modal-arch-role">Submit / Confirm</td>
+              <td><code>36px</code></td>
+              <td><code>0 16px</code> &middot; <code>8px</code></td>
+              <td>13px (700)</td>
+            </tr>
+            <tr>
+              <td className="ui-modal-arch-role">Queue Bulk Pill</td>
+              <td><code>32px</code></td>
+              <td><code>0 20px</code> &middot; <code>9999px</code></td>
+              <td>13px (600)</td>
+            </tr>
+            <tr>
+              <td className="ui-modal-arch-role">Squircle Close</td>
+              <td><code>32&times;32px</code></td>
+              <td><code>0</code> &middot; <code>8px</code></td>
+              <td>18px Icon</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <TypographyHeading level={4} className="ui-modal-arch-contract-title">
+        Modal Accessibility &amp; Sizing Contract:
+      </TypographyHeading>
+      <ul className="is-1afd29d ui-modal-arch-list">
+        <li>
+          <strong>Strict 36px Action Button Height:</strong> Both primary and outline buttons enforce{' '}
+          <code>height: 36px !important</code> with <code>width: auto !important</code> and <code>padding: 0 16px</code>.
+        </li>
+        <li>
+          <strong>No Redundant Close &apos;X&apos; Button:</strong> When a modal provides an explicit{' '}
+          <strong>Cancel</strong> outline button in <code>.modal-actions</code>, the top-right &apos;X&apos; button is omitted/hidden (<code>display: none</code>) to eliminate clutter.
+        </li>
+        <li>
+          <strong>Escape &amp; Backdrop Dismissal:</strong> Pressing <kbd className="is-48badad">Esc</kbd> or clicking the dimmed backdrop immediately dismisses the modal.
+        </li>
+        <li>
+          <strong>Zero Nested Modals Directive:</strong> No modal may open on top of another modal. In approval queues, rejections expand inline directly inside the queue table row.
+        </li>
+      </ul>
+
+      {showAlerts && (
+        <div className="ui-modal-arch-alerts">
+          <TypographyText variant="label">Alert Banner Primitives (&lt;Alert /&gt;)</TypographyText>
+          <Alert
+            variant="info"
+            title="Confirm Addition"
+            description="You are about to add this department record. Review the details below before proceeding."
+          />
+          <Alert
+            variant="warning"
+            title="Confirm Removal"
+            description="Are you sure you want to remove this department? This action cannot be undone."
+          />
+        </div>
+      )}
+    </Card>
+  );
+}
+

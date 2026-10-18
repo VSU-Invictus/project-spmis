@@ -998,13 +998,13 @@
         <!-- 1. All Modal Trigger Buttons Consolidated Card -->
         <div class="ui-card is-03e275d">
           <div class="is-948e6d6" style="margin-bottom: 14px;">
-            <span class="ui-btn-label" style="font-size: 15px; font-weight: 700; color: #FAF9F5;">Modal Trigger Buttons</span>
+            <h3 class="ui-modal-card-heading">Modal Trigger Buttons</h3>
             <span class="ui-text-caption" style="display: block; margin-top: 2px;">Consolidated launchpad gathering all buttons that trigger modal overlays across Admin, Faculty, and Approval Queue workflows.</span>
           </div>
 
           <!-- Group A: Admin Portal Modal Triggers -->
           <div class="ui-btn-row" style="margin-bottom: 14px;">
-            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; color: #A0988E; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Admin Portal Modals</span>
+            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Admin Portal Modals</span>
             <div style="display: flex; flex-wrap: wrap; gap: 8px;">
               <button type="button" id="demo-open-admin-modal-btn" class="ui-btn add-button is-ebaa71c">Open Admin Modal</button>
               <button type="button" id="demo-open-remove-modal-btn" class="ui-btn ui-btn-outline is-ebaa71c">Open Remove Modal</button>
@@ -1016,7 +1016,7 @@
 
           <!-- Group B: Faculty Portal Modal Triggers -->
           <div class="ui-btn-row" style="margin-bottom: 14px;">
-            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; color: #A0988E; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Faculty Portal Modals</span>
+            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Faculty Portal Modals</span>
             <div style="display: flex; flex-wrap: wrap; gap: 8px;">
               <button type="button" id="demo-open-faculty-modal-btn" class="ui-btn add-button is-ebaa71c">Open Faculty Modal</button>
             </div>
@@ -1027,7 +1027,7 @@
 
           <!-- Group C: Approval Queue Modal Triggers (URL Route-Backed) -->
           <div class="ui-btn-row" style="margin-bottom: 14px;">
-            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; color: #A0988E; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Approval Queue Modals (URL Route-Backed)</span>
+            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Approval Queue Modals (URL Route-Backed)</span>
             <div style="display: flex; flex-wrap: wrap; gap: 8px;">
               <button type="button" class="ui-btn add-button is-ebaa71c" data-queue-open="department">Department Queue</button>
               <button type="button" class="ui-btn ui-btn-outline is-ebaa71c" data-queue-open="program">Program Queue</button>
@@ -1041,7 +1041,7 @@
 
           <!-- Group D: Session & Security Dialog Triggers -->
           <div class="ui-btn-row">
-            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; color: #A0988E; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Session &amp; Security Dialogs</span>
+            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Session &amp; Security Dialogs</span>
             <div style="display: flex; flex-wrap: wrap; gap: 8px;">
               <button type="button" id="demo-open-logout-btn" class="ui-btn ui-btn-outline is-ebaa71c" data-open-logout-demo>Open Logout Dialog</button>
             </div>
@@ -1054,53 +1054,53 @@
         <!-- 2. Standard Portal Modal Architecture Preview & Contract -->
         <div class="ui-card is-03e275d">
           <div class="is-948e6d6" style="margin-bottom: 14px;">
-            <span class="ui-btn-label" style="font-size: 15px; font-weight: 700; color: #FAF9F5;">Standard Portal Modal Architecture</span>
+            <h3 class="ui-modal-card-heading">Standard Portal Modal Architecture</h3>
             <span class="ui-text-caption" style="display: block; margin-top: 2px;">Shared architecture across Admin Portal (<code>.modal-card</code>) and Faculty Portal (<code>&lt;dialog&gt;</code>).</span>
           </div>
 
           <!-- Dimensions Token Table -->
-          <div class="ui-table-wrap" style="border: 1px solid #383734; border-radius: 8px; overflow: hidden; margin-bottom: 14px;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left;">
+          <div class="ui-modal-arch-table-wrap">
+            <table class="ui-modal-arch-table">
               <thead>
-                <tr style="background: #21201E; border-bottom: 1px solid #383734; color: #A0988E;">
-                  <th style="padding: 6px 10px;">Role</th>
-                  <th style="padding: 6px 10px;">Height</th>
-                  <th style="padding: 6px 10px;">Padding / Radius</th>
-                  <th style="padding: 6px 10px;">Typography</th>
+                <tr>
+                  <th>Role</th>
+                  <th>Height</th>
+                  <th>Padding / Radius</th>
+                  <th>Typography</th>
                 </tr>
               </thead>
-              <tbody style="color: #FAF9F5;">
-                <tr style="border-bottom: 1px solid #383734;">
-                  <td style="padding: 6px 10px; font-weight: 600;">Cancel / Secondary</td>
-                  <td style="padding: 6px 10px;"><code>36px</code></td>
-                  <td style="padding: 6px 10px;"><code>0 16px</code> &middot; <code>8px</code></td>
-                  <td style="padding: 6px 10px;">13px (600)</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #383734;">
-                  <td style="padding: 6px 10px; font-weight: 600;">Submit / Confirm</td>
-                  <td style="padding: 6px 10px;"><code>36px</code></td>
-                  <td style="padding: 6px 10px;"><code>0 16px</code> &middot; <code>8px</code></td>
-                  <td style="padding: 6px 10px;">13px (700)</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #383734;">
-                  <td style="padding: 6px 10px; font-weight: 600;">Queue Bulk Pill</td>
-                  <td style="padding: 6px 10px;"><code>32px</code></td>
-                  <td style="padding: 6px 10px;"><code>0 20px</code> &middot; <code>9999px</code></td>
-                  <td style="padding: 6px 10px;">13px (600)</td>
+              <tbody>
+                <tr>
+                  <td class="ui-modal-arch-name">Cancel / Secondary</td>
+                  <td class="ui-modal-arch-code">36px</td>
+                  <td><code>0 16px</code> &middot; <code>8px</code></td>
+                  <td>13px (600)</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 10px; font-weight: 600;">Squircle Close</td>
-                  <td style="padding: 6px 10px;"><code>32&times;32px</code></td>
-                  <td style="padding: 6px 10px;"><code>0</code> &middot; <code>8px</code></td>
-                  <td style="padding: 6px 10px;">18px Icon</td>
+                  <td class="ui-modal-arch-name">Submit / Confirm</td>
+                  <td class="ui-modal-arch-code">36px</td>
+                  <td><code>0 16px</code> &middot; <code>8px</code></td>
+                  <td>13px (700)</td>
+                </tr>
+                <tr>
+                  <td class="ui-modal-arch-name">Queue Bulk Pill</td>
+                  <td class="ui-modal-arch-code">32px</td>
+                  <td><code>0 20px</code> &middot; <code>9999px</code></td>
+                  <td>13px (600)</td>
+                </tr>
+                <tr>
+                  <td class="ui-modal-arch-name">Squircle Close</td>
+                  <td class="ui-modal-arch-code">32&times;32px</td>
+                  <td><code>0</code> &middot; <code>8px</code></td>
+                  <td>18px Icon</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           <!-- Behavioral & Accessibility Rules -->
-          <h4 style="font-size: 13px; font-weight: 700; color: #FAF9F5; margin: 0 0 8px;">Modal Accessibility &amp; Sizing Contract:</h4>
-          <ul class="is-1afd29d" style="margin: 0; padding-left: 18px; font-size: 12px; color: #A0988E;">
+          <span class="ui-modal-arch-contract-title">Modal Accessibility &amp; Sizing Contract:</span>
+          <ul class="ui-modal-arch-list">
             <li><strong>Strict 36px Action Button Height:</strong> Both primary and outline buttons enforce <code>height: 36px !important</code> with <code>width: auto !important</code> and <code>padding: 0 16px</code>.</li>
             <li><strong>No Redundant Close 'X' Button:</strong> When a modal provides an explicit <strong>Cancel</strong> outline button in <code>.modal-actions</code>, the top-right 'X' button is omitted/hidden (<code>display: none</code>) to eliminate clutter.</li>
             <li><strong>Escape &amp; Backdrop Dismissal:</strong> Pressing <kbd class="is-48badad">Esc</kbd> or clicking the dimmed backdrop immediately dismisses the modal.</li>

@@ -1387,3 +1387,139 @@ html:not(.dark) .auth-footer-outside .legal,
 html:not(.dark) .auth-footer-outside a:not(:hover):not(:focus-visible) {
   color: var(--muted-foreground, #706B65) !important;
 }
+
+/* ==========================================================================
+   PORTAL MODALS LAUNCHPAD & ARCHITECTURE CARD COMPONENTS
+   (<ModalTriggerLaunchpad /> & <PortalModalArchitectureCard />)
+   ========================================================================== */
+.ui-modal-card-heading {
+  margin: 0 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--foreground, #21201E) !important;
+  line-height: 1.35 !important;
+}
+
+.ui-modal-arch-table-wrap {
+  border: 1px solid var(--border, #E2DDD4);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.ui-modal-arch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.ui-modal-arch-table thead tr {
+  background: var(--muted, #EFECE6);
+  border-bottom: 1px solid var(--border, #E2DDD4);
+}
+
+.ui-modal-arch-table th {
+  padding: 8px 12px;
+  color: var(--muted-foreground, #706B65);
+  font-weight: 600;
+}
+
+.ui-modal-arch-table tbody tr {
+  border-bottom: 1px solid var(--border, #E2DDD4);
+}
+
+.ui-modal-arch-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.ui-modal-arch-table td {
+  padding: 8px 12px;
+  color: var(--muted-foreground, #706B65);
+}
+
+.ui-modal-arch-table .ui-modal-arch-name {
+  color: var(--foreground, #21201E);
+  font-weight: 600;
+}
+
+.ui-modal-arch-table .ui-modal-arch-code {
+  color: #D97251;
+  font-weight: 600;
+}
+
+.ui-modal-arch-contract-title {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground, #706B65) !important;
+}
+
+.ui-modal-arch-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--muted-foreground, #706B65);
+  line-height: 1.75;
+}
+
+.ui-modal-arch-list strong {
+  color: var(--foreground, #21201E);
+  font-weight: 600;
+}
+
+.ui-modal-arch-alerts {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION PRIMITIVE (<Toast /> - Light & Dark Mode)
+   ========================================================================== */
+:is(.ui-toast, .toast) {
+  background-color: #1A1918 !important;
+  border: 1px solid #D97251 !important;
+  color: #FFFFFF !important;
+  border-radius: 12px !important;
+  padding: 12px 18px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+html:not(.dark) :is(.ui-toast, .toast) {
+  background-color: var(--muted, #EFECE6) !important;
+  border: 1px solid var(--border, #E2DDD4) !important;
+  color: var(--foreground, #21201E) !important;
+  box-shadow: var(--shadow-md, 0 8px 24px rgba(33, 32, 30, 0.12)) !important;
+}
+
+.ui-toast.ui-toast--inline {
+  position: static !important;
+  bottom: auto !important;
+  right: auto !important;
+  transform: none !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: auto !important;
+}
+
+.ui-toast-icon {
+  flex-shrink: 0;
+  display: block;
+}
+
+.ui-toast-message {
+  font-size: 13px;
+  font-weight: 500;
+  color: inherit;
+}
+

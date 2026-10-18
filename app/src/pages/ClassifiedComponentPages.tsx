@@ -28,7 +28,6 @@ import {
   TypographyText,
   TypographyNumber,
   TableControlsToolbar,
-  Alert,
   Toast,
   PortalStatusHeaderBar,
   ChatAssistantWidget,
@@ -36,6 +35,8 @@ import {
   AdminEntityModal,
   RemoveConfirmationModal,
   FacultyProposalDialog,
+  ModalTriggerLaunchpad,
+  PortalModalArchitectureCard,
   AdminSidebar,
   FacultySidebar,
   LogoutModal,
@@ -965,8 +966,6 @@ export function ModalsShowcaseSection({
   onOpenFacultyModal: () => void;
   onOpenLogoutModal: () => void;
 }) {
-  const { openQueue } = useQueueSearchParam();
-
   return (
     <ShowcaseSection
       id="portal-modals"
@@ -974,96 +973,20 @@ export function ModalsShowcaseSection({
       description="Accessible modal components: <QueueModal />, <LogoutModal />, <AdminEntityModal />, <RemoveConfirmationModal />, and <FacultyProposalDialog />"
     >
       <div className="ui-grid ui-grid-cols-2 is-ffdb8e7">
-        <Card className="is-03e275d">
-          <div className="is-948e6d6" style={{ marginBottom: '14px' }}>
-            <TypographyText variant="label" style={{ fontSize: '15px', fontWeight: 700 }}>
-              Modal Trigger Buttons (All Component Calls)
-            </TypographyText>
-            <TypographyText variant="caption" style={{ display: 'block', marginTop: '2px' }}>
-              Consolidated launchpad triggering every modal component across Admin, Faculty, and Approval Queue workflows.
-            </TypographyText>
-          </div>
-
-          <ShowcaseGroupCard
-            label="Admin Portal Modals (<AdminEntityModal /> & <RemoveConfirmationModal />)"
-            style={{ marginBottom: '14px' }}
-          >
-            <Button id="demo-open-admin-modal-btn" variant="add" className="is-ebaa71c" onClick={onOpenAdminModal}>
-              Open Admin Modal
-            </Button>
-            <Button id="demo-open-remove-modal-btn" variant="outline" className="is-ebaa71c" onClick={onOpenRemoveModal}>
-              Open Remove Modal
-            </Button>
-          </ShowcaseGroupCard>
-
-          <ShowcaseGroupCard
-            label="Faculty Portal Modal (<FacultyProposalDialog />)"
-            style={{ marginBottom: '14px' }}
-          >
-            <Button id="demo-open-faculty-modal-btn" variant="add" className="is-ebaa71c" onClick={onOpenFacultyModal}>
-              Open Faculty Modal
-            </Button>
-          </ShowcaseGroupCard>
-
-          <ShowcaseGroupCard
-            label="Approval Queue Modals (<QueueModal /> URL Route-Backed)"
-            style={{ marginBottom: '14px' }}
-          >
-            <Button variant="add" className="is-ebaa71c" onClick={() => openQueue('department')}>
-              Department Queue
-            </Button>
-            <Button variant="outline" className="is-ebaa71c" onClick={() => openQueue('program')}>
-              Program Queue
-            </Button>
-            <Button variant="outline" className="is-ebaa71c" onClick={() => openQueue('student')}>
-              Student Queue
-            </Button>
-            <Button variant="outline" className="is-ebaa71c" onClick={() => openQueue('faculty')}>
-              Faculty Queue
-            </Button>
-          </ShowcaseGroupCard>
-
-          <ShowcaseGroupCard label="Session & Security Dialog (<LogoutModal />)">
-            <Button
-              id="demo-open-logout-btn"
-              variant="outline"
-              className="is-ebaa71c"
-              data-open-logout-demo
-              onClick={onOpenLogoutModal}
-            >
-              Open Logout Dialog
-            </Button>
-          </ShowcaseGroupCard>
-        </Card>
-
-        <Card className="is-03e275d">
-          <div className="is-948e6d6" style={{ marginBottom: '14px' }}>
-            <TypographyText variant="label" style={{ fontSize: '15px', fontWeight: 700 }}>
-              Alert Banner Primitives (&lt;Alert /&gt;)
-            </TypographyText>
-            <TypographyText variant="caption" style={{ display: 'block', marginTop: '2px' }}>
-              Used inside confirmation and creation modals.
-            </TypographyText>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <Alert
-              variant="info"
-              title="Confirm Addition"
-              description="You are about to add this department record. Review the details below before proceeding."
-            />
-            <Alert
-              variant="warning"
-              title="Confirm Removal"
-              description="Are you sure you want to remove this department? This action cannot be undone."
-            />
-          </div>
-        </Card>
+        <ModalTriggerLaunchpad
+          onOpenAdminModal={onOpenAdminModal}
+          onOpenRemoveModal={onOpenRemoveModal}
+          onOpenFacultyModal={onOpenFacultyModal}
+          onOpenLogoutModal={onOpenLogoutModal}
+        />
+        <PortalModalArchitectureCard />
       </div>
     </ShowcaseSection>
   );
 }
 
 export function ModalsClassifiedPage() {
+  const { queue, closeQueue } = useQueueSearchParam();
   const [adminOpen, setAdminOpen] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
   const [facultyOpen, setFacultyOpen] = useState(false);
@@ -1087,6 +1010,9 @@ export function ModalsClassifiedPage() {
         onOpenFacultyModal={() => setFacultyOpen(true)}
         onOpenLogoutModal={() => setLogoutOpen(true)}
       />
+      <QueueModal open={queue !== null} title={queue ? QUEUE_TITLES[queue] : ''} onClose={closeQueue}>
+        {queue && <ApplicationQueue type={queue} isModal />}
+      </QueueModal>
       <AdminEntityModal open={adminOpen} onClose={() => setAdminOpen(false)} onSuccess={showToast} />
       <RemoveConfirmationModal
         open={removeOpen}

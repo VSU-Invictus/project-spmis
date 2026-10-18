@@ -1429,3 +1429,84 @@ html:not(.dark) .brand-footer {
 .is-0eeaf53:not(#\#):not(#\#) { padding: 1rem 1.5rem; color: var(--muted-foreground); font-size: 0.8125rem; text-align: center; }
 .is-e8a73a1:not(#\#):not(#\#) { flex: none !important; height: auto !important; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #42423F; font-size: 11px; color: #9C948B; background: #141413; }
 .is-9790b6e:not(#\#):not(#\#) { color: var(--destructive); font-weight: 700; }
+
+/* Portal Modals Launchpad & Architecture Card Components */
+.ui-modal-card-heading {
+  margin: 0 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--foreground, #21201E) !important;
+  line-height: 1.35 !important;
+}
+
+.ui-modal-arch-table-wrap {
+  border: 1px solid var(--border, #E2DDD4);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.ui-modal-arch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.ui-modal-arch-table thead tr {
+  background: var(--muted, #EFECE6);
+  border-bottom: 1px solid var(--border, #E2DDD4);
+}
+
+.ui-modal-arch-table th {
+  padding: 8px 12px;
+  color: var(--muted-foreground, #706B65);
+  font-weight: 600;
+}
+
+.ui-modal-arch-table tbody tr {
+  border-bottom: 1px solid var(--border, #E2DDD4);
+}
+
+.ui-modal-arch-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.ui-modal-arch-table td {
+  padding: 8px 12px;
+  color: var(--muted-foreground, #706B65);
+}
+
+.ui-modal-arch-table .ui-modal-arch-name {
+  color: var(--foreground, #21201E);
+  font-weight: 600;
+}
+
+.ui-modal-arch-table .ui-modal-arch-code {
+  color: #D97251;
+  font-weight: 600;
+}
+
+.ui-modal-arch-contract-title {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground, #706B65) !important;
+}
+
+.ui-modal-arch-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--muted-foreground, #706B65);
+  line-height: 1.75;
+}
+
+.ui-modal-arch-list strong {
+  color: var(--foreground, #21201E);
+  font-weight: 600;
+}
+
