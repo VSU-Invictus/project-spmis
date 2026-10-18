@@ -147,6 +147,13 @@ body.queue-embedded .section-container {
   gap: 10px !important;
 }
 
+html:not(.dark) .toast {
+  background: var(--muted, #EFECE6) !important;
+  color: var(--foreground, #21201E) !important;
+  border: 1px solid var(--border, #E2DDD4) !important;
+  box-shadow: var(--shadow-md, 0 8px 24px rgba(33, 32, 30, 0.12)) !important;
+}
+
 .toast.show {
   transform: translateY(0) !important;
   opacity: 1 !important;
@@ -846,7 +853,7 @@ body.queue-embedded [data-queue-close] {
 .modal-btn-cancel:hover {
   background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card, #1A1918)) !important;
   border-color: var(--primary, #D97251) !important;
-  color: #FFFFFF !important;
+  color: var(--foreground, #FFFFFF) !important;
 }
 
 .modal-actions .ui-btn-primary,
@@ -902,7 +909,7 @@ html:not(.dark) .modal-btn-confirm {
 }
 
 .modal-confirm-msg {
-  color: #C5BFB8;
+  color: var(--muted-foreground, #C5BFB8);
   font-family: inherit;
   font-size: 13px;
   text-align: left;

@@ -2410,10 +2410,28 @@ button:hover .arrow,
     gap: 10px !important;
 }
 
+html:not(.dark) :is(.ui-toast, .toast) {
+    background-color: var(--muted, #EFECE6) !important;
+    border: 1px solid var(--border, #E2DDD4) !important;
+    border-left: 1px solid var(--border, #E2DDD4) !important;
+    color: var(--foreground, #21201E) !important;
+    box-shadow: var(--shadow-md, 0 8px 24px rgba(33, 32, 30, 0.12)) !important;
+}
+
 :is(.ui-toast, .toast).show {
     transform: translateY(0) !important;
     opacity: 1 !important;
     pointer-events: auto !important;
+}
+
+.ui-toast.ui-toast--inline {
+    position: static !important;
+    bottom: auto !important;
+    right: auto !important;
+    transform: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
 }
 
 .pill-btn {
@@ -2687,8 +2705,8 @@ tr:nth-last-child(-n+2) .ui-tags-popover,
     width: 100% !important;
     height: 38px !important;
     padding: 0 30px 0 14px !important;
-    background: var(--muted, #21201E) !important;
-    border: 1px solid var(--input, #43362B) !important;
+    background: var(--card, #21201E) !important;
+    border: 1px solid var(--border, #383734) !important;
     border-radius: 12px !important;
     color: var(--foreground, #FFFFFF) !important;
     font-size: 12px !important;
@@ -4444,7 +4462,7 @@ html:not(.dark) .admin-top-header .status-badge {
 .ui-table-pagination .is-b38e363:hover:not(:disabled) {
   background: var(--accent, #33322E) !important;
   border-color: var(--border, #44423E) !important;
-  color: #FFFFFF !important;
+  color: var(--foreground, #FFFFFF) !important;
 }
 
 .ui-table-pagination-nav :is(.ui-btn, button, .secondary):disabled,

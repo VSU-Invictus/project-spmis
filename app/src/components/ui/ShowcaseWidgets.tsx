@@ -351,23 +351,23 @@ export interface ToastProps {
 export function Toast({ message, id = 'demoToast', inline = false, className = '' }: ToastProps) {
   if (inline) {
     return (
-      <div className={`is-c3a5059 ${className}`.trim()} role="status" aria-live="polite">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <div className={`ui-toast ui-toast--inline is-c3a5059 ${className}`.trim()} role="status" aria-live="polite">
+        <svg className="ui-toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
           <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
-        <span>{message || 'Application Action Completed Successfully'}</span>
+        <span className="ui-toast-message is-1e42189">{message || 'Application Action Completed Successfully'}</span>
       </div>
     );
   }
 
   return (
     <div id={id} className={`ui-toast ${message ? 'show' : ''} ${className}`.trim()} role="status" aria-live="polite">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg className="ui-toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
         <polyline points="22 4 12 14.01 9 11.01"></polyline>
       </svg>
-      <span id="demoToastMessage">{message || 'Action completed successfully!'}</span>
+      <span id="demoToastMessage" className="ui-toast-message">{message || 'Action completed successfully!'}</span>
     </div>
   );
 }

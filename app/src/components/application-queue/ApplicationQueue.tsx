@@ -5,7 +5,11 @@ import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { Checkbox } from '../ui/Checkbox';
 import { EmptyState } from '../ui/EmptyState';
+import { Input } from '../ui/Input';
 import { RejectionRow } from '../ui/RejectionRow';
+import { Select } from '../ui/Select';
+import { Toast } from '../ui/ShowcaseWidgets';
+import { TypographyHeading } from '../ui/Typography';
 import { TablePaginationFooter } from '../ui/DataTable';
 
 export interface ApplicationQueueProps {
@@ -255,7 +259,9 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
         {/* Top Title */}
         <header className="header-container">
           <div className="heading-wrapper">
-            <h2 className="heading-title">{QUEUE_TITLES[type]}</h2>
+            <TypographyHeading level={2} className="heading-title">
+              {QUEUE_TITLES[type]}
+            </TypographyHeading>
           </div>
         </header>
 
@@ -263,10 +269,10 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
         <div className="controls-container">
           <div className="search-wrapper">
             <svg className="search-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" strokeWidth="1.33" />
-              <path d="M10.5 10.5L14 14" stroke="#8A837A" strokeWidth="1.33" strokeLinecap="round" />
+              <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.33" />
+              <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" />
             </svg>
-            <input
+            <Input
               aria-label={searchMeta.label}
               type="text"
               className="search-input"
@@ -283,7 +289,7 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
             {/* Filter by Type / Role */}
             {typeFilterConfig && (
               <div className="dropdown-container type">
-                <select
+                <Select
                   aria-label={typeFilterConfig.label}
                   className="dropdown-select"
                   value={typeFilter}
@@ -297,11 +303,11 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
                       {opt}
                     </option>
                   ))}
-                </select>
+                </Select>
                 <svg className="dropdown-chevron" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path
                     d="M3.5 5.25L7 8.75L10.5 5.25"
-                    stroke="#6C655D"
+                    stroke="currentColor"
                     strokeWidth="1.17"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -312,7 +318,7 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
 
             {/* Sort Dropdown */}
             <div className="dropdown-container sort">
-              <select
+              <Select
                 aria-label="Sort by submission date"
                 className="dropdown-select"
                 value={sortOrder}
@@ -320,11 +326,11 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
               >
                 <option value="Oldest">Oldest</option>
                 <option value="Newest">Newest</option>
-              </select>
+              </Select>
               <svg className="dropdown-chevron" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path
                   d="M3.5 5.25L7 8.75L10.5 5.25"
-                  stroke="#6C655D"
+                  stroke="currentColor"
                   strokeWidth="1.17"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -471,9 +477,7 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
       </main>
 
       {/* Toast Notification */}
-      <div id="toast" className={`toast ${toast ? 'show' : ''}`} role="status" aria-live="polite">
-        {toast}
-      </div>
+      <Toast id="toast" message={toast} />
     </div>
   );
 }
