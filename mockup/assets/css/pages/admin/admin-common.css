@@ -147,6 +147,13 @@ body.queue-embedded .section-container {
   gap: 10px !important;
 }
 
+html:not(.dark) .toast {
+  background: var(--muted, #EFECE6) !important;
+  color: var(--foreground, #21201E) !important;
+  border: 1px solid var(--border, #E2DDD4) !important;
+  box-shadow: var(--shadow-md, 0 8px 24px rgba(33, 32, 30, 0.12)) !important;
+}
+
 .toast.show {
   transform: translateY(0) !important;
   opacity: 1 !important;
@@ -846,7 +853,7 @@ body.queue-embedded [data-queue-close] {
 .modal-btn-cancel:hover {
   background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card, #1A1918)) !important;
   border-color: var(--primary, #D97251) !important;
-  color: #FFFFFF !important;
+  color: var(--foreground, #FFFFFF) !important;
 }
 
 .modal-actions .ui-btn-primary,
@@ -902,7 +909,7 @@ html:not(.dark) .modal-btn-confirm {
 }
 
 .modal-confirm-msg {
-  color: #C5BFB8;
+  color: var(--muted-foreground, #C5BFB8);
   font-family: inherit;
   font-size: 13px;
   text-align: left;
@@ -948,10 +955,15 @@ html:not(.dark) .modal-btn-confirm {
 .table-container input[type="checkbox"] {
   position: relative;
   box-sizing: border-box;
-  width: 1rem;
-  height: 1rem;
-  border: 1px solid var(--border, #3E3D39);
-  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 20px;
+  max-height: 20px;
+  aspect-ratio: 1 / 1;
+  border: 1.5px solid var(--border, #3E3D39);
+  border-radius: 6px;
   appearance: none;
   -webkit-appearance: none;
   background-color: transparent;
@@ -962,26 +974,89 @@ html:not(.dark) .modal-btn-confirm {
   justify-content: center;
   vertical-align: middle;
   margin: 0 auto;
+  padding: 0;
   transition: background-color var(--transition-fast, 150ms ease), border-color var(--transition-fast, 150ms ease);
 }
 
-.custom-checkbox:checked,
-.table-container input[type="checkbox"]:checked {
+.custom-checkbox:hover:not(:disabled),
+.table-container input[type="checkbox"]:hover:not(:disabled) {
+  border-color: var(--primary, #D97251) !important;
+}
+
+.custom-checkbox:disabled,
+.table-container input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.custom-checkbox:checked:not(:indeterminate),
+.table-container input[type="checkbox"]:checked:not(:indeterminate) {
   background-color: var(--primary, #D97251) !important;
   border-color: var(--primary, #D97251) !important;
 }
 
-.custom-checkbox:checked::after,
-.table-container input[type="checkbox"]:checked::after {
+.custom-checkbox:indeterminate,
+.table-container input[type="checkbox"]:indeterminate {
+  background-color: #30302E !important;
+  border-color: #3E3D39 !important;
+}
+
+.custom-checkbox:is(:checked, :indeterminate)::after,
+.table-container input[type="checkbox"]:is(:checked, :indeterminate)::after {
   content: '';
   position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 12px;
-  height: 12px;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 10px no-repeat;
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  width: 14px;
+  height: 14px;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat;
+  background-color: #000000;
+}
+
+.custom-checkbox:indeterminate::after,
+.table-container input[type="checkbox"]:indeterminate::after {
   background-color: #FFFFFF;
+}
+
+html:not(.dark) .custom-checkbox,
+html:not(.dark) .table-container input[type="checkbox"] {
+  background-color: var(--card, #FFFFFF) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) .custom-checkbox:disabled,
+html:not(.dark) .table-container input[type="checkbox"]:disabled {
+  background-color: var(--muted, #EFECE6) !important;
+  border-color: var(--border, #E2DDD4) !important;
+  opacity: 0.45 !important;
+}
+
+html:not(.dark) .custom-checkbox:checked:not(:indeterminate),
+html:not(.dark) .table-container input[type="checkbox"]:checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) .custom-checkbox:checked:not(:indeterminate)::after,
+html:not(.dark) .table-container input[type="checkbox"]:checked:not(:indeterminate)::after {
+  background-color: #FFFFFF !important;
+}
+
+html:not(.dark) .custom-checkbox:indeterminate,
+html:not(.dark) .table-container input[type="checkbox"]:indeterminate {
+  background-color: var(--muted, #DBD7CB) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) .custom-checkbox:indeterminate::after,
+html:not(.dark) .table-container input[type="checkbox"]:indeterminate::after {
+  background-color: var(--foreground, #21201E) !important;
 }
 
 @media (max-width: 900px) {

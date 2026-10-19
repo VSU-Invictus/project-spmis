@@ -623,10 +623,12 @@ table input[type="checkbox"]:indeterminate {
 table input[type="checkbox"]:is(:checked, :indeterminate)::after {
     content: "";
     position: absolute;
+    inset: auto;
     top: 50%;
     left: 50%;
+    right: auto;
+    bottom: auto;
     transform: translate(-50%, -50%);
-    inset: auto;
     margin: 0;
     width: 14px;
     height: 14px;
@@ -644,7 +646,7 @@ table tbody tr.checked {
     background-color: var(--muted) !important;
 }
 
-:is(input, select, textarea) {
+:is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
     background: var(--muted) !important;
     color: var(--foreground) !important;
     border-color: var(--input) !important;
@@ -1059,7 +1061,7 @@ html:not(.dark) .status-live-pill {
 }
 
 /* Number & Identifier Primitives (Aligned to Design System Sans Standard) */
-:is(.font-intel-mono, .number-font, .tabular-nums) {
+:is(.ui-font-number, .ui-text-number, .number-font, .tabular-nums) {
     font-family: var(--font-sans) !important;
     font-variant-numeric: tabular-nums;
 }
@@ -1631,8 +1633,8 @@ html:not(.dark) .status-live-pill {
 .ui-chat-prompt-btn:hover {
     border-color: var(--primary, #D97251) !important;
     background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card)) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+    transform: none !important;
+    box-shadow: none !important;
     cursor: pointer !important;
 }
 
@@ -2233,7 +2235,8 @@ html:not(.dark) .status-live-pill {
     padding: 1rem 1.25rem;
     color: var(--foreground);
     font: 400 0.9375rem/1.5 var(--font-sans);
-    resize: none; overflow-y: hidden;
+    resize: vertical !important;
+    overflow-y: auto !important;
     outline: none;
     transition: border-color 0.2s;
     box-sizing: border-box;
@@ -2409,10 +2412,28 @@ button:hover .arrow,
     gap: 10px !important;
 }
 
+html:not(.dark) :is(.ui-toast, .toast) {
+    background-color: var(--muted, #EFECE6) !important;
+    border: 1px solid var(--border, #E2DDD4) !important;
+    border-left: 1px solid var(--border, #E2DDD4) !important;
+    color: var(--foreground, #21201E) !important;
+    box-shadow: var(--shadow-md, 0 8px 24px rgba(33, 32, 30, 0.12)) !important;
+}
+
 :is(.ui-toast, .toast).show {
     transform: translateY(0) !important;
     opacity: 1 !important;
     pointer-events: auto !important;
+}
+
+.ui-toast.ui-toast--inline {
+    position: static !important;
+    bottom: auto !important;
+    right: auto !important;
+    transform: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
 }
 
 .pill-btn {
@@ -2686,8 +2707,8 @@ tr:nth-last-child(-n+2) .ui-tags-popover,
     width: 100% !important;
     height: 38px !important;
     padding: 0 30px 0 14px !important;
-    background: var(--muted, #21201E) !important;
-    border: 1px solid var(--input, #43362B) !important;
+    background: var(--card, #21201E) !important;
+    border: 1px solid var(--border, #383734) !important;
     border-radius: 12px !important;
     color: var(--foreground, #FFFFFF) !important;
     font-size: 12px !important;
@@ -3014,6 +3035,190 @@ html:not(.dark) .skeleton {
     padding: 0 !important;
 }
 
+/* --- Admin Portal Modal Card Base --- */
+.modal-card {
+    position: relative;
+    width: min(440px, calc(100vw - 32px));
+    min-height: auto;
+    max-height: calc(100vh - 48px);
+    overflow: hidden;
+    padding: 0 !important;
+    background: var(--card, #1A1918);
+    border: 1px solid var(--border, #3E3D39);
+    border-radius: var(--radius-xl, 16px);
+    box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.72), 0 8px 16px -4px rgba(0, 0, 0, 0.48);
+    animation: modalIn .18s ease-out;
+    box-sizing: border-box;
+    color: var(--foreground, #FFFFFF);
+}
+
+.modal-card.compact {
+    width: min(400px, calc(100vw - 32px));
+    min-height: auto;
+    padding: 0 !important;
+}
+
+.modal-card.faculty,
+.modal-card.student {
+    width: min(460px, calc(100vw - 32px));
+    min-height: auto;
+    padding: 0 !important;
+}
+
+/* --- Faculty Portal Modal Dialog Base --- */
+dialog.proposal-modal,
+dialog.register-modal {
+    display: none;
+    flex-direction: column;
+    width: min(440px, calc(100% - 32px));
+    max-width: 440px;
+    padding: 0 !important;
+    background: var(--card, #21201E) !important;
+    border: 1px solid var(--border, #383734) !important;
+    border-radius: var(--radius-xl, 16px) !important;
+    color: var(--foreground, #FAF9F5) !important;
+    box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6), 0 8px 16px -4px rgba(0, 0, 0, 0.4) !important;
+    overflow: hidden !important;
+    margin: auto !important;
+    position: fixed !important;
+    inset: 0 !important;
+    box-sizing: border-box;
+}
+
+dialog.proposal-modal[open],
+dialog.register-modal[open] {
+    display: flex !important;
+    animation: modalPopIn 200ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+dialog.proposal-modal::backdrop,
+dialog.register-modal::backdrop {
+    background: rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+/* --- Modal Header & Typography Specification --- */
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px 14px !important;
+    border-bottom: 1px solid var(--border, #383734) !important;
+    margin-bottom: 0 !important;
+    box-sizing: border-box;
+}
+
+.modal-header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.modal-header .modal-title,
+.modal-title {
+    color: var(--color-text-main, #FFFFFF);
+    font-family: var(--font-sans, 'Outfit'), sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-align: left;
+}
+
+.modal-subtitle {
+    color: var(--muted-foreground, #A0988E);
+    font-size: 0.78125rem;
+    margin: 0;
+    line-height: 1.35;
+}
+
+/* Modal Body & Card Form Padding */
+.modal-card .modal-form,
+.modal-card .modal-body,
+.proposal-modal .modal-body,
+.register-modal .modal-body {
+    padding: 16px 20px 20px !important;
+    box-sizing: border-box;
+}
+
+/* Modal Action Buttons Alignment & Unified Dimension Specification (Admin, Faculty, Design System) */
+.modal-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;
+    margin-top: 18px !important;
+    padding-top: 0 !important;
+    width: 100% !important;
+}
+
+.modal-actions .ui-btn,
+.modal-actions .modal-submit,
+.modal-actions .modal-btn-cancel,
+.modal-actions .modal-btn-confirm,
+.modal-actions .ui-btn-primary,
+.modal-actions .ui-btn-outline {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding: 0 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border-radius: var(--radius-md, 8px) !important;
+    width: auto !important;
+    flex: initial !important;
+    box-sizing: border-box !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    text-decoration: none !important;
+    transition: all var(--transition-fast, 150ms ease) !important;
+}
+
+.modal-actions .ui-btn-primary,
+.modal-actions .modal-submit,
+.modal-actions .modal-btn-confirm {
+    background: var(--primary, #D97251) !important;
+    border: 1px solid var(--primary, #D97251) !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+.modal-actions .ui-btn-primary:hover,
+.modal-actions .modal-submit:hover,
+.modal-actions .modal-btn-confirm:hover {
+    opacity: 0.92 !important;
+    transform: translateY(-1px) !important;
+}
+
+.modal-actions .ui-btn-outline,
+.modal-actions .modal-btn-cancel {
+    background: transparent !important;
+    border: 1px solid var(--border, #383734) !important;
+    color: var(--foreground, #FAF9F5) !important;
+    font-weight: 600 !important;
+}
+
+.modal-actions .ui-btn-outline:hover,
+.modal-actions .modal-btn-cancel:hover {
+    background: color-mix(in srgb, var(--primary, #D97251) 8%, var(--card, #1A1918)) !important;
+    border-color: var(--primary, #D97251) !important;
+}
+
+/* Hide Close Button in Standard Modals with Cancel Button */
+.modal-card > .modal-close,
+.modal-card .modal-header > .modal-close,
+.proposal-modal .modal-close,
+.register-modal .modal-close {
+    display: none !important;
+}
+
 .modal-close {
     position: absolute;
     top: 18px;
@@ -3034,16 +3239,6 @@ html:not(.dark) .skeleton {
 .modal-close:hover {
     color: var(--foreground, #FFFFFF);
     background: var(--muted, rgba(255, 255, 255, 0.06));
-}
-
-.modal-title {
-    font-family: var(--font-sans, 'Outfit'), sans-serif;
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 28px;
-    color: var(--foreground, #FFFFFF);
-    text-align: left;
-    margin: 0 0 16px;
 }
 
 .modal-form {
@@ -3094,21 +3289,23 @@ html:not(.dark) .skeleton {
 }
 
 .modal-submit {
-    width: 100%;
-    height: 42px;
-    margin: 8px 0 0;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 16px !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background: var(--primary, #D97251) !important;
     border: 1px solid var(--primary, #D97251) !important;
-    border-radius: var(--radius-md, 10px);
+    border-radius: var(--radius-md, 8px) !important;
     font-family: var(--font-sans, 'Outfit'), sans-serif;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13px !important;
     color: #000000 !important;
     cursor: pointer;
     transition: opacity 150ms ease, transform 150ms ease;
+    width: auto !important;
+    box-sizing: border-box;
 }
 
 .modal-submit:hover {
@@ -3212,7 +3409,7 @@ html:not(.dark) .skeleton {
 }
 
 :is(code, kbd, samp, pre, .ui-text-mono, [data-mono], .font-mono) {
-    font-family: var(--font-mono, 'Geist Mono', monospace) !important;
+    font-family: var(--font-mono, ui-monospace, monospace) !important;
 }
 
 /* Footer navigation styling */
@@ -3223,7 +3420,7 @@ html:not(.dark) .skeleton {
     gap: 0.75rem;
     margin-top: 1rem;
     font-size: 0.875rem;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-sans, 'Outfit', sans-serif);
 }
 
 .footer-nav a {
@@ -3389,26 +3586,43 @@ table input[type="checkbox"]:indeterminate::after {
     background-color: #FFFFFF !important;
 }
 
-/* Light Mode: Checked has white checkmark on terracotta; Indeterminate has light muted box with black checkmark */
-html:not(.dark) table input[type="checkbox"]:checked:not(:indeterminate)::after {
+/* Light Mode: Unchecked has light card surface + warm border; Checked has white checkmark on terracotta; Indeterminate has light muted box with dark checkmark */
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox) {
+    background-color: var(--card, #FFFFFF) !important;
+    border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):disabled {
+    background-color: var(--muted, #EFECE6) !important;
+    border-color: var(--border, #E2DDD4) !important;
+    opacity: 0.45 !important;
+}
+
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):checked:not(:indeterminate) {
+    background-color: var(--primary, #D97251) !important;
+    border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):checked:not(:indeterminate)::after {
     background-color: #FFFFFF !important;
 }
 
-html:not(.dark) table input[type="checkbox"]:indeterminate {
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):indeterminate {
     background-color: var(--muted, #DBD7CB) !important;
-    border-color: var(--border, #DAD9D4) !important;
+    border-color: var(--input, #C8C0B4) !important;
 }
 
-html:not(.dark) table input[type="checkbox"]:indeterminate::after {
-    background-color: #000000 !important;
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):indeterminate::after {
+    background-color: var(--foreground, #21201E) !important;
 }
 
 /* Table column ratio helpers */
 table :is(th, td).col-action {
     text-align: left !important;
     white-space: nowrap !important;
-    width: 140px;
-    padding-right: 4px !important;
+    width: 180px;
+    min-width: 170px;
+    padding-right: var(--space-9, 24px) !important;
 }
 
 table :is(th, td).col-action :is(a, button) { white-space: nowrap !important; }
@@ -4140,7 +4354,7 @@ html:not(.dark) .admin-top-header .status-badge {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  flex-wrap: wrap !important;
+  flex-wrap: nowrap !important;
   gap: 1rem !important;
   width: 100% !important;
   padding: 1rem 0 !important;
@@ -4156,6 +4370,8 @@ html:not(.dark) .admin-top-header .status-badge {
   min-height: 1.25rem !important;
   display: inline-flex !important;
   align-items: center !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 .pagination-controls-group,
@@ -4163,8 +4379,10 @@ html:not(.dark) .admin-top-header .status-badge {
   display: flex !important;
   align-items: center !important;
   gap: 1.5rem !important;
-  flex-wrap: wrap !important;
+  flex-wrap: nowrap !important;
   margin-left: auto !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
 }
 
 .pagination-rows-per-page,
@@ -4262,7 +4480,7 @@ html:not(.dark) .admin-top-header .status-badge {
 .ui-table-pagination .is-b38e363:hover:not(:disabled) {
   background: var(--accent, #33322E) !important;
   border-color: var(--border, #44423E) !important;
-  color: #FFFFFF !important;
+  color: var(--foreground, #FFFFFF) !important;
 }
 
 .ui-table-pagination-nav :is(.ui-btn, button, .secondary):disabled,

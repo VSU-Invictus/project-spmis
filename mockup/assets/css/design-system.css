@@ -97,7 +97,7 @@
 
   /* --- 3. TYPOGRAPHY TOKENS --- */
   --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Intel One Mono', 'Geist Mono', ui-monospace, monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --font-number: var(--font-sans);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
@@ -437,10 +437,12 @@
 .ui-checkbox:checked::after {
   content: '' !important;
   position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
   transform: translate(-50%, -50%) !important;
   inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
   margin: 0 !important;
   width: 14px !important;
   height: 14px !important;
@@ -533,10 +535,12 @@
 .select-all-checkbox:indeterminate::after {
   content: '' !important;
   position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
   transform: translate(-50%, -50%) !important;
   inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
   margin: 0 !important;
   width: 14px !important;
   height: 14px !important;
@@ -556,10 +560,12 @@
 .select-all-checkbox:checked:not(:indeterminate)::after {
   content: '' !important;
   position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
   transform: translate(-50%, -50%) !important;
   inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
   margin: 0 !important;
   width: 14px !important;
   height: 14px !important;
@@ -579,16 +585,60 @@
 .row-checkbox:checked::after {
   content: '' !important;
   position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
   transform: translate(-50%, -50%) !important;
   inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
   margin: 0 !important;
   width: 14px !important;
   height: 14px !important;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
   background-color: #000000 !important;
+}
+
+/* Light Mode Table & Queue Checkboxes (Select-All Header + Row Checkboxes) */
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox, .table-container input[type="checkbox"]) {
+  background-color: var(--card, #FFFFFF) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox, .table-container input[type="checkbox"]):disabled {
+  background-color: var(--muted, #EFECE6) !important;
+  border-color: var(--border, #E2DDD4) !important;
+  opacity: 0.45 !important;
+}
+
+html:not(.dark) :is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:indeterminate,
+html:not(.dark) .select-all-checkbox:indeterminate,
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .table-container input[type="checkbox"]):indeterminate {
+  background-color: var(--muted, #DBD7CB) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) :is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:indeterminate::after,
+html:not(.dark) .select-all-checkbox:indeterminate::after,
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .table-container input[type="checkbox"]):indeterminate::after {
+  background-color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) :is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:checked:not(:indeterminate),
+html:not(.dark) .select-all-checkbox:checked:not(:indeterminate),
+html:not(.dark) :is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(tbody, .table-body) input[type="checkbox"]:checked,
+html:not(.dark) .row-checkbox:checked,
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .table-container input[type="checkbox"]):checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) :is(.ui-table, table.ui-table, .table-wrap table, .table-container table) thead input[type="checkbox"]:checked:not(:indeterminate)::after,
+html:not(.dark) .select-all-checkbox:checked:not(:indeterminate)::after,
+html:not(.dark) :is(.ui-table, table.ui-table, .table-wrap table, .table-container table) :is(tbody, .table-body) input[type="checkbox"]:checked::after,
+html:not(.dark) .row-checkbox:checked::after,
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .table-container input[type="checkbox"]):checked:not(:indeterminate)::after {
+  background-color: #FFFFFF !important;
 }
 
 /* Auth Card "Keep me signed in on this device" Row Checkbox */
@@ -602,10 +652,12 @@
 .ui-checkbox-label.keep-signed-in input[type="checkbox"]:checked::after {
   content: '' !important;
   position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
   transform: translate(-50%, -50%) !important;
   inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
   margin: 0 !important;
   width: 14px !important;
   height: 14px !important;
@@ -1024,4 +1076,77 @@ tr:hover .ui-btn:disabled,
   transform: none !important;
   box-shadow: none !important;
 }
+
+/* ==========================================================================
+   PORTAL MODAL ACTION BUTTON SIZING SPECIFICATION (UNIFIED STANDARD)
+   Enforces identical 36px height, 16px padding, 8px radius across Admin,
+   Faculty, and Design System modals.
+   ========================================================================== */
+.modal-actions .ui-btn,
+.modal-actions .modal-submit,
+.modal-actions .modal-btn-cancel,
+.modal-actions .modal-btn-confirm,
+.modal-actions .ui-btn-primary,
+.modal-actions .ui-btn-outline,
+.proposal-modal .modal-actions .ui-btn,
+.register-modal .modal-actions .ui-btn,
+.remove-modal .modal-actions .ui-btn,
+.modal-card .modal-actions .ui-btn {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding: 0 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--radius-md, 8px) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  width: auto !important;
+  flex: initial !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  text-decoration: none !important;
+  transition: all var(--transition-fast, 150ms ease) !important;
+}
+
+.modal-actions .ui-btn-primary,
+.modal-actions .modal-submit,
+.modal-actions .modal-btn-confirm {
+  background: var(--primary, #D97251) !important;
+  border: 1px solid var(--primary, #D97251) !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.modal-actions .ui-btn-outline,
+.modal-actions .modal-btn-cancel {
+  background: transparent !important;
+  border: 1px solid var(--border, #383734) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  font-weight: 600 !important;
+}
+
+/* Number & Tabular Font Utility */
+.ui-font-number,
+.ui-text-number,
+.ui-table-mono,
+.table-cell--mono,
+[data-student-id],
+.student-id,
+input#student-id,
+.ui-stat-value,
+.ui-metric-value,
+.metric-card-value,
+.ui-dashboard-metric-bottom strong,
+.pagination-selection-status,
+.pagination-page-info,
+.ui-dashboard-date {
+  font-family: var(--font-number) !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: 0.02em;
+}
+
+
 

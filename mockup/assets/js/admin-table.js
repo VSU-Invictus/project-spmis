@@ -253,8 +253,7 @@
       const totalMatches = matchedRows.length;
 
       // Dynamic Rows Per Page rules:
-      // - If entries < 5: dropdown is disabled, option 5
-      // - If 5 to 9 entries: only option 5
+      // - If entries <= 9: dropdown is disabled, option 5
       // - If 10 to 19 entries: options 5 and 10
       // - If 20 and so on entries: options 5, 10, and 20
       if (rowsPerPageSelect) {
@@ -267,7 +266,7 @@
         } else {
           allowedSizes = [5];
         }
-        rowsPerPageSelect.disabled = totalMatches <= 5;
+        rowsPerPageSelect.disabled = totalMatches <= 9;
 
         const currentVal = parseInt(rowsPerPageSelect.value, 10) || 5;
         rowsPerPageSelect.innerHTML = allowedSizes

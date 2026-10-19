@@ -1206,7 +1206,7 @@ function paginateTable(containerId) {
       } else {
         allowedSizes = [5];
       }
-      size.disabled = totalEntries <= 5;
+      size.disabled = totalEntries <= 9;
 
       const currentVal = parseInt(size.value, 10) || 5;
       size.innerHTML = allowedSizes

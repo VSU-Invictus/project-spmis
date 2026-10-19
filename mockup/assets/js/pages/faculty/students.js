@@ -406,7 +406,7 @@ const programs = [
                     } else {
                         allowedSizes = [5];
                     }
-                    rowsPerPageEl.disabled = totalMatches <= 5;
+                    rowsPerPageEl.disabled = totalMatches <= 9;
 
                     const currentVal = parseInt(rowsPerPageEl.value, 10) || 5;
                     rowsPerPageEl.innerHTML = allowedSizes
@@ -1045,7 +1045,7 @@ const programs = [
                     } else {
                         allowedSizes = [5];
                     }
-                    size.disabled = totalEntries <= 5;
+                    size.disabled = totalEntries <= 9;
 
                     const currentVal = parseInt(size.value, 10) || 5;
                     size.innerHTML = allowedSizes

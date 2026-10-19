@@ -17,6 +17,10 @@
   backdrop-filter: blur(6px) !important;
 }
 
+html:not(.dark) .modal-overlay {
+  background: rgba(33, 32, 30, 0.45) !important;
+}
+
 .modal-overlay.active,
 .modal-overlay.show {
   display: flex !important;
@@ -46,12 +50,17 @@
   margin: 0 auto !important;
   display: flex !important;
   flex-direction: column !important;
-  border: 1px solid var(--color-border-main, #3E3D39) !important;
+  border: 1px solid var(--border, var(--color-border-main, #3E3D39)) !important;
   border-radius: var(--radius-xl, 16px) !important;
-  background: var(--color-card, #1A1918) !important;
-  color: var(--color-text-main, #FFFFFF) !important;
+  background: var(--card, var(--color-card, #1A1918)) !important;
+  color: var(--foreground, var(--color-text-main, #FFFFFF)) !important;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72) !important;
   overflow: hidden !important;
+}
+
+html:not(.dark) .modal-overlay .queue-modal-container,
+html:not(.dark) .queue-modal-container {
+  box-shadow: 0 20px 48px rgba(33, 32, 30, 0.18), 0 4px 16px rgba(33, 32, 30, 0.08) !important;
 }
 
 .queue-modal-body {
@@ -318,6 +327,123 @@ body.queue-embedded :is(.th-cell, .td-cell).checkbox-cell {
   justify-content: center !important;
   text-align: center !important;
   padding: 0 !important;
+  background: transparent !important;
+  color: var(--color-text-main, #FFFFFF) !important;
+}
+
+/* Checkbox column inputs (select-all header + row items) across all 4 Approval Queue Modals */
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]) {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  box-sizing: border-box !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 6px !important;
+  border: 1.5px solid var(--border, #3E3D39) !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):hover:not(:disabled) {
+  border-color: var(--primary, #D97251) !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):focus-visible {
+  outline: 2px solid var(--ring, #D97251) !important;
+  outline-offset: 2px !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):disabled {
+  cursor: not-allowed !important;
+  opacity: 0.45 !important;
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border-color: var(--border, #3E3D39) !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):indeterminate {
+  background-color: #30302E !important;
+  border-color: #3E3D39 !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):is(:checked, :indeterminate)::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):checked:not(:indeterminate)::after {
+  background-color: #000000 !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):indeterminate::after {
+  background-color: #FFFFFF !important;
+}
+
+/* Light Mode Checkbox Column Variant across all 4 Approval Queue Modals */
+html:not(.dark) body.queue-embedded :is(.th-cell, .td-cell).checkbox-cell {
+  background: transparent !important;
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]) {
+  background-color: var(--card, #FFFFFF) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):hover:not(:disabled) {
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):disabled {
+  background-color: var(--muted, #EFECE6) !important;
+  border-color: var(--border, #E2DDD4) !important;
+  opacity: 0.45 !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):checked:not(:indeterminate)::after {
+  background-color: #FFFFFF !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):indeterminate {
+  background-color: var(--muted, #DBD7CB) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):indeterminate::after {
+  background-color: var(--foreground, #21201E) !important;
 }
 
 body.queue-embedded :is(.th-cell, .td-cell).text-center {
@@ -457,10 +583,10 @@ body.queue-embedded .badge-pill.status-active {
   z-index: 100 !important;
   width: 34px !important;
   height: 34px !important;
-  background: #21201E !important;
-  border: 1px solid #3E3D39 !important;
+  background: var(--muted, #21201E) !important;
+  border: 1px solid var(--border, #3E3D39) !important;
   border-radius: var(--radius-md, 8px) !important;
-  color: #A0988E !important;
+  color: var(--muted-foreground, #A0988E) !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -468,14 +594,14 @@ body.queue-embedded .badge-pill.status-active {
   pointer-events: auto !important;
   transition: all 150ms ease !important;
   outline: none !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.3)) !important;
   padding: 0 !important;
 }
 
 .queue-modal-container .modal-close:hover {
-  color: #FFFFFF !important;
-  background: #2E2D2A !important;
-  border-color: #4E4D48 !important;
+  color: var(--foreground, #FFFFFF) !important;
+  background: var(--accent, #2E2D2A) !important;
+  border-color: var(--border, #4E4D48) !important;
   transform: scale(1.06);
 }
 
@@ -533,7 +659,11 @@ body.queue-embedded .header-container [data-queue-close] {
   width: 100%;
 }
 
-.ui-queue-rejection-row.is-expanded {
+tr.ui-queue-rejection-row.is-expanded {
+  display: table-row !important;
+}
+
+div.ui-queue-rejection-row.is-expanded {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
   width: 100% !important;
@@ -555,8 +685,31 @@ body.queue-embedded .header-container [data-queue-close] {
   min-width: 0 !important;
   display: block !important;
   padding: var(--space-4, 12px) var(--space-7, 16px) var(--space-7, 16px);
-  background: var(--color-muted, var(--muted));
+  background: var(--color-surface-well, #171615);
   border-top: 1px solid var(--color-border-main, var(--border));
+  border-bottom: 1px solid var(--color-border-main, var(--border));
+}
+
+/* Standalone Rejection Preview */
+.ui-queue-rejection-standalone,
+.ui-queue-rejection-row.ui-queue-rejection-standalone {
+  display: block !important;
+  background: var(--card, #21201E) !important;
+  border: 1px solid var(--border, #383734) !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.2)) !important;
+  overflow: hidden !important;
+}
+
+.ui-queue-rejection-cell--standalone,
+.ui-queue-rejection-standalone .ui-queue-rejection-cell {
+  background: var(--card, #21201E) !important;
+  border: none !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  padding: 1.25rem 1.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
 }
 
 .ui-queue-rejection-row label,

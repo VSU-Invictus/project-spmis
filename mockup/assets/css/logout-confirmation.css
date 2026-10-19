@@ -36,3 +36,22 @@ dialog.ui-logout-dialog {
   gap: var(--space-4);
   margin-top: var(--space-9);
 }
+
+.ui-logout-actions .ui-btn,
+.logout-dialog .actions button,
+.logout-dialog .actions .ui-btn {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding: 0 16px !important;
+  border-radius: var(--radius-md, 8px) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+}
+

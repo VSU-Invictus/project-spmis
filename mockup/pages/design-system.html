@@ -8,7 +8,37 @@
   <link rel="stylesheet" href="../assets/css/design-system.css">
   <link rel="stylesheet" href="../assets/css/global.css?v=6">
   <link rel="stylesheet" href="../assets/css/components.css?v=9">
+  <link rel="stylesheet" href="../assets/css/queue-modal.css">
   <link rel="stylesheet" href="../assets/css/pages/design-system.css" />
+  <script>
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    window.addEventListener('beforeunload', function () {
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+      window.scrollTo(0, 0);
+    });
+
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 0);
+      setTimeout(function () {
+        window.scrollTo(0, 0);
+      }, 50);
+    });
+  </script>
 </head>
 
 <body>
@@ -152,7 +182,7 @@
     <section class="ui-section" id="typography">
       <div class="ui-section-header">
         <h2 class="ui-section-title">Typography</h2>
-        <span class="ui-section-desc">Outfit font family with Geist Mono for codes and tabular metrics</span>
+        <span class="ui-section-desc">Outfit font family for interface typography and tabular data numerals</span>
       </div>
       <div class="ui-demo-loading-toolbar">
         <span id="demo-text-loading-status" class="ui-text-muted" role="status" aria-live="polite" aria-atomic="true">Preview loading without changing text spacing.</span>
@@ -195,9 +225,9 @@
             </span></p>
           </div>
           <div>
-            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Monospace Data Text</span></h3>
-            <p class="ui-text-mono" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
-              Student ID: 24-1-00001 &middot; Roster Count: 2,850 &middot; Status: VERIFIED_OK
+            <h3 class="ui-heading-3" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">Tabular Data &amp; Numbers</span></h3>
+            <p class="ui-text" data-text-loading-demo aria-busy="false"><span class="ui-text-loading-content">
+              Student ID: <span class="ui-font-number">24-1-00001</span> &middot; Roster Count: <span class="ui-font-number">2,850</span> &middot; Status: VERIFIED_OK
             </span></p>
           </div>
         </div>
@@ -410,20 +440,6 @@
           </div>
           <p class="ui-text-caption">
             Standard queue review actions: <code>.pill-btn.approve</code> uses emerald green border and text (<code>#10B981</code>) with subtle hover tint (<code>rgba(16, 185, 129, 0.14)</code>), and <code>.pill-btn.reject</code> uses crimson border and text (<code>#EF4444</code>) with subtle hover tint (<code>rgba(239, 68, 68, 0.14)</code>).
-          </p>
-        </div>
-
-        <!-- Standard Modal Close Button Component -->
-        <div class="ui-btn-row">
-          <span class="ui-btn-label">Modal Close Squircle Button (.ui-modal-close)</span>
-          <div class="ui-btn-group is-14c2360" style="align-items: center; gap: 12px;">
-            <button type="button" class="ui-modal-close modal-close" aria-label="Close dialog example">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-            <span class="ui-text-caption" style="margin: 0;">Default &amp; interactive state: 34&times;34px, 8px radius, dark squircle container with SVG cross.</span>
-          </div>
-          <p class="ui-text-caption">
-            Unified modal close action across all portals and dialogs (faculty register student modal, proposal dialogs, admin approval queue modal). Standardized with <code>width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text-muted);</code> with hover scale (1.05) and active scale (0.95).
           </p>
         </div>
 
@@ -967,11 +983,6 @@
             <li><strong>Hover Prefetch:</strong> Navigation scripts listen for <code>mouseenter</code> on links and inject <code>&lt;link rel="prefetch"&gt;</code> for instantaneous page responses.</li>
             <li><strong>Semantic Active State:</strong> The current page is marked with <code>.nav-btn-active</code> and <code>aria-current="page"</code>, featuring primary terracotta background (<code>#D97251</code>) and bold black text (<code>#000000</code>).</li>
           </ul>
-          <div class="is-19f8ba2">
-            <button type="button" id="demo-open-logout-btn" class="ui-btn ui-btn-outline is-5a4e2ab">
-              Preview Logout Confirmation Dialog
-            </button>
-          </div>
         </div>
       </div>
     </section>
@@ -984,68 +995,116 @@
       </div>
 
       <div class="ui-grid ui-grid-cols-2 is-ffdb8e7">
-        <!-- Embedded Modal Preview Card -->
+        <!-- 1. All Modal Trigger Buttons Consolidated Card -->
         <div class="ui-card is-03e275d">
-          <div class="is-948e6d6">
-            <span class="ui-btn-label">Standard Portal Modal Architecture</span>
-            <button type="button" id="demo-open-reject-modal-btn" class="ui-btn add-button is-ebaa71c">
-              Open Live Modal
-            </button>
-          </div>
-          
-          <!-- Static Visual Representation of the Modal Container -->
-          <div class="is-52a0171">
-            <div class="is-4cb809c">
-              <h4 class="is-ffac819">Reject Application Proposal</h4>
-              <button type="button" class="modal-close ui-modal-close" aria-label="Close modal">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
-            </div>
-            <div class="is-578b24d">
-              <!-- Contextual Action Confirmation Alert -->
-              <div class="ui-alert ui-alert--warning is-1d16385">
-                <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-                  <line x1="12" y1="9" x2="12" y2="13"/>
-                  <line x1="12" y1="17" x2="12.01" y2="17"/>
-                </svg>
-                <div class="ui-alert-content">
-                  <span class="ui-alert-title">Confirm Rejection Decision</span>
-                  <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
-                </div>
-              </div>
-
-              <div>
-                <label class="is-9f7ead6">Selected Application</label>
-                <div class="is-217c1f1">
-                  Dr. Eleanor Vance (Faculty Application)
-                </div>
-              </div>
-              <div>
-                <label class="is-fa77284">
-                  <span>Reason for Rejection <span class="is-97bf356">*</span></span>
-                </label>
-                <div class="is-5943a3d">
-                  Incomplete accreditation documentation for curriculum prerequisites.
-                </div>
-              </div>
-              <button type="button" class="modal-submit is-1671328">Confirm Rejection</button>
-            </div>
+          <div class="is-948e6d6" style="margin-bottom: 14px;">
+            <h3 class="ui-modal-card-heading">Modal Trigger Buttons</h3>
+            <span class="ui-text-caption" style="display: block; margin-top: 2px;">Consolidated launchpad gathering all buttons that trigger modal overlays across Admin, Faculty, and Approval Queue workflows.</span>
           </div>
 
-          <p class="ui-text-caption">
-            Conforms strictly to the <strong>Standard Card</strong> architecture (<code>background: var(--card)</code>, <code>border: 1px solid var(--border)</code>, 16px radius) with standard lighter-bordered form controls (<code>var(--input)</code>), a resizable rejection textarea, required reason validation, primary terracotta submission button (<code>var(--primary)</code>), and embedded alert confirmation banners (<code>.ui-alert</code>).
-          </p>
+          <!-- Group A: Admin Portal Modal Triggers -->
+          <div class="ui-btn-row" style="margin-bottom: 14px;">
+            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Admin Portal Modals</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" id="demo-open-admin-modal-btn" class="ui-btn add-button is-ebaa71c">Open Admin Modal</button>
+              <button type="button" id="demo-open-remove-modal-btn" class="ui-btn ui-btn-outline is-ebaa71c">Open Remove Modal</button>
+            </div>
+            <p class="ui-text-caption" style="margin-top: 6px;">
+              Triggers the entity creation modal (<code>.modal-card</code>) or destructive removal confirmation modal (<code>.modal-card.compact.remove-modal</code>).
+            </p>
+          </div>
+
+          <!-- Group B: Faculty Portal Modal Triggers -->
+          <div class="ui-btn-row" style="margin-bottom: 14px;">
+            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Faculty Portal Modals</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" id="demo-open-faculty-modal-btn" class="ui-btn add-button is-ebaa71c">Open Faculty Modal</button>
+            </div>
+            <p class="ui-text-caption" style="margin-top: 6px;">
+              Triggers the native HTML5 dialog modal (<code>&lt;dialog class="proposal-modal"&gt;</code>) for department or curriculum proposals.
+            </p>
+          </div>
+
+          <!-- Group C: Approval Queue Modal Triggers (URL Route-Backed) -->
+          <div class="ui-btn-row" style="margin-bottom: 14px;">
+            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Approval Queue Modals (URL Route-Backed)</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" class="ui-btn add-button is-ebaa71c" data-queue-open="department">Department Queue</button>
+              <button type="button" class="ui-btn ui-btn-outline is-ebaa71c" data-queue-open="program">Program Queue</button>
+              <button type="button" class="ui-btn ui-btn-outline is-ebaa71c" data-queue-open="student">Student Queue</button>
+              <button type="button" class="ui-btn ui-btn-outline is-ebaa71c" data-queue-open="faculty">Faculty Queue</button>
+            </div>
+            <p class="ui-text-caption" style="margin-top: 6px;">
+              Opens <code>&lt;QueueModal /&gt;</code> synchronized with <code>?queue=department|program|student|faculty</code> for URL parameter routing and browser history.
+            </p>
+          </div>
+
+          <!-- Group D: Session & Security Dialog Triggers -->
+          <div class="ui-btn-row">
+            <span class="ui-btn-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;">Session &amp; Security Dialogs</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" id="demo-open-logout-btn" class="ui-btn ui-btn-outline is-ebaa71c" data-open-logout-demo>Open Logout Dialog</button>
+            </div>
+            <p class="ui-text-caption" style="margin-top: 6px;">
+              Triggers the session termination confirmation dialog (<code>&lt;dialog class="logout-dialog"&gt;</code>) before signing out.
+            </p>
+          </div>
         </div>
 
-        <!-- Specifications & Behavioral Contract -->
+        <!-- 2. Standard Portal Modal Architecture Preview & Contract -->
         <div class="ui-card is-03e275d">
-          <h3 class="ui-card-title is-64e8bf9">Modal Keyboard &amp; Accessibility Contract</h3>
-          <ul class="is-1afd29d">
-            <li><strong>Escape Key Dismissal:</strong> Pressing <kbd class="is-48badad">Esc</kbd> immediately closes the active modal overlay without submitting data.</li>
-            <li><strong>Backdrop Click to Close:</strong> Clicking the dimmed overlay outside the <code>.modal-container</code> safely dismisses the modal.</li>
-            <li><strong>Auto-focus &amp; Trap:</strong> Opening shifts focus into the first input or textarea; closing returns focus to the triggering button.</li>
-            <li><strong>Validation &amp; Error Feedback:</strong> Required rejection reasons trigger immediate warning toasts before modal confirmation can proceed.</li>
+          <div class="is-948e6d6" style="margin-bottom: 14px;">
+            <h3 class="ui-modal-card-heading">Standard Portal Modal Architecture</h3>
+            <span class="ui-text-caption" style="display: block; margin-top: 2px;">Shared architecture across Admin Portal (<code>.modal-card</code>) and Faculty Portal (<code>&lt;dialog&gt;</code>).</span>
+          </div>
+
+          <!-- Dimensions Token Table -->
+          <div class="ui-modal-arch-table-wrap">
+            <table class="ui-modal-arch-table">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Height</th>
+                  <th>Padding / Radius</th>
+                  <th>Typography</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ui-modal-arch-name">Cancel / Secondary</td>
+                  <td class="ui-modal-arch-code">36px</td>
+                  <td><code>0 16px</code> &middot; <code>8px</code></td>
+                  <td>13px (600)</td>
+                </tr>
+                <tr>
+                  <td class="ui-modal-arch-name">Submit / Confirm</td>
+                  <td class="ui-modal-arch-code">36px</td>
+                  <td><code>0 16px</code> &middot; <code>8px</code></td>
+                  <td>13px (700)</td>
+                </tr>
+                <tr>
+                  <td class="ui-modal-arch-name">Queue Bulk Pill</td>
+                  <td class="ui-modal-arch-code">32px</td>
+                  <td><code>0 20px</code> &middot; <code>9999px</code></td>
+                  <td>13px (600)</td>
+                </tr>
+                <tr>
+                  <td class="ui-modal-arch-name">Squircle Close</td>
+                  <td class="ui-modal-arch-code">32&times;32px</td>
+                  <td><code>0</code> &middot; <code>8px</code></td>
+                  <td>18px Icon</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Behavioral & Accessibility Rules -->
+          <span class="ui-modal-arch-contract-title">Modal Accessibility &amp; Sizing Contract:</span>
+          <ul class="ui-modal-arch-list">
+            <li><strong>Strict 36px Action Button Height:</strong> Both primary and outline buttons enforce <code>height: 36px !important</code> with <code>width: auto !important</code> and <code>padding: 0 16px</code>.</li>
+            <li><strong>No Redundant Close 'X' Button:</strong> When a modal provides an explicit <strong>Cancel</strong> outline button in <code>.modal-actions</code>, the top-right 'X' button is omitted/hidden (<code>display: none</code>) to eliminate clutter.</li>
+            <li><strong>Escape &amp; Backdrop Dismissal:</strong> Pressing <kbd class="is-48badad">Esc</kbd> or clicking the dimmed backdrop immediately dismisses the modal.</li>
+            <li><strong>Zero Nested Modals Directive:</strong> No modal may open on top of another modal. In approval queues, rejections expand inline directly inside the queue table row.</li>
           </ul>
         </div>
       </div>
@@ -1279,7 +1338,7 @@
             </section>
         </div>
 
-        <!-- Footer OUTSIDE the card, white, no color change on hover -->
+        <!-- Footer OUTSIDE the card, orange on hover -->
         <div class="auth-footer-outside">
             <span class="legal">
                 <a href="about.html">Contact</a>
@@ -1375,15 +1434,49 @@
   <script src="../assets/js/pages/design-system.js"></script>
 
   <!-- Interactive Demo Modals and Toasts -->
-  <!-- 1. Live Reject Application Modal -->
-  <div class="modal-overlay" id="demoRejectModal">
-    <div class="modal-container">
-      <button class="modal-close ui-modal-close" id="demoCloseRejectModal" aria-label="Close modal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-      <h3 class="modal-title">Reject Application</h3>
-      <form class="modal-form" id="demoRejectForm">
-        <!-- Contextual Action Confirmation Alert -->
+  <!-- 1. Live Admin Entity Modal -->
+  <div class="modal-overlay" id="demoAdminModal">
+    <section class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-content">
+          <h2 class="modal-title" id="demoAdminModalTitle">Add Department</h2>
+          <p class="modal-subtitle">Enter the official department title below.</p>
+        </div>
+      </div>
+      <form class="modal-form" id="demoAdminForm">
+        <div class="ui-alert ui-alert--info" role="status">
+          <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div class="ui-alert-content">
+            <span class="ui-alert-title">Confirm Addition</span>
+            <span class="ui-alert-desc">You are about to add this department record. Review the details below before proceeding.</span>
+          </div>
+        </div>
+        <div class="ui-form-group">
+          <label for="demoAdminDeptName" class="ui-form-label">Department Name</label>
+          <input id="demoAdminDeptName" type="text" class="ui-input" placeholder="e.g. Department of Computer Science" required value="Department of Artificial Intelligence">
+        </div>
+        <div class="modal-actions">
+          <button id="cancelDemoAdminModal" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
+          <button type="submit" class="ui-btn ui-btn-primary modal-submit">Add Department</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- 2. Live Admin Destructive Removal Modal -->
+  <div class="modal-overlay" id="demoRemoveModal">
+    <section class="modal-card compact remove-modal">
+      <div class="modal-header">
+        <div class="modal-header-content">
+          <h2 class="modal-title">Remove Department</h2>
+          <p class="modal-subtitle">Confirm permanent deletion of this record.</p>
+        </div>
+      </div>
+      <div class="modal-body">
         <div class="ui-alert ui-alert--warning" role="alert">
           <svg class="ui-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
@@ -1391,29 +1484,39 @@
             <line x1="12" y1="17" x2="12.01" y2="17"/>
           </svg>
           <div class="ui-alert-content">
-            <span class="ui-alert-title">Confirm Rejection Decision</span>
-            <span class="ui-alert-desc">This action cannot be undone. Please specify an explicit deficiency reason below before proceeding.</span>
+            <span class="ui-alert-title">Confirm Removal</span>
+            <span class="ui-alert-desc">Are you sure you want to remove this department? This action cannot be undone.</span>
           </div>
         </div>
+        <div class="modal-actions">
+          <button id="cancelDemoRemoveModal" type="button" class="ui-btn ui-btn-outline modal-btn-cancel">Cancel</button>
+          <button id="confirmDemoRemoveModal" type="button" class="ui-btn ui-btn-primary modal-submit">Confirm</button>
+        </div>
+      </div>
+    </section>
+  </div>
 
-        <div>
-          <label for="demoRejectAppSelect">Application:</label>
-          <select id="demoRejectAppSelect">
-            <option value="app_1">Dr. Eleanor Vance (Faculty Proposal)</option>
-            <option value="app_2">BS Data Science (Program Proposal)</option>
-            <option value="app_3">Dept. of Applied Mathematics</option>
-          </select>
+  <!-- 3. Live Faculty Proposal Modal (<dialog>) -->
+  <dialog id="demoFacultyModal" class="proposal-modal" aria-labelledby="demoFacultyTitle">
+    <div class="modal-header">
+      <div class="modal-header-content">
+        <h2 class="modal-title" id="demoFacultyTitle">Propose a department</h2>
+        <p class="modal-subtitle">Your request will be pending until reviewed by an administrator.</p>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="demoFacultyForm" class="modal-form">
+        <div class="ui-form-group">
+          <label class="ui-form-label" for="demoFacultyDeptName">Proposed name</label>
+          <input type="text" id="demoFacultyDeptName" class="ui-input" required maxlength="120" placeholder="e.g. Department of Computer Science" autocomplete="off" value="Department of Quantum Computing" />
         </div>
-        <div>
-          <label for="demoRejectReason">
-            <span>Reason for rejection <span class="is-9790b6e">*</span></span>
-          </label>
-          <textarea id="demoRejectReason" required placeholder="Enter specific deficiency or prerequisites reason..."></textarea>
+        <div class="modal-actions">
+          <button type="button" class="ui-btn ui-btn-outline" id="cancelDemoFacultyModal">Cancel</button>
+          <button type="submit" class="ui-btn ui-btn-primary" id="submitDemoFacultyModal">Submit application</button>
         </div>
-        <button type="submit" class="modal-submit">Confirm Rejection</button>
       </form>
     </div>
-  </div>
+  </dialog>
 
   <!-- 2. Live Logout Confirmation Dialog -->
   <dialog id="demoLogoutDialog" class="logout-dialog">
@@ -1433,6 +1536,7 @@
     <span id="demoToastMessage">Action completed successfully!</span>
   </div>
 
+  <script src="../assets/js/queue-modal.js" defer></script>
   <script src="../assets/js/pages/design-system-2.js"></script>
 </body>
 

@@ -27,6 +27,32 @@
   if (isEmbeddedQueue && typeof document !== 'undefined') {
     document.documentElement?.classList.add('queue-embedded');
     if (document.body) document.body.classList.add('queue-embedded');
+    const urlTheme = new URLSearchParams(window.location.search).get('theme');
+    if (urlTheme === 'light' || urlTheme === 'dark') {
+      document.documentElement?.classList.toggle('dark', urlTheme === 'dark');
+    }
+    try {
+      if (window.parent && window.parent !== window && window.parent.document?.documentElement) {
+        const isParentDark = window.parent.document.documentElement.classList.contains('dark');
+        document.documentElement.classList.toggle('dark', isParentDark);
+      }
+    } catch (_) {}
+    window.addEventListener('message', (ev) => {
+      if (ev.data && typeof ev.data === 'object' && ev.data.type === 'queue-modal-theme') {
+        document.documentElement.classList.toggle('dark', Boolean(ev.data.dark));
+      }
+    });
+  }
+
+  function syncQueueFrameTheme(frame) {
+    if (!frame) return;
+    const isDark = document.documentElement.classList.contains('dark');
+    try {
+      frame.contentDocument?.documentElement?.classList.toggle('dark', isDark);
+    } catch (_) {}
+    try {
+      frame.contentWindow?.postMessage({ type: 'queue-modal-theme', dark: isDark }, '*');
+    } catch (_) {}
   }
 
   function selectedRows(root = document) {
@@ -89,7 +115,29 @@
         <div class="queue-modal-body" data-queue-modal-body></div>
       </section>`;
     document.body.appendChild(modal);
+
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(() => {
+        syncQueueFrameTheme(modal.querySelector('iframe'));
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    }
+
     return modal;
+  }
+
+  function resolveQueuePagePath(queue) {
+    const filename = queueToPage[queue];
+    if (!filename) return '';
+
+    const pathname = (window.location.pathname || '').replace(/\\/g, '/');
+    if (pathname.includes('/admin/')) {
+      return filename;
+    }
+    if (pathname.includes('/faculty/')) {
+      return `../admin/${filename}`;
+    }
+    return `admin/${filename}`;
   }
 
   function setQueueModalContent(modal, queue) {
@@ -100,18 +148,23 @@
     if (title) title.textContent = queueTitles[queue] || 'Pending applications';
     if (!body) return;
 
-    const page = queueToPage[queue];
+    const pagePath = resolveQueuePagePath(queue);
     let frame = body.querySelector('iframe');
     if (!frame) {
       frame = document.createElement('iframe');
       frame.className = 'queue-modal-frame';
       frame.title = 'Approval queue';
+      frame.addEventListener('load', () => syncQueueFrameTheme(frame));
       body.replaceChildren(frame);
     }
 
-    const nextSrc = `${page}?embedded=1`;
-    if (!frame.getAttribute('src')?.endsWith(nextSrc)) {
+    const isDark = document.documentElement.classList.contains('dark');
+    const nextSrc = `${pagePath}?embedded=1&theme=${isDark ? 'dark' : 'light'}`;
+    const currentSrc = frame.getAttribute('src') || '';
+    if (!currentSrc.includes(`${pagePath}?embedded=1`)) {
       frame.src = nextSrc;
+    } else {
+      syncQueueFrameTheme(frame);
     }
   }
 

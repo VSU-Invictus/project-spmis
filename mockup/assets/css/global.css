@@ -6,7 +6,7 @@
    ========================================================================== */
 
 /* --- 1. FONTS & DESIGN TOKENS IMPORT --- */
-@import url('https://fonts.googleapis.com/css2?family=Intel+One+Mono:wght@400;500;600;700&family=Geist+Mono:wght@100..900&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@100..900&display=swap');
 @import url('./design-system.css');
 
 /* --- 2. GLOBAL RESET & BASE ELEMENT STYLES --- */
