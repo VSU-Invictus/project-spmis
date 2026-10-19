@@ -1,0 +1,189 @@
+(() => {
+  'use strict';
+  function initFaculty() {
+    const tableBody = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchInput');
+    const departmentFilter = document.getElementById('departmentFilter');
+    const emptyState = document.getElementById('emptyState');
+    const facultyModal = document.getElementById('facultyModal');
+    const removeModal = document.getElementById('removeModal');
+    const facultyForm = document.getElementById('facultyForm');
+    const facultyName = document.getElementById('facultyName');
+    const facultyEmail = document.getElementById('facultyEmail');
+    const facultyDepartment = document.getElementById('facultyDepartment');
+    const facultyRole = document.getElementById('facultyRole');
+    const facultyModalTitle = document.getElementById('facultyModalTitle');
+    const facultySubmit = facultyForm?.querySelector('.modal-submit');
+    const facultyEditNotice = document.getElementById('facultyEditNotice');
+    const facultyAddNotice = document.getElementById('facultyAddNotice');
+    const toast = document.getElementById('toast');
+
+    if (!tableBody) return;
+    let mode = 'create';
+    let selectedRow = null;
+    let originalRecord = null;
+
+    let toastTimer;
+    function openModal(modal) { if (modal) modal.classList.add('show'); }
+    function closeModal(modal) { if (modal) modal.classList.remove('show'); }
+    function showToast(message) {
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    function roleBadge(role) {
+      const isAdm = (role || '').toLowerCase() === 'admin';
+      const variant = isAdm ? 'destructive' : 'info';
+      const label = isAdm ? 'Admin' : 'Faculty';
+      return '<span class="ui-badge ui-badge--' + variant + '">' + label + '</span>';
+    }
+
+    function filterRows() {
+      const controller = tableBody?.__tableController || window.adminTableController;
+      if (controller) {
+        controller.render();
+        return;
+      }
+      const query = (searchInput?.value || '').trim().toLowerCase();
+      const department = departmentFilter?.value || 'all';
+      let visibleCount = 0;
+      [...tableBody.querySelectorAll('tr, .table-row')].forEach(row => {
+        const matchesText = (row.dataset.name || '').includes(query) || (row.dataset.email || '').includes(query);
+        const matchesDepartment = department === 'all' || row.dataset.department === department;
+        const visible = matchesText && matchesDepartment;
+        row.style.display = visible ? '' : 'none';
+        if (visible) visibleCount++;
+      });
+      if (emptyState) emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
+    }
+
+    document.getElementById('addButton')?.addEventListener('click', () => {
+      mode = 'create';
+      selectedRow = null;
+      originalRecord = null;
+      if (facultyModalTitle) facultyModalTitle.textContent = 'Add Faculty';
+      if (facultySubmit) facultySubmit.textContent = 'Add Faculty';
+      if (facultyEditNotice) facultyEditNotice.hidden = true;
+      if (facultyAddNotice) facultyAddNotice.hidden = false;
+      if (facultyName) { facultyName.value = ''; facultyName.setCustomValidity(''); }
+      if (facultyEmail) facultyEmail.value = '';
+      if (facultyDepartment) facultyDepartment.selectedIndex = 0;
+      if (facultyRole) facultyRole.value = 'faculty';
+      openModal(facultyModal);
+    });
+
+    tableBody.addEventListener('click', event => {
+      const row = event.target.closest('tr, .table-row');
+      if (!row) return;
+      if (event.target.classList.contains('edit-btn')) {
+        mode = 'edit';
+        selectedRow = row;
+        if (facultyModalTitle) facultyModalTitle.textContent = 'Edit Faculty';
+        if (facultySubmit) facultySubmit.textContent = 'Update';
+        if (facultyEditNotice) facultyEditNotice.hidden = false;
+        if (facultyAddNotice) facultyAddNotice.hidden = true;
+        const nameCell = row.querySelector('.col-name') || row.children[0];
+        const emailCell = row.querySelector('.col-email') || row.children[1];
+        const name = nameCell?.textContent.trim() || '';
+        const email = emailCell?.textContent.trim() || '';
+        const department = row.dataset.department || '';
+        const role = row.dataset.role || 'faculty';
+        originalRecord = { name, email, department, role };
+        if (facultyName) { facultyName.value = name; facultyName.setCustomValidity(''); }
+        if (facultyEmail) facultyEmail.value = email;
+        if (facultyDepartment) facultyDepartment.value = department;
+        if (facultyRole) facultyRole.value = role;
+        openModal(facultyModal);
+      }
+      if (event.target.classList.contains('remove-btn')) {
+        selectedRow = row;
+        openModal(removeModal);
+      }
+    });
+
+    function performSubmit(data, submitMode, submitRow) {
+      const { name, email, department, role } = data;
+      if (submitMode === 'edit' && submitRow) {
+        submitRow.dataset.name = name.toLowerCase();
+        submitRow.dataset.email = email.toLowerCase();
+        submitRow.dataset.department = department;
+        submitRow.dataset.role = role;
+        const nameCell = submitRow.querySelector('.col-name') || submitRow.children[0];
+        const emailCell = submitRow.querySelector('.col-email') || submitRow.children[1];
+        const deptCell = submitRow.querySelector('.col-dept') || submitRow.children[2];
+        const roleCell = submitRow.querySelector('.col-role') || submitRow.children[3];
+        if (nameCell) nameCell.textContent = name;
+        if (emailCell) emailCell.textContent = email;
+        if (deptCell) deptCell.textContent = department;
+        if (roleCell) roleCell.innerHTML = roleBadge(role);
+        closeModal(facultyModal);
+        setTimeout(() => showToast('Faculty Updated Successfully'), 120);
+      } else {
+        const row = document.createElement('div');
+        row.className = 'table-row';
+        row.dataset.name = name.toLowerCase();
+        row.dataset.email = email.toLowerCase();
+        row.dataset.department = department;
+        row.dataset.role = role;
+        row.innerHTML = `<div class="td-cell col-name">${name}</div><div class="td-cell col-email">${email}</div><div class="td-cell col-dept">${department}</div><div class="td-cell col-role text-center">${roleBadge(role)}</div><div class="td-cell col-action text-right"><div class="action-group"><button class="pill-btn edit-btn" type="button">Edit</button> <button class="pill-btn remove-btn" type="button">Remove</button></div></div>`;
+        tableBody.prepend(row);
+        closeModal(facultyModal);
+        setTimeout(() => showToast('Faculty Added Successfully'), 120);
+      }
+      filterRows();
+    }
+
+    facultyForm?.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = facultyName?.value.trim();
+      const email = facultyEmail?.value.trim();
+      const department = facultyDepartment?.value || '';
+      const role = facultyRole?.value || 'faculty';
+      if (!name || !email) return;
+      if (
+        mode === 'edit' &&
+        originalRecord &&
+        name === originalRecord.name &&
+        email === originalRecord.email &&
+        department === originalRecord.department &&
+        role === originalRecord.role
+      ) {
+        facultyName.setCustomValidity('Please enter a new, distinct value before updating.');
+        facultyName.reportValidity();
+        return;
+      }
+      performSubmit({ name, email, department, role }, mode, selectedRow);
+    });
+
+    [facultyName, facultyEmail, facultyDepartment, facultyRole].forEach(field => {
+      field?.addEventListener('input', () => facultyName?.setCustomValidity(''));
+      field?.addEventListener('change', () => facultyName?.setCustomValidity(''));
+    });
+
+    document.getElementById('confirmRemove')?.addEventListener('click', () => {
+      if (!selectedRow) return;
+      selectedRow.remove();
+      selectedRow = null;
+      closeModal(removeModal);
+      setTimeout(() => showToast('Faculty Removed Successfully'), 120);
+      filterRows();
+    });
+
+    document.getElementById('cancelRemove')?.addEventListener('click', () => closeModal(removeModal));
+    document.getElementById('closeFaculty')?.addEventListener('click', () => closeModal(facultyModal));
+    document.getElementById('cancelFaculty')?.addEventListener('click', () => closeModal(facultyModal));
+    if (!window.adminTableController && !tableBody?.__tableController) {
+      searchInput?.addEventListener('input', filterRows);
+      departmentFilter?.addEventListener('change', filterRows);
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { closeModal(facultyModal); closeModal(removeModal); }
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFaculty);
+  else initFaculty();
+})();
