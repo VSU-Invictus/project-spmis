@@ -280,7 +280,8 @@ html:not(.dark) .modal-container.queue-modal-container {
 }
 
 .queue-embedded-workspace :is(.th-cell, .td-cell).checkbox-cell,
-.queue-modal-body :is(.th-cell, .td-cell).checkbox-cell {
+.queue-modal-body :is(.th-cell, .td-cell).checkbox-cell,
+.queue-container :is(.th-cell, .td-cell).checkbox-cell {
   width: 48px !important;
   min-width: 48px !important;
   max-width: 48px !important;
@@ -290,6 +291,148 @@ html:not(.dark) .modal-container.queue-modal-container {
   justify-content: center !important;
   text-align: center !important;
   padding: 0 !important;
+  background: transparent !important;
+}
+
+/* Checkbox Column Inputs (Select-All Header + Row Checkboxes across all 4 Queues) */
+.queue-embedded-workspace .checkbox-cell input[type="checkbox"],
+.queue-modal-body .checkbox-cell input[type="checkbox"],
+.queue-container .checkbox-cell input[type="checkbox"],
+.queue-container :is(.custom-checkbox, .select-all-checkbox, .row-checkbox) {
+  position: relative !important;
+  box-sizing: border-box !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  aspect-ratio: 1 / 1 !important;
+  border: 1.5px solid var(--border, #3E3D39) !important;
+  border-radius: 6px !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+  outline: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease !important;
+}
+
+.queue-embedded-workspace .checkbox-cell input[type="checkbox"]:hover:not(:checked):not(:indeterminate):not(:disabled),
+.queue-modal-body .checkbox-cell input[type="checkbox"]:hover:not(:checked):not(:indeterminate):not(:disabled),
+.queue-container :is(.custom-checkbox, .select-all-checkbox, .row-checkbox):hover:not(:checked):not(:indeterminate):not(:disabled) {
+  border-color: #55524D !important;
+}
+
+/* Dark Mode Checked & Indeterminate States */
+.queue-embedded-workspace .checkbox-cell input[type="checkbox"]:checked:not(:indeterminate),
+.queue-modal-body .checkbox-cell input[type="checkbox"]:checked:not(:indeterminate),
+.queue-container :is(.custom-checkbox, .select-all-checkbox, .row-checkbox):checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+.queue-embedded-workspace .checkbox-cell input[type="checkbox"]:checked:not(:indeterminate)::after,
+.queue-modal-body .checkbox-cell input[type="checkbox"]:checked:not(:indeterminate)::after,
+.queue-container :is(.custom-checkbox, .select-all-checkbox, .row-checkbox):checked:not(:indeterminate)::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #000000 !important;
+}
+
+.queue-embedded-workspace .checkbox-cell input[type="checkbox"]:indeterminate,
+.queue-modal-body .checkbox-cell input[type="checkbox"]:indeterminate,
+.queue-container :is(.custom-checkbox, .select-all-checkbox):indeterminate {
+  background-color: #30302E !important;
+  border-color: #3E3D39 !important;
+}
+
+.queue-embedded-workspace .checkbox-cell input[type="checkbox"]:indeterminate::after,
+.queue-modal-body .checkbox-cell input[type="checkbox"]:indeterminate::after,
+.queue-container :is(.custom-checkbox, .select-all-checkbox):indeterminate::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Light Mode Checkbox Column Variant across all 4 Approval Queue Modals */
+html:not(.dark) .queue-embedded-workspace .checkbox-cell input[type="checkbox"],
+html:not(.dark) .queue-modal-body .checkbox-cell input[type="checkbox"],
+html:not(.dark) .queue-container .checkbox-cell input[type="checkbox"],
+html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox, .row-checkbox) {
+  background-color: var(--card, #FFFFFF) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) .queue-embedded-workspace .checkbox-cell input[type="checkbox"]:hover:not(:checked):not(:indeterminate):not(:disabled),
+html:not(.dark) .queue-modal-body .checkbox-cell input[type="checkbox"]:hover:not(:checked):not(:indeterminate):not(:disabled),
+html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox, .row-checkbox):hover:not(:checked):not(:indeterminate):not(:disabled) {
+  background-color: var(--card, #FFFFFF) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) .queue-embedded-workspace .checkbox-cell input[type="checkbox"]:checked:not(:indeterminate),
+html:not(.dark) .queue-modal-body .checkbox-cell input[type="checkbox"]:checked:not(:indeterminate),
+html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox, .row-checkbox):checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) .queue-embedded-workspace .checkbox-cell input[type="checkbox"]:checked:not(:indeterminate)::after,
+html:not(.dark) .queue-modal-body .checkbox-cell input[type="checkbox"]:checked:not(:indeterminate)::after,
+html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox, .row-checkbox):checked:not(:indeterminate)::after {
+  background-color: #FFFFFF !important;
+}
+
+html:not(.dark) .queue-embedded-workspace .checkbox-cell input[type="checkbox"]:indeterminate,
+html:not(.dark) .queue-modal-body .checkbox-cell input[type="checkbox"]:indeterminate,
+html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox):indeterminate {
+  background-color: var(--muted, #DBD7CB) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) .queue-embedded-workspace .checkbox-cell input[type="checkbox"]:indeterminate::after,
+html:not(.dark) .queue-modal-body .checkbox-cell input[type="checkbox"]:indeterminate::after,
+html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox):indeterminate::after {
+  background-color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) .queue-embedded-workspace .checkbox-cell input[type="checkbox"]:disabled,
+html:not(.dark) .queue-modal-body .checkbox-cell input[type="checkbox"]:disabled,
+html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox, .row-checkbox):disabled {
+  background-color: var(--muted, #EFECE6) !important;
+  border-color: var(--border, #E2DDD4) !important;
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
 }
 
 /* --- 4. PAGINATION & ACTION BUTTONS --- */

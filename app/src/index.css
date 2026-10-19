@@ -466,7 +466,7 @@ button:disabled {
   pointer-events: none;
 }
 
-input,
+input:not([type="checkbox"]):not([type="radio"]),
 select,
 textarea {
   width: 100%;
@@ -629,10 +629,12 @@ textarea.ui-input::-webkit-resizer {
 .ui-checkbox--no-orange:indeterminate::after {
   content: '' !important;
   position: absolute !important;
+  inset: auto !important;
   top: 50% !important;
   left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
   transform: translate(-50%, -50%) !important;
-  inset: auto !important;
   margin: 0 !important;
   width: 14px !important;
   height: 14px !important;
@@ -661,6 +663,105 @@ html:not(.dark) .custom-checkbox--neutral:indeterminate::after,
 html:not(.dark) .custom-checkbox--no-orange:indeterminate::after,
 html:not(.dark) .ui-checkbox--neutral:indeterminate::after,
 html:not(.dark) .ui-checkbox--no-orange:indeterminate::after {
+  background-color: var(--foreground, #21201E) !important;
+}
+
+/* Unified Checkbox Primitive (.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox) */
+:is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange) {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 20px;
+  max-height: 20px;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  border: 1.5px solid var(--border, #3E3D39);
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin: 0 auto;
+  padding: 0;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+:is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(:disabled):hover {
+  border-color: var(--primary, #D97251) !important;
+}
+
+:is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+:is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+:is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):indeterminate {
+  background-color: #30302E !important;
+  border-color: #3E3D39 !important;
+}
+
+:is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):is(:checked, :indeterminate)::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+}
+
+:is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):checked:not(:indeterminate)::after {
+  background-color: #000000;
+}
+
+:is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):indeterminate::after {
+  background-color: #FFFFFF;
+}
+
+/* Light Mode Variant for Unified Checkbox Primitive */
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange) {
+  background-color: var(--card, #FFFFFF) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):disabled {
+  background-color: var(--muted, #EFECE6) !important;
+  border-color: var(--border, #E2DDD4) !important;
+  opacity: 0.45 !important;
+}
+
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):checked:not(:indeterminate)::after {
+  background-color: #FFFFFF !important;
+}
+
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):indeterminate {
+  background-color: var(--muted, #DBD7CB) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) :is(.custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):not(.custom-checkbox--neutral):not(.custom-checkbox--no-orange):not(.ui-checkbox--neutral):not(.ui-checkbox--no-orange):indeterminate::after {
   background-color: var(--foreground, #21201E) !important;
 }
 

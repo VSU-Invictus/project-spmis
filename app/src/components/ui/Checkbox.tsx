@@ -93,6 +93,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({
   const isNeutral = variant === 'neutral' || variant === 'no-orange';
   const roleClass = [
     'custom-checkbox',
+    'ui-checkbox',
     isNeutral ? 'custom-checkbox--neutral ui-checkbox--neutral' : '',
     isSelectAll || internalIndeterminate ? 'select-all-checkbox' : '',
     isRowCheckbox ? 'row-checkbox' : '',

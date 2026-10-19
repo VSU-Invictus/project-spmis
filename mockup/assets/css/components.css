@@ -623,10 +623,12 @@ table input[type="checkbox"]:indeterminate {
 table input[type="checkbox"]:is(:checked, :indeterminate)::after {
     content: "";
     position: absolute;
+    inset: auto;
     top: 50%;
     left: 50%;
+    right: auto;
+    bottom: auto;
     transform: translate(-50%, -50%);
-    inset: auto;
     margin: 0;
     width: 14px;
     height: 14px;
@@ -644,7 +646,7 @@ table tbody tr.checked {
     background-color: var(--muted) !important;
 }
 
-:is(input, select, textarea) {
+:is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
     background: var(--muted) !important;
     color: var(--foreground) !important;
     border-color: var(--input) !important;
@@ -3584,18 +3586,34 @@ table input[type="checkbox"]:indeterminate::after {
     background-color: #FFFFFF !important;
 }
 
-/* Light Mode: Checked has white checkmark on terracotta; Indeterminate has light muted box with black checkmark */
-html:not(.dark) table input[type="checkbox"]:checked:not(:indeterminate)::after {
+/* Light Mode: Unchecked has light card surface + warm border; Checked has white checkmark on terracotta; Indeterminate has light muted box with dark checkmark */
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox) {
+    background-color: var(--card, #FFFFFF) !important;
+    border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):disabled {
+    background-color: var(--muted, #EFECE6) !important;
+    border-color: var(--border, #E2DDD4) !important;
+    opacity: 0.45 !important;
+}
+
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):checked:not(:indeterminate) {
+    background-color: var(--primary, #D97251) !important;
+    border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):checked:not(:indeterminate)::after {
     background-color: #FFFFFF !important;
 }
 
-html:not(.dark) table input[type="checkbox"]:indeterminate {
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):indeterminate {
     background-color: var(--muted, #DBD7CB) !important;
-    border-color: var(--border, #DAD9D4) !important;
+    border-color: var(--input, #C8C0B4) !important;
 }
 
-html:not(.dark) table input[type="checkbox"]:indeterminate::after {
-    background-color: #000000 !important;
+html:not(.dark) :is(table input[type="checkbox"], .table-container input[type="checkbox"], .custom-checkbox, .ui-checkbox, .select-all-checkbox, .row-checkbox):indeterminate::after {
+    background-color: var(--foreground, #21201E) !important;
 }
 
 /* Table column ratio helpers */

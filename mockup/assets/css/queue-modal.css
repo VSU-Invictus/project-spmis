@@ -327,6 +327,123 @@ body.queue-embedded :is(.th-cell, .td-cell).checkbox-cell {
   justify-content: center !important;
   text-align: center !important;
   padding: 0 !important;
+  background: transparent !important;
+  color: var(--color-text-main, #FFFFFF) !important;
+}
+
+/* Checkbox column inputs (select-all header + row items) across all 4 Approval Queue Modals */
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]) {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  box-sizing: border-box !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 6px !important;
+  border: 1.5px solid var(--border, #3E3D39) !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):hover:not(:disabled) {
+  border-color: var(--primary, #D97251) !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):focus-visible {
+  outline: 2px solid var(--ring, #D97251) !important;
+  outline-offset: 2px !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):disabled {
+  cursor: not-allowed !important;
+  opacity: 0.45 !important;
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border-color: var(--border, #3E3D39) !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):indeterminate {
+  background-color: #30302E !important;
+  border-color: #3E3D39 !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):is(:checked, :indeterminate)::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / 12px 12px no-repeat !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):checked:not(:indeterminate)::after {
+  background-color: #000000 !important;
+}
+
+body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):indeterminate::after {
+  background-color: #FFFFFF !important;
+}
+
+/* Light Mode Checkbox Column Variant across all 4 Approval Queue Modals */
+html:not(.dark) body.queue-embedded :is(.th-cell, .td-cell).checkbox-cell {
+  background: transparent !important;
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]) {
+  background-color: var(--card, #FFFFFF) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):hover:not(:disabled) {
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):disabled {
+  background-color: var(--muted, #EFECE6) !important;
+  border-color: var(--border, #E2DDD4) !important;
+  opacity: 0.45 !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):checked:not(:indeterminate) {
+  background-color: var(--primary, #D97251) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):checked:not(:indeterminate)::after {
+  background-color: #FFFFFF !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):indeterminate {
+  background-color: var(--muted, #DBD7CB) !important;
+  border-color: var(--input, #C8C0B4) !important;
+}
+
+html:not(.dark) body.queue-embedded :is(.custom-checkbox, .select-all-checkbox, .row-checkbox, .checkbox-cell input[type="checkbox"]):indeterminate::after {
+  background-color: var(--foreground, #21201E) !important;
 }
 
 body.queue-embedded :is(.th-cell, .td-cell).text-center {

@@ -27,6 +27,10 @@
   if (isEmbeddedQueue && typeof document !== 'undefined') {
     document.documentElement?.classList.add('queue-embedded');
     if (document.body) document.body.classList.add('queue-embedded');
+    const urlTheme = new URLSearchParams(window.location.search).get('theme');
+    if (urlTheme === 'light' || urlTheme === 'dark') {
+      document.documentElement?.classList.toggle('dark', urlTheme === 'dark');
+    }
     try {
       if (window.parent && window.parent !== window && window.parent.document?.documentElement) {
         const isParentDark = window.parent.document.documentElement.classList.contains('dark');
@@ -154,8 +158,10 @@
       body.replaceChildren(frame);
     }
 
-    const nextSrc = `${pagePath}?embedded=1`;
-    if (!frame.getAttribute('src')?.endsWith(nextSrc)) {
+    const isDark = document.documentElement.classList.contains('dark');
+    const nextSrc = `${pagePath}?embedded=1&theme=${isDark ? 'dark' : 'light'}`;
+    const currentSrc = frame.getAttribute('src') || '';
+    if (!currentSrc.includes(`${pagePath}?embedded=1`)) {
       frame.src = nextSrc;
     } else {
       syncQueueFrameTheme(frame);
