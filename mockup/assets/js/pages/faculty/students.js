@@ -446,6 +446,10 @@ const programs = [
             }
             function loadStudents() {
                 clearTimeout(timer);
+                if (window.spmisNavigationCache && window.spmisNavigationCache.isCached()) {
+                    render();
+                    return;
+                }
                 const skelCount = Math.min(Math.max(3, size || 5), 5);
                 const skelRows = Array.from({ length: skelCount })
                     .map(() => '<tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr>')

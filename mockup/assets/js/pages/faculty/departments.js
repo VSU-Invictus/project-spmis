@@ -606,18 +606,24 @@ const departments = [
         let original = "";
         let listTimer;
               function render() {
+                  const isCached = window.spmisNavigationCache && window.spmisNavigationCache.isCached();
+                  const showList = () => {
+                      const filtered = list.filter((p) =>
+                          p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
+                      );
+                      $("#entity-list").innerHTML = filtered.length
+                          ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th class=\"ui-table-heading-center\">Status</th><th class=\"ui-table-heading-center\">Action</th></tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td><td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td></tr>`).join("")}</tbody></table></div>`
+                          : list.length
+                              ? '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No matching departments</h2><p class="ui-empty-state__description">Try another department name.</p></div>'
+                              : '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No departments yet</h2><p class="ui-empty-state__description">Approved departments will appear here.</p></div>';
+                  };
+                  if (isCached) {
+                      showList();
+                      return;
+                  }
                   $("#entity-list").innerHTML = `<div class="table-wrap" role="status" aria-label="Loading"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th class=\"ui-table-heading-center\">Status</th><th class=\"ui-table-heading-center\">Action</th></tr></thead><tbody><tr class="skeleton-row"><td colspan="3"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="3"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="3"><div class="skeleton"></div></td></tr></tbody></table></div>`;
                   clearTimeout(listTimer);
-                  listTimer = setTimeout(() => {
-          const filtered = list.filter((p) =>
-            p.toLowerCase().includes($("#entity-search").value.toLowerCase()),
-          );
-          $("#entity-list").innerHTML = filtered.length
-            ? `<div class="table-wrap"><table><thead><tr><th>${isProgram ? "Program" : "Department"}</th><th class=\"ui-table-heading-center\">Status</th><th class=\"ui-table-heading-center\">Action</th></tr></thead><tbody>${filtered.map((p) => `<tr><td>${esc(p)}</td><td>${badge("approved")}</td><td><button type="button" class="ui-btn ui-btn-outline" data-propose-edit="${esc(p)}">Apply to edit</button></td></tr>`).join("")}</tbody></table></div>`
-            : list.length
-              ? '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No matching departments</h2><p class="ui-empty-state__description">Try another department name.</p></div>'
-              : '<div class="ui-empty-state" role="status"><h2 class="ui-empty-state__title">No departments yet</h2><p class="ui-empty-state__description">Approved departments will appear here.</p></div>';
-                          }, 300);
+                  listTimer = setTimeout(showList, 300);
               }
         $("#entity-search").oninput = render;
         function open(name = "") {
