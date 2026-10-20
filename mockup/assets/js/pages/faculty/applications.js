@@ -588,10 +588,8 @@ const departments = [
       if (page === "applications") {
         let listTimer;
           const render = () => {
-            $("#application-list").innerHTML = '<div class="table-wrap" role="status" aria-label="Loading"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th class=\"ui-table-heading-center\">Status</th><th>Decision / reason</th></tr></thead><tbody><tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr></tbody></table></div>';
-            clearTimeout(listTimer);
-            listTimer = setTimeout(() => {
-    
+            const isCached = window.spmisNavigationCache && window.spmisNavigationCache.isCached();
+            const showList = () => {
               $("#application-list").innerHTML = appTable(
                 state.applications.filter(
                   (a) =>
@@ -602,8 +600,14 @@ const departments = [
                       .includes($("#application-search").value.toLowerCase()),
                 ),
               );
-         
-            }, 220);
+            };
+            if (isCached) {
+              showList();
+              return;
+            }
+            $("#application-list").innerHTML = '<div class="table-wrap" role="status" aria-label="Loading"><table><thead><tr><th>Application type</th><th>Requested record</th><th>Submitted</th><th class=\"ui-table-heading-center\">Status</th><th>Decision / reason</th></tr></thead><tbody><tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr><tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr></tbody></table></div>';
+            clearTimeout(listTimer);
+            listTimer = setTimeout(showList, 220);
           };
         $("#application-status").onchange = render;
         $("#application-search").oninput = render;

@@ -3,6 +3,90 @@
   if (window.spmisCardLoadingInitialized) return;
   window.spmisCardLoadingInitialized = true;
 
+  const CACHE_KEY = 'spmis-navigation-cache';
+  const memoryCache = (window.spmisNavigationCache && window.spmisNavigationCache._store) || new Set();
+
+  function getRouteKey() {
+    try {
+      const loc = window.location;
+      if (loc) {
+        const full = (loc.pathname || loc.href || '').replace(/\\/g, '/');
+        const match = full.match(/(?:admin|faculty|auth)\/[^/?#]+\.html/i);
+        if (match) return match[0].toLowerCase();
+        const file = full.split('/').pop()?.split('?')[0]?.split('#')[0];
+        if (file && file.endsWith('.html')) return file.toLowerCase();
+      }
+    } catch (_) {}
+    if (document.body && document.body.dataset && document.body.dataset.page) {
+      return document.body.dataset.page.toLowerCase();
+    }
+    return 'default';
+  }
+
+  function getStorage() {
+    try {
+      if (typeof window !== 'undefined' && window.sessionStorage) return window.sessionStorage;
+      if (typeof sessionStorage !== 'undefined') return sessionStorage;
+    } catch (_) {}
+    return null;
+  }
+
+  function isCached(route = getRouteKey()) {
+    if (!route) return false;
+    if (memoryCache.has(route)) return true;
+    const storage = getStorage();
+    if (!storage) return false;
+    try {
+      const raw = storage.getItem(CACHE_KEY);
+      if (raw) {
+        const list = JSON.parse(raw);
+        if (Array.isArray(list) && list.includes(route)) {
+          memoryCache.add(route);
+          return true;
+        }
+      }
+    } catch (_) {}
+    return false;
+  }
+
+  function markCached(route = getRouteKey()) {
+    if (!route) return;
+    memoryCache.add(route);
+    const storage = getStorage();
+    if (!storage) return;
+    try {
+      let list = [];
+      const raw = storage.getItem(CACHE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) list = parsed;
+      }
+      if (!list.includes(route)) {
+        list.push(route);
+        storage.setItem(CACHE_KEY, JSON.stringify(list));
+      }
+    } catch (_) {}
+  }
+
+  function clearCache() {
+    memoryCache.clear();
+    const storage = getStorage();
+    if (storage) {
+      try { storage.removeItem(CACHE_KEY); } catch (_) {}
+    }
+  }
+
+  window.spmisNavigationCache = {
+    _store: memoryCache,
+    isCached,
+    has: isCached,
+    markCached,
+    setCached: markCached,
+    mark: markCached,
+    clearCache,
+    getRouteKey,
+  };
+
   const selector = '.ui-card, .ui-card-interactive, [data-card-loading]';
   const excluded = 'dialog, [role="dialog"], .modal-overlay, .modal-container, .sidebar, nav, [hidden]';
   const textSelector = 'h1, h2, h3, h4, h5, h6, p, small, .ui-text, .ui-text-muted, .ui-text-caption, .ui-text-mono, .muted, .breadcrumb-text, .ay-text, [data-text-loading]';
@@ -40,6 +124,11 @@
   }
 
   function initialize() {
+    const route = getRouteKey();
+    if (isCached(route)) {
+      return;
+    }
+
     const candidates = Array.from(document.querySelectorAll(selector)).filter(card =>
       !card.closest(excluded) && !card.matches('.ui-card--loading, .ui-loading-active') &&
       card.getClientRects().length && !card.contains(document.activeElement)
@@ -116,6 +205,7 @@
         overlay.remove();
       });
       status.textContent = texts.length ? 'Page details loaded.' : 'Card details loaded.';
+      markCached(route);
     }, 280);
   }
 

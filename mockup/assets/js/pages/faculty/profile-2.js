@@ -11,6 +11,15 @@ function showSuccessToast(message) {
 
 // Auto-wire forms and add buttons for the mockup
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.spmisNavigationCache && window.spmisNavigationCache.isCached()) {
+        document.querySelectorAll('.skeleton-row, .skeleton, .ui-loading-placeholder, .ui-text-loading-placeholder').forEach(el => el.remove());
+        document.querySelectorAll('.ui-loading-active, .ui-card--loading').forEach(el => {
+            el.classList.remove('ui-loading-active', 'ui-card--loading');
+            el.removeAttribute('aria-busy');
+            el.inert = false;
+        });
+    }
+
     document.querySelectorAll('form').forEach(f => {
         f.addEventListener('submit', (e) => {
             e.preventDefault();
