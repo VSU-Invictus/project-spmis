@@ -88,6 +88,35 @@ adminPages.forEach(page => {
   }
 });
 
+// Navigation cache integration: every Admin table route must load the shared
+// cache provider, and the shared table controller must bypass skeletons on
+// previously visited (cached) routes.
+const tableController = fs.readFileSync(path.join('mockup', 'assets', 'js', 'admin-table.js'), 'utf8');
+if (!/spmisNavigationCache/.test(tableController) || !/isRouteCached/.test(tableController)) {
+  console.error('  ERROR: admin-table.js must reuse window.spmisNavigationCache for cached revisits!');
+  totalErrors++;
+}
+if (!/function loadTableWithSkeleton\(delay = 250, skipSkeleton = false\)/.test(tableController) ||
+    !/if \(skipSkeleton\) \{/.test(tableController) ||
+    !/renderRows\(true\)/.test(tableController)) {
+  console.error('  ERROR: admin-table.js must render instantly without skeletons on cached revisits!');
+  totalErrors++;
+}
+if (!/loadTableWithSkeleton\(isInitialLoad \? 280 : 0, isInitialLoad && isRouteCached\(\)\)/.test(tableController)) {
+  console.error('  ERROR: admin-table.js initial load must consult the navigation cache!');
+  totalErrors++;
+}
+
+adminPages.forEach(page => {
+  const file = path.join('mockup', 'pages', 'admin', page);
+  const content = fs.readFileSync(file, 'utf8');
+  const loaderCount = (content.match(/src="\.\.\/\.\.\/assets\/js\/card-loading\.js" defer/g) || []).length;
+  if (loaderCount !== 1) {
+    console.error(`  ERROR: ${page} must include the shared navigation cache loader exactly once (found ${loaderCount})!`);
+    totalErrors++;
+  }
+});
+
 const dashboard = fs.readFileSync(path.join('mockup', 'pages', 'admin', 'dashboard.html'), 'utf8');
 const dashboardTable = dashboard.match(/<table\b[^>]*>[\s\S]*?<tbody>([\s\S]*?)<\/tbody>[\s\S]*?<\/table>/);
 const dashboardRows = dashboardTable ? (dashboardTable[1].match(/<tr>/g) || []).length : 0;

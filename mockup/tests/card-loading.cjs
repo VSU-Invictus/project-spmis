@@ -289,26 +289,51 @@ assert.equal(revisitCard.querySelector('.ui-loading-placeholder'), null, 'Cached
 assert.equal(revisitHeading.classList.contains('ui-text--loading'), false, 'Cached heading must render instantly without text skeleton');
 assert.equal(facultyDashboardRevisit.body.querySelector('.ui-loading-status'), null, 'No loading status element created on instant cached revisit');
 
-// 4. First visit and revisit to Admin route: must follow same instant cache contract
-const adminFaculty1 = fixture('interactive', { storage: sharedStorage, pathname: 'admin/faculty.html' });
-const adminCard1 = adminFaculty1.body.appendChild(new Element('section', 'ui-card'));
-adminFaculty1.run();
-adminFaculty1.listeners.DOMContentLoaded();
-adminFaculty1.flush();
-assert.equal(adminFaculty1.timers.length, 1, 'First visit to Admin route must schedule initial loading once');
-assert.equal(adminCard1.getAttribute('aria-busy'), 'true');
-adminFaculty1.timers[0].handler();
-assert.ok(sharedStorage['spmis-navigation-cache'].includes('admin/faculty.html'));
+// 4. First visit and revisit to every Admin route: must follow the same instant cache contract
+const adminRoutes = [
+  'admin/dashboard.html',
+  'admin/students.html',
+  'admin/departments.html',
+  'admin/programs.html',
+  'admin/faculty.html',
+  'admin/audit-log.html',
+  'admin/student-applications.html',
+  'admin/department-applications.html',
+  'admin/program-applications.html',
+  'admin/faculty-applications.html'
+];
 
-// Revisit Admin route
-const adminFacultyRevisit = fixture('interactive', { storage: sharedStorage, pathname: 'admin/faculty.html' });
-const revisitAdminCard = adminFacultyRevisit.body.appendChild(new Element('section', 'ui-card'));
-adminFacultyRevisit.run();
-adminFacultyRevisit.listeners.DOMContentLoaded();
-adminFacultyRevisit.flush();
-assert.equal(adminFacultyRevisit.timers.length, 0, 'Revisiting Admin route must render instantly from cache with zero timers');
-assert.equal(revisitAdminCard.getAttribute('aria-busy'), null);
-assert.equal(revisitAdminCard.querySelector('.ui-loading-placeholder'), null);
+adminRoutes.forEach(route => {
+  // First uncached visit: preserve the existing initial loading skeleton and cache the route.
+  const first = fixture('interactive', { storage: sharedStorage, pathname: route });
+  const firstCard = first.body.appendChild(new Element('section', 'ui-card'));
+  const firstHeading = first.body.appendChild(new Element('h1'));
+  firstHeading.textContent = 'Admin page';
+  first.run();
+  first.listeners.DOMContentLoaded();
+  first.flush();
+  assert.equal(first.timers.length, 1, `First visit to ${route} must schedule initial loading once`);
+  assert.equal(firstCard.getAttribute('aria-busy'), 'true', `First visit to ${route} must show the card skeleton`);
+  assert.ok(firstCard.querySelector('.ui-loading-placeholder'), `First visit to ${route} must display a card skeleton`);
+  assert.ok(firstHeading.classList.contains('ui-text--loading'), `First visit to ${route} must display a text skeleton`);
+  first.timers[0].handler();
+  assert.equal(firstCard.getAttribute('aria-busy'), null, `Completed load on ${route} must clear aria-busy`);
+  assert.ok(sharedStorage['spmis-navigation-cache'].includes(route), `${route} must be written to the navigation cache`);
+
+  // Revisit within the same session: instant render, no skeletons, no timers.
+  const revisit = fixture('interactive', { storage: sharedStorage, pathname: route });
+  const revisitCard = revisit.body.appendChild(new Element('section', 'ui-card'));
+  const revisitHeading = revisit.body.appendChild(new Element('h1'));
+  revisitHeading.textContent = 'Admin page';
+  revisit.run();
+  revisit.listeners.DOMContentLoaded();
+  revisit.flush();
+  assert.equal(revisit.timers.length, 0, `Revisiting cached ${route} must NOT schedule loading timers`);
+  assert.equal(revisitCard.getAttribute('aria-busy'), null, `Cached ${route} card must not have aria-busy set`);
+  assert.equal(revisitCard.querySelector('.ui-loading-placeholder'), null, `Cached ${route} must render instantly without a card skeleton`);
+  assert.equal(revisitHeading.classList.contains('ui-text--loading'), false, `Cached ${route} must render instantly without a text skeleton`);
+  assert.equal(revisit.body.querySelector('.ui-loading-status'), null, `No loading status element created on instant cached revisit of ${route}`);
+});
 
 let routes = 0;
 for (const group of ['admin', 'faculty', 'auth']) {
