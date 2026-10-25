@@ -14,6 +14,16 @@
 (function () {
   'use strict';
 
+  // Reuse the shared navigation cache (card-loading.js) so previously visited
+  // Admin routes render their tables instantly without replaying skeletons.
+  function isRouteCached() {
+    try {
+      return !!(window.spmisNavigationCache && window.spmisNavigationCache.isCached());
+    } catch (_) {
+      return false;
+    }
+  }
+
   window.initAdminTable = function (config = {}) {
     let container = config.container;
     if (typeof container === 'string') container = document.querySelector(container);
@@ -194,7 +204,7 @@
 
     let lastTotalPages = 1;
 
-    function renderRows() {
+    function renderRows(skipFade = false) {
       const allRows = getRows();
       const query = searchInput ? (searchInput.value || '').trim().toLowerCase() : '';
 
@@ -299,7 +309,8 @@
         if (index >= startIndex && index < endIndex) {
           row.style.removeProperty('display');
           row.hidden = false;
-          row.classList.add('table-fade-in');
+          // Cached revisits render instantly without replaying the fade animation.
+          if (!skipFade) row.classList.add('table-fade-in');
         } else {
           row.style.setProperty('display', 'none', 'important');
           row.hidden = true;
@@ -341,8 +352,16 @@
       if (isApprovalQueue) tableBody.dispatchEvent(new Event('ui-table-rendered', { bubbles: true }));
     }
 
-    function loadTableWithSkeleton(delay = 250) {
+    function loadTableWithSkeleton(delay = 250, skipSkeleton = false) {
       clearTimeout(filterTimer);
+
+      // Previously visited routes render immediately from the navigation cache
+      // without replaying skeleton rows, artificial delays, or fade animations.
+      if (skipSkeleton) {
+        tableBody.querySelectorAll('.skeleton-row').forEach(sr => sr.remove());
+        renderRows(true);
+        return;
+      }
 
       if (isApprovalQueue) tableBody.dispatchEvent(new Event('ui-table-view-changing', { bubbles: true }));
 
@@ -460,8 +479,9 @@
     });
     observer.observe(tableBody, { childList: true });
 
-    // Initial load with skeleton shimmer animation
-    loadTableWithSkeleton(isInitialLoad ? 280 : 0);
+    // Initial load: show the skeleton shimmer once on a first visit, but render
+    // instantly from the navigation cache when the route was already visited.
+    loadTableWithSkeleton(isInitialLoad ? 280 : 0, isInitialLoad && isRouteCached());
     isInitialLoad = false;
 
     const controller = {

@@ -67,7 +67,7 @@ class Element {
   getBoundingClientRect() { return { height: this.height }; }
 }
 
-function fixture(readyState = 'interactive') {
+function fixture(readyState = 'interactive', options = {}) {
   const body = new Element('body');
   const listeners = {}, microtasks = [], timers = [];
   const document = {
@@ -84,13 +84,31 @@ function fixture(readyState = 'interactive') {
       return matches;
     }
   };
+  const sessionStorage = options.sessionStorage || (options.storage ? {
+    getItem: key => options.storage[key] ?? null,
+    setItem: (key, val) => { options.storage[key] = String(val); },
+    removeItem: key => { delete options.storage[key]; },
+    clear: () => { Object.keys(options.storage).forEach(k => delete options.storage[k]); }
+  } : undefined);
+  const location = options.location || (options.pathname ? {
+    pathname: options.pathname,
+    href: `http://localhost/mockup/pages/${options.pathname}`
+  } : undefined);
   const window = {
     setTimeout: (handler, delay) => timers.push({ handler, delay }),
-    getComputedStyle: () => ({ fontSize: '16px', lineHeight: '24px' })
+    getComputedStyle: () => ({ fontSize: '16px', lineHeight: '24px' }),
+    ...(sessionStorage ? { sessionStorage } : {}),
+    ...(location ? { location } : {}),
+    ...(options.window || {})
   };
-  const context = vm.createContext({ document, window, queueMicrotask: handler => microtasks.push(handler) });
+  const context = vm.createContext({
+    document,
+    window,
+    ...(sessionStorage ? { sessionStorage } : {}),
+    queueMicrotask: handler => microtasks.push(handler)
+  });
   return {
-    body, document, timers, listeners,
+    body, document, window, timers, listeners,
     run: () => vm.runInContext(source, context),
     flush: () => { while (microtasks.length) microtasks.shift()(); }
   };
@@ -223,6 +241,100 @@ textOnly.timers[0].handler();
 assert.deepEqual(updated.children, [newer], 'Do not overwrite a newer page render with the original loading content');
 assert.equal(updated.classList.contains('ui-text--loading'), false);
 
+// Navigation Cache & Instant Page Revisit Verification (Issue #113)
+const sharedStorage = {};
+
+// 1. First visit to Faculty route: must show initial loading skeletons once and cache the route
+const facultyDashboard1 = fixture('interactive', { storage: sharedStorage, pathname: 'faculty/dashboard.html' });
+const facultyCard1 = facultyDashboard1.body.appendChild(new Element('section', 'ui-card'));
+const facultyHeading1 = facultyDashboard1.body.appendChild(new Element('h1'));
+facultyHeading1.textContent = 'Faculty Dashboard';
+facultyDashboard1.run();
+facultyDashboard1.listeners.DOMContentLoaded();
+facultyDashboard1.flush();
+assert.equal(facultyDashboard1.timers.length, 1, 'First visit to Faculty route must schedule initial loading phase');
+assert.equal(facultyCard1.getAttribute('aria-busy'), 'true');
+assert.ok(facultyCard1.querySelector('.ui-loading-placeholder'), 'First visit displays card skeleton');
+assert.ok(facultyHeading1.classList.contains('ui-text--loading'), 'First visit displays text skeleton');
+
+// Complete initial loading: saves to cache
+facultyDashboard1.timers[0].handler();
+assert.equal(facultyCard1.getAttribute('aria-busy'), null);
+assert.equal(facultyCard1.querySelector('.ui-loading-placeholder'), null);
+assert.ok(sharedStorage['spmis-navigation-cache'], 'Route must be written to navigation cache in sessionStorage');
+assert.ok(sharedStorage['spmis-navigation-cache'].includes('faculty/dashboard.html'), 'Cache must include faculty/dashboard.html');
+
+// 2. Navigate away to another page (Faculty Students): uncached, so it displays loading once
+const facultyStudents = fixture('interactive', { storage: sharedStorage, pathname: 'faculty/students.html' });
+const studentsCard = facultyStudents.body.appendChild(new Element('div', 'ui-card'));
+facultyStudents.run();
+facultyStudents.listeners.DOMContentLoaded();
+facultyStudents.flush();
+assert.equal(facultyStudents.timers.length, 1, 'First visit to another page must schedule loading once');
+assert.equal(studentsCard.getAttribute('aria-busy'), 'true');
+facultyStudents.timers[0].handler();
+assert.ok(sharedStorage['spmis-navigation-cache'].includes('faculty/students.html'));
+
+// 3. Revisit previously loaded page (Faculty Dashboard): must render view instantly from cache with zero skeleton flashes or timers
+const facultyDashboardRevisit = fixture('interactive', { storage: sharedStorage, pathname: 'faculty/dashboard.html' });
+const revisitCard = facultyDashboardRevisit.body.appendChild(new Element('section', 'ui-card'));
+const revisitHeading = facultyDashboardRevisit.body.appendChild(new Element('h1'));
+revisitHeading.textContent = 'Faculty Dashboard';
+facultyDashboardRevisit.run();
+facultyDashboardRevisit.listeners.DOMContentLoaded();
+facultyDashboardRevisit.flush();
+assert.equal(facultyDashboardRevisit.timers.length, 0, 'Revisiting cached Faculty page must NOT schedule loading timers');
+assert.equal(revisitCard.getAttribute('aria-busy'), null, 'Cached card must not have aria-busy set');
+assert.equal(revisitCard.querySelector('.ui-loading-placeholder'), null, 'Cached card must render instantly without skeleton placeholder');
+assert.equal(revisitHeading.classList.contains('ui-text--loading'), false, 'Cached heading must render instantly without text skeleton');
+assert.equal(facultyDashboardRevisit.body.querySelector('.ui-loading-status'), null, 'No loading status element created on instant cached revisit');
+
+// 4. First visit and revisit to every Admin route: must follow the same instant cache contract
+const adminRoutes = [
+  'admin/dashboard.html',
+  'admin/students.html',
+  'admin/departments.html',
+  'admin/programs.html',
+  'admin/faculty.html',
+  'admin/audit-log.html',
+  'admin/student-applications.html',
+  'admin/department-applications.html',
+  'admin/program-applications.html',
+  'admin/faculty-applications.html'
+];
+
+adminRoutes.forEach(route => {
+  // First uncached visit: preserve the existing initial loading skeleton and cache the route.
+  const first = fixture('interactive', { storage: sharedStorage, pathname: route });
+  const firstCard = first.body.appendChild(new Element('section', 'ui-card'));
+  const firstHeading = first.body.appendChild(new Element('h1'));
+  firstHeading.textContent = 'Admin page';
+  first.run();
+  first.listeners.DOMContentLoaded();
+  first.flush();
+  assert.equal(first.timers.length, 1, `First visit to ${route} must schedule initial loading once`);
+  assert.equal(firstCard.getAttribute('aria-busy'), 'true', `First visit to ${route} must show the card skeleton`);
+  assert.ok(firstCard.querySelector('.ui-loading-placeholder'), `First visit to ${route} must display a card skeleton`);
+  assert.ok(firstHeading.classList.contains('ui-text--loading'), `First visit to ${route} must display a text skeleton`);
+  first.timers[0].handler();
+  assert.equal(firstCard.getAttribute('aria-busy'), null, `Completed load on ${route} must clear aria-busy`);
+  assert.ok(sharedStorage['spmis-navigation-cache'].includes(route), `${route} must be written to the navigation cache`);
+
+  // Revisit within the same session: instant render, no skeletons, no timers.
+  const revisit = fixture('interactive', { storage: sharedStorage, pathname: route });
+  const revisitCard = revisit.body.appendChild(new Element('section', 'ui-card'));
+  const revisitHeading = revisit.body.appendChild(new Element('h1'));
+  revisitHeading.textContent = 'Admin page';
+  revisit.run();
+  revisit.listeners.DOMContentLoaded();
+  revisit.flush();
+  assert.equal(revisit.timers.length, 0, `Revisiting cached ${route} must NOT schedule loading timers`);
+  assert.equal(revisitCard.getAttribute('aria-busy'), null, `Cached ${route} card must not have aria-busy set`);
+  assert.equal(revisitCard.querySelector('.ui-loading-placeholder'), null, `Cached ${route} must render instantly without a card skeleton`);
+  assert.equal(revisitHeading.classList.contains('ui-text--loading'), false, `Cached ${route} must render instantly without a text skeleton`);
+  assert.equal(revisit.body.querySelector('.ui-loading-status'), null, `No loading status element created on instant cached revisit of ${route}`);
+});
+
 let routes = 0;
 for (const group of ['admin', 'faculty', 'auth']) {
   const directory = path.join(__dirname, '../pages', group);
@@ -237,4 +349,4 @@ assert.equal(routes, 26);
 const css = fs.readFileSync(path.join(__dirname, '../assets/css/components.css'), 'utf8');
 assert.match(css, /:is\(\.ui-card--loading, \.ui-loading-active\) > \.ui-loading-placeholder\s*\{[^}]*position:\s*absolute;/,
   'The overlay must stay out of layout even when auth styles position all direct card children relatively');
-console.log('Card/text loading lifecycle, line counts, accessibility, exclusions, preserved nodes/newer content, and all 26 route integrations passed.');
+console.log('Card/text loading lifecycle, navigation cache, line counts, accessibility, exclusions, preserved nodes/newer content, and all 26 route integrations passed.');

@@ -1,5 +1,13 @@
 /* Extracted from pages/faculty/register-student.html */
         /* Local demonstration only. All records are fictional and stored for this tab. */
+        if (window.spmisNavigationCache && window.spmisNavigationCache.isCached()) {
+            document.querySelectorAll('.skeleton-row, .skeleton, .ui-loading-placeholder, .ui-text-loading-placeholder').forEach(el => el.remove());
+            document.querySelectorAll('.ui-loading-active, .ui-card--loading').forEach(el => {
+                el.classList.remove('ui-loading-active', 'ui-card--loading');
+                el.removeAttribute('aria-busy');
+                el.inert = false;
+            });
+        }
         const $ = (s) => document.querySelector(s);
         const esc = (value) =>
             String(value ?? "").replace(
@@ -295,11 +303,15 @@ const programs = [
             function render() {
                 const mode = $("#roster-state").value;
                 if (mode === "loading") {
-                    $("#roster-results").innerHTML =
-                        '<div role="status" aria-label="Loading students"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>';
-                    $("#page-label").textContent = "Loading students…";
-                    $("#previous").disabled = $("#next").disabled = true;
-                    return;
+                    if (window.spmisNavigationCache && window.spmisNavigationCache.isCached()) {
+                        // Bypass loading skeleton on revisited cached routes
+                    } else {
+                        $("#roster-results").innerHTML =
+                            '<div role="status" aria-label="Loading students"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>';
+                        $("#page-label").textContent = "Loading students…";
+                        $("#previous").disabled = $("#next").disabled = true;
+                        return;
+                    }
                 }
                 const search = $("#search").value.trim().toLowerCase(),
                     dept = $("#department").value,

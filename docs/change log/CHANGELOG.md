@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 <!-- Active development updates -->
 
+### Added
+- **Navigation Cache & Instant Page Revisits (React Query & Mockup):** Eliminated repetitive skeleton loading states across Admin and Faculty route navigation (#113):
+  - Configured `@tanstack/react-query` `QueryClient` cache defaults (`staleTime: 5m`, `gcTime: 30m`, `refetchOnMount: false`, `refetchOnWindowFocus: false`) and added `navigationCache.ts` utilities.
+  - Refactored `mockup/assets/js/card-loading.js` with `window.spmisNavigationCache` storing visited routes across session navigation, bypassing skeleton overlays and timers on revisit.
+  - Refactored secondary page scripts (`applications-2.js`, `chat-2.js`, `dashboard-2.js`, `departments-2.js`, `new-review-2.js`, `profile-2.js`, `programs-2.js`, `register-student-2.js`, `student-detail-2.js`, `students-2.js`) and primary table loaders (`students.js`, `programs.js`, `departments.js`, `applications.js`) to immediately render views on cached revisits.
+  - Extended the shared Admin table controller (`mockup/assets/js/admin-table.js`) to consult `window.spmisNavigationCache` on initial load, so previously visited Admin routes (Dashboard, Students, Departments, Programs, Faculty, Audit Log, and the four application queues) render their tables instantly without replaying skeleton rows or the `table-fade-in` animation. First uncached visits keep the existing 280ms skeleton shimmer, and the existing row-mutation observer still refreshes data after Add/Edit/Remove.
+  - Updated `mockup/tests/card-loading.cjs` test suite to verify initial loading behavior on first visit and instant zero-flash rendering on revisits for both Admin and Faculty routes.
+  - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
+
 ### Fixed
 - **UI:** Displayed full Faculty Applications Decision / reason text with wrapping and expanding rows; moved the column left by narrowing the leading columns and reducing its left padding.
 - **UI:** Left-aligned the Decision / reason header and cells in the Faculty Applications table, overriding the shared final-column alignment.

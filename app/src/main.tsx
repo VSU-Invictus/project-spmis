@@ -80,11 +80,14 @@ function RootLayout() {
   );
 }
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5,
+      staleTime: 1000 * 60 * 5, // 5 minutes for page data caching across route revisits
+      gcTime: 1000 * 60 * 30, // Keep in memory for 30 minutes across route changes
       refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
     },
   },
 });
