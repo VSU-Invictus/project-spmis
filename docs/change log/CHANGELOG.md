@@ -7,6 +7,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **Contract review alignment:** Documented the mockup's 500-word review limit and
+  422 word-limit examples, added a proposed active-review tag-suggestion RPC, and
+  aligned OpenAPI license metadata with the README's All Rights Reserved terms.
+- **OpenAPI contract draft:** Added OpenAPI 3.1 operations and shared schemas for
+  profiles, student search, managed lists, reviews/history, applications, chat,
+  registration and audit metadata. Added typed application payloads, constrained
+  rich-text documents, native PostgREST filters/counts, lifecycle acknowledgements,
+  pinned lint/type-generation commands and a generated-type freshness check.
+  API proposals and unresolved summary/attachment/admin-access requirements are
+  recorded in `docs/contract-decisions.md`; backend/RLS implementation is pending.
 - **Navigation Cache & Instant Page Revisits (React Query & Mockup):** Eliminated repetitive skeleton loading states across Admin and Faculty route navigation (#113):
   - Configured `@tanstack/react-query` `QueryClient` cache defaults (`staleTime: 5m`, `gcTime: 30m`, `refetchOnMount: false`, `refetchOnWindowFocus: false`) and added `navigationCache.ts` utilities.
   - Refactored `mockup/assets/js/card-loading.js` with `window.spmisNavigationCache` storing visited routes across session navigation, bypassing skeleton overlays and timers on revisit.

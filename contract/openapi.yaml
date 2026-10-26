@@ -1,0 +1,2750 @@
+openapi: 3.1.0
+info:
+  title: SPMIS API
+  version: 0.1.0
+  description: >-
+    Contract-first API for the Student Profiling Management Information System. This curated
+    contract documents only the operations available to the frontend. This is a review draft.
+    Proposed backend views and functions are described before implementation; scope decisions are
+    recorded in docs/contract-decisions.md. Data API calls require a public project apikey and the
+    caller JWT. OAuth and refresh use Supabase Auth through its SDK. An RLS-filtered read or update
+    may return an empty array; a filtered delete may affect zero rows. These outcomes must not be
+    presented as proof that a record was changed.
+  license:
+    name: All Rights Reserved
+    url: https://github.com/VSU-Invictus/project-spmis/blob/dev/README.md
+servers:
+  - url: https://{projectRef}.supabase.co
+    description: Supabase project
+    variables:
+      projectRef:
+        default: your-project-ref
+security:
+  - bearerAuth: []
+    projectApiKey: []
+tags:
+  - name: Auth
+    description: Session and faculty-profile operations.
+  - name: Faculty
+    description: Operations available to verified faculty members.
+  - name: Admin
+    description: Operations available to system administrators.
+x-tagGroups:
+  - name: Auth
+    tags:
+      - Auth
+  - name: Faculty
+    tags:
+      - Faculty
+  - name: Admin
+    tags:
+      - Admin
+paths:
+  /rest/v1/faculty_profiles:
+    get:
+      tags:
+        - Auth
+        - Admin
+      operationId: listFacultyProfiles
+      summary: List faculty profiles visible to the caller
+      parameters:
+        - $ref: '#/components/parameters/CountPreference'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/DepartmentFilter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          description: Stable order including a unique id tie-breaker.
+          schema:
+            type: string
+            enum:
+              - created_at.desc,id.asc
+              - created_at.asc,id.asc
+              - full_name.asc,id.asc
+            default: created_at.desc,id.asc
+      responses:
+        '200':
+          description: Faculty profiles returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyProfile'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '206':
+          description: Partial result page when a count is requested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyProfile'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+      description: >-
+        Users may retrieve their own profile, including while pending, using id=eq.<JWT subject>.
+        Admins may list profiles. Other faculty cannot retrieve private profile emails. Native or
+        search supports full_name and email. Contributor attribution is returned through
+        review_details.
+    post:
+      tags:
+        - Admin
+      operationId: createFacultyProfile
+      summary: Create a profile for an existing Supabase Auth user
+      parameters:
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminFacultyInput'
+      responses:
+        '201':
+          description: Faculty profile created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyProfile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      description: >-
+        Admin only. id must equal an existing auth.users.id. This operation neither creates OAuth
+        identities nor provisions new Auth users. Backend creates an audit entry.
+    patch:
+      tags:
+        - Admin
+      operationId: updateFacultyProfile
+      summary: Update a faculty profile allowed by the caller's role
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyUpdate'
+      responses:
+        '200':
+          description: Faculty profile updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyProfile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      description: >-
+        Admin only. Faculty use updateOwnProfile instead. RLS selects rows; database column grants
+        or a guarded function/trigger must independently prevent non-admin changes to role, status,
+        email and department. Every mutation is audited.
+    delete:
+      tags:
+        - Admin
+      operationId: deleteFacultyProfile
+      summary: Remove an unreferenced faculty profile
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+      responses:
+        '204':
+          description: Faculty profile removed
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      description: >-
+        Admin only. Return 409 if reviews, revisions, applications or audit records reference the
+        profile. Never cascade-delete authored content or audit history. This does not delete or
+        disable the Auth identity.
+  /rest/v1/rpc/suggest_review_tags:
+    get:
+      tags:
+        - Faculty
+      operationId: suggestReviewTags
+      summary: Suggest existing tags for the review composer
+      description: >-
+        Proposed read-only STABLE SQL function returning distinct normalized tag rows.
+        Verified faculty only. prefix defaults to an empty string and matches the start of a
+        tag case-insensitively. Join each tag to an active review the caller may access before
+        deduplicating, counting or paginating. Hidden and deleted reviews never contribute,
+        even for their owner. A tag also present on an accessible active review may still
+        appear. Return only the tag text, without counts, author IDs or hidden-record metadata.
+        RLS and the caller identity remain enforced. The result is a suggestion list, not a
+        closed vocabulary: create/update may accept a new free-form tag. limit, offset and
+        order are PostgREST result modifiers, not SQL function arguments.
+      parameters:
+        - name: prefix
+          in: query
+          schema:
+            type: string
+            maxLength: 50
+            pattern: '^\S*$'
+            default: ''
+          example: re
+        - $ref: '#/components/parameters/CountPreference'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [tag.asc]
+            default: tag.asc
+      responses:
+        '200':
+          description: Distinct active-review tags; an empty match returns an empty array
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagSuggestion'
+              example:
+                - tag: research
+                - tag: resilience
+        '206':
+          description: Partial page when a count is requested
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagSuggestion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+  /rest/v1/rpc/search_students:
+    get:
+      tags:
+        - Faculty
+      operationId: searchStudents
+      summary: Search students through review-aware filters
+      description: >-
+        Verified faculty and admins may use structured mining. Proposed read-only STABLE, SECURITY
+        INVOKER SQL function, with nullable filter arguments defaulting to null. query matches name,
+        student number or active review body; optional filters are ANDed on the same active review.
+        Hidden/deleted reviews never contribute, even for their owner. No review filter returns
+        students without reviews too. limit/offset/order are PostgREST result modifiers, not
+        function arguments.
+      parameters:
+        - $ref: '#/components/parameters/CountPreference'
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: program_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: owner_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: owner_department_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: tag
+          in: query
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          description: Stable order including a unique id tie-breaker.
+          schema:
+            type: string
+            enum:
+              - created_at.desc,id.asc
+              - created_at.asc,id.asc
+              - last_name.asc,first_name.asc,id.asc
+            default: created_at.desc,id.asc
+      responses:
+        '200':
+          description: Matching students returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentSearchResult'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '206':
+          description: Partial result page when a count is requested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentSearchResult'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+  /rest/v1/student_profiles:
+    get:
+      tags:
+        - Faculty
+        - Admin
+      operationId: listStudentProfiles
+      summary: List student profiles visible to the caller
+      parameters:
+        - $ref: '#/components/parameters/CountPreference'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/ProgramFilter'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          description: Stable order including a unique id tie-breaker.
+          schema:
+            type: string
+            enum:
+              - created_at.desc,id.asc
+              - created_at.asc,id.asc
+              - last_name.asc,first_name.asc,id.asc
+            default: created_at.desc,id.asc
+      responses:
+        '200':
+          description: Student profiles returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentProfile'
+              example:
+                - id: 45b54332-e470-4c21-a839-7428c4f6bf42
+                  student_id_number: 27-1-12345
+                  last_name: Santos
+                  first_name: Maria
+                  middle_name: null
+                  program_id: 8ef76d5f-e6b2-49aa-a627-171dee1b8b65
+                  registration_source: admin_direct
+                  created_at: '2026-10-26T00:00:00Z'
+                  updated_at: '2026-10-26T00:00:00Z'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '206':
+          description: Partial result page when a count is requested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentProfile'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+      description: >-
+        Verified faculty and admins. Filter id for a detail result; no matches returns []. Native or
+        search supports first_name, last_name and student_id_number. Program display names are
+        resolved using listPrograms.
+    post:
+      tags:
+        - Admin
+      operationId: createStudent
+      summary: Directly add a student
+      parameters:
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentInput'
+      responses:
+        '201':
+          description: Student created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentProfile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    patch:
+      tags:
+        - Admin
+      operationId: updateStudent
+      summary: Update a student
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentInput'
+      responses:
+        '200':
+          description: Student updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentProfile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags:
+        - Admin
+      operationId: deleteStudent
+      summary: Remove a student
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+      responses:
+        '204':
+          description: Student removed
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      description: Admin only. Return 409 for referenced students; never cascade-delete review content.
+  /rest/v1/departments:
+    get:
+      tags:
+        - Faculty
+        - Admin
+      operationId: listDepartments
+      summary: List departments
+      parameters:
+        - $ref: '#/components/parameters/CountPreference'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/ManagedStatusFilter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          description: Stable order including a unique id tie-breaker.
+          schema:
+            type: string
+            enum:
+              - created_at.desc,id.asc
+              - created_at.asc,id.asc
+              - name.asc,id.asc
+            default: created_at.desc,id.asc
+      responses:
+        '200':
+          description: Departments returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '206':
+          description: Partial result page when a count is requested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+      description: >-
+        Verified faculty see approved entries; admins can filter all statuses. Pending users have no
+        directory access. Admin direct additions default to approved on the server and produce an
+        audit event. Proposed onboarding exception: pending applicants may read only approved
+        department choices. Team approval is required for this narrow exception to the current
+        pending-access wording.
+    post:
+      tags:
+        - Admin
+      operationId: createDepartment
+      summary: Directly add a department
+      parameters:
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagedListInput'
+      responses:
+        '201':
+          description: Department created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    patch:
+      tags:
+        - Admin
+      operationId: updateDepartment
+      summary: Update a department
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagedListInput'
+      responses:
+        '200':
+          description: Department updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags:
+        - Admin
+      operationId: deleteDepartment
+      summary: Remove a department
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+      responses:
+        '204':
+          description: Department removed
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      description: >-
+        Admin only. Return 409 when other records reference this item; do not cascade-delete
+        dependent profiles or reviews.
+  /rest/v1/programs:
+    get:
+      tags:
+        - Faculty
+        - Admin
+      operationId: listPrograms
+      summary: List programs
+      parameters:
+        - $ref: '#/components/parameters/CountPreference'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/ManagedStatusFilter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          description: Stable order including a unique id tie-breaker.
+          schema:
+            type: string
+            enum:
+              - created_at.desc,id.asc
+              - created_at.asc,id.asc
+              - name.asc,id.asc
+            default: created_at.desc,id.asc
+      responses:
+        '200':
+          description: Programs returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '206':
+          description: Partial result page when a count is requested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+      description: >-
+        Verified faculty see approved entries; admins can filter all statuses. Pending users have no
+        directory access. Admin direct additions default to approved on the server and produce an
+        audit event.
+    post:
+      tags:
+        - Admin
+      operationId: createProgram
+      summary: Directly add a program
+      parameters:
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagedListInput'
+      responses:
+        '201':
+          description: Program created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    patch:
+      tags:
+        - Admin
+      operationId: updateProgram
+      summary: Update a program
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagedListInput'
+      responses:
+        '200':
+          description: Program updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags:
+        - Admin
+      operationId: deleteProgram
+      summary: Remove a program
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+      responses:
+        '204':
+          description: Program removed
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      description: >-
+        Admin only. Return 409 when other records reference this item; do not cascade-delete
+        dependent profiles or reviews.
+  /rest/v1/review_revisions:
+    get:
+      tags:
+        - Faculty
+      operationId: listReviewRevisions
+      summary: List visible edit history for a review
+      parameters:
+        - $ref: '#/components/parameters/CountPreference'
+        - name: review_id
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/UuidEqualityFilter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          description: Stable order including a unique id tie-breaker.
+          schema:
+            type: string
+            enum:
+              - edited_at.desc,id.asc
+              - edited_at.asc,id.asc
+            default: edited_at.desc,id.asc
+      responses:
+        '200':
+          description: Review revisions returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReviewRevision'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '206':
+          description: Partial result page when a count is requested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReviewRevision'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+      description: >-
+        Verified faculty who can see the parent review may see its history. Hidden history is
+        owner-only and deleted history is invisible to everyone. Snapshots preserve plain text,
+        formatting, and tags from before each edit.
+  /rest/v1/approval_queue_items:
+    get:
+      tags:
+        - Faculty
+        - Admin
+      operationId: listApplications
+      summary: List applications visible to the caller
+      parameters:
+        - $ref: '#/components/parameters/CountPreference'
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum:
+              - eq.faculty_account
+              - eq.student_registration
+              - eq.program_proposal
+              - eq.department_proposal
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - eq.pending
+              - eq.approved
+              - eq.rejected
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          description: Stable order including a unique id tie-breaker.
+          schema:
+            type: string
+            enum:
+              - created_at.desc,id.asc
+              - created_at.asc,id.asc
+            default: created_at.desc,id.asc
+      responses:
+        '200':
+          description: Applications returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApprovalQueueItem'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '206':
+          description: Partial result page when a count is requested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApprovalQueueItem'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+      description: >-
+        Verified faculty see only their own applications; admins see all queues. Native or search
+        supports payload->>name, payload->>first_name, payload->>last_name,
+        payload->>student_id_number, payload->>email and payload->>full_name. Example:
+        (payload->>name.ilike.*computer*,payload->>email.ilike.*gmail.com*). The backend enforces
+        submitted_by, never a client filter alone.
+    post:
+      tags:
+        - Faculty
+      operationId: submitApplication
+      summary: Submit a student, program, or department application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationSubmission'
+            examples:
+              student:
+                value:
+                  type: student_registration
+                  payload:
+                    student_id_number: 27-1-12345
+                    first_name: Maria
+                    last_name: Santos
+                    middle_name: null
+                    program_id: 8ef76d5f-e6b2-49aa-a627-171dee1b8b65
+              program:
+                value:
+                  type: program_proposal
+                  payload:
+                    name: BS Computer Science
+              department:
+                value:
+                  type: department_proposal
+                  payload:
+                    name: Computer Science
+      responses:
+        '201':
+          description: Application submitted
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApprovalQueueItem'
+              example:
+                - id: 32272463-1823-4774-a574-558101103e9a
+                  type: student_registration
+                  submitted_by: e48adc9e-1b79-4b92-9848-aa12b25d63d7
+                  payload:
+                    student_id_number: 27-1-12345
+                    first_name: Maria
+                    last_name: Santos
+                    middle_name: null
+                    program_id: 8ef76d5f-e6b2-49aa-a627-171dee1b8b65
+                  status: pending
+                  decided_by: null
+                  decision_reason: null
+                  created_at: '2026-10-26T00:00:00Z'
+                  decided_at: null
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+      parameters:
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      description: >-
+        Verified faculty only. Backend sets submitted_by=auth.uid(), status=pending, timestamps and
+        null decision fields. Caller cannot set status or decision fields. Produce an audit event.
+        Faculty-account enrollment uses completeFacultyRegistration instead.
+  /rest/v1/audit_log_entries:
+    get:
+      tags:
+        - Admin
+      operationId: listAuditLogs
+      summary: List masked audit metadata
+      parameters:
+        - $ref: '#/components/parameters/CountPreference'
+        - $ref: '#/components/parameters/Search'
+        - name: actor_role
+          in: query
+          schema:
+            type: string
+            enum:
+              - eq.faculty
+              - eq.admin
+              - eq.system
+        - name: action
+          in: query
+          schema:
+            type: string
+            pattern: ^eq\..+$
+        - name: created_at
+          in: query
+          description: UTC timestamp bound, e.g. gte.2026-10-26T00:00:00Z. Use and for a bounded interval.
+          schema:
+            type: string
+            pattern: ^(gte|gt|lte|lt)\..+$
+        - name: and
+          in: query
+          description: >-
+            Native AND date bounds, e.g.
+            (created_at.gte.2026-10-26T00:00:00Z,created_at.lt.2026-10-27T00:00:00Z).
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          description: Stable order including a unique id tie-breaker.
+          schema:
+            type: string
+            enum:
+              - created_at.desc,id.asc
+              - created_at.asc,id.asc
+            default: created_at.desc,id.asc
+      responses:
+        '200':
+          description: Audit entries returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLogEntry'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '206':
+          description: Partial result page when a count is requested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLogEntry'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+      description: >-
+        Admin only. Content-free, append-only events. Native or search supports action and
+        entity_type. actor_role is the actor role captured when the event happened (a proposed
+        schema addition). Never include review text, file names, object keys or secrets in metadata.
+  /functions/v1/reviews:
+    post:
+      tags:
+        - Faculty
+      operationId: createReview
+      summary: Create a student review
+      description: >-
+        Creates the review, produces its de-identified text, and generates its initial embedding in
+        one backend operation. Verified faculty only; obtain owner_id from the JWT. The caller
+        cannot create a review for another owner. Extract body_text from body_document; no
+        formatting is sent to the AI provider.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReviewRequest'
+      responses:
+        '201':
+          description: Review created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ReviewValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /functions/v1/reviews/{id}:
+    patch:
+      tags:
+        - Faculty
+      operationId: updateReview
+      summary: Update an owned review
+      description: >-
+        Saves a revision and regenerates de-identified text. The embedding is recomputed only while
+        the review is active. Verified owner faculty only; deleted reviews cannot be edited (409).
+        Capture old plain text, document and tags in the revision. Omitted tags preserve existing
+        tags; [] clears them.
+      parameters:
+        - $ref: '#/components/parameters/ReviewId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReviewRequest'
+      responses:
+        '200':
+          description: Review updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ReviewValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /functions/v1/reviews/{id}/status:
+    post:
+      tags:
+        - Faculty
+      operationId: setReviewStatus
+      summary: Hide, unhide, or delete an owned review
+      description: >-
+        Verified owner faculty only. active + hide -> hidden; hidden + unhide -> active;
+        active/hidden + delete -> deleted. Other transitions return 409. Remove embeddings on
+        hide/delete and regenerate on unhide before committing. Deleted content is never returned,
+        including to its former owner.
+      parameters:
+        - $ref: '#/components/parameters/ReviewId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewStatusRequest'
+      responses:
+        '200':
+          description: Status applied; no review content returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewStatusResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /functions/v1/chat:
+    post:
+      tags:
+        - Faculty
+        - Admin
+      operationId: askChatbot
+      summary: Ask the AI Chat Assistant across visible reviews
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Assistant response returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          description: Provider quota or faculty rate limit reached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: RATE_LIMITED
+                message: The AI Chat Assistant is temporarily unavailable.
+                details: null
+                hint: Try again later.
+        '500':
+          $ref: '#/components/responses/ServerError'
+      description: >-
+        Verified faculty and admins may use this mining operation per README section 6. Stateless
+        conversation: send prior history on follow-up questions. Backend de-identifies
+        messages/history and retrieval context before sending any text to the provider, re-checks
+        review visibility on every request, and never uses history to authorize hidden/deleted
+        records. No system-role messages are accepted. Provider quota/faculty throttle returns 429;
+        invalid input returns 422.
+  /functions/v1/approvals:
+    post:
+      tags:
+        - Admin
+      operationId: decideApplications
+      summary: Bulk approve or reject applications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationDecisionRequest'
+      responses:
+        '200':
+          description: Application decisions completed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApprovalQueueItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+      description: >-
+        Admin only. All IDs must be pending and accessible; decisions, audit entries and persistent
+        submitter notifications commit in one database transaction. Missing/inaccessible item ->
+        404; any decided item -> 409. Either failure changes no selected items. Reject requires a
+        nonblank reason. Faculty-account approvals may redirect an inline department proposal via
+        department_assignments. Batch limit 100 is proposed for review.
+  /rest/v1/rpc/update_own_profile:
+    post:
+      tags:
+        - Auth
+      operationId: updateOwnProfile
+      summary: Update the current verified faculty member name
+      description: >-
+        Verified faculty only. The SQL function obtains the identity from auth.uid(); no
+        caller-supplied role, status, email or department is accepted. It applies only full_name,
+        writes an audit event, and returns a setof FacultyProfile containing one row. RLS and
+        database grants remain enabled.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnProfileUpdate'
+      responses:
+        '200':
+          description: Updated own profile
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyProfile'
+                minItems: 1
+                maxItems: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /rest/v1/review_details:
+    get:
+      tags:
+        - Faculty
+      operationId: listReviews
+      summary: List attributed reviews with rich text and normalized tags
+      parameters:
+        - $ref: '#/components/parameters/CountPreference'
+        - name: student_id
+          in: query
+          schema:
+            $ref: '#/components/schemas/UuidEqualityFilter'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - eq.active
+              - eq.hidden
+        - name: owner_id
+          in: query
+          schema:
+            $ref: '#/components/schemas/UuidEqualityFilter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: order
+          in: query
+          description: Stable order including a unique id tie-breaker.
+          schema:
+            type: string
+            enum:
+              - created_at.desc,id.asc
+              - created_at.asc,id.asc
+            default: created_at.desc,id.asc
+      responses:
+        '200':
+          description: Visible reviews returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '206':
+          description: Partial result page when a count is requested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+          headers:
+            Content-Range:
+              $ref: '#/components/headers/ContentRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '416':
+          $ref: '#/components/responses/RangeNotSatisfiable'
+      description: >-
+        Proposed read-only SECURITY INVOKER view joining review rows, safe author identity and
+        review tags. Verified faculty see active plus their own hidden reviews; deleted reviews
+        never appear. Dashboard sends status=eq.active and order=created_at.desc,id.asc. Excludes
+        deidentified_text and embeddings. Admin raw-content access is unresolved in the README and
+        is excluded pending review.
+  /functions/v1/registration:
+    post:
+      tags:
+        - Auth
+      operationId: completeFacultyRegistration
+      summary: Submit first-time faculty enrollment after Google OAuth
+      description: >-
+        Proposed authenticated onboarding operation. Derive faculty_id and email from the verified
+        Google/Supabase identity. Create or complete the pending profile, faculty-account queue
+        payload, required inline department proposal, and Terms acceptance/audit records atomically.
+        No faculty/admin role can be chosen by the applicant. Existing completed enrollment returns
+        409. Existing department UUID must reference an approved entry. Pending users get only
+        onboarding, their own profile/status and approved department reference choices. The exact
+        scope of pending reference access requires team review.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyRegistrationRequest'
+      responses:
+        '201':
+          description: Enrollment submitted for admin verification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationReceipt'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  securitySchemes:
+    projectApiKey:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Public Supabase project key; never use service-role or secret keys.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    PreferReturnRepresentation:
+      name: Prefer
+      in: header
+      required: true
+      description: Requests that PostgREST return the affected record representation.
+      schema:
+        type: string
+        const: return=representation
+    IdFilter:
+      name: id
+      in: query
+      required: false
+      description: PostgREST filter, for example `eq.<uuid>`.
+      schema:
+        $ref: '#/components/schemas/UuidEqualityFilter'
+    RequiredIdFilter:
+      name: id
+      in: query
+      required: true
+      description: Required PostgREST equality filter, formatted as `eq.<uuid>`.
+      schema:
+        $ref: '#/components/schemas/UuidEqualityFilter'
+    Search:
+      name: or
+      in: query
+      required: false
+      description: >-
+        Native PostgREST OR expression using only the columns documented for this operation. Escape
+        reserved PostgREST syntax in user input. Example:
+        (full_name.ilike.*alex*,email.ilike.*alex*).
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Offset:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    ReviewId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    NameFilter:
+      name: name
+      in: query
+      description: Native case-insensitive substring filter, e.g. ilike.*computer*.
+      schema:
+        type: string
+        pattern: ^ilike\..+$
+    DepartmentFilter:
+      name: department_id
+      in: query
+      schema:
+        $ref: '#/components/schemas/UuidEqualityFilter'
+    ProgramFilter:
+      name: program_id
+      in: query
+      schema:
+        $ref: '#/components/schemas/UuidEqualityFilter'
+    ManagedStatusFilter:
+      name: status
+      in: query
+      schema:
+        type: string
+        enum:
+          - eq.pending
+          - eq.approved
+          - eq.rejected
+    CountPreference:
+      name: Prefer
+      in: header
+      schema:
+        type: string
+        const: count=exact
+      description: Request the total count in Content-Range. Without this header the total may be *.
+  responses:
+    Unauthorized:
+      description: Authentication is required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: PGRST301
+            message: JWT is invalid or expired.
+            details: null
+            hint: null
+    Forbidden:
+      description: The caller is not allowed to perform this operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: FORBIDDEN
+            message: You are not allowed to perform this action.
+            details: null
+            hint: null
+    NotFound:
+      description: The requested record was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: NOT_FOUND
+            message: The requested record was not found.
+            details: null
+            hint: Check the record identifier.
+    Conflict:
+      description: The operation conflicts with the record's current state
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: INVALID_STATE
+            message: The operation is not allowed in the current state.
+            details: null
+            hint: Refresh the record and try an allowed action.
+    ReviewValidationError:
+      description: >-
+        Review input is invalid. Reject empty extracted text, more than 500 words,
+        unsupported formatting, invalid tags, or a proposed aggregate size-limit violation.
+        Exactly 500 words is valid provided all other constraints are satisfied.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            wordLimit:
+              value:
+                code: REVIEW_WORD_LIMIT
+                message: Reviews must contain no more than 500 words.
+                details: The extracted review contains 501 words; the limit is 500.
+                hint: Shorten the review and submit it again.
+            emptyReview:
+              value:
+                code: REVIEW_BODY_REQUIRED
+                message: Enter a review before saving.
+                details: The extracted review contains no non-whitespace text.
+                hint: Add review text and submit it again.
+    ValidationError:
+      description: The request failed validation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: VALIDATION_ERROR
+            message: The request contains invalid data.
+            details: A required value is missing or malformed.
+            hint: Correct the highlighted fields and retry.
+    ServerError:
+      description: An unexpected backend or provider failure occurred
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: INTERNAL_ERROR
+            message: The request could not be completed.
+            details: null
+            hint: Try again later.
+    BadRequest:
+      description: Malformed JSON/filter, invalid input syntax, or native database validation failure.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 22P02
+            message: Invalid input syntax for a column value.
+            details: null
+            hint: Correct the request.
+    RangeNotSatisfiable:
+      description: Requested pagination range is outside the result set.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+        - details
+        - hint
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type:
+            - string
+            - 'null'
+        hint:
+          type:
+            - string
+            - 'null'
+      additionalProperties: false
+    FacultyProfile:
+      type: object
+      required:
+        - id
+        - email
+        - full_name
+        - department_id
+        - role
+        - status
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+        department_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+            - faculty
+            - admin
+        status:
+          type: string
+          enum:
+            - pending
+            - active
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AdminFacultyInput:
+      type: object
+      required:
+        - id
+        - email
+        - full_name
+        - department_id
+        - role
+        - status
+      properties:
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        department_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+            - faculty
+            - admin
+        status:
+          type: string
+          enum:
+            - pending
+            - active
+        id:
+          type: string
+          format: uuid
+      additionalProperties: false
+    FacultyUpdate:
+      type: object
+      minProperties: 1
+      description: >-
+        Admin-only editable fields. This schema does not authorize a faculty caller to change
+        protected fields.
+      properties:
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        department_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+            - faculty
+            - admin
+        status:
+          type: string
+          enum:
+            - pending
+            - active
+      additionalProperties: false
+    ManagedRecordStatus:
+      type: string
+      enum:
+        - pending
+        - approved
+        - rejected
+    ManagedListInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+      additionalProperties: false
+    Department:
+      type: object
+      required:
+        - id
+        - name
+        - status
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/ManagedRecordStatus'
+        proposed_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Program:
+      type: object
+      required:
+        - id
+        - name
+        - status
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/ManagedRecordStatus'
+        proposed_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    StudentInput:
+      type: object
+      required:
+        - student_id_number
+        - last_name
+        - first_name
+        - program_id
+      properties:
+        student_id_number:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: \S
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        middle_name:
+          type:
+            - string
+            - 'null'
+        program_id:
+          type: string
+          format: uuid
+      additionalProperties: false
+    StudentProfile:
+      type: object
+      required:
+        - student_id_number
+        - last_name
+        - first_name
+        - program_id
+        - id
+        - registration_source
+        - created_at
+        - updated_at
+      properties:
+        student_id_number:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: \S
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        middle_name:
+          type:
+            - string
+            - 'null'
+        program_id:
+          type: string
+          format: uuid
+        id:
+          type: string
+          format: uuid
+        registration_source:
+          type: string
+          enum:
+            - admin_direct
+            - faculty_applied
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ReviewStatus:
+      type: string
+      enum:
+        - active
+        - hidden
+        - deleted
+    Review:
+      type: object
+      required:
+        - id
+        - student_id
+        - owner_id
+        - body_text
+        - status
+        - tags
+        - created_at
+        - updated_at
+        - author_name
+        - author_department_name
+        - body_document
+      properties:
+        id:
+          type: string
+          format: uuid
+        student_id:
+          type: string
+          format: uuid
+        owner_id:
+          type: string
+          format: uuid
+        body_text:
+          type: string
+          description: Raw review text; never sent to the AI provider.
+        status:
+          type: string
+          enum:
+            - active
+            - hidden
+          description: Deleted rows never appear in content responses.
+        tags:
+          type: array
+          uniqueItems: true
+          maxItems: 30
+          items:
+            $ref: '#/components/schemas/NormalizedTag'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        author_name:
+          type: string
+        author_department_name:
+          type: string
+        body_document:
+          $ref: '#/components/schemas/ReviewDocument'
+      example:
+        id: 67015de8-1ce8-4ac4-8634-384bf5fb3821
+        student_id: 45b54332-e470-4c21-a839-7428c4f6bf42
+        owner_id: e48adc9e-1b79-4b92-9848-aa12b25d63d7
+        author_name: Alex Reyes
+        author_department_name: Computer Science
+        body_text: Demonstrated strong leadership.
+        body_document:
+          blocks:
+            - type: paragraph
+              content:
+                - text: Demonstrated strong leadership.
+                  bold: true
+        status: active
+        tags:
+          - leadership
+        created_at: '2026-10-26T00:00:00Z'
+        updated_at: '2026-10-26T00:00:00Z'
+    CreateReviewRequest:
+      type: object
+      required:
+        - student_id
+        - body_document
+      additionalProperties: false
+      properties:
+        student_id:
+          type: string
+          format: uuid
+        tags:
+          type: array
+          maxItems: 30
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+          description: >-
+            Optional input tags; lowercase, whitespace-tokenize and deduplicate on the server. On
+            update, omitted preserves existing tags and [] clears them.
+        body_document:
+          $ref: '#/components/schemas/ReviewDocument'
+      example:
+        student_id: 45b54332-e470-4c21-a839-7428c4f6bf42
+        body_document:
+          blocks:
+            - type: paragraph
+              content:
+                - text: Demonstrated strong leadership.
+                  bold: true
+        tags:
+          - leadership
+    UpdateReviewRequest:
+      type: object
+      required:
+        - body_document
+      additionalProperties: false
+      properties:
+        tags:
+          type: array
+          maxItems: 30
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+          description: >-
+            Optional input tags; lowercase, whitespace-tokenize and deduplicate on the server. On
+            update, omitted preserves existing tags and [] clears them.
+        body_document:
+          $ref: '#/components/schemas/ReviewDocument'
+      example:
+        body_document:
+          blocks:
+            - type: paragraph
+              content:
+                - text: Demonstrated strong leadership.
+                  bold: true
+        tags: []
+    ReviewStatusRequest:
+      type: object
+      required:
+        - action
+      additionalProperties: false
+      properties:
+        action:
+          type: string
+          enum:
+            - hide
+            - unhide
+            - delete
+      example:
+        action: hide
+    ReviewRevision:
+      type: object
+      required:
+        - id
+        - review_id
+        - body_text_snapshot
+        - edited_by
+        - edited_at
+        - body_document_snapshot
+        - tags_snapshot
+      properties:
+        id:
+          type: string
+          format: uuid
+        review_id:
+          type: string
+          format: uuid
+        body_text_snapshot:
+          type: string
+        edited_by:
+          type: string
+          format: uuid
+        edited_at:
+          type: string
+          format: date-time
+        body_document_snapshot:
+          $ref: '#/components/schemas/ReviewDocument'
+        tags_snapshot:
+          type: array
+          items:
+            $ref: '#/components/schemas/NormalizedTag'
+          uniqueItems: true
+    ChatRequest:
+      type: object
+      required:
+        - message
+      additionalProperties: false
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 2000
+          pattern: \S
+        history:
+          type: array
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/ChatTurn'
+          default: []
+          description: >-
+            Earlier turns in chronological order; excludes current message. Untrusted client
+            context, never authorization or instructions to expose protected rows.
+      example:
+        message: Which students demonstrate strong research and teamwork skills?
+    ChatResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+      example:
+        message: Several students have active reviews describing research and teamwork strengths.
+    ApplicationDecisionRequest:
+      oneOf:
+        - $ref: '#/components/schemas/ApproveApplicationsRequest'
+        - $ref: '#/components/schemas/RejectApplicationsRequest'
+      discriminator:
+        propertyName: decision
+        mapping:
+          approve: '#/components/schemas/ApproveApplicationsRequest'
+          reject: '#/components/schemas/RejectApplicationsRequest'
+      example:
+        application_ids:
+          - 32272463-1823-4774-a574-558101103e9a
+        decision: reject
+        reason: The submitted student record could not be physically verified.
+    ApplicationSubmission:
+      oneOf:
+        - $ref: '#/components/schemas/StudentRegistrationSubmission'
+        - $ref: '#/components/schemas/ProgramProposalSubmission'
+        - $ref: '#/components/schemas/DepartmentProposalSubmission'
+      discriminator:
+        propertyName: type
+        mapping:
+          student_registration: '#/components/schemas/StudentRegistrationSubmission'
+          program_proposal: '#/components/schemas/ProgramProposalSubmission'
+          department_proposal: '#/components/schemas/DepartmentProposalSubmission'
+    StudentRegistrationSubmission:
+      type: object
+      required:
+        - type
+        - payload
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          const: student_registration
+        payload:
+          $ref: '#/components/schemas/StudentRegistrationPayload'
+      example:
+        type: student_registration
+        payload:
+          student_id_number: 27-1-12345
+          first_name: Maria
+          last_name: Santos
+          middle_name: null
+          program_id: 8ef76d5f-e6b2-49aa-a627-171dee1b8b65
+    StudentRegistrationPayload:
+      $ref: '#/components/schemas/StudentInput'
+    ProgramProposalSubmission:
+      type: object
+      required:
+        - type
+        - payload
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          const: program_proposal
+        payload:
+          $ref: '#/components/schemas/ProgramProposalPayload'
+    ProgramProposalPayload:
+      type: object
+      required:
+        - name
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+        program_id:
+          type: string
+          format: uuid
+          description: Omit for a new program; include a valid UUID for an edit. Null is not accepted.
+    DepartmentProposalSubmission:
+      type: object
+      required:
+        - type
+        - payload
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          const: department_proposal
+        payload:
+          $ref: '#/components/schemas/DepartmentProposalPayload'
+    DepartmentProposalPayload:
+      type: object
+      required:
+        - name
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+        department_id:
+          type: string
+          format: uuid
+          description: >-
+            Proposed support for department edit requests in README section 6. Omit for a new
+            department; exact edit scope needs team review.
+    ApprovalQueueItem:
+      oneOf:
+        - $ref: '#/components/schemas/FacultyAccountItem'
+        - $ref: '#/components/schemas/StudentRegistrationItem'
+        - $ref: '#/components/schemas/ProgramProposalItem'
+        - $ref: '#/components/schemas/DepartmentProposalItem'
+      discriminator:
+        propertyName: type
+        mapping:
+          faculty_account: '#/components/schemas/FacultyAccountItem'
+          student_registration: '#/components/schemas/StudentRegistrationItem'
+          program_proposal: '#/components/schemas/ProgramProposalItem'
+          department_proposal: '#/components/schemas/DepartmentProposalItem'
+    AuditLogEntry:
+      type: object
+      required:
+        - id
+        - action
+        - entity_type
+        - entity_id
+        - created_at
+        - actor_role
+      properties:
+        id:
+          type: string
+          format: uuid
+        actor_id:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        action:
+          type: string
+        entity_type:
+          type: string
+        entity_id:
+          type: string
+          format: uuid
+        metadata:
+          type:
+            - object
+            - 'null'
+          additionalProperties: true
+          description: Masked metadata only; never review content.
+        created_at:
+          type: string
+          format: date-time
+        actor_role:
+          type: string
+          enum:
+            - faculty
+            - admin
+            - system
+    UuidEqualityFilter:
+      type: string
+      pattern: ^eq\.[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+      example: eq.45b54332-e470-4c21-a839-7428c4f6bf42
+    OwnProfileUpdate:
+      type: object
+      additionalProperties: false
+      required:
+        - full_name
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+    StudentSearchResult:
+      allOf:
+        - $ref: '#/components/schemas/StudentProfile'
+        - type: object
+          required:
+            - program_name
+            - visible_review_tags
+          properties:
+            program_name:
+              type: string
+            visible_review_tags:
+              type: array
+              uniqueItems: true
+              items:
+                $ref: '#/components/schemas/NormalizedTag'
+    NormalizedTag:
+      type: string
+      minLength: 1
+      maxLength: 50
+      pattern: ^[^\s]+$
+      description: Lowercased whitespace-tokenized tag. Backend normalizes before deduplicating.
+    TagSuggestion:
+      type: object
+      additionalProperties: false
+      required:
+        - tag
+      properties:
+        tag:
+          $ref: '#/components/schemas/NormalizedTag'
+    RichTextRun:
+      type: object
+      additionalProperties: false
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          maxLength: 10000
+        bold:
+          type: boolean
+          default: false
+        italic:
+          type: boolean
+          default: false
+      description: >-
+        Literal text rendered escaped; never interpret text as HTML. Embedded newline characters
+        become line breaks.
+    ParagraphBlock:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - content
+      properties:
+        type:
+          type: string
+          const: paragraph
+        content:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/RichTextRun'
+    ListBlock:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - items
+      properties:
+        type:
+          type: string
+          enum:
+            - bullet_list
+            - ordered_list
+        items:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: array
+            minItems: 1
+            maxItems: 200
+            items:
+              $ref: '#/components/schemas/RichTextRun'
+    ReviewDocument:
+      type: object
+      additionalProperties: false
+      required:
+        - blocks
+      properties:
+        blocks:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/ParagraphBlock'
+              - $ref: '#/components/schemas/ListBlock'
+      description: >-
+        Proposed constrained rich-text representation: paragraphs, bold/italic text, lists and line
+        breaks only. No links, media, raw HTML or embedded objects. Backend extracts body_text and
+        separates adjacent blocks and list items with whitespace, trims body_text and counts
+        nonempty whitespace-separated tokens, matching the mockup's 500-word limit. Empty content
+        or more than 500 words returns 422; exactly 500 words is allowed. The additional
+        10000-character cap is a proposed implementation limit for team review. Both aggregate
+        limits are enforced server-side; OpenAPI alone cannot count words across rich-text nodes.
+      x-max-words: 500
+    ReviewStatusResult:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ReviewStatus'
+      description: Lifecycle acknowledgement only. Never return review text after deletion.
+      example:
+        id: 67015de8-1ce8-4ac4-8634-384bf5fb3821
+        status: deleted
+    ChatTurn:
+      type: object
+      additionalProperties: false
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum:
+            - user
+            - assistant
+        content:
+          type: string
+          minLength: 1
+          maxLength: 10000
+    ApproveApplicationsRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - application_ids
+        - decision
+      properties:
+        application_ids:
+          type: array
+          minItems: 1
+          maxItems: 100
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
+        department_assignments:
+          type: array
+          maxItems: 100
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - application_id
+              - department_id
+            properties:
+              application_id:
+                type: string
+                format: uuid
+              department_id:
+                type: string
+                format: uuid
+          description: >-
+            For faculty-account approvals only. Maps selected applications to existing approved
+            departments instead of creating their inline proposals. Duplicate application IDs or
+            assignments outside the batch return 422.
+        decision:
+          type: string
+          const: approve
+    RejectApplicationsRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - application_ids
+        - decision
+        - reason
+      properties:
+        application_ids:
+          type: array
+          minItems: 1
+          maxItems: 100
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
+        decision:
+          type: string
+          const: reject
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          pattern: \S
+    FacultyAccountPayload:
+      type: object
+      required:
+        - full_name
+        - email
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        email:
+          type: string
+          format: email
+        department_id:
+          type: string
+          format: uuid
+        proposed_department_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+      oneOf:
+        - required:
+            - department_id
+        - required:
+            - proposed_department_name
+      additionalProperties: false
+      description: >-
+        Backend supplies email from the verified identity. Exactly one existing department or inline
+        proposal is present.
+    FacultyAccountItem:
+      type: object
+      required:
+        - id
+        - type
+        - payload
+        - status
+        - submitted_by
+        - decided_by
+        - decision_reason
+        - created_at
+        - decided_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        submitted_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        status:
+          type: string
+          enum:
+            - pending
+            - approved
+            - rejected
+        decided_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        decision_reason:
+          type:
+            - string
+            - 'null'
+        created_at:
+          type: string
+          format: date-time
+        decided_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        type:
+          type: string
+          const: faculty_account
+        payload:
+          $ref: '#/components/schemas/FacultyAccountPayload'
+    StudentRegistrationItem:
+      type: object
+      required:
+        - id
+        - type
+        - payload
+        - status
+        - submitted_by
+        - decided_by
+        - decision_reason
+        - created_at
+        - decided_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        submitted_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        status:
+          type: string
+          enum:
+            - pending
+            - approved
+            - rejected
+        decided_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        decision_reason:
+          type:
+            - string
+            - 'null'
+        created_at:
+          type: string
+          format: date-time
+        decided_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        type:
+          type: string
+          const: student_registration
+        payload:
+          $ref: '#/components/schemas/StudentRegistrationPayload'
+    ProgramProposalItem:
+      type: object
+      required:
+        - id
+        - type
+        - payload
+        - status
+        - submitted_by
+        - decided_by
+        - decision_reason
+        - created_at
+        - decided_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        submitted_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        status:
+          type: string
+          enum:
+            - pending
+            - approved
+            - rejected
+        decided_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        decision_reason:
+          type:
+            - string
+            - 'null'
+        created_at:
+          type: string
+          format: date-time
+        decided_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        type:
+          type: string
+          const: program_proposal
+        payload:
+          $ref: '#/components/schemas/ProgramProposalPayload'
+    DepartmentProposalItem:
+      type: object
+      required:
+        - id
+        - type
+        - payload
+        - status
+        - submitted_by
+        - decided_by
+        - decision_reason
+        - created_at
+        - decided_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        submitted_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        status:
+          type: string
+          enum:
+            - pending
+            - approved
+            - rejected
+        decided_by:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        decision_reason:
+          type:
+            - string
+            - 'null'
+        created_at:
+          type: string
+          format: date-time
+        decided_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        type:
+          type: string
+          const: department_proposal
+        payload:
+          $ref: '#/components/schemas/DepartmentProposalPayload'
+    FacultyRegistrationRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - full_name
+        - terms_accepted
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        department_id:
+          type: string
+          format: uuid
+        proposed_department_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        terms_accepted:
+          type: boolean
+          const: true
+      oneOf:
+        - required:
+            - department_id
+        - required:
+            - proposed_department_name
+      description: >-
+        Proposed onboarding payload. role is always faculty; status is always pending. Exactly one
+        existing department or inline department name is required.
+    RegistrationReceipt:
+      type: object
+      required:
+        - faculty_id
+        - application_id
+        - status
+      properties:
+        faculty_id:
+          type: string
+          format: uuid
+        application_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          const: pending
+      description: Receipt permits onboarding without exposing a pending department directory.
+  headers:
+    ContentRange:
+      description: Returned row range and total count; e.g. 0-19/73 or */0. Total is * without count=exact.
+      schema:
+        type: string
+      example: 0-19/73
