@@ -183,7 +183,7 @@ export interface paths {
         };
         /**
          * List applications visible to the caller
-         * @description Verified faculty see only their own applications; admins see all queues. Native or search supports payload->>name, payload->>first_name, payload->>last_name, payload->>student_id_number, payload->>email and payload->>full_name. Example: (payload->>name.ilike.*computer*,payload->>email.ilike.*gmail.com*). The backend enforces submitted_by, never a client filter alone.
+         * @description Active faculty see only their own applications; admins see all queues. Pending faculty may read only their own faculty_account applications, including the status, decision_reason and previous rejected submissions needed by the pending-verification screen. RLS must enforce both submitted_by=auth.uid() and type=faculty_account for pending callers, regardless of client filters. Requests for another person's rows or another application type return no matching rows. This onboarding exception grants no faculty feature access. Native or search supports payload->>name, payload->>first_name, payload->>last_name, payload->>student_id_number, payload->>email and payload->>full_name. Example: (payload->>name.ilike.*computer*,payload->>email.ilike.*gmail.com*). The backend enforces submitted_by, never a client filter alone.
          */
         get: operations["listApplications"];
         put?: never;
@@ -368,8 +368,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Submit first-time faculty enrollment after Google OAuth
-         * @description Proposed authenticated onboarding operation. Derive faculty_id and email from the verified Google/Supabase identity. Create or complete the pending profile, faculty-account queue payload, required inline department proposal, and Terms acceptance/audit records atomically. No faculty/admin role can be chosen by the applicant. Existing completed enrollment returns 409. Existing department UUID must reference an approved entry. Pending users get only onboarding, their own profile/status and approved department reference choices. The exact scope of pending reference access requires team review.
+         * Submit faculty enrollment or resubmit after rejection
+         * @description Proposed authenticated onboarding operation. Derive faculty_id and email from the verified Google/Supabase identity. A first submission creates or completes a pending profile and creates a faculty_account queue item. If a previous faculty_account submission was rejected and no pending submission exists, accept corrected input and create a NEW queue item with a NEW application_id while preserving the same faculty_id. Never reopen or overwrite the rejected queue item or its reason. An existing pending faculty_account application returns 409 ENROLLMENT_PENDING. An already active faculty/admin profile returns 409 ALREADY_ACTIVE. Serialize concurrent submissions per authenticated identity and enforce at most one pending faculty_account application, so retrying or double-clicking cannot create duplicate entries. Create the pending application, any required inline department proposal, Terms acceptance and audit records atomically. Never promote a role or activate a profile through this path. Existing department UUIDs must refer to approved entries. Pending users may read their own profile, own faculty-account decisions/reasons and approved department reference choices. After rejection, use listApplications to display the reason and this operation to resubmit. Approved reference-list access remains a proposed onboarding exception for team review.
          */
         post: operations["completeFacultyRegistration"];
         delete?: never;
@@ -952,6 +952,15 @@ export interface components {
                  *       "hint": "Check the record identifier."
                  *     }
                  */
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description A pending enrollment already exists or the authenticated profile is already active. Rejected applications alone do not cause a conflict; they permit a new submission. */
+        RegistrationConflict: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
                 "application/json": components["schemas"]["Error"];
             };
         };
@@ -2205,7 +2214,7 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
-            409: components["responses"]["Conflict"];
+            409: components["responses"]["RegistrationConflict"];
             422: components["responses"]["ValidationError"];
             500: components["responses"]["ServerError"];
         };

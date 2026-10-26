@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **Faculty enrollment lifecycle:** Documented pending applicants' access to only
+  their own faculty-account decisions/rejection reasons, rejection resubmission
+  as a new application, duplicate/active-account conflicts and concurrent-submit
+  protection. Recorded the unresolved admin Auth identity-provisioning flow.
 - **Contract review alignment:** Documented the mockup's 500-word review limit and
   422 word-limit examples, added a proposed active-review tag-suggestion RPC, and
   aligned OpenAPI license metadata with the README's All Rights Reserved terms.

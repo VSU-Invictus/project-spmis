@@ -90,9 +90,32 @@ also reconcile the sketch's non-null faculty department_id constraint.
 
 ### Pending access
 
-The draft allows pending users to read their own profile/status and approved
-department choices needed for onboarding. This is a proposed narrow exception to
-the README's broad "no access" wording. No other faculty feature is available.
+The draft allows pending users to read their own profile and their own
+faculty_account application history through listApplications, including rejection
+reasons. RLS must require both submitted_by=auth.uid() and type=faculty_account
+for pending callers. A client filter cannot expand that scope. No other person's
+applications or non-faculty application types are visible to them.
+
+This narrow onboarding-status exception supports the README's requirement that
+submitters receive a rejection reason. Reading approved department choices is a
+separate proposed exception for onboarding that still requires team review.
+No other faculty feature is available while pending.
+
+### Faculty rejection and resubmission
+
+Registration follows the README's terminal application lifecycle:
+
+- First enrollment creates a pending application.
+- A pending application blocks duplicates with 409 ENROLLMENT_PENDING.
+- After rejection, corrected input creates a new application_id for the same
+  faculty_id; the rejected record, decision reason and audit trail are retained.
+- An active faculty/admin profile returns 409 ALREADY_ACTIVE and cannot use
+  registration to reset its status or role.
+
+Concurrent requests must not create more than one pending faculty-account
+application for the same identity. The database implementation must serialize or
+uniquely constrain those submissions. Pending users display their decision/reason
+from listApplications, then resubmit through completeFacultyRegistration.
 
 ### Counts, filters and native errors
 
@@ -125,6 +148,19 @@ history as well as retrieved reviews before calling the provider. Hidden/deleted
 content cannot be re-authorized by replaying client history.
 
 ## Decisions required before the contract is final
+
+### Admin Add Faculty versus Auth identity provisioning
+
+The mockup's Add Faculty form accepts name, email, department and role, but
+createFacultyProfile requires the UUID of an existing Supabase Auth identity.
+No identity-selection or provisioning flow is specified. This operation creates
+only the application profile; it cannot create a valid Auth identity from an
+invented UUID or an email string.
+
+Norman must decide whether Add Faculty selects an existing identity through a
+controlled workflow, or whether a separate approved provisioning operation is
+needed. Until then the current create-profile operation is limited to existing
+identities, and the mockup's email-only add flow is not covered end-to-end.
 
 ### AI review summary
 
