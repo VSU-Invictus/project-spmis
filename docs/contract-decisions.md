@@ -50,6 +50,16 @@ selects de-identified text or embeddings. The frontend cannot obtain that shape
 from the base reviews table without joins. Review revisions additionally need
 rich-document and tag snapshots, which are additions to the schema sketch.
 
+The attribution projection needs its own permissions design: a security-invoker
+view applies the caller's grants and underlying row policies. Joining directly
+to private faculty profiles that the caller cannot read can suppress other
+authors' reviews or their attribution. Use a separately permissioned projection
+containing only the author identity/name and department required for attribution;
+do not grant broad private-profile access to make the join work. Its database
+implementation remains a backend task. Test with two different faculty identities
+that active reviews retain author names/departments, own hidden reviews remain
+readable, and other users' hidden/deleted content and private emails stay blocked.
+
 ### Review document and limits
 
 Review create/edit requests send a `body_document` with paragraphs, bold/italic
@@ -99,6 +109,9 @@ applications or non-faculty application types are visible to them.
 This narrow onboarding-status exception supports the README's requirement that
 submitters receive a rejection reason. Reading approved department choices is a
 separate proposed exception for onboarding that still requires team review.
+Under that draft proposal, server policies limit pending callers to approved
+department rows regardless of filters; they cannot read pending/rejected entries
+or mutate the list. This is not an approved expansion of pending-user access.
 No other faculty feature is available while pending.
 
 ### Faculty rejection and resubmission

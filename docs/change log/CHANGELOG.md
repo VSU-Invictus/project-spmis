@@ -32,6 +32,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **Contract permission descriptions:** Clarified the proposed pending-user
+  access to approved department choices and the separate safe author projection
+  needed by the review view without exposing private faculty profiles. Backend
+  permission implementation and team approval of onboarding access remain pending.
 - **UI:** Displayed full Faculty Applications Decision / reason text with wrapping and expanding rows; moved the column left by narrowing the leading columns and reducing its left padding.
 - **UI:** Left-aligned the Decision / reason header and cells in the Faculty Applications table, overriding the shared final-column alignment.
 - **UI:** Left-aligned the Audit Log Performed By and Target headers and cells, overriding the shared table alignment rules.

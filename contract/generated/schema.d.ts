@@ -111,7 +111,7 @@ export interface paths {
         };
         /**
          * List departments
-         * @description Verified faculty see approved entries; admins can filter all statuses. Pending users have no directory access. Admin direct additions default to approved on the server and produce an audit event. Proposed onboarding exception: pending applicants may read only approved department choices. Team approval is required for this narrow exception to the current pending-access wording.
+         * @description Verified faculty see approved entries; admins can filter all statuses. Draft onboarding proposal: pending applicants may read approved department choices only, with server-side policies enforcing status=approved regardless of client filters. They cannot read pending or rejected entries or mutate the list. This narrow exception to the README's pending-access rule requires team approval before implementation. Admin direct additions default to approved on the server and produce an audit event.
          */
         get: operations["listDepartments"];
         put?: never;
@@ -347,7 +347,7 @@ export interface paths {
         };
         /**
          * List attributed reviews with rich text and normalized tags
-         * @description Proposed read-only SECURITY INVOKER view joining review rows, safe author identity and review tags. Verified faculty see active plus their own hidden reviews; deleted reviews never appear. Dashboard sends status=eq.active and order=created_at.desc,id.asc. Excludes deidentified_text and embeddings. Admin raw-content access is unresolved in the README and is excluded pending review.
+         * @description Proposed read-only SECURITY INVOKER view joining review rows, safe author identity and review tags. Author attribution must use a separately permissioned safe projection, not a direct join that depends on access to another user's private faculty profile. Expose only the author identity/name and department needed for attribution, never email or other private profile fields. The invoker must have the grants and row access needed for this projection without broadening private profile access. Backend design and tests must prove that another faculty member's active review retains its author attribution, own hidden reviews remain readable, and inaccessible review content and private emails remain blocked. Verified faculty see active plus their own hidden reviews; deleted reviews never appear. Dashboard sends status=eq.active and order=created_at.desc,id.asc. Excludes deidentified_text and embeddings. Admin raw-content access is unresolved in the README and is excluded pending review.
          */
         get: operations["listReviews"];
         put?: never;
