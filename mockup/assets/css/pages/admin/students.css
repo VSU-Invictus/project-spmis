@@ -1,0 +1,20 @@
+/* Admin Students Specific Column Widths */
+.table-scroll :is(.table-header-row, .table-row) {
+  min-width: 900px;
+}
+
+.th-cell.col-id, .td-cell.col-id { width: auto; flex: 130 1 0; padding-left: var(--space-9, 24px); }
+.th-cell.col-fname, .td-cell.col-fname { width: auto; flex: 150 1 0; }
+.th-cell.col-mname, .td-cell.col-mname { width: auto; flex: 120 1 0; }
+.th-cell.col-lname, .td-cell.col-lname { width: auto; flex: 120 1 0; }
+.th-cell.col-program, .td-cell.col-program { width: auto; flex: 250 1 0; }
+.th-cell.col-action, .td-cell.col-action { 
+  width: auto; 
+  flex: 160 1 0; 
+  flex-direction: row; 
+  align-items: center; 
+  justify-content: flex-end; 
+  gap: var(--space-3, 8px); 
+  padding: 0.875rem var(--space-9, 24px) 0.875rem var(--space-5, 12px); 
+  border: none !important;
+}

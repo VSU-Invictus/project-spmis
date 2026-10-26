@@ -1,0 +1,32 @@
+/* Admin Faculty Specific Styles */
+.table-scroll :is(.table-header-row, .table-row) {
+  min-width: 960px;
+}
+
+.th-cell.col-name, .td-cell.col-name {
+  flex: 210 1 0;
+  padding-left: var(--space-9, 24px);
+}
+
+.th-cell.col-email, .td-cell.col-email {
+  flex: 220 1 0;
+}
+
+.th-cell.col-dept, .td-cell.col-dept {
+  flex: 290 1 0;
+}
+
+.th-cell.col-role, .td-cell.col-role {
+  flex: 100 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.th-cell.col-action, .td-cell.col-action {
+  flex: 180 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: var(--space-9, 24px);
+}
