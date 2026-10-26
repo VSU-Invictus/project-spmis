@@ -2166,6 +2166,8 @@ components:
         name:
           type: string
           minLength: 1
+          maxLength: 200
+          pattern: '\S'
         program_id:
           type: string
           format: uuid
@@ -2191,6 +2193,8 @@ components:
         name:
           type: string
           minLength: 1
+          maxLength: 200
+          pattern: '\S'
         department_id:
           type: string
           format: uuid

@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Contract review alignment:** Documented the mockup's 500-word review limit and
   422 word-limit examples, added a proposed active-review tag-suggestion RPC, and
   aligned OpenAPI license metadata with the README's All Rights Reserved terms.
+  Program and department proposal names now use the same nonblank, 200-character
+  validation as direct admin additions.
 - **OpenAPI contract draft:** Added OpenAPI 3.1 operations and shared schemas for
   profiles, student search, managed lists, reviews/history, applications, chat,
   registration and audit metadata. Added typed application payloads, constrained
