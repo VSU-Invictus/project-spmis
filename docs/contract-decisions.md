@@ -2,6 +2,15 @@
 
 This log records API decisions that require agreement across the frontend and backend teams. The OpenAPI contract remains the source of truth after a decision is approved.
 
+## Issue #3 scope
+
+The contract contains the 18 explicitly named operations, eight department/program
+CRUD operations and one supporting review-history read: 27 operations in total.
+Student browsing uses searchStudents. Faculty enrollment, admin profile
+creation/removal, student removal and a separate directory read are outside this
+PR. Their broader project requirements remain in the project README; removing
+them from this PR does not change those requirements.
+
 ## Requirements confirmed by the README
 
 ### Review mutations use Edge Functions
@@ -83,58 +92,28 @@ OpenAPI metadata uses All Rights Reserved and links to the README's existing
 ownership/licensing terms. This does not introduce a separate educational license
 or grant additional rights.
 
-### Profile updates and enrollment
+### Profile updates
 
 `POST /rest/v1/rpc/update_own_profile` accepts only full_name and derives the
 subject from the JWT. The table PATCH is admin-only. RLS controls rows;
 column permissions/guarded functions or triggers enforce protected fields.
-
-`POST /functions/v1/registration` is proposed to complete Google-OAuth enrollment
-with a name, existing department or inline department proposal, and mandatory
-Terms acceptance. The function supplies identity/email from the JWT and creates
-the pending profile/application/audit and Terms acceptance records atomically.
-Terms acceptance needs a backend record not yet present in the schema sketch.
-The Admin create-profile operation requires an existing auth.users UUID; it does
-not provision Auth accounts. The handling of pending department proposals must
-also reconcile the sketch's non-null faculty department_id constraint.
+Faculty profile creation and removal are outside this issue's operation scope.
 
 ### Pending access
 
-The draft allows pending users to read their own profile and their own
-faculty_account application history through listApprovalQueueItems, including rejection
-reasons. RLS must require both submitted_by=auth.uid() and type=faculty_account
-for pending callers. A client filter cannot expand that scope. No other person's
-applications or non-faculty application types are visible to them.
-
-This narrow onboarding-status exception supports the README's requirement that
-submitters receive a rejection reason. Reading approved department choices is a
-separate proposed exception for onboarding that still requires team review.
-Under that draft proposal, server policies limit pending callers to approved
-department rows regardless of filters; they cannot read pending/rejected entries
-or mutate the list. This is not an approved expansion of pending-user access.
-No other faculty feature is available while pending.
-
-### Faculty rejection and resubmission
-
-Registration follows the README's terminal application lifecycle:
-
-- First enrollment creates a pending application.
-- A pending application blocks duplicates with 409 ENROLLMENT_PENDING.
-- After rejection, corrected input creates a new application_id for the same
-  faculty_id; the rejected record, decision reason and audit trail are retained.
-- An active faculty/admin profile returns 409 ALREADY_ACTIVE and cannot use
-  registration to reset its status or role.
-
-Concurrent requests must not create more than one pending faculty-account
-application for the same identity. The database implementation must serialize or
-uniquely constrain those submissions. Pending users display their decision/reason
-from listApprovalQueueItems, then resubmit through completeFacultyRegistration.
+Pending users may read their own profile through getOwnProfile and their own
+faculty_account application history through listApprovalQueueItems, including
+rejection reasons. RLS must require both submitted_by=auth.uid() and
+type=faculty_account for pending queue callers, regardless of client filters.
+No other person's applications or non-faculty application types are visible.
+This status-reading exception supports the required application outcome flow;
+it grants no directory access or other faculty feature access.
 
 ### Counts, filters and native errors
 
 Table queries use PostgREST operators and explicit filters, not a generic search
 parameter. Count requests use Prefer: count=exact and Content-Range; pages can
-return 200 or 206. The RPC has nullable optional search arguments with defaults;
+return 200 or 206. The student-search RPC has nullable optional arguments with defaults;
 limit/offset/order are result modifiers. Native table validation is documented
 as 400, uniqueness/foreign keys as 409. Edge validation uses 422. Inaccessible
 rows can be filtered out rather than returning 403; an empty update is not proof
@@ -144,10 +123,10 @@ of success. Public apikey plus the user's bearer token are required.
 
 Approval batches are all-or-nothing; any already-decided item rejects the batch.
 Faculty approval may redirect a proposed department using department_assignments.
-Removal rejects referenced faculty/student/program/department records rather
+Removal rejects referenced program/department records rather
 than cascading into reviews or audit history. Application decisions also create
 persistent in-app outcome notifications. Notification read/acknowledgement
-operations remain unspecified if the indicator needs unread state.
+operations are outside Issue #3.
 
 The audit actor_role snapshot is a proposed database addition required by the
 mockup's role filter. Historical audit entries must not change when a user's
@@ -160,48 +139,19 @@ is untrusted and grants no data access. The backend must de-identify prompts and
 history as well as retrieved reviews before calling the provider. Hidden/deleted
 content cannot be re-authorized by replaying client history.
 
-## Decisions required before the contract is final
+## Review considerations within Issue #3
 
-### Admin Add Faculty versus Auth identity provisioning
+### Review attachment metadata
 
-The mockup's Add Faculty form accepts name, email, department and role, but
-createFacultyProfile requires the UUID of an existing Supabase Auth identity.
-No identity-selection or provisioning flow is specified. This operation creates
-only the application profile; it cannot create a valid Auth identity from an
-invented UUID or an email string.
+Issue #3 requires attachment metadata in visible review reads. The internal
+ReviewAttachment schema includes the Storage object key; public responses use
+the separate closed ReviewAttachmentMetadata schema without that key. Metadata
+visibility follows the parent review, including owner-only hidden content and
+invisibility after deletion. The embedding and attachment database entities are
+schema references, not client write endpoints.
 
-Norman must decide whether Add Faculty selects an existing identity through a
-controlled workflow, or whether a separate approved provisioning operation is
-needed. Until then the current create-profile operation is limited to existing
-identities, and the mockup's email-only add flow is not covered end-to-end.
-
-### AI review summary
-
-The student-detail mockup and README require an AI-generated summary of visible reviews, but the README's required Edge Function table does not name a summary operation.
-
-Decision needed:
-
-- Add a dedicated summary operation, such as `POST /functions/v1/students/{id}/summary`; or
-- Include summary generation in another explicitly approved operation.
-
-The selected design must preserve caller-specific visibility, especially the rule that a summary containing an owner's hidden review must never be returned to another user.
-
-### Review attachments
-
-Issue #3 requires visible review reads to include attachment metadata. The internal `ReviewAttachment`
-schema records the database entity including its Storage object key. Public review responses reference
-a separate closed `ReviewAttachmentMetadata` schema that excludes the object key entirely, including
-from generated response types and examples. This avoids relying on writeOnly annotations to redact
-the internal field.
-Upload, signed-download and removal operations are still not specified.
-
-Decision needed:
-
-- Define the v1 upload, signed-download and removal operations; or
-- Explicitly defer attachment mutations and downloads from the Milestone 2 API contract while
-  retaining the required metadata schema.
-
-Any approved design must enforce the parent review's visibility and deletion rules independently in Supabase Storage.
+Upload, signed-download and attachment-removal operations are outside this
+issue. Including metadata does not add or approve those Storage workflows.
 
 ### Admin review access conflict
 
@@ -209,7 +159,7 @@ README §1 says admins never access review content, whereas §6 allows admin min
 and other wording discusses shared review visibility. This is not resolved by
 OpenAPI tags. The draft preserves explicitly required admin search/chat mining
 but excludes raw review/history reads pending the PM's decision. The final role
-policy must be consistent across mining, summary, direct reads and RLS.
+policy must be consistent across mining, direct reads and RLS.
 
 ### Supabase gateway errors
 
@@ -236,7 +186,7 @@ Each operation named by Issue #3 now has its own operation ID. The read contract
 | --- | --- | --- |
 | `getStudentById` | `GET /rest/v1/rpc/get_student_by_id?p_student_id=<uuid>` | One visible StudentProfile object or null |
 | `getOwnProfile` | `GET /rest/v1/rpc/get_own_profile` | Own FacultyProfile object or null |
-| `listStudentProfiles` | `GET /rest/v1/student_profiles` | Array of accessible students, with optional filters |
+| `searchStudents` | `GET /rest/v1/rpc/search_students` | Student browsing/search results with optional filters and pagination |
 | `listFaculty` | `GET /rest/v1/faculty_profiles` | Array of profiles allowed by the caller's role and RLS |
 | `listStudentReviews` | `GET /rest/v1/review_details` with `student_id=eq.<uuid>` | Array of visible reviews and attachment metadata |
 | `listTags` | `GET /rest/v1/rpc/suggest_review_tags` | Distinct accessible active-review tags |
@@ -246,7 +196,7 @@ jsonb, so their responses are objects/null rather than table-result arrays. `get
 accepts one required UUID argument without a PostgREST eq. prefix; it is available only to verified
 faculty/admins and returns null for missing or inaccessible rows. `getOwnProfile` accepts no
 arguments, derives the identity exclusively from auth.uid(), and permits pending users to read
-their own status. A profile not yet created during enrollment returns null and grants no access.
+their own status. A profile not yet provisioned returns null and grants no access.
 Both functions must enforce the caller's grants/RLS and perform no writes. Their signatures and
 response shapes must be implemented and tested in the backend phase and reviewed with this PR.
 

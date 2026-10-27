@@ -15,10 +15,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   explicit ReviewTag, internal ReviewEmbedding and ReviewAttachment schemas,
   reusable realistic mock examples, and documented mappings from the issue's
   product-level read names to their curated PostgREST operations.
-- **Faculty enrollment lifecycle:** Documented pending applicants' access to only
-  their own faculty-account decisions/rejection reasons, rejection resubmission
-  as a new application, duplicate/active-account conflicts and concurrent-submit
-  protection. Recorded the unresolved admin Auth identity-provisioning flow.
 - **Contract review alignment:** Documented the mockup's 500-word review limit and
   422 word-limit examples, added a proposed active-review tag-suggestion RPC, and
   aligned OpenAPI license metadata with the README's All Rights Reserved terms.
@@ -26,10 +22,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   validation as direct admin additions.
 - **OpenAPI contract draft:** Added OpenAPI 3.1 operations and shared schemas for
   profiles, student search, managed lists, reviews/history, applications, chat,
-  registration and audit metadata. Added typed application payloads, constrained
+  and audit metadata. Added typed application payloads, constrained
   rich-text documents, native PostgREST filters/counts, lifecycle acknowledgements,
   pinned lint/type-generation commands and a generated-type freshness check.
-  API proposals and unresolved summary/attachment/admin-access requirements are
+  API proposals, attachment metadata boundaries and admin-access considerations are
   recorded in `docs/contract-decisions.md`; backend/RLS implementation is pending.
 - **Navigation Cache & Instant Page Revisits (React Query & Mockup):** Eliminated repetitive skeleton loading states across Admin and Faculty route navigation (#113):
   - Configured `@tanstack/react-query` `QueryClient` cache defaults (`staleTime: 5m`, `gcTime: 30m`, `refetchOnMount: false`, `refetchOnWindowFocus: false`) and added `navigationCache.ts` utilities.
@@ -40,6 +36,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **Issue #3 scope:** Removed five additional operations for faculty profile
+  creation/removal, student directory/removal and faculty enrollment, together
+  with their exclusive schemas, response and filter parameter. Narrowed current
+  documentation to the 27 operations required by Issue #3 and removed the
+  enrollment-specific department-access proposal from this contract.
 - **Contract type optionality:** Aligned type generation and freshness-check
   options so optional rich-text formatting flags and chat history stay optional
   in TypeScript, matching the documented request examples and backend defaults.
@@ -48,12 +49,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Issue #3 review corrections:** Split public attachment metadata from the
   internal Storage entity, marked review body text read-only, added completed
   approval/rejection response examples and explicit admin mutation permissions.
-  Aligned six operation IDs with the issue and documented the two remaining
-  shared-read mappings for reviewer acceptance. Corrected Redocly EOF formatting.
-- **Contract permission descriptions:** Clarified the proposed pending-user
-  access to approved department choices and the separate safe author projection
-  needed by the review view without exposing private faculty profiles. Backend
-  permission implementation and team approval of onboarding access remain pending.
+  Aligned operation IDs with the issue and corrected Redocly EOF formatting.
+- **Contract permission descriptions:** Documented the separate safe author
+  projection needed by the review view without exposing private faculty profiles.
+  Backend permission implementation remains pending.
 - **UI:** Displayed full Faculty Applications Decision / reason text with wrapping and expanding rows; moved the column left by narrowing the leading columns and reducing its left padding.
 - **UI:** Left-aligned the Decision / reason header and cells in the Faculty Applications table, overriding the shared final-column alignment.
 - **UI:** Left-aligned the Audit Log Performed By and Target headers and cells, overriding the shared table alignment rules.

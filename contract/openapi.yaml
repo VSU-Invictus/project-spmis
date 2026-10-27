@@ -107,7 +107,7 @@ paths:
         profile. Proposed read-only STABLE, SECURITY INVOKER SQL function with no arguments.
         Derive the subject exclusively from auth.uid() and apply FacultyProfile RLS; never
         accept a profile ID, email, role or status as an identity selector. Return the own row
-        as a single jsonb object, or JSON null if enrollment has not created the profile yet.
+        as a single jsonb object, or JSON null if no profile has been provisioned yet.
         This is a scalar jsonb result, not a SETOF result or an array. A null profile grants no
         feature access; pending profiles remain restricted to onboarding. It performs no writes.
       responses:
@@ -132,7 +132,7 @@ paths:
                     created_at: '2026-10-26T00:00:00Z'
                     updated_at: '2026-10-26T00:00:00Z'
                 notEnrolled:
-                  summary: Authenticated identity has not completed profile enrollment
+                  summary: Authenticated identity does not have a faculty profile yet
                   value: null
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -200,39 +200,6 @@ paths:
         Admins may list profiles. Other faculty cannot retrieve private profile emails. Native or
         search supports full_name and email. Contributor attribution is returned through
         review_details.
-    post:
-      tags:
-        - Admin
-      operationId: createFacultyProfile
-      summary: Create a profile for an existing Supabase Auth user
-      parameters:
-        - $ref: '#/components/parameters/PreferReturnRepresentation'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminFacultyInput'
-      responses:
-        '201':
-          description: Faculty profile created
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FacultyProfile'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-      description: >-
-        Admin only. id must equal an existing auth.users.id. This operation neither creates OAuth
-        identities nor provisions new Auth users. Backend creates an audit entry.
     patch:
       tags:
         - Admin
@@ -268,28 +235,6 @@ paths:
         Admin only. Faculty use updateOwnProfile instead. RLS selects rows; database column grants
         or a guarded function/trigger must independently prevent non-admin changes to role, status,
         email and department. Every mutation is audited.
-    delete:
-      tags:
-        - Admin
-      operationId: deleteFacultyProfile
-      summary: Remove an unreferenced faculty profile
-      parameters:
-        - $ref: '#/components/parameters/RequiredIdFilter'
-      responses:
-        '204':
-          description: Faculty profile removed
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-      description: >-
-        Admin only. Return 409 if reviews, revisions, applications or audit records reference the
-        profile. Never cascade-delete authored content or audit history. This does not delete or
-        disable the Auth identity.
   /rest/v1/rpc/suggest_review_tags:
     get:
       tags:
@@ -441,74 +386,6 @@ paths:
         '416':
           $ref: '#/components/responses/RangeNotSatisfiable'
   /rest/v1/student_profiles:
-    get:
-      tags:
-        - Faculty
-        - Admin
-      operationId: listStudentProfiles
-      summary: List student profiles visible to the caller
-      parameters:
-        - $ref: '#/components/parameters/CountPreference'
-        - $ref: '#/components/parameters/IdFilter'
-        - $ref: '#/components/parameters/ProgramFilter'
-        - $ref: '#/components/parameters/Search'
-        - $ref: '#/components/parameters/Limit'
-        - $ref: '#/components/parameters/Offset'
-        - name: order
-          in: query
-          description: Stable order including a unique id tie-breaker.
-          schema:
-            type: string
-            enum:
-              - created_at.desc,id.asc
-              - created_at.asc,id.asc
-              - last_name.asc,first_name.asc,id.asc
-            default: created_at.desc,id.asc
-      responses:
-        '200':
-          description: Student profiles returned
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StudentProfile'
-              example:
-                - id: 45b54332-e470-4c21-a839-7428c4f6bf42
-                  student_id_number: 27-1-12345
-                  last_name: Santos
-                  first_name: Maria
-                  middle_name: null
-                  program_id: 8ef76d5f-e6b2-49aa-a627-171dee1b8b65
-                  registration_source: admin_direct
-                  created_at: '2026-10-26T00:00:00Z'
-                  updated_at: '2026-10-26T00:00:00Z'
-          headers:
-            Content-Range:
-              $ref: '#/components/headers/ContentRange'
-        '206':
-          description: Partial result page when a count is requested
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StudentProfile'
-          headers:
-            Content-Range:
-              $ref: '#/components/headers/ContentRange'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '416':
-          $ref: '#/components/responses/RangeNotSatisfiable'
-      description: >-
-        Verified faculty and admins. Filter id for a detail result; no matches returns []. Native or
-        search supports first_name, last_name and student_id_number. Program display names are
-        resolved using listPrograms.
     post:
       tags:
         - Admin
@@ -578,25 +455,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '409':
           $ref: '#/components/responses/Conflict'
-    delete:
-      tags:
-        - Admin
-      operationId: deleteStudent
-      summary: Remove a student
-      parameters:
-        - $ref: '#/components/parameters/RequiredIdFilter'
-      responses:
-        '204':
-          description: Student removed
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-      description: Admin only. Return 409 for referenced students; never cascade-delete review content.
   /rest/v1/departments:
     get:
       tags:
@@ -652,12 +510,9 @@ paths:
         '416':
           $ref: '#/components/responses/RangeNotSatisfiable'
       description: >-
-        Verified faculty see approved entries; admins can filter all statuses. Draft onboarding
-        proposal: pending applicants may read approved department choices only, with server-side
-        policies enforcing status=approved regardless of client filters. They cannot read pending
-        or rejected entries or mutate the list. This narrow exception to the README's pending-access
-        rule requires team approval before implementation. Admin direct additions default to
-        approved on the server and produce an audit event.
+        Verified faculty see approved entries; admins can filter all statuses. Pending users
+        have no directory access. Admin direct additions default to approved on the server and
+        produce an audit event.
     post:
       tags:
         - Admin
@@ -1109,7 +964,8 @@ paths:
       description: >-
         Verified faculty only. Backend sets submitted_by=auth.uid(), status=pending, timestamps and
         null decision fields. Caller cannot set status or decision fields. Produce an audit event.
-        Faculty-account enrollment uses completeFacultyRegistration instead.
+        Faculty-account enrollment submissions are outside Issue #3. Existing faculty-account
+        queue items remain readable and decidable through the listed queue operations.
   /rest/v1/audit_log_entries:
     get:
       tags:
@@ -1541,53 +1397,6 @@ paths:
         never appear. Dashboard sends status=eq.active and order=created_at.desc,id.asc. Excludes
         deidentified_text and embeddings. Admin raw-content access is unresolved in the README and
         is excluded pending review.
-  /functions/v1/registration:
-    post:
-      tags:
-        - Auth
-      operationId: completeFacultyRegistration
-      summary: Submit faculty enrollment or resubmit after rejection
-      description: >-
-        Proposed authenticated onboarding operation. Derive faculty_id and email from the verified
-        Google/Supabase identity. A first submission creates or completes a pending profile and
-        creates a faculty_account queue item. If a previous faculty_account submission was rejected
-        and no pending submission exists, accept corrected input and create a NEW queue item with
-        a NEW application_id while preserving the same faculty_id. Never reopen or overwrite the
-        rejected queue item or its reason. An existing pending faculty_account application returns
-        409 ENROLLMENT_PENDING. An already active faculty/admin profile returns 409 ALREADY_ACTIVE.
-        Serialize concurrent submissions per authenticated identity and enforce at most one pending
-        faculty_account application, so retrying or double-clicking cannot create duplicate entries.
-        Create the pending application, any required inline department proposal, Terms acceptance
-        and audit records atomically. Never promote a role or activate a profile through this path.
-        Existing department UUIDs must refer to approved entries. Pending users may read their own
-        profile, own faculty-account decisions/reasons and approved department reference choices.
-        After rejection, use listApprovalQueueItems to display the reason and this operation to resubmit.
-        Approved reference-list access remains a proposed onboarding exception for team review.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FacultyRegistrationRequest'
-      responses:
-        '201':
-          description: Enrollment submitted for admin verification
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RegistrationReceipt'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/RegistrationConflict'
-        '422':
-          $ref: '#/components/responses/ValidationError'
-        '500':
-          $ref: '#/components/responses/ServerError'
 components:
   securitySchemes:
     projectApiKey:
@@ -1668,11 +1477,6 @@ components:
       in: query
       schema:
         $ref: '#/components/schemas/UuidEqualityFilter'
-    ProgramFilter:
-      name: program_id
-      in: query
-      schema:
-        $ref: '#/components/schemas/UuidEqualityFilter'
     ManagedStatusFilter:
       name: status
       in: query
@@ -1723,27 +1527,6 @@ components:
             message: The requested record was not found.
             details: null
             hint: Check the record identifier.
-    RegistrationConflict:
-      description: >-
-        A pending enrollment already exists or the authenticated profile is already active.
-        Rejected applications alone do not cause a conflict; they permit a new submission.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            enrollmentPending:
-              value:
-                code: ENROLLMENT_PENDING
-                message: Your faculty application is already awaiting a decision.
-                details: No new application was created.
-                hint: Check your current application status before submitting again.
-            alreadyActive:
-              value:
-                code: ALREADY_ACTIVE
-                message: Your account is already active.
-                details: Active accounts cannot submit a faculty enrollment application.
-                hint: Continue to your authorized portal.
     Conflict:
       description: The operation conflicts with the record's current state
       content:
@@ -1896,41 +1679,6 @@ components:
         status: active
         created_at: '2026-10-26T00:00:00Z'
         updated_at: '2026-10-26T00:00:00Z'
-    AdminFacultyInput:
-      type: object
-      required:
-        - id
-        - email
-        - full_name
-        - department_id
-        - role
-        - status
-      properties:
-        email:
-          type: string
-          format: email
-        full_name:
-          type: string
-          minLength: 1
-          maxLength: 200
-          pattern: \S
-        department_id:
-          type: string
-          format: uuid
-        role:
-          type: string
-          enum:
-            - faculty
-            - admin
-        status:
-          type: string
-          enum:
-            - pending
-            - active
-        id:
-          type: string
-          format: uuid
-      additionalProperties: false
     FacultyUpdate:
       type: object
       minProperties: 1
@@ -3133,58 +2881,6 @@ components:
           const: department_proposal
         payload:
           $ref: '#/components/schemas/DepartmentProposalPayload'
-    FacultyRegistrationRequest:
-      type: object
-      additionalProperties: false
-      required:
-        - full_name
-        - terms_accepted
-      properties:
-        full_name:
-          type: string
-          minLength: 1
-          maxLength: 200
-          pattern: \S
-        department_id:
-          type: string
-          format: uuid
-        proposed_department_name:
-          type: string
-          minLength: 1
-          maxLength: 200
-          pattern: \S
-        terms_accepted:
-          type: boolean
-          const: true
-      oneOf:
-        - required:
-            - department_id
-        - required:
-            - proposed_department_name
-      description: >-
-        Proposed onboarding payload. role is always faculty; status is always pending. Exactly one
-        existing department or inline department name is required.
-    RegistrationReceipt:
-      type: object
-      required:
-        - faculty_id
-        - application_id
-        - status
-      properties:
-        faculty_id:
-          type: string
-          format: uuid
-        application_id:
-          type: string
-          format: uuid
-        status:
-          type: string
-          const: pending
-      description: Receipt permits onboarding without exposing a pending department directory.
-      example:
-        faculty_id: e48adc9e-1b79-4b92-9848-aa12b25d63d7
-        application_id: 07e42297-6b44-4b35-ab2f-d216d547bdc7
-        status: pending
   headers:
     ContentRange:
       description: Returned row range and total count; e.g. 0-19/73 or */0. Total is * without count=exact.

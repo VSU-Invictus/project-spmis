@@ -5,6 +5,12 @@ never be edited by hand. Version 0.1.0 is a review draft; see
 [`../docs/contract-decisions.md`](../docs/contract-decisions.md) for proposals and
 unresolved requirements. The backend is not implemented by these files.
 
+This PR covers Issue #3: the explicitly named operations, department/program
+CRUD, review history and their supporting schemas, examples and validation.
+It contains 27 operations. Faculty enrollment, admin profile creation/removal,
+student removal and a separate student-directory endpoint are outside this PR.
+Use `searchStudents` for student browsing and filtering.
+
 Issue #3's detail reads have dedicated operation IDs: `getStudentById` calls
 `GET /rest/v1/rpc/get_student_by_id` with `p_student_id=<uuid>`, and
 `getOwnProfile` calls `GET /rest/v1/rpc/get_own_profile` without identity input.

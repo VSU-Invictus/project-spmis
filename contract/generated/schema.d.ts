@@ -33,7 +33,7 @@ export interface paths {
         };
         /**
          * Get the authenticated user's own faculty profile
-         * @description Authenticated faculty and admins, including pending faculty, may read only their own profile. Proposed read-only STABLE, SECURITY INVOKER SQL function with no arguments. Derive the subject exclusively from auth.uid() and apply FacultyProfile RLS; never accept a profile ID, email, role or status as an identity selector. Return the own row as a single jsonb object, or JSON null if enrollment has not created the profile yet. This is a scalar jsonb result, not a SETOF result or an array. A null profile grants no feature access; pending profiles remain restricted to onboarding. It performs no writes.
+         * @description Authenticated faculty and admins, including pending faculty, may read only their own profile. Proposed read-only STABLE, SECURITY INVOKER SQL function with no arguments. Derive the subject exclusively from auth.uid() and apply FacultyProfile RLS; never accept a profile ID, email, role or status as an identity selector. Return the own row as a single jsonb object, or JSON null if no profile has been provisioned yet. This is a scalar jsonb result, not a SETOF result or an array. A null profile grants no feature access; pending profiles remain restricted to onboarding. It performs no writes.
          */
         get: operations["getOwnProfile"];
         put?: never;
@@ -57,16 +57,8 @@ export interface paths {
          */
         get: operations["listFaculty"];
         put?: never;
-        /**
-         * Create a profile for an existing Supabase Auth user
-         * @description Admin only. id must equal an existing auth.users.id. This operation neither creates OAuth identities nor provisions new Auth users. Backend creates an audit entry.
-         */
-        post: operations["createFacultyProfile"];
-        /**
-         * Remove an unreferenced faculty profile
-         * @description Admin only. Return 409 if reviews, revisions, applications or audit records reference the profile. Never cascade-delete authored content or audit history. This does not delete or disable the Auth identity.
-         */
-        delete: operations["deleteFacultyProfile"];
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         /**
@@ -123,22 +115,14 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * List student profiles visible to the caller
-         * @description Verified faculty and admins. Filter id for a detail result; no matches returns []. Native or search supports first_name, last_name and student_id_number. Program display names are resolved using listPrograms.
-         */
-        get: operations["listStudentProfiles"];
+        get?: never;
         put?: never;
         /**
          * Directly add a student
          * @description Admin only. Create the student immediately with registration_source=admin_direct set by the backend, without an approval application. The referenced program must be approved. Create an audit event in the same database transaction. Faculty use submitApplication.
          */
         post: operations["createStudentDirect"];
-        /**
-         * Remove a student
-         * @description Admin only. Return 409 for referenced students; never cascade-delete review content.
-         */
-        delete: operations["deleteStudent"];
+        delete?: never;
         options?: never;
         head?: never;
         /**
@@ -157,7 +141,7 @@ export interface paths {
         };
         /**
          * List departments
-         * @description Verified faculty see approved entries; admins can filter all statuses. Draft onboarding proposal: pending applicants may read approved department choices only, with server-side policies enforcing status=approved regardless of client filters. They cannot read pending or rejected entries or mutate the list. This narrow exception to the README's pending-access rule requires team approval before implementation. Admin direct additions default to approved on the server and produce an audit event.
+         * @description Verified faculty see approved entries; admins can filter all statuses. Pending users have no directory access. Admin direct additions default to approved on the server and produce an audit event.
          */
         get: operations["listDepartments"];
         put?: never;
@@ -247,7 +231,7 @@ export interface paths {
         put?: never;
         /**
          * Submit a student, program, or department application
-         * @description Verified faculty only. Backend sets submitted_by=auth.uid(), status=pending, timestamps and null decision fields. Caller cannot set status or decision fields. Produce an audit event. Faculty-account enrollment uses completeFacultyRegistration instead.
+         * @description Verified faculty only. Backend sets submitted_by=auth.uid(), status=pending, timestamps and null decision fields. Caller cannot set status or decision fields. Produce an audit event. Faculty-account enrollment submissions are outside Issue #3. Existing faculty-account queue items remain readable and decidable through the listed queue operations.
          */
         post: operations["submitApplication"];
         delete?: never;
@@ -416,26 +400,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/functions/v1/registration": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Submit faculty enrollment or resubmit after rejection
-         * @description Proposed authenticated onboarding operation. Derive faculty_id and email from the verified Google/Supabase identity. A first submission creates or completes a pending profile and creates a faculty_account queue item. If a previous faculty_account submission was rejected and no pending submission exists, accept corrected input and create a NEW queue item with a NEW application_id while preserving the same faculty_id. Never reopen or overwrite the rejected queue item or its reason. An existing pending faculty_account application returns 409 ENROLLMENT_PENDING. An already active faculty/admin profile returns 409 ALREADY_ACTIVE. Serialize concurrent submissions per authenticated identity and enforce at most one pending faculty_account application, so retrying or double-clicking cannot create duplicate entries. Create the pending application, any required inline department proposal, Terms acceptance and audit records atomically. Never promote a role or activate a profile through this path. Existing department UUIDs must refer to approved entries. Pending users may read their own profile, own faculty-account decisions/reasons and approved department reference choices. After rejection, use listApprovalQueueItems to display the reason and this operation to resubmit. Approved reference-list access remains a proposed onboarding exception for team review.
-         */
-        post: operations["completeFacultyRegistration"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -482,19 +446,6 @@ export interface components {
             created_at: string;
             /** Format: date-time */
             updated_at: string;
-        };
-        AdminFacultyInput: {
-            /** Format: email */
-            email: string;
-            full_name: string;
-            /** Format: uuid */
-            department_id: string;
-            /** @enum {string} */
-            role: "faculty" | "admin";
-            /** @enum {string} */
-            status: "pending" | "active";
-            /** Format: uuid */
-            id: string;
         };
         /** @description Admin-only editable fields. This schema does not authorize a faculty caller to change protected fields. */
         FacultyUpdate: {
@@ -1151,31 +1102,6 @@ export interface components {
             type: "department_proposal";
             payload: components["schemas"]["DepartmentProposalPayload"];
         };
-        /** @description Proposed onboarding payload. role is always faculty; status is always pending. Exactly one existing department or inline department name is required. */
-        FacultyRegistrationRequest: {
-            full_name: string;
-            /** Format: uuid */
-            department_id?: string;
-            proposed_department_name?: string;
-            /** @constant */
-            terms_accepted: true;
-        } & (unknown | unknown);
-        /**
-         * @description Receipt permits onboarding without exposing a pending department directory.
-         * @example {
-         *       "faculty_id": "e48adc9e-1b79-4b92-9848-aa12b25d63d7",
-         *       "application_id": "07e42297-6b44-4b35-ab2f-d216d547bdc7",
-         *       "status": "pending"
-         *     }
-         */
-        RegistrationReceipt: {
-            /** Format: uuid */
-            faculty_id: string;
-            /** Format: uuid */
-            application_id: string;
-            /** @constant */
-            status: "pending";
-        };
     };
     responses: {
         /** @description Authentication is required */
@@ -1226,15 +1152,6 @@ export interface components {
                  *       "hint": "Check the record identifier."
                  *     }
                  */
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description A pending enrollment already exists or the authenticated profile is already active. Rejected applications alone do not cause a conflict; they permit a new submission. */
-        RegistrationConflict: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
                 "application/json": components["schemas"]["Error"];
             };
         };
@@ -1348,7 +1265,6 @@ export interface components {
         /** @description Native case-insensitive substring filter, e.g. ilike.*computer*. */
         NameFilter: string;
         DepartmentFilter: components["schemas"]["UuidEqualityFilter"];
-        ProgramFilter: components["schemas"]["UuidEqualityFilter"];
         ManagedStatusFilter: "eq.pending" | "eq.approved" | "eq.rejected";
         /** @description Request the total count in Content-Range. Without this header the total may be *. */
         CountPreference: "count=exact";
@@ -1463,62 +1379,6 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             416: components["responses"]["RangeNotSatisfiable"];
-        };
-    };
-    createFacultyProfile: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Requests that PostgREST return the affected record representation. */
-                Prefer: components["parameters"]["PreferReturnRepresentation"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AdminFacultyInput"];
-            };
-        };
-        responses: {
-            /** @description Faculty profile created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FacultyProfile"][];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    deleteFacultyProfile: {
-        parameters: {
-            query: {
-                /** @description Required PostgREST equality filter, formatted as `eq.<uuid>`. */
-                id: components["parameters"]["RequiredIdFilter"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Faculty profile removed */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-            409: components["responses"]["Conflict"];
         };
     };
     updateFacultyByAdmin: {
@@ -1657,69 +1517,6 @@ export interface operations {
             416: components["responses"]["RangeNotSatisfiable"];
         };
     };
-    listStudentProfiles: {
-        parameters: {
-            query?: {
-                /** @description PostgREST filter, for example `eq.<uuid>`. */
-                id?: components["parameters"]["IdFilter"];
-                program_id?: components["parameters"]["ProgramFilter"];
-                /** @description Native PostgREST OR expression using only the columns documented for this operation. Escape reserved PostgREST syntax in user input. Example: (full_name.ilike.*alex*,email.ilike.*alex*). */
-                or?: components["parameters"]["Search"];
-                limit?: components["parameters"]["Limit"];
-                offset?: components["parameters"]["Offset"];
-                /** @description Stable order including a unique id tie-breaker. */
-                order?: "created_at.desc,id.asc" | "created_at.asc,id.asc" | "last_name.asc,first_name.asc,id.asc";
-            };
-            header?: {
-                /** @description Request the total count in Content-Range. Without this header the total may be *. */
-                Prefer?: components["parameters"]["CountPreference"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Student profiles returned */
-            200: {
-                headers: {
-                    "Content-Range": components["headers"]["ContentRange"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example [
-                     *       {
-                     *         "id": "45b54332-e470-4c21-a839-7428c4f6bf42",
-                     *         "student_id_number": "27-1-12345",
-                     *         "last_name": "Santos",
-                     *         "first_name": "Maria",
-                     *         "middle_name": null,
-                     *         "program_id": "8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
-                     *         "registration_source": "admin_direct",
-                     *         "created_at": "2026-10-26T00:00:00Z",
-                     *         "updated_at": "2026-10-26T00:00:00Z"
-                     *       }
-                     *     ]
-                     */
-                    "application/json": components["schemas"]["StudentProfile"][];
-                };
-            };
-            /** @description Partial result page when a count is requested */
-            206: {
-                headers: {
-                    "Content-Range": components["headers"]["ContentRange"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StudentProfile"][];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-            416: components["responses"]["RangeNotSatisfiable"];
-        };
-    };
     createStudentDirect: {
         parameters: {
             query?: never;
@@ -1744,31 +1541,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentProfile"][];
                 };
-            };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    deleteStudent: {
-        parameters: {
-            query: {
-                /** @description Required PostgREST equality filter, formatted as `eq.<uuid>`. */
-                id: components["parameters"]["RequiredIdFilter"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Student removed */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
@@ -2521,36 +2293,6 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             416: components["responses"]["RangeNotSatisfiable"];
-        };
-    };
-    completeFacultyRegistration: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["FacultyRegistrationRequest"];
-            };
-        };
-        responses: {
-            /** @description Enrollment submitted for admin verification */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RegistrationReceipt"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-            409: components["responses"]["RegistrationConflict"];
-            422: components["responses"]["ValidationError"];
-            500: components["responses"]["ServerError"];
         };
     };
 }
