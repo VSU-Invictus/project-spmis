@@ -45,7 +45,7 @@ paths:
       tags:
         - Auth
         - Admin
-      operationId: listFacultyProfiles
+      operationId: listFaculty
       summary: List faculty profiles visible to the caller
       parameters:
         - $ref: '#/components/parameters/CountPreference'
@@ -136,7 +136,7 @@ paths:
     patch:
       tags:
         - Admin
-      operationId: updateFacultyProfile
+      operationId: updateFacultyByAdmin
       summary: Update a faculty profile allowed by the caller's role
       parameters:
         - $ref: '#/components/parameters/RequiredIdFilter'
@@ -194,7 +194,7 @@ paths:
     get:
       tags:
         - Faculty
-      operationId: suggestReviewTags
+      operationId: listTags
       summary: Suggest existing tags for the review composer
       description: >-
         Proposed read-only STABLE SQL function returning distinct normalized tag rows.
@@ -412,8 +412,12 @@ paths:
     post:
       tags:
         - Admin
-      operationId: createStudent
+      operationId: createStudentDirect
       summary: Directly add a student
+      description: >-
+        Admin only. Create the student immediately with registration_source=admin_direct set by
+        the backend, without an approval application. The referenced program must be approved.
+        Create an audit event in the same database transaction. Faculty use submitApplication.
       parameters:
         - $ref: '#/components/parameters/PreferReturnRepresentation'
       requestBody:
@@ -444,6 +448,10 @@ paths:
         - Admin
       operationId: updateStudent
       summary: Update a student
+      description: >-
+        Admin only. Update the student selected by the required equality ID filter. Validate any
+        changed program against approved programs and audit the mutation in the same transaction.
+        Verified faculty may read students but cannot directly update them.
       parameters:
         - $ref: '#/components/parameters/RequiredIdFilter'
         - $ref: '#/components/parameters/PreferReturnRepresentation'
@@ -555,6 +563,10 @@ paths:
         - Admin
       operationId: createDepartment
       summary: Directly add a department
+      description: >-
+        Admin only. Create an approved department with proposed_by=null set by the backend and
+        audit the mutation in the same database transaction. Faculty propose changes through
+        submitApplication rather than writing directly to this table.
       parameters:
         - $ref: '#/components/parameters/PreferReturnRepresentation'
       requestBody:
@@ -585,6 +597,10 @@ paths:
         - Admin
       operationId: updateDepartment
       summary: Update a department
+      description: >-
+        Admin only. Update the department selected by the required equality ID filter and audit
+        the mutation in the same transaction. This edits the managed record; application decisions
+        and their notifications must use decideApplications.
       parameters:
         - $ref: '#/components/parameters/RequiredIdFilter'
         - $ref: '#/components/parameters/PreferReturnRepresentation'
@@ -695,6 +711,10 @@ paths:
         - Admin
       operationId: createProgram
       summary: Directly add a program
+      description: >-
+        Admin only. Create an approved program with proposed_by=null set by the backend and
+        audit the mutation in the same database transaction. Programs are independent of
+        departments. Faculty propose changes through submitApplication.
       parameters:
         - $ref: '#/components/parameters/PreferReturnRepresentation'
       requestBody:
@@ -725,6 +745,10 @@ paths:
         - Admin
       operationId: updateProgram
       summary: Update a program
+      description: >-
+        Admin only. Update the program selected by the required equality ID filter and audit
+        the mutation in the same transaction. This edits the managed record; application decisions
+        and their notifications must use decideApplications. Programs have no department relation.
       parameters:
         - $ref: '#/components/parameters/RequiredIdFilter'
         - $ref: '#/components/parameters/PreferReturnRepresentation'
@@ -837,7 +861,7 @@ paths:
         - Auth
         - Faculty
         - Admin
-      operationId: listApplications
+      operationId: listApprovalQueueItems
       summary: List applications visible to the caller
       x-access-rules:
         pending_faculty: Own faculty_account applications only, including rejected history.
@@ -1252,6 +1276,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ApprovalQueueItem'
+              examples:
+                approved:
+                  summary: Faculty enrollment approved and decision recorded
+                  value:
+                    - id: 07e42297-6b44-4b35-ab2f-d216d547bdc7
+                      type: faculty_account
+                      payload:
+                        full_name: Alex Reyes
+                        email: alex.reyes@example.edu
+                        department_id: 5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb
+                      status: approved
+                      submitted_by: e48adc9e-1b79-4b92-9848-aa12b25d63d7
+                      decided_by: 7cb8976d-86d4-4e06-a61d-5d64eb20eec4
+                      decision_reason: null
+                      created_at: '2026-10-26T00:00:00Z'
+                      decided_at: '2026-10-27T00:00:00Z'
+                rejected:
+                  summary: Faculty enrollment rejected with an administrator's reason
+                  value:
+                    - id: 07e42297-6b44-4b35-ab2f-d216d547bdc7
+                      type: faculty_account
+                      payload:
+                        full_name: Alex Reyes
+                        email: alex.reyes@example.edu
+                        department_id: 5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb
+                      status: rejected
+                      submitted_by: e48adc9e-1b79-4b92-9848-aa12b25d63d7
+                      decided_by: 7cb8976d-86d4-4e06-a61d-5d64eb20eec4
+                      decision_reason: Department affiliation could not be verified.
+                      created_at: '2026-10-26T00:00:00Z'
+                      decided_at: '2026-10-27T00:00:00Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1312,7 +1367,7 @@ paths:
     get:
       tags:
         - Faculty
-      operationId: listReviews
+      operationId: listStudentReviews
       summary: List attributed reviews with rich text and normalized tags
       parameters:
         - $ref: '#/components/parameters/CountPreference'
@@ -1406,7 +1461,7 @@ paths:
         and audit records atomically. Never promote a role or activate a profile through this path.
         Existing department UUIDs must refer to approved entries. Pending users may read their own
         profile, own faculty-account decisions/reasons and approved department reference choices.
-        After rejection, use listApplications to display the reason and this operation to resubmit.
+        After rejection, use listApprovalQueueItems to display the reason and this operation to resubmit.
         Approved reference-list access remains a proposed onboarding exception for team review.
       requestBody:
         required: true
@@ -2007,6 +2062,7 @@ components:
           format: uuid
         body_text:
           type: string
+          readOnly: true
           description: Raw review text; never sent to the AI provider.
         status:
           type: string
@@ -2035,7 +2091,7 @@ components:
         attachments:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewAttachment'
+            $ref: '#/components/schemas/ReviewAttachmentMetadata'
           description: >-
             Metadata for attachments visible through the parent review. Internal storage paths are
             omitted from responses; downloading requires the separately approved signed-access flow.
@@ -2490,8 +2546,9 @@ components:
       type: object
       additionalProperties: false
       description: >-
-        Storage metadata entity. Access must follow the parent review's visibility and deletion
-        rules. The internal storage path is never included in audit logs.
+        Internal database entity required by Issue #3. This schema is not returned by any client
+        operation. Public review reads use ReviewAttachmentMetadata, which has no storage_path.
+        The internal storage path is never included in audit logs.
       required:
         - id
         - review_id
@@ -2509,7 +2566,6 @@ components:
         storage_path:
           type: string
           minLength: 1
-          writeOnly: true
           description: Internal object key; use a signed-access operation for client downloads.
         mime_type:
           type: string
@@ -2524,6 +2580,41 @@ components:
         id: e02d35de-a91f-4f53-aee3-406b38692af8
         review_id: 67015de8-1ce8-4ac4-8634-384bf5fb3821
         storage_path: reviews/67015de8/attachment.pdf
+        mime_type: application/pdf
+        size_bytes: 245760
+        created_at: '2026-10-26T00:00:00Z'
+    ReviewAttachmentMetadata:
+      type: object
+      additionalProperties: false
+      description: >-
+        Public attachment metadata for a visible parent review. Contains no internal Storage
+        object key or download URL. Hidden attachments are owner-only; deleted attachments are
+        invisible to everyone. Downloads require the separately approved signed-access flow.
+      required:
+        - id
+        - review_id
+        - mime_type
+        - size_bytes
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        review_id:
+          type: string
+          format: uuid
+        mime_type:
+          type: string
+          minLength: 1
+        size_bytes:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+      example:
+        id: e02d35de-a91f-4f53-aee3-406b38692af8
+        review_id: 67015de8-1ce8-4ac4-8634-384bf5fb3821
         mime_type: application/pdf
         size_bytes: 245760
         created_at: '2026-10-26T00:00:00Z'

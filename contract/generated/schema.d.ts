@@ -15,7 +15,7 @@ export interface paths {
          * List faculty profiles visible to the caller
          * @description Users may retrieve their own profile, including while pending, using id=eq.<JWT subject>. Admins may list profiles. Other faculty cannot retrieve private profile emails. Native or search supports full_name and email. Contributor attribution is returned through review_details.
          */
-        get: operations["listFacultyProfiles"];
+        get: operations["listFaculty"];
         put?: never;
         /**
          * Create a profile for an existing Supabase Auth user
@@ -33,7 +33,7 @@ export interface paths {
          * Update a faculty profile allowed by the caller's role
          * @description Admin only. Faculty use updateOwnProfile instead. RLS selects rows; database column grants or a guarded function/trigger must independently prevent non-admin changes to role, status, email and department. Every mutation is audited.
          */
-        patch: operations["updateFacultyProfile"];
+        patch: operations["updateFacultyByAdmin"];
         trace?: never;
     };
     "/rest/v1/rpc/suggest_review_tags": {
@@ -47,7 +47,7 @@ export interface paths {
          * Suggest existing tags for the review composer
          * @description Proposed read-only STABLE SQL function returning distinct normalized tag rows. Verified faculty only. prefix defaults to an empty string and matches the start of a tag case-insensitively. Join each tag to an active review the caller may access before deduplicating, counting or paginating. Hidden and deleted reviews never contribute, even for their owner. A tag also present on an accessible active review may still appear. Return only the tag text, without counts, author IDs or hidden-record metadata. RLS and the caller identity remain enforced. The result is a suggestion list, not a closed vocabulary: create/update may accept a new free-form tag. limit, offset and order are PostgREST result modifiers, not SQL function arguments.
          */
-        get: operations["suggestReviewTags"];
+        get: operations["listTags"];
         put?: never;
         post?: never;
         delete?: never;
@@ -89,8 +89,11 @@ export interface paths {
          */
         get: operations["listStudentProfiles"];
         put?: never;
-        /** Directly add a student */
-        post: operations["createStudent"];
+        /**
+         * Directly add a student
+         * @description Admin only. Create the student immediately with registration_source=admin_direct set by the backend, without an approval application. The referenced program must be approved. Create an audit event in the same database transaction. Faculty use submitApplication.
+         */
+        post: operations["createStudentDirect"];
         /**
          * Remove a student
          * @description Admin only. Return 409 for referenced students; never cascade-delete review content.
@@ -98,7 +101,10 @@ export interface paths {
         delete: operations["deleteStudent"];
         options?: never;
         head?: never;
-        /** Update a student */
+        /**
+         * Update a student
+         * @description Admin only. Update the student selected by the required equality ID filter. Validate any changed program against approved programs and audit the mutation in the same transaction. Verified faculty may read students but cannot directly update them.
+         */
         patch: operations["updateStudent"];
         trace?: never;
     };
@@ -115,7 +121,10 @@ export interface paths {
          */
         get: operations["listDepartments"];
         put?: never;
-        /** Directly add a department */
+        /**
+         * Directly add a department
+         * @description Admin only. Create an approved department with proposed_by=null set by the backend and audit the mutation in the same database transaction. Faculty propose changes through submitApplication rather than writing directly to this table.
+         */
         post: operations["createDepartment"];
         /**
          * Remove a department
@@ -124,7 +133,10 @@ export interface paths {
         delete: operations["deleteDepartment"];
         options?: never;
         head?: never;
-        /** Update a department */
+        /**
+         * Update a department
+         * @description Admin only. Update the department selected by the required equality ID filter and audit the mutation in the same transaction. This edits the managed record; application decisions and their notifications must use decideApplications.
+         */
         patch: operations["updateDepartment"];
         trace?: never;
     };
@@ -141,7 +153,10 @@ export interface paths {
          */
         get: operations["listPrograms"];
         put?: never;
-        /** Directly add a program */
+        /**
+         * Directly add a program
+         * @description Admin only. Create an approved program with proposed_by=null set by the backend and audit the mutation in the same database transaction. Programs are independent of departments. Faculty propose changes through submitApplication.
+         */
         post: operations["createProgram"];
         /**
          * Remove a program
@@ -150,7 +165,10 @@ export interface paths {
         delete: operations["deleteProgram"];
         options?: never;
         head?: never;
-        /** Update a program */
+        /**
+         * Update a program
+         * @description Admin only. Update the program selected by the required equality ID filter and audit the mutation in the same transaction. This edits the managed record; application decisions and their notifications must use decideApplications. Programs have no department relation.
+         */
         patch: operations["updateProgram"];
         trace?: never;
     };
@@ -185,7 +203,7 @@ export interface paths {
          * List applications visible to the caller
          * @description Active faculty see only their own applications; admins see all queues. Pending faculty may read only their own faculty_account applications, including the status, decision_reason and previous rejected submissions needed by the pending-verification screen. RLS must enforce both submitted_by=auth.uid() and type=faculty_account for pending callers, regardless of client filters. Requests for another person's rows or another application type return no matching rows. This onboarding exception grants no faculty feature access. Native or search supports payload->>name, payload->>first_name, payload->>last_name, payload->>student_id_number, payload->>email and payload->>full_name. Example: (payload->>name.ilike.*computer*,payload->>email.ilike.*gmail.com*). The backend enforces submitted_by, never a client filter alone.
          */
-        get: operations["listApplications"];
+        get: operations["listApprovalQueueItems"];
         put?: never;
         /**
          * Submit a student, program, or department application
@@ -349,7 +367,7 @@ export interface paths {
          * List attributed reviews with rich text and normalized tags
          * @description Proposed read-only SECURITY INVOKER view joining review rows, safe author identity and review tags. Author attribution must use a separately permissioned safe projection, not a direct join that depends on access to another user's private faculty profile. Expose only the author identity/name and department needed for attribution, never email or other private profile fields. The invoker must have the grants and row access needed for this projection without broadening private profile access. Backend design and tests must prove that another faculty member's active review retains its author attribution, own hidden reviews remain readable, and inaccessible review content and private emails remain blocked. Verified faculty see active plus their own hidden reviews; deleted reviews never appear. Dashboard sends status=eq.active and order=created_at.desc,id.asc. Excludes deidentified_text and embeddings. Admin raw-content access is unresolved in the README and is excluded pending review.
          */
-        get: operations["listReviews"];
+        get: operations["listStudentReviews"];
         put?: never;
         post?: never;
         delete?: never;
@@ -369,7 +387,7 @@ export interface paths {
         put?: never;
         /**
          * Submit faculty enrollment or resubmit after rejection
-         * @description Proposed authenticated onboarding operation. Derive faculty_id and email from the verified Google/Supabase identity. A first submission creates or completes a pending profile and creates a faculty_account queue item. If a previous faculty_account submission was rejected and no pending submission exists, accept corrected input and create a NEW queue item with a NEW application_id while preserving the same faculty_id. Never reopen or overwrite the rejected queue item or its reason. An existing pending faculty_account application returns 409 ENROLLMENT_PENDING. An already active faculty/admin profile returns 409 ALREADY_ACTIVE. Serialize concurrent submissions per authenticated identity and enforce at most one pending faculty_account application, so retrying or double-clicking cannot create duplicate entries. Create the pending application, any required inline department proposal, Terms acceptance and audit records atomically. Never promote a role or activate a profile through this path. Existing department UUIDs must refer to approved entries. Pending users may read their own profile, own faculty-account decisions/reasons and approved department reference choices. After rejection, use listApplications to display the reason and this operation to resubmit. Approved reference-list access remains a proposed onboarding exception for team review.
+         * @description Proposed authenticated onboarding operation. Derive faculty_id and email from the verified Google/Supabase identity. A first submission creates or completes a pending profile and creates a faculty_account queue item. If a previous faculty_account submission was rejected and no pending submission exists, accept corrected input and create a NEW queue item with a NEW application_id while preserving the same faculty_id. Never reopen or overwrite the rejected queue item or its reason. An existing pending faculty_account application returns 409 ENROLLMENT_PENDING. An already active faculty/admin profile returns 409 ALREADY_ACTIVE. Serialize concurrent submissions per authenticated identity and enforce at most one pending faculty_account application, so retrying or double-clicking cannot create duplicate entries. Create the pending application, any required inline department proposal, Terms acceptance and audit records atomically. Never promote a role or activate a profile through this path. Existing department UUIDs must refer to approved entries. Pending users may read their own profile, own faculty-account decisions/reasons and approved department reference choices. After rejection, use listApprovalQueueItems to display the reason and this operation to resubmit. Approved reference-list access remains a proposed onboarding exception for team review.
          */
         post: operations["completeFacultyRegistration"];
         delete?: never;
@@ -576,7 +594,7 @@ export interface components {
             /** Format: uuid */
             owner_id: string;
             /** @description Raw review text; never sent to the AI provider. */
-            body_text: string;
+            readonly body_text: string;
             /**
              * @description Deleted rows never appear in content responses.
              * @enum {string}
@@ -591,7 +609,7 @@ export interface components {
             author_department_name: string;
             body_document: components["schemas"]["ReviewDocument"];
             /** @description Metadata for attachments visible through the parent review. Internal storage paths are omitted from responses; downloading requires the separately approved signed-access flow. */
-            attachments: components["schemas"]["ReviewAttachment"][];
+            attachments: components["schemas"]["ReviewAttachmentMetadata"][];
         };
         /**
          * @example {
@@ -887,7 +905,7 @@ export interface components {
             generated_at: string;
         };
         /**
-         * @description Storage metadata entity. Access must follow the parent review's visibility and deletion rules. The internal storage path is never included in audit logs.
+         * @description Internal database entity required by Issue #3. This schema is not returned by any client operation. Public review reads use ReviewAttachmentMetadata, which has no storage_path. The internal storage path is never included in audit logs.
          * @example {
          *       "id": "e02d35de-a91f-4f53-aee3-406b38692af8",
          *       "review_id": "67015de8-1ce8-4ac4-8634-384bf5fb3821",
@@ -904,6 +922,26 @@ export interface components {
             review_id: string;
             /** @description Internal object key; use a signed-access operation for client downloads. */
             storage_path: string;
+            mime_type: string;
+            size_bytes: number;
+            /** Format: date-time */
+            created_at: string;
+        };
+        /**
+         * @description Public attachment metadata for a visible parent review. Contains no internal Storage object key or download URL. Hidden attachments are owner-only; deleted attachments are invisible to everyone. Downloads require the separately approved signed-access flow.
+         * @example {
+         *       "id": "e02d35de-a91f-4f53-aee3-406b38692af8",
+         *       "review_id": "67015de8-1ce8-4ac4-8634-384bf5fb3821",
+         *       "mime_type": "application/pdf",
+         *       "size_bytes": 245760,
+         *       "created_at": "2026-10-26T00:00:00Z"
+         *     }
+         */
+        ReviewAttachmentMetadata: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            review_id: string;
             mime_type: string;
             size_bytes: number;
             /** Format: date-time */
@@ -1279,7 +1317,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    listFacultyProfiles: {
+    listFaculty: {
         parameters: {
             query?: {
                 /** @description PostgREST filter, for example `eq.<uuid>`. */
@@ -1383,7 +1421,7 @@ export interface operations {
             409: components["responses"]["Conflict"];
         };
     };
-    updateFacultyProfile: {
+    updateFacultyByAdmin: {
         parameters: {
             query: {
                 /** @description Required PostgREST equality filter, formatted as `eq.<uuid>`. */
@@ -1417,7 +1455,7 @@ export interface operations {
             409: components["responses"]["Conflict"];
         };
     };
-    suggestReviewTags: {
+    listTags: {
         parameters: {
             query?: {
                 /** @example re */
@@ -1582,7 +1620,7 @@ export interface operations {
             416: components["responses"]["RangeNotSatisfiable"];
         };
     };
-    createStudent: {
+    createStudentDirect: {
         parameters: {
             query?: never;
             header: {
@@ -1988,7 +2026,7 @@ export interface operations {
             416: components["responses"]["RangeNotSatisfiable"];
         };
     };
-    listApplications: {
+    listApprovalQueueItems: {
         parameters: {
             query?: {
                 type?: "eq.faculty_account" | "eq.student_registration" | "eq.program_proposal" | "eq.department_proposal";
@@ -2339,7 +2377,7 @@ export interface operations {
             409: components["responses"]["Conflict"];
         };
     };
-    listReviews: {
+    listStudentReviews: {
         parameters: {
             query?: {
                 student_id?: components["schemas"]["UuidEqualityFilter"];

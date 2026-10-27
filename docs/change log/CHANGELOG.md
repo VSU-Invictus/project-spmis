@@ -36,6 +36,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **Issue #3 review corrections:** Split public attachment metadata from the
+  internal Storage entity, marked review body text read-only, added completed
+  approval/rejection response examples and explicit admin mutation permissions.
+  Aligned six operation IDs with the issue and documented the two remaining
+  shared-read mappings for reviewer acceptance. Corrected Redocly EOF formatting.
 - **Contract permission descriptions:** Clarified the proposed pending-user
   access to approved department choices and the separate safe author projection
   needed by the review view without exposing private faculty profiles. Backend

@@ -101,7 +101,7 @@ also reconcile the sketch's non-null faculty department_id constraint.
 ### Pending access
 
 The draft allows pending users to read their own profile and their own
-faculty_account application history through listApplications, including rejection
+faculty_account application history through listApprovalQueueItems, including rejection
 reasons. RLS must require both submitted_by=auth.uid() and type=faculty_account
 for pending callers. A client filter cannot expand that scope. No other person's
 applications or non-faculty application types are visible to them.
@@ -128,7 +128,7 @@ Registration follows the README's terminal application lifecycle:
 Concurrent requests must not create more than one pending faculty-account
 application for the same identity. The database implementation must serialize or
 uniquely constrain those submissions. Pending users display their decision/reason
-from listApplications, then resubmit through completeFacultyRegistration.
+from listApprovalQueueItems, then resubmit through completeFacultyRegistration.
 
 ### Counts, filters and native errors
 
@@ -188,8 +188,11 @@ The selected design must preserve caller-specific visibility, especially the rul
 
 ### Review attachments
 
-Issue #3 requires visible review reads to include `ReviewAttachment` metadata. The draft now includes
-that metadata through the review read shape while keeping the internal Storage object key write-only.
+Issue #3 requires visible review reads to include attachment metadata. The internal `ReviewAttachment`
+schema records the database entity including its Storage object key. Public review responses reference
+a separate closed `ReviewAttachmentMetadata` schema that excludes the object key entirely, including
+from generated response types and examples. This avoids relying on writeOnly annotations to redact
+the internal field.
 Upload, signed-download and removal operations are still not specified.
 
 Decision needed:
@@ -219,17 +222,31 @@ Normalizing a body must retain its original HTTP status.
 
 ### Issue 3 operation mapping
 
-Issue #3 uses product-level names for three reads. The curated PostgREST contract implements them
-without inventing unsupported path parameters:
+The operation IDs now match Issue #3 wherever a requested operation has its own method/path.
+The following table records all eight names that previously differed:
 
-- `getStudentById` is `listStudentProfiles` with the `id=eq.<uuid>` filter; zero matches returns `[]`.
-- `listStudentReviews` is `listReviews` with `student_id=eq.<uuid>`, including visible attachment
-  metadata, with history read through `listReviewRevisions` using `review_id=eq.<uuid>`.
-- `listTags` is the safe `suggestReviewTags` RPC, which returns distinct tags only from accessible
-  active reviews and does not expose hidden-review counts or ownership metadata.
+| Issue #3 name | Current operation or query | Previous operation ID |
+| --- | --- | --- |
+| `getStudentById` | `listStudentProfiles` with `id=eq.<uuid>`; returns a zero-or-one-element array | `listStudentProfiles` |
+| `createStudentDirect` | `createStudentDirect` | `createStudent` |
+| `listStudentReviews` | `listStudentReviews` with `student_id=eq.<uuid>` | `listReviews` |
+| `listTags` | `listTags`, using the existing tag-suggestion RPC and optional prefix | `suggestReviewTags` |
+| `getOwnProfile` | `listFaculty` with `id=eq.<JWT subject>`; server policies restrict non-admin callers to their own row | `listFacultyProfiles` |
+| `listFaculty` | `listFaculty`, admin directory listing | `listFacultyProfiles` |
+| `updateFacultyByAdmin` | `updateFacultyByAdmin` | `updateFacultyProfile` |
+| `listApprovalQueueItems` | `listApprovalQueueItems` | `listApplications` |
 
-These mappings satisfy the required behavior while preserving actual PostgREST URL semantics. The
-`ReviewEmbedding` schema is internal-only and is not referenced by any public operation.
+Reviewer decision remains required for the two combined reads: `getStudentById` and `getOwnProfile`
+do not have separate operation IDs in this draft. OpenAPI permits only one GET operation per path;
+query filters cannot define a second operation on the same table path. Reviewers must accept the
+combined reads or agree on dedicated view/RPC endpoints before Issue #3 is considered fully resolved.
+No acceptance of these mappings is implied by this document.
+
+Review reads include visible attachment metadata; history is read through `listReviewRevisions`
+with `review_id=eq.<uuid>`. `listTags` returns distinct tags only from accessible active reviews.
+`ReviewEmbedding` and the full `ReviewAttachment` entity remain internal and are not referenced
+by any client operation. Public OAuth operations are handled by Supabase Auth SDK, so none of the
+declared application operations is public or needs `security: []`.
 
 Contract lint checks OpenAPI structure and references. Type generation checks
 that the document produces TypeScript. Neither proves backend behavior, RLS,
