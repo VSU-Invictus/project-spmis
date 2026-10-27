@@ -1716,6 +1716,11 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+          example:
+            code: PGRST103
+            message: Requested range not satisfiable
+            details: An offset of 20 was requested, but there are only 10 rows.
+            hint: null
   schemas:
     Error:
       type: object

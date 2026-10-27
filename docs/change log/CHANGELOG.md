@@ -36,6 +36,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **Pagination error mock:** Added an explicit HTTP 416 response example using
+  PostgREST's PGRST103 code instead of inheriting the generic PGRST116 example.
 - **Issue #3 review corrections:** Split public attachment metadata from the
   internal Storage entity, marked review body text read-only, added completed
   approval/rejection response examples and explicit admin mutation permissions.

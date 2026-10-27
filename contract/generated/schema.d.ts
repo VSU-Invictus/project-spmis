@@ -1281,6 +1281,14 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
+                /**
+                 * @example {
+                 *       "code": "PGRST103",
+                 *       "message": "Requested range not satisfiable",
+                 *       "details": "An offset of 20 was requested, but there are only 10 rows.",
+                 *       "hint": null
+                 *     }
+                 */
                 "application/json": components["schemas"]["Error"];
             };
         };
