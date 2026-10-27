@@ -230,25 +230,30 @@ value. Generator options must stay identical in both commands.
 
 ### Issue 3 operation mapping
 
-The operation IDs now match Issue #3 wherever a requested operation has its own method/path.
-The following table records all eight names that previously differed:
+Each operation named by Issue #3 now has its own operation ID. The read contract is:
 
-| Issue #3 name | Current operation or query | Previous operation ID |
+| Operation | Method and path | Result |
 | --- | --- | --- |
-| `getStudentById` | `listStudentProfiles` with `id=eq.<uuid>`; returns a zero-or-one-element array | `listStudentProfiles` |
-| `createStudentDirect` | `createStudentDirect` | `createStudent` |
-| `listStudentReviews` | `listStudentReviews` with `student_id=eq.<uuid>` | `listReviews` |
-| `listTags` | `listTags`, using the existing tag-suggestion RPC and optional prefix | `suggestReviewTags` |
-| `getOwnProfile` | `listFaculty` with `id=eq.<JWT subject>`; server policies restrict non-admin callers to their own row | `listFacultyProfiles` |
-| `listFaculty` | `listFaculty`, admin directory listing | `listFacultyProfiles` |
-| `updateFacultyByAdmin` | `updateFacultyByAdmin` | `updateFacultyProfile` |
-| `listApprovalQueueItems` | `listApprovalQueueItems` | `listApplications` |
+| `getStudentById` | `GET /rest/v1/rpc/get_student_by_id?p_student_id=<uuid>` | One visible StudentProfile object or null |
+| `getOwnProfile` | `GET /rest/v1/rpc/get_own_profile` | Own FacultyProfile object or null |
+| `listStudentProfiles` | `GET /rest/v1/student_profiles` | Array of accessible students, with optional filters |
+| `listFaculty` | `GET /rest/v1/faculty_profiles` | Array of profiles allowed by the caller's role and RLS |
+| `listStudentReviews` | `GET /rest/v1/review_details` with `student_id=eq.<uuid>` | Array of visible reviews and attachment metadata |
+| `listTags` | `GET /rest/v1/rpc/suggest_review_tags` | Distinct accessible active-review tags |
 
-Reviewer decision remains required for the two combined reads: `getStudentById` and `getOwnProfile`
-do not have separate operation IDs in this draft. OpenAPI permits only one GET operation per path;
-query filters cannot define a second operation on the same table path. Reviewers must accept the
-combined reads or agree on dedicated view/RPC endpoints before Issue #3 is considered fully resolved.
-No acceptance of these mappings is implied by this document.
+The dedicated detail RPCs are proposed STABLE, SECURITY INVOKER SQL functions returning scalar
+jsonb, so their responses are objects/null rather than table-result arrays. `getStudentById`
+accepts one required UUID argument without a PostgREST eq. prefix; it is available only to verified
+faculty/admins and returns null for missing or inaccessible rows. `getOwnProfile` accepts no
+arguments, derives the identity exclusively from auth.uid(), and permits pending users to read
+their own status. A profile not yet created during enrollment returns null and grants no access.
+Both functions must enforce the caller's grants/RLS and perform no writes. Their signatures and
+response shapes must be implemented and tested in the backend phase and reviewed with this PR.
+
+No exception for combined operation IDs is needed. The other issue-named operations use
+`createStudentDirect`, `updateStudent`, `updateFacultyByAdmin`, `updateOwnProfile`,
+`submitApplication`, `listApprovalQueueItems`, `listAuditLogs`, and the five required review,
+chat and approval Edge Function IDs exactly as specified.
 
 Review reads include visible attachment metadata; history is read through `listReviewRevisions`
 with `review_id=eq.<uuid>`. `listTags` returns distinct tags only from accessible active reviews.

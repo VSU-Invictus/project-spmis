@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **Issue #3 detail reads:** Added dedicated getStudentById and getOwnProfile
+  read-only PostgREST RPC contracts with object-or-null responses, caller/RLS
+  requirements and explicit examples. Removed the shared-read mapping exception;
+  all operation IDs explicitly named in Issue #3 are now declared.
 - **Issue #3 contract completion:** Added the Redocly lint/theme configuration,
   explicit ReviewTag, internal ReviewEmbedding and ReviewAttachment schemas,
   reusable realistic mock examples, and documented mappings from the issue's

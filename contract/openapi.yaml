@@ -40,6 +40,106 @@ x-tagGroups:
     tags:
       - Admin
 paths:
+  /rest/v1/rpc/get_student_by_id:
+    get:
+      tags:
+        - Faculty
+        - Admin
+      operationId: getStudentById
+      summary: Get one student visible to the caller
+      description: >-
+        Verified faculty and admins only. Proposed read-only STABLE, SECURITY INVOKER SQL
+        function with one required UUID argument p_student_id. Apply caller permissions and
+        StudentProfile RLS before selecting the student. Return the visible row as a single
+        jsonb object, or JSON null if it is missing or inaccessible; never reveal whether an
+        inaccessible student exists. This is a scalar jsonb result, not a SETOF result or an
+        array. It performs no writes and accepts no caller-supplied role or owner identity.
+      parameters:
+        - name: p_student_id
+          in: query
+          required: true
+          description: Student UUID passed directly to the SQL function, without an eq. prefix.
+          schema:
+            type: string
+            format: uuid
+          example: 45b54332-e470-4c21-a839-7428c4f6bf42
+      responses:
+        '200':
+          description: One visible student object, or null when no accessible student matches
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/StudentProfile'
+                  - type: 'null'
+              examples:
+                found:
+                  summary: Student visible to a verified faculty member or admin
+                  value:
+                    id: 45b54332-e470-4c21-a839-7428c4f6bf42
+                    student_id_number: 27-1-12345
+                    last_name: Santos
+                    first_name: Maria
+                    middle_name: null
+                    program_id: 8ef76d5f-e6b2-49aa-a627-171dee1b8b65
+                    registration_source: admin_direct
+                    created_at: '2026-10-26T00:00:00Z'
+                    updated_at: '2026-10-26T00:00:00Z'
+                notVisible:
+                  summary: Student does not exist or is inaccessible to the caller
+                  value: null
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /rest/v1/rpc/get_own_profile:
+    get:
+      tags:
+        - Auth
+        - Faculty
+        - Admin
+      operationId: getOwnProfile
+      summary: Get the authenticated user's own faculty profile
+      description: >-
+        Authenticated faculty and admins, including pending faculty, may read only their own
+        profile. Proposed read-only STABLE, SECURITY INVOKER SQL function with no arguments.
+        Derive the subject exclusively from auth.uid() and apply FacultyProfile RLS; never
+        accept a profile ID, email, role or status as an identity selector. Return the own row
+        as a single jsonb object, or JSON null if enrollment has not created the profile yet.
+        This is a scalar jsonb result, not a SETOF result or an array. A null profile grants no
+        feature access; pending profiles remain restricted to onboarding. It performs no writes.
+      responses:
+        '200':
+          description: The caller's own profile object, or null before a profile exists
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/FacultyProfile'
+                  - type: 'null'
+              examples:
+                pending:
+                  summary: Pending faculty reads their own onboarding status
+                  value:
+                    id: e48adc9e-1b79-4b92-9848-aa12b25d63d7
+                    email: alex.reyes@example.edu
+                    full_name: Alex Reyes
+                    department_id: 5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb
+                    role: faculty
+                    status: pending
+                    created_at: '2026-10-26T00:00:00Z'
+                    updated_at: '2026-10-26T00:00:00Z'
+                notEnrolled:
+                  summary: Authenticated identity has not completed profile enrollment
+                  value: null
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
   /rest/v1/faculty_profiles:
     get:
       tags:

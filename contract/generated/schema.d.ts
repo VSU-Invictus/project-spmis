@@ -4,6 +4,46 @@
  */
 
 export interface paths {
+    "/rest/v1/rpc/get_student_by_id": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get one student visible to the caller
+         * @description Verified faculty and admins only. Proposed read-only STABLE, SECURITY INVOKER SQL function with one required UUID argument p_student_id. Apply caller permissions and StudentProfile RLS before selecting the student. Return the visible row as a single jsonb object, or JSON null if it is missing or inaccessible; never reveal whether an inaccessible student exists. This is a scalar jsonb result, not a SETOF result or an array. It performs no writes and accepts no caller-supplied role or owner identity.
+         */
+        get: operations["getStudentById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rest/v1/rpc/get_own_profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the authenticated user's own faculty profile
+         * @description Authenticated faculty and admins, including pending faculty, may read only their own profile. Proposed read-only STABLE, SECURITY INVOKER SQL function with no arguments. Derive the subject exclusively from auth.uid() and apply FacultyProfile RLS; never accept a profile ID, email, role or status as an identity selector. Return the own row as a single jsonb object, or JSON null if enrollment has not created the profile yet. This is a scalar jsonb result, not a SETOF result or an array. A null profile grants no feature access; pending profiles remain restricted to onboarding. It performs no writes.
+         */
+        get: operations["getOwnProfile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/rest/v1/faculty_profiles": {
         parameters: {
             query?: never;
@@ -1325,6 +1365,58 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getStudentById: {
+        parameters: {
+            query: {
+                /**
+                 * @description Student UUID passed directly to the SQL function, without an eq. prefix.
+                 * @example 45b54332-e470-4c21-a839-7428c4f6bf42
+                 */
+                p_student_id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description One visible student object, or null when no accessible student matches */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentProfile"] | null;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    getOwnProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The caller's own profile object, or null before a profile exists */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FacultyProfile"] | null;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
     listFaculty: {
         parameters: {
             query?: {

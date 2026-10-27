@@ -5,6 +5,13 @@ never be edited by hand. Version 0.1.0 is a review draft; see
 [`../docs/contract-decisions.md`](../docs/contract-decisions.md) for proposals and
 unresolved requirements. The backend is not implemented by these files.
 
+Issue #3's detail reads have dedicated operation IDs: `getStudentById` calls
+`GET /rest/v1/rpc/get_student_by_id` with `p_student_id=<uuid>`, and
+`getOwnProfile` calls `GET /rest/v1/rpc/get_own_profile` without identity input.
+Each returns one object or JSON null; existing table list reads return arrays.
+Backend implementers must provide these read-only SQL functions with the
+documented caller permissions and RLS before real integration.
+
 Run from the repository root:
 
 ```powershell
