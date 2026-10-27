@@ -220,6 +220,14 @@ Normalizing a body must retain its original HTTP status.
 
 ## Validation boundaries
 
+### Optional defaults in generated types
+
+Type generation and freshness checking both pass `--default-non-nullable=false`.
+This keeps optional fields with defaults optional in TypeScript, including
+rich-text bold/italic flags and first-message chat history. Backend defaults
+remain documented in the YAML; a default does not require callers to supply a
+value. Generator options must stay identical in both commands.
+
 ### Issue 3 operation mapping
 
 The operation IDs now match Issue #3 wherever a requested operation has its own method/path.

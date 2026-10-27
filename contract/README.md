@@ -19,6 +19,10 @@ npm --prefix app run contract:lint
 ```
 
 These scripts pin Redocly CLI 2.71.0 and openapi-typescript 7.13.0 using npm exec.
+Generation and freshness checking both use `--default-non-nullable=false` so
+schema defaults do not turn optional request fields into required TypeScript
+properties. Rich-text `bold`/`italic` and chat `history` can be omitted, as
+documented in the YAML. Required fields remain required.
 Linting uses `redocly.yaml` for the shared rules and Redoc theme.
 `.redocly.lint-ignore.yaml` records only the three intentional unused entity schemas
 required by Issue #3 (`ReviewTag`, internal `ReviewEmbedding` and internal

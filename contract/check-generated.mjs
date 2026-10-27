@@ -19,7 +19,7 @@ try {
   const expectedPath = join(temporaryDirectory, 'schema.d.ts');
   const result = spawnSync(process.execPath, [
     npmCli, 'exec', '--yes', '--package=openapi-typescript@7.13.0', '--',
-    'openapi-typescript', source, '-o', expectedPath,
+    'openapi-typescript', source, '--default-non-nullable=false', '-o', expectedPath,
   ], { cwd: app, stdio: 'inherit' });
 
   if (result.error) throw result.error;

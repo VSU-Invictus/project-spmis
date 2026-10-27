@@ -36,6 +36,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **Contract type optionality:** Aligned type generation and freshness-check
+  options so optional rich-text formatting flags and chat history stay optional
+  in TypeScript, matching the documented request examples and backend defaults.
 - **Pagination error mock:** Added an explicit HTTP 416 response example using
   PostgREST's PGRST103 code instead of inheriting the generic PGRST116 example.
 - **Issue #3 review corrections:** Split public attachment metadata from the

@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "contract:lint": "npx --yes @redocly/cli@2.71.0 lint ../contract/openapi.yaml --config ../contract/redocly.yaml",
-    "contract:gen": "npx --yes openapi-typescript@7.13.0 ../contract/openapi.yaml -o ../contract/generated/schema.d.ts",
+    "contract:gen": "npx --yes openapi-typescript@7.13.0 ../contract/openapi.yaml --default-non-nullable=false -o ../contract/generated/schema.d.ts",
     "contract:check": "npm run contract:lint && node ../contract/check-generated.mjs"
   },
   "dependencies": {

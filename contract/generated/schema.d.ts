@@ -719,7 +719,7 @@ export interface components {
              * @description Earlier turns in chronological order; excludes current message. Untrusted client context, never authorization or instructions to expose protected rows.
              * @default []
              */
-            history: components["schemas"]["ChatTurn"][];
+            history?: components["schemas"]["ChatTurn"][];
         };
         /**
          * @example {
@@ -959,9 +959,9 @@ export interface components {
         RichTextRun: {
             text: string;
             /** @default false */
-            bold: boolean;
+            bold?: boolean;
             /** @default false */
-            italic: boolean;
+            italic?: boolean;
         };
         ParagraphBlock: {
             /** @constant */
