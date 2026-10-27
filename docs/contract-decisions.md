@@ -188,12 +188,15 @@ The selected design must preserve caller-specific visibility, especially the rul
 
 ### Review attachments
 
-The data model and lifecycle rules include review attachments, but no upload, listing, access, or removal operation is currently specified.
+Issue #3 requires visible review reads to include `ReviewAttachment` metadata. The draft now includes
+that metadata through the review read shape while keeping the internal Storage object key write-only.
+Upload, signed-download and removal operations are still not specified.
 
 Decision needed:
 
-- Define the v1 attachment operations and signed-access flow; or
-- Explicitly defer attachments from the Milestone 2 API contract.
+- Define the v1 upload, signed-download and removal operations; or
+- Explicitly defer attachment mutations and downloads from the Milestone 2 API contract while
+  retaining the required metadata schema.
 
 Any approved design must enforce the parent review's visibility and deletion rules independently in Supabase Storage.
 
@@ -213,6 +216,20 @@ future typed client must normalize those into the shared error handling path.
 Normalizing a body must retain its original HTTP status.
 
 ## Validation boundaries
+
+### Issue 3 operation mapping
+
+Issue #3 uses product-level names for three reads. The curated PostgREST contract implements them
+without inventing unsupported path parameters:
+
+- `getStudentById` is `listStudentProfiles` with the `id=eq.<uuid>` filter; zero matches returns `[]`.
+- `listStudentReviews` is `listReviews` with `student_id=eq.<uuid>`, including visible attachment
+  metadata, with history read through `listReviewRevisions` using `review_id=eq.<uuid>`.
+- `listTags` is the safe `suggestReviewTags` RPC, which returns distinct tags only from accessible
+  active reviews and does not expose hidden-review counts or ownership metadata.
+
+These mappings satisfy the required behavior while preserving actual PostgREST URL semantics. The
+`ReviewEmbedding` schema is internal-only and is not referenced by any public operation.
 
 Contract lint checks OpenAPI structure and references. Type generation checks
 that the document produces TypeScript. Neither proves backend behavior, RLS,

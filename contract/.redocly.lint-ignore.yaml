@@ -1,0 +1,8 @@
+# Issue #3 requires these database entity schemas for reference.
+# ReviewTag is projected as normalized strings by the curated read operations.
+# ReviewEmbedding stays internal; no browser operation may expose embedding data.
+# Keep unused-component warnings enabled for every other component.
+openapi.yaml:
+  no-unused-components:
+    - '#/components/schemas/ReviewTag'
+    - '#/components/schemas/ReviewEmbedding'

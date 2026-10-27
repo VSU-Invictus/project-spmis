@@ -382,12 +382,32 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * @example {
+         *       "code": "PGRST116",
+         *       "message": "The requested resource could not be returned.",
+         *       "details": null,
+         *       "hint": "Check the request filters and caller permissions."
+         *     }
+         */
         Error: {
             code: string;
             message: string;
             details: string | null;
             hint: string | null;
         };
+        /**
+         * @example {
+         *       "id": "e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+         *       "email": "alex.reyes@example.edu",
+         *       "full_name": "Alex Reyes",
+         *       "department_id": "5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+         *       "role": "faculty",
+         *       "status": "active",
+         *       "created_at": "2026-10-26T00:00:00Z",
+         *       "updated_at": "2026-10-26T00:00:00Z"
+         *     }
+         */
         FacultyProfile: {
             /** Format: uuid */
             id: string;
@@ -435,6 +455,16 @@ export interface components {
         ManagedListInput: {
             name: string;
         };
+        /**
+         * @example {
+         *       "id": "5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+         *       "name": "Computer Science",
+         *       "status": "approved",
+         *       "proposed_by": null,
+         *       "created_at": "2026-10-26T00:00:00Z",
+         *       "updated_at": "2026-10-26T00:00:00Z"
+         *     }
+         */
         Department: {
             /** Format: uuid */
             id: string;
@@ -447,6 +477,16 @@ export interface components {
             /** Format: date-time */
             updated_at: string;
         };
+        /**
+         * @example {
+         *       "id": "8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+         *       "name": "Bachelor of Science in Computer Science",
+         *       "status": "approved",
+         *       "proposed_by": null,
+         *       "created_at": "2026-10-26T00:00:00Z",
+         *       "updated_at": "2026-10-26T00:00:00Z"
+         *     }
+         */
         Program: {
             /** Format: uuid */
             id: string;
@@ -467,6 +507,19 @@ export interface components {
             /** Format: uuid */
             program_id: string;
         };
+        /**
+         * @example {
+         *       "id": "45b54332-e470-4c21-a839-7428c4f6bf42",
+         *       "student_id_number": "27-1-12345",
+         *       "last_name": "Santos",
+         *       "first_name": "Maria",
+         *       "middle_name": null,
+         *       "program_id": "8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+         *       "registration_source": "admin_direct",
+         *       "created_at": "2026-10-26T00:00:00Z",
+         *       "updated_at": "2026-10-26T00:00:00Z"
+         *     }
+         */
         StudentProfile: {
             student_id_number: string;
             last_name: string;
@@ -510,6 +563,7 @@ export interface components {
          *       "tags": [
          *         "leadership"
          *       ],
+         *       "attachments": [],
          *       "created_at": "2026-10-26T00:00:00Z",
          *       "updated_at": "2026-10-26T00:00:00Z"
          *     }
@@ -536,6 +590,8 @@ export interface components {
             author_name: string;
             author_department_name: string;
             body_document: components["schemas"]["ReviewDocument"];
+            /** @description Metadata for attachments visible through the parent review. Internal storage paths are omitted from responses; downloading requires the separately approved signed-access flow. */
+            attachments: components["schemas"]["ReviewAttachment"][];
         };
         /**
          * @example {
@@ -597,6 +653,30 @@ export interface components {
             /** @enum {string} */
             action: "hide" | "unhide" | "delete";
         };
+        /**
+         * @example {
+         *       "id": "3731173e-5880-47d6-b914-da53521a607e",
+         *       "review_id": "67015de8-1ce8-4ac4-8634-384bf5fb3821",
+         *       "body_text_snapshot": "Demonstrated strong research skills.",
+         *       "edited_by": "e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+         *       "edited_at": "2026-10-26T01:00:00Z",
+         *       "body_document_snapshot": {
+         *         "blocks": [
+         *           {
+         *             "type": "paragraph",
+         *             "content": [
+         *               {
+         *                 "text": "Demonstrated strong research skills."
+         *               }
+         *             ]
+         *           }
+         *         ]
+         *       },
+         *       "tags_snapshot": [
+         *         "research"
+         *       ]
+         *     }
+         */
         ReviewRevision: {
             /** Format: uuid */
             id: string;
@@ -695,7 +775,38 @@ export interface components {
              */
             department_id?: string;
         };
+        /**
+         * @example {
+         *       "id": "07e42297-6b44-4b35-ab2f-d216d547bdc7",
+         *       "type": "faculty_account",
+         *       "payload": {
+         *         "full_name": "Alex Reyes",
+         *         "email": "alex.reyes@example.edu",
+         *         "department_id": "5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb"
+         *       },
+         *       "status": "pending",
+         *       "submitted_by": "e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+         *       "decided_by": null,
+         *       "decision_reason": null,
+         *       "created_at": "2026-10-26T00:00:00Z",
+         *       "decided_at": null
+         *     }
+         */
         ApprovalQueueItem: components["schemas"]["FacultyAccountItem"] | components["schemas"]["StudentRegistrationItem"] | components["schemas"]["ProgramProposalItem"] | components["schemas"]["DepartmentProposalItem"];
+        /**
+         * @example {
+         *       "id": "9e259155-705c-46fb-9530-c0f100cfca0f",
+         *       "actor_id": "e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+         *       "actor_role": "faculty",
+         *       "action": "review.created",
+         *       "entity_type": "review",
+         *       "entity_id": "67015de8-1ce8-4ac4-8634-384bf5fb3821",
+         *       "metadata": {
+         *         "status": "active"
+         *       },
+         *       "created_at": "2026-10-26T00:00:00Z"
+         *     }
+         */
         AuditLogEntry: {
             /** Format: uuid */
             id: string;
@@ -719,12 +830,90 @@ export interface components {
         OwnProfileUpdate: {
             full_name: string;
         };
+        /**
+         * @example {
+         *       "id": "45b54332-e470-4c21-a839-7428c4f6bf42",
+         *       "student_id_number": "27-1-12345",
+         *       "last_name": "Santos",
+         *       "first_name": "Maria",
+         *       "middle_name": null,
+         *       "program_id": "8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+         *       "registration_source": "admin_direct",
+         *       "created_at": "2026-10-26T00:00:00Z",
+         *       "updated_at": "2026-10-26T00:00:00Z",
+         *       "program_name": "Bachelor of Science in Computer Science",
+         *       "visible_review_tags": [
+         *         "research"
+         *       ]
+         *     }
+         */
         StudentSearchResult: components["schemas"]["StudentProfile"] & {
             program_name: string;
             visible_review_tags: components["schemas"]["NormalizedTag"][];
         };
         /** @description Lowercased whitespace-tokenized tag. Backend normalizes before deduplicating. */
         NormalizedTag: string;
+        /**
+         * @example {
+         *       "id": "87cac81d-ef43-41df-88ef-c4615cf7f10c",
+         *       "review_id": "67015de8-1ce8-4ac4-8634-384bf5fb3821",
+         *       "tag": "research"
+         *     }
+         */
+        ReviewTag: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            review_id: string;
+            tag: components["schemas"]["NormalizedTag"];
+        };
+        /**
+         * @description Internal database entity. It has no client-facing read or write operation; Edge Functions create, replace, and remove it as part of the review lifecycle.
+         * @example {
+         *       "review_id": "67015de8-1ce8-4ac4-8634-384bf5fb3821",
+         *       "embedding": [
+         *         0.012,
+         *         -0.034,
+         *         0.056
+         *       ],
+         *       "generated_at": "2026-10-26T00:00:00Z"
+         *     }
+         */
+        ReviewEmbedding: {
+            /** Format: uuid */
+            review_id: string;
+            embedding: number[];
+            /** Format: date-time */
+            generated_at: string;
+        };
+        /**
+         * @description Storage metadata entity. Access must follow the parent review's visibility and deletion rules. The internal storage path is never included in audit logs.
+         * @example {
+         *       "id": "e02d35de-a91f-4f53-aee3-406b38692af8",
+         *       "review_id": "67015de8-1ce8-4ac4-8634-384bf5fb3821",
+         *       "storage_path": "reviews/67015de8/attachment.pdf",
+         *       "mime_type": "application/pdf",
+         *       "size_bytes": 245760,
+         *       "created_at": "2026-10-26T00:00:00Z"
+         *     }
+         */
+        ReviewAttachment: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            review_id: string;
+            /** @description Internal object key; use a signed-access operation for client downloads. */
+            storage_path: string;
+            mime_type: string;
+            size_bytes: number;
+            /** Format: date-time */
+            created_at: string;
+        };
+        /**
+         * @example {
+         *       "tag": "research"
+         *     }
+         */
         TagSuggestion: {
             tag: components["schemas"]["NormalizedTag"];
         };
@@ -893,7 +1082,14 @@ export interface components {
             /** @constant */
             terms_accepted: true;
         } & (unknown | unknown);
-        /** @description Receipt permits onboarding without exposing a pending department directory. */
+        /**
+         * @description Receipt permits onboarding without exposing a pending department directory.
+         * @example {
+         *       "faculty_id": "e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+         *       "application_id": "07e42297-6b44-4b35-ab2f-d216d547bdc7",
+         *       "status": "pending"
+         *     }
+         */
         RegistrationReceipt: {
             /** Format: uuid */
             faculty_id: string;

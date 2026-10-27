@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **Issue #3 contract completion:** Added the Redocly lint/theme configuration,
+  explicit ReviewTag, internal ReviewEmbedding and ReviewAttachment schemas,
+  reusable realistic mock examples, and documented mappings from the issue's
+  product-level read names to their curated PostgREST operations.
 - **Faculty enrollment lifecycle:** Documented pending applicants' access to only
   their own faculty-account decisions/rejection reasons, rejection resubmission
   as a new application, duplicate/active-account conflicts and concurrent-submit

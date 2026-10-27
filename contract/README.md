@@ -18,7 +18,10 @@ For lint only:
 npm --prefix app run contract:lint
 ```
 
-These scripts pin Redocly CLI 2.71.0 and openapi-typescript 7.13.0 using npm exec;
+These scripts pin Redocly CLI 2.71.0 and openapi-typescript 7.13.0 using npm exec.
+Linting uses `redocly.yaml` for the shared rules and Redoc theme;
+`.redocly.lint-ignore.yaml` records only the two intentional unused entity schemas
+required by Issue #3 (`ReviewTag` and internal-only `ReviewEmbedding`).
 the first run needs network access and the normal npm cache. No global install
 is needed. contract:check re-generates types in a unique temporary directory and
 compares them without modifying the committed output. It checks lint/freshness,

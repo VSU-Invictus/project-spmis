@@ -1,0 +1,13 @@
+extends:
+  - recommended
+
+rules:
+  no-unresolved-refs: error
+  operation-operationId: error
+  operation-summary: error
+  operation-operationId-unique: error
+
+openapi:
+  hideDownloadButton: false
+  schemaExpansionLevel: 2
+
