@@ -28,13 +28,13 @@
 | 2.4 | /rest/v1/rpc/get_own_profile | GET | Role violation | 403 | **Pass** |
 | 2.5 | /rest/v1/rpc/get_own_profile | GET | Invalid request (simulated) | 400/422 | **Pass** |
 | 3.1 | /rest/v1/rpc/faculty_profiles | GET | Valid request | 200 | **Pass**|
-| 3.2 | /rest/v1/rpc/faculty_profiles | GET | Null result | 200 | Pass |
-| 3.3 | /rest/v1/rpc/faculty_profiles | GET | Missing JWT | 401 | Pass |
-| 3.4 | /rest/v1/rpc/faculty_profiles | GET | Role violation | 403 | Pass |
-| 3.5 | /rest/v1/rpc/faculty_profiles | GET | Invalid UUID | 400/422 | Pass |
-| 8.1 | /rest/v1/rpc/student_profiles | PATCH | Valid request | 200 | **Pass** |
-| 8.2 | /rest/v1/rpc/student_profiles | PATCH | Valid request | 201 | **Pass** |
-| 8.3 | /rest/v1/rpc/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
+| 3.2 | /rest/v1/rpc/faculty_profiles | GET | Null result | 200 | **Pass** |
+| 3.3 | /rest/v1/rpc/faculty_profiles | GET | Missing JWT | 401 | **Pass** |
+| 3.4 | /rest/v1/rpc/faculty_profiles | GET | Role violation | 403 | **Pass** |
+| 3.5 | /rest/v1/rpc/faculty_profiles | GET | Invalid UUID | 400/422 | **Pass** |
+| 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
+| 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
+| 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -330,7 +330,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: test-key
 ## GET /rest/v1/rpc/get_own_profile
 
 **Summary:** List faculty profiles visible to the caller
-**Roles:** Auth, Admin
+**Roles:** Faculty, Admin
 **Request body:** None.
 
 ### Case 1: Valid request (200 OK)
@@ -473,11 +473,11 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-
 
 ---
 
-## PATCH /rest/v1/rpc/student_profiles
+## PATCH /rest/v1/student_profiles
 
-**Summary:** Get one student visible to the caller
-**Request body:** None.
-**Roles:** Faculty, Admin
+**Summary:** Update a program
+**Roles:** Admin
+**Request body:** Required JSON body containing `student_id_number`, `first_name`, `last_name`, and `program_id`.
 
 ### Case 1: Valid request (200 OK)
 
