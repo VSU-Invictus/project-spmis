@@ -20,7 +20,7 @@
 | 1.1 | /rest/v1/rpc/get_student_by_id | GET | Valid request | 200 | Pass |
 | 1.2 | /rest/v1/rpc/get_student_by_id | GET | Null result | 200 | Pass |
 | 1.3 | /rest/v1/rpc/get_student_by_id | GET | Missing JWT | 401 | Pass |
-| 1.4 | /rest/v1/rpc/get_student_by_id | GET | Role violation | 403 | Pass / Fail |
+| 1.4 | /rest/v1/rpc/get_student_by_id | GET | Role violation | 403 | Pass |
 | 1.5 | /rest/v1/rpc/get_student_by_id | GET | Invalid UUID | 422 | Pass / Fail |
 | 1.6 | /rest/v1/rpc/get_student_by_id | GET | Missing parameter | 422 | Pass / Fail |
 
@@ -120,25 +120,26 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" \
-  -H "Authorization: Bearer test.jwt.token" \
-  -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `Authorization`, `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization`, `Prefer: code=403` |
 | Body | None |
 | Expected status | 403 Forbidden |
-| Actual status | |
+| Actual status | 403 Forbidden |
 
 **Response**
 ```json
-PASTE ACTUAL RESPONSE HERE
+{
+"code":"FORBIDDEN",
+"message":"You are not allowed to perform this action.",
+"details":null,"hint":null
+}
 ```
 
-**Result:** Pass / Fail
-**Notes:** If Prism errors, the 403 response is not defined in the contract.
+**Result:** Pass
 
 ---
 
