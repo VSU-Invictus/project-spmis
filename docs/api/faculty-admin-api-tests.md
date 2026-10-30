@@ -75,17 +75,17 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 | Item | Value |
 |---|---|
-| Headers | `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
+| Headers | `apikey: test-key` `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
 | Body | Null |
 | Expected status | 200 OK |
 | Actual status | 200 OK |
 
 **Response**
 ```json
-PASTE ACTUAL RESPONSE HERE
+null
 ```
 
-**Result:** Pass / Fail
+**Result:** Pass
 **Notes:** Inaccessible and missing students both return `null`, as described in the contract.
 
 ---
