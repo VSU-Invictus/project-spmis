@@ -35,10 +35,10 @@
 | 4.2 | /rest/v1/rpc/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
 | 4.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated)| 403 | **Fail** |
 | 4.4 | /rest/v1/rpc/faculty_profiles | PATCH  | Invalid Payload | 400/422 | **Pass** |
-| 5.1 | /rest/v1/rpc/faculty_profiles | PATCH | Valid request | 200 | **Pass**|
-| 5.2 | /rest/v1/rpc/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
-| 5.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated)| 403 | **Pass** |
-| 5.4 | /rest/v1/rpc/faculty_profiles | PATCH  | Invalid Payload | 400/422 | |
+| 5.1 | /rest/v1/rpc/suggest_review_tags | GET | Valid request | 200 | **Pass**|
+| 5.2 | /rest/v1/rpc/suggest_review_tags | GET | Missing JWT | 401 | **Pass** |
+| 5.3 | /rest/v1/rpc/suggest_review_tags | GET | Role violation (simulated)| 403 | **Pass** |
+| 5.4 | /rest/v1/rpc/suggest_review_tags | GET | Invalid request | 400/422 | **Pass** |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
@@ -677,11 +677,11 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=t
 
 ---
 
-### Case 5: Invalid UUID (400 / 422)
+### Case 4: Invalid request (400 / 422)
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=invalid_value" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
@@ -691,6 +691,16 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-
 | Expected status | 400 or 422 |
 | Actual status | 400 Bad Request |
 
+**Validation header**
+```json
+ [
+  {"location":["request","query","order"],
+  "severity":"Error",
+  "code":"enum",
+  "message":"Request query parameter order must be equal to one of the allowed values: tag.asc"
+  }
+]
+```
 **Response**
 ```json
 {
