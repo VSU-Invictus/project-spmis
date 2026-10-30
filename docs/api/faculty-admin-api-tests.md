@@ -819,11 +819,11 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=8ce85743-2
 
 ---
 
-### Case 4: Invalid request (400 / 422)
+### Case 4: Invalid UUID (400 / 422)
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=invalid_value" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=not-a-uuid&owner_id=d96991c4-f61a-f9c7-2f5f-7f6bd8799d49&owner_department_id=6ecae807-d397-2a76-5eb2-121284fcc550&tag=atqui&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
@@ -835,11 +835,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=i
 
 **Validation header**
 ```json
- [
-  {"location":["request","query","order"],
+[
+  {
+  "location":["request","query","program_id"],
   "severity":"Error",
-  "code":"enum",
-  "message":"Request query parameter order must be equal to one of the allowed values: tag.asc"
+  "code":"format",
+  "message":"Request query parameter program_id must match format \"uuid\""
   }
 ]
 ```
