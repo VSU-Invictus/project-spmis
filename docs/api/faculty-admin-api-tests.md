@@ -18,8 +18,8 @@
 | # | Endpoint | Method | Case | Status | Result |
 |---|---|---|---|---|---|
 | 1.1 | /rest/v1/rpc/get_student_by_id | GET | Valid request | 200 | Pass |
-| 1.2 | /rest/v1/rpc/get_student_by_id | GET | Null result | 200 | Pass/Fail |
-| 1.3 | /rest/v1/rpc/get_student_by_id | GET | Missing JWT | 401 | Pass / Fail |
+| 1.2 | /rest/v1/rpc/get_student_by_id | GET | Null result | 200 | Pass |
+| 1.3 | /rest/v1/rpc/get_student_by_id | GET | Missing JWT | 401 | Pass |
 | 1.4 | /rest/v1/rpc/get_student_by_id | GET | Role violation | 403 | Pass / Fail |
 | 1.5 | /rest/v1/rpc/get_student_by_id | GET | Invalid UUID | 422 | Pass / Fail |
 | 1.6 | /rest/v1/rpc/get_student_by_id | GET | Missing parameter | 422 | Pass / Fail |
@@ -75,18 +75,17 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 | Item | Value |
 |---|---|
-| Headers | `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
+| Headers | `apikey: test-key` `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
 | Body | Null |
 | Expected status | 200 OK |
 | Actual status | 200 OK |
 
 **Response**
 ```json
-PASTE ACTUAL RESPONSE HERE
+null
 ```
 
-**Result:** Pass / Fail
-**Notes:** Inaccessible and missing students both return `null`, as described in the contract.
+**Result:** Pass
 
 ---
 
@@ -102,15 +101,18 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 | Headers | None (no Authorization) |
 | Body | None |
 | Expected status | 401 Unauthorized |
-| Actual status | |
+| Actual status | 401 Unauthorized |
 
 **Response**
 ```json
-PASTE ACTUAL RESPONSE HERE
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,"hint":null
+}
 ```
 
-**Result:** Pass / Fail
-**Notes:** If Prism returned 200, the operation has no `security` defined in the contract. Report this to the contract owner.
+**Result:** Pass
 
 ---
 
