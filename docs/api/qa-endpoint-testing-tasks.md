@@ -17,14 +17,14 @@ Run the Prism mock backend from `contract/openapi.yaml`, test every endpoint in 
 
 ## 2. Branching Strategy
 
-One parent QA branch, with one sub-branch per member. Sub-branches are merged into the parent branch through PRs, and the parent branch is merged into `dev` once everything is reviewed.
+One parent QA branch, with one sub-branch per member. Sub-branches are merged into the parent branch through PRs, and the parent branch is merged into `main` once everything is reviewed.
 
 ```
-dev
+main
  └── qa/api-testing/base            <- parent QA branch
       ├── qa/api-testing/zaming
       ├── qa/api-testing/dollyraexe
-      ├── qa/api-testing/reeseban
+      ├── qa/api-testing/reeseBan
       └── qa/api-testing/azrielkaye
 ```
 
@@ -34,7 +34,7 @@ dev
 
 ```bash
 # Lead creates the parent branch once
-git checkout dev && git pull origin dev
+git checkout main && git pull origin main
 git checkout -b qa/api-testing/base
 git push -u origin qa/api-testing/base
 
@@ -49,7 +49,7 @@ git push -u origin qa/api-testing/<yourname>
 1. Member commits their doc on their sub-branch.
 2. Member opens a PR: `qa/api-testing/<name>` -> `qa/api-testing/base`.
 3. QA Lead (or another member) reviews against the checklist in section 6.
-4. After all four are merged, the Lead opens a PR: `qa/api-testing/base` -> `dev`.
+4. After all four are merged, the Lead opens a PR: `qa/api-testing/base` -> `main`.
 
 ---
 
@@ -61,8 +61,8 @@ git push -u origin qa/api-testing/<yourname>
 |---|---|---|---|---|
 | @Zaming | `qa/api-testing/zaming` | `<Domain 1>` | `docs/api/<domain1>.md` | ⬜ Not started |
 | @dollyraexe | `qa/api-testing/dollyraexe` | `<Domain 2>` | `docs/api/<domain2>.md` | ⬜ Not started |
-| @reeseBan | `qa/api-testing/reeseban` | `<Domain 3>` | `docs/api/<domain3>.md` | ⬜ Not started |
-| @AzrielKaye | `qa/api-testing/azrielkaye` | `<Domain 4>` | `docs/api/<domain4>.md` | ⬜ Not started |
+| @AzrielKaye | `qa/api-testing/azrielkaye` | `<Domain 3>` | `docs/api/<domain3>.md` | ⬜ Not started |
+| @reeseBan | `qa/api-testing/reeseBan` | `<Domain 4>` | `docs/api/<domain4>.md` | ⬜ Not started |
 
 **Lead responsibilities (@reeseBan, in addition to own scope)**
 
@@ -70,7 +70,7 @@ git push -u origin qa/api-testing/<yourname>
 - Assign domain scopes and keep the table above updated
 - Review all sub-branch PRs and merge into the parent branch
 - Track contract mismatches in section 5 and coordinate fixes
-- Open the final PR to `dev`
+- Open the final PR to `main`
 
 ---
 
