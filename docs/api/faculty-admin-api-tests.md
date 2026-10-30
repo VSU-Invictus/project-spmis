@@ -33,8 +33,8 @@
 | 3.4 | /rest/v1/rpc/faculty_profiles | GET | Invalid request | 400/422 | **Pass** |
 | 4.1 | /rest/v1/rpc/faculty_profiles | PATCH | Valid request | 200 | **Pass**|
 | 4.2 | /rest/v1/rpc/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
-| 4.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated)| 403 | Pass |
-| 4.4 | /rest/v1/rpc/faculty_profiles | PATCH  | Invalid request | 400/422 | Pass |
+| 4.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated)| 403 | **Fail** |
+| 4.4 | /rest/v1/rpc/faculty_profiles | PATCH  | Invalid Payload | 400/422 | **Pass** |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
@@ -546,13 +546,41 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
 
 | Item | Value |
 |---|---|
-| Headers | None (no Authorization) |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
 | Body | `{"status":"active"}` |
-| Expected status | 401 Unauthorized |
+| Expected status | 403 Forbidden |
 | Actual status | 200 OK |
 
 
 **Result:** Fail (cannot simulate). `Prefer: code=403` is rejected because the contract fixes `Prefer` to a constant, and `?__code=403` was ignored by this Prism version.
+
+---
+
+### Case 4: Invalid Payload (400, real validation)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-Fea3-43de-83fa-a2CD8945DdFA" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"status\":\"suspended\"}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{"status":"suspended"}` |
+| Expected status | 400 Bad request |
+| Actual status | 400 Bad request |
+
+**Response**
+```json
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
+}
+```
+
+**Result:** Pass
 
 ---
 
