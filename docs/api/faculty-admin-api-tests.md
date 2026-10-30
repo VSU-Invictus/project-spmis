@@ -941,7 +941,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
 | Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 403 Forbidden |
 | Actual status | 400 Bad request |
@@ -955,13 +955,13 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=not-a-uuid&owner_id=d96991c4-f61a-f9c7-2f5f-7f6bd8799d49&owner_department_id=6ecae807-d397-2a76-5eb2-121284fcc550&tag=atqui&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"not-a-uuid\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
-| Body | None |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 400 or 422 |
 | Actual status | 400 Bad Request |
 
@@ -969,10 +969,10 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=not-a-uuid
 ```json
 [
   {
-  "location":["request","query","program_id"],
+  "location":["request","body","program_id"],
   "severity":"Error",
   "code":"format",
-  "message":"Request query parameter program_id must match format \"uuid\""
+  "message":"Request body property program_id must match format \"uuid\""
   }
 ]
 ```
