@@ -18,10 +18,10 @@
 | # | Endpoint | Method | Case | Status | Result |
 |---|---|---|---|---|---|
 | 1.1 | /rest/v1/rpc/get_student_by_id | GET | Valid request | 200 | Pass |
-| 1.2 | /rest/v1/rpc/get_student_by_id | GET | Null result | 200 | Pass/Fail |
-| 1.3 | /rest/v1/rpc/get_student_by_id | GET | Missing JWT | 401 | Pass / Fail |
-| 1.4 | /rest/v1/rpc/get_student_by_id | GET | Role violation | 403 | Pass / Fail |
-| 1.5 | /rest/v1/rpc/get_student_by_id | GET | Invalid UUID | 422 | Pass / Fail |
+| 1.2 | /rest/v1/rpc/get_student_by_id | GET | Null result | 200 | Pass |
+| 1.3 | /rest/v1/rpc/get_student_by_id | GET | Missing JWT | 401 | Pass |
+| 1.4 | /rest/v1/rpc/get_student_by_id | GET | Role violation | 403 | Pass |
+| 1.5 | /rest/v1/rpc/get_student_by_id | GET | Invalid UUID | 422 | Pass |
 | 1.6 | /rest/v1/rpc/get_student_by_id | GET | Missing parameter | 422 | Pass / Fail |
 
 ---
@@ -75,18 +75,17 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 | Item | Value |
 |---|---|
-| Headers | `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
+| Headers | `apikey: test-key` `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
 | Body | Null |
 | Expected status | 200 OK |
 | Actual status | 200 OK |
 
 **Response**
 ```json
-PASTE ACTUAL RESPONSE HERE
+null
 ```
 
-**Result:** Pass / Fail
-**Notes:** Inaccessible and missing students both return `null`, as described in the contract.
+**Result:** Pass
 
 ---
 
@@ -102,15 +101,18 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 | Headers | None (no Authorization) |
 | Body | None |
 | Expected status | 401 Unauthorized |
-| Actual status | |
+| Actual status | 401 Unauthorized |
 
 **Response**
 ```json
-PASTE ACTUAL RESPONSE HERE
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,"hint":null
+}
 ```
 
-**Result:** Pass / Fail
-**Notes:** If Prism returned 200, the operation has no `security` defined in the contract. Report this to the contract owner.
+**Result:** Pass
 
 ---
 
@@ -118,25 +120,26 @@ PASTE ACTUAL RESPONSE HERE
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" \
-  -H "Authorization: Bearer test.jwt.token" \
-  -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `Authorization`, `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization`, `Prefer: code=403` |
 | Body | None |
 | Expected status | 403 Forbidden |
-| Actual status | |
+| Actual status | 403 Forbidden |
 
 **Response**
 ```json
-PASTE ACTUAL RESPONSE HERE
+{
+"code":"FORBIDDEN",
+"message":"You are not allowed to perform this action.",
+"details":null,"hint":null
+}
 ```
 
-**Result:** Pass / Fail
-**Notes:** If Prism errors, the 403 response is not defined in the contract.
+**Result:** Pass
 
 ---
 
@@ -144,23 +147,27 @@ PASTE ACTUAL RESPONSE HERE
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" \
-  -H "Authorization: Bearer test.jwt.token"
+>curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `Authorization: Bearer test.jwt.token` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 or 422 |
-| Actual status | |
+| Actual status | 400 |
 
 **Response**
 ```json
-PASTE ACTUAL RESPONSE HERE
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
+}
 ```
 
-**Result:** Pass / Fail
+**Result:** Pass
 
 ---
 
