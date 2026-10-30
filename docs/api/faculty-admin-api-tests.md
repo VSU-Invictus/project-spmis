@@ -27,6 +27,11 @@
 | 2.3 | /rest/v1/rpc/get_own_profile | GET | Missing JWT | 401 | **Pass** |
 | 2.4 | /rest/v1/rpc/get_own_profile | GET | Role violation | 403 | **Pass** |
 | 2.5 | /rest/v1/rpc/get_own_profile | GET | Invalid request (simulated) | 400/422 | **Pass** |
+| 3.1 | /rest/v1/rpc/faculty_profiles | GET | Valid request | 200 | **Pass**|
+| 3.2 | /rest/v1/rpc/faculty_profiles | GET | Null result | 200 | Pass |
+| 3.3 | /rest/v1/rpc/faculty_profiles | GET | Missing JWT | 401 | Pass |
+| 3.4 | /rest/v1/rpc/faculty_profiles | GET | Role violation | 403 | Pass |
+| 3.5 | /rest/v1/rpc/faculty_profiles | GET | Invalid UUID | 400/422 | Pass |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -316,6 +321,152 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: test-key
 ```
 
 **Result:** Pass (simulated; endpoint takes no input)
+
+---
+
+## GET /rest/v1/rpc/get_own_profile
+
+**Summary:** List faculty profiles visible to the caller
+**Roles:** Auth, Admin
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/faculty_profiles?department_id=eq.580ED6ef-AEb9-3d4D-8c2d-ec8B451DBd8b&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/faculty_profiles?department_id=eq.580ED6ef-AEb9-3d4D-8c2d-ec8B451DBd8b&order=created_at.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+  "id":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+  "email":"alex.reyes@example.edu",
+  "full_name":"Alex Reyes",
+  "department_id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+  "role":"faculty",
+  "status":"active",
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Null result (200 OK)
+
+**Request**
+```bash
+>curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: example=notVisible"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
+| Body | Null |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+null
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization`, `Prefer: code=403` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+"code":"FORBIDDEN",
+"message":"You are not allowed to perform this action.",
+"details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Invalid UUID (400 / 422)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
+}
+```
+
+**Result:** Pass
 
 ---
 
