@@ -584,6 +584,146 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
 
 ---
 
+## GET /rest/v1/rpc/suggest_review_tags
+
+**Summary:** Suggest existing tags for the review composer
+**Roles:** Faculty
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=tag.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=tag.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {"tag":"research"},
+  {"tag":"resilience"}
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Null result (200 OK)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: example=notVisible"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
+| Body | Null |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+null
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,
+"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization`, `Prefer: code=403` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+"code":"FORBIDDEN",
+"message":"You are not allowed to perform this action.",
+"details":null,
+"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Invalid UUID (400 / 422)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
 ## PATCH /rest/v1/student_profiles
 
 **Summary:** Update a program
