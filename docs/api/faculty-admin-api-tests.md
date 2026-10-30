@@ -29,8 +29,8 @@
 | 2.5 | /rest/v1/rpc/get_own_profile | GET | Invalid request (simulated) | 400/422 | **Pass** |
 | 3.1 | /rest/v1/rpc/faculty_profiles | GET | Valid request | 200 | **Pass**|
 | 3.2 | /rest/v1/rpc/faculty_profiles | GET | Missing JWT | 401 | **Pass** |
-| 3.3 | /rest/v1/rpc/faculty_profiles | GET | Role violation | 403 | Pass |
-| 3.4 | /rest/v1/rpc/faculty_profiles | GET | Invalid UUID | 400/422 | Pass |
+| 3.3 | /rest/v1/rpc/faculty_profiles | GET | Role violation (simulated)| 403 | **Pass** |
+| 3.4 | /rest/v1/rpc/faculty_profiles | GET | Invalid request | 400/422 | **Pass** |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
@@ -401,12 +401,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/faculty_profiles?department_id=eq.580ED6e
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/faculty_profiles?__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization`, `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 403 Forbidden |
 | Actual status | 403 Forbidden |
@@ -421,14 +421,15 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 ```
 
 **Result:** Pass
+**Notes:** Simulated with `?__code=403`. `Prefer: code=403` can’t be used here.
 
 ---
 
-### Case 4: Invalid UUID (400 / 422)
+### Case 4: Invalid request (400 / 422)
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i "http://127.0.0.1:4010/rest/v1/faculty_profiles?order=invalid_value" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
@@ -437,6 +438,18 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-
 | Body | None |
 | Expected status | 400 or 422 |
 | Actual status | 400 Bad Request |
+
+**Validation Headers**
+```json
+[
+  {
+  "location":["request","query","order"],
+  "severity":"Error",
+  "code":"enum",
+  "message":"Request query parameter order must be equal to one of the allowed values: created_at.desc,id.asc, created_at.asc,id.asc, full_name.asc,id.asc"
+  }
+]
+```
 
 **Response**
 ```json
@@ -556,6 +569,5 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 ## Issues Found in the Contract
 
 | # | Endpoint | Issue | Suggested fix |
-|---|---|---|---|
-| 1 | `GET /rest/v1/rpc/get_own_profile` | No `400`/`422` response is defined. Prism returned `404` with "Requested status code 422 is not defined in the document." | Document as N/A, since the endpoint takes no input. Add `401`/`403` responses if they are missing. |
+|---|---|---|---| 
 | 2 | | | |
