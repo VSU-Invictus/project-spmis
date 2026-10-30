@@ -465,6 +465,47 @@ curl -i "http://127.0.0.1:4010/rest/v1/faculty_profiles?order=invalid_value" -H 
 
 ---
 
+## PATCH /rest/v1/faculty_profiles
+
+**Summary:** Update a faculty profile allowed by the caller's role
+**Roles:** Admin
+**Request body:** Required JSON object. All fields are optional, but at least one of `email`, `full_name`, `department_id`, `role` or `status` must be present. Unknown fields are not allowed.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-Fea3-43de-83fa-a2CD8945DdFA" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"status\":\"active\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | `{"status":"active"}` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+  "id":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+  "email":"alex.reyes@example.edu",
+  "full_name":"Alex Reyes",
+  "department_id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+  "role":"faculty",
+  "status":"active",
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
 ## PATCH /rest/v1/student_profiles
 
 **Summary:** Update a program
