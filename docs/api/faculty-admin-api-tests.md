@@ -537,6 +537,25 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
 
 ---
 
+### Case 3: Role Violation (403, simulated)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-Fea3-43de-83fa-a2CD8945DdFA&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"status\":\"active\"}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no Authorization) |
+| Body | `{"status":"active"}` |
+| Expected status | 401 Unauthorized |
+| Actual status | 200 OK |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=403` is rejected because the contract fixes `Prefer` to a constant, and `?__code=403` was ignored by this Prism version.
+
+---
+
 ## PATCH /rest/v1/student_profiles
 
 **Summary:** Update a program
@@ -642,4 +661,4 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 | # | Endpoint | Issue | Suggested fix |
 |---|---|---|---| 
-| 2 | | | |
+| 4.3 | PATCH /rest/v1/faculty_profiles | `Prefer` is restricted to a constant, so a 403 cannot be simulated with `Prefer: code=403` | Allow additional `Prefer` values (enum or pattern) so Prism can simulate status codes |
