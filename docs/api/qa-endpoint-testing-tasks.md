@@ -24,7 +24,7 @@ main
  └── qa/api-testing/base            <- parent QA branch
       ├── qa/api-testing/zaming
       ├── qa/api-testing/dollyraexe
-      ├── qa/api-testing/reeseban
+      ├── qa/api-testing/reeseBan
       └── qa/api-testing/azrielkaye
 ```
 
@@ -61,8 +61,8 @@ git push -u origin qa/api-testing/<yourname>
 |---|---|---|---|---|
 | @Zaming | `qa/api-testing/zaming` | `<Domain 1>` | `docs/api/<domain1>.md` | ⬜ Not started |
 | @dollyraexe | `qa/api-testing/dollyraexe` | `<Domain 2>` | `docs/api/<domain2>.md` | ⬜ Not started |
-| @reeseBan | `qa/api-testing/reeseban` | `<Domain 3>` | `docs/api/<domain3>.md` | ⬜ Not started |
-| @AzrielKaye | `qa/api-testing/azrielkaye` | `<Domain 4>` | `docs/api/<domain4>.md` | ⬜ Not started |
+| @AzrielKaye | `qa/api-testing/azrielkaye` | `<Domain 3>` | `docs/api/<domain3>.md` | ⬜ Not started |
+| @reeseBan | `qa/api-testing/reeseBan` | `<Domain 4>` | `docs/api/<domain4>.md` | ⬜ Not started |
 
 **Lead responsibilities (@reeseBan, in addition to own scope)**
 
