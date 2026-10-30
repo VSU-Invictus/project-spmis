@@ -27,7 +27,7 @@
 | 2.2 | /rest/v1/rpc/get_own_profile | GET | Null result | 200 | **Pass** |
 | 2.3 | /rest/v1/rpc/get_own_profile | GET | Missing JWT | 401 | **Pass** |
 | 2.4 | /rest/v1/rpc/get_own_profile | GET | Role violation | 403 | **Pass** |
-| 2.5 | /rest/v1/rpc/get_own_profile | GET | Invalid UUID | 422 | Pass/Fail |
+| 2.5 | /rest/v1/rpc/get_own_profile | GET | Invalid UUID | 422 | **Pass** |
 | 2.6 | /rest/v1/rpc/get_own_profile | GET | Missing parameter | 422 | Pass/Fail |
 
 ---
@@ -153,7 +153,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 **Request**
 ```bash
->curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
@@ -161,7 +161,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 or 422 |
-| Actual status | 400 |
+| Actual status | 400 Bad Request |
 
 **Response**
 ```json
@@ -331,7 +331,7 @@ curl -i curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: 
 
 **Request**
 ```bash
->curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
 ```
 
 | Item | Value |
@@ -339,16 +339,16 @@ curl -i curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: 
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 or 422 |
-| Actual status | 400 |
+| Actual status | 400 Bad Request |
 
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
-}
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+  }
 ```
 
 **Result:** Pass
