@@ -7,6 +7,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **Issue #3 detail reads:** Added dedicated getStudentById and getOwnProfile
+  read-only PostgREST RPC contracts with object-or-null responses, caller/RLS
+  requirements and explicit examples. Removed the shared-read mapping exception;
+  all operation IDs explicitly named in Issue #3 are now declared.
+- **Issue #3 contract completion:** Added the Redocly lint/theme configuration,
+  explicit ReviewTag, internal ReviewEmbedding and ReviewAttachment schemas,
+  reusable realistic mock examples, and documented mappings from the issue's
+  product-level read names to their curated PostgREST operations.
+- **Contract review alignment:** Documented the mockup's 500-word review limit and
+  422 word-limit examples, added a proposed active-review tag-suggestion RPC, and
+  aligned OpenAPI license metadata with the README's All Rights Reserved terms.
+  Program and department proposal names now use the same nonblank, 200-character
+  validation as direct admin additions.
+- **OpenAPI contract draft:** Added OpenAPI 3.1 operations and shared schemas for
+  profiles, student search, managed lists, reviews/history, applications, chat,
+  and audit metadata. Added typed application payloads, constrained
+  rich-text documents, native PostgREST filters/counts, lifecycle acknowledgements,
+  pinned lint/type-generation commands and a generated-type freshness check.
+  API proposals, attachment metadata boundaries and admin-access considerations are
+  recorded in `docs/contract-decisions.md`; backend/RLS implementation is pending.
 - **Navigation Cache & Instant Page Revisits (React Query & Mockup):** Eliminated repetitive skeleton loading states across Admin and Faculty route navigation (#113):
   - Configured `@tanstack/react-query` `QueryClient` cache defaults (`staleTime: 5m`, `gcTime: 30m`, `refetchOnMount: false`, `refetchOnWindowFocus: false`) and added `navigationCache.ts` utilities.
   - Refactored `mockup/assets/js/card-loading.js` with `window.spmisNavigationCache` storing visited routes across session navigation, bypassing skeleton overlays and timers on revisit.
@@ -16,6 +36,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **Issue #3 scope:** Removed five additional operations for faculty profile
+  creation/removal, student directory/removal and faculty enrollment, together
+  with their exclusive schemas, response and filter parameter. Narrowed current
+  documentation to the 27 operations required by Issue #3 and removed the
+  enrollment-specific department-access proposal from this contract.
+- **Contract type optionality:** Aligned type generation and freshness-check
+  options so optional rich-text formatting flags and chat history stay optional
+  in TypeScript, matching the documented request examples and backend defaults.
+- **Pagination error mock:** Added an explicit HTTP 416 response example using
+  PostgREST's PGRST103 code instead of inheriting the generic PGRST116 example.
+- **Issue #3 review corrections:** Split public attachment metadata from the
+  internal Storage entity, marked review body text read-only, added completed
+  approval/rejection response examples and explicit admin mutation permissions.
+  Aligned operation IDs with the issue and corrected Redocly EOF formatting.
+- **Contract permission descriptions:** Documented the separate safe author
+  projection needed by the review view without exposing private faculty profiles.
+  Backend permission implementation remains pending.
 - **UI:** Displayed full Faculty Applications Decision / reason text with wrapping and expanding rows; moved the column left by narrowing the leading columns and reducing its left padding.
 - **UI:** Left-aligned the Decision / reason header and cells in the Faculty Applications table, overriding the shared final-column alignment.
 - **UI:** Left-aligned the Audit Log Performed By and Target headers and cells, overriding the shared table alignment rules.
