@@ -51,6 +51,7 @@
 | 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
 | 8.4 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 403 | **Fail** |
+| 8.5 | /rest/v1/student_profiles | PATCH | Invalid UUID | 400 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -1099,7 +1100,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json"
 ```
 
 | Item | Value |
@@ -1111,6 +1112,46 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 
 
 **Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+
+---
+
+### Case 5: Invalid UUID (400 / 422)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Validation header**
+```json
+[
+  {
+  "location":["request","body","program_id"],
+  "severity":"Error",
+  "code":"format",
+  "message":"Request body property program_id must match format \"uuid\""
+  }
+]
+```
+
+**Response**
+```json
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
+}
+```
+
+**Result:** Pass
 
 ---
 
