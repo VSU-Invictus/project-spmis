@@ -46,7 +46,7 @@
 | 7.1 | /rest/v1/rpc/student_profiles | POST | Valid request | 201 | **Pass** |
 | 7.2 | /rest/v1/rpc/student_profiles | POST | Missing JWT | 401 | **Pass** |
 | 7.3 | /rest/v1/rpc/student_profiles | POST | Role violation (simulated)| 403 | **Fail** |
-| 7.4 | /rest/v1/rpc/student_profiles | POST | Invalid UUID | 400/422 |  |
+| 7.4 | /rest/v1/rpc/student_profiles | POST | Invalid UUID | 400/422 | **Pass** |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
@@ -101,7 +101,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
 | Body | Null |
 | Expected status | 200 OK |
 | Actual status | 200 OK |
@@ -152,7 +152,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization`, `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token`, `Prefer: code=403` |
 | Body | None |
 | Expected status | 403 Forbidden |
 | Actual status | 403 Forbidden |
@@ -247,7 +247,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: test-key
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: example=notEnrolled` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: example=NAME_OF_NULL_EXAMPLE` |
 | Body | None |
 | Expected status | 200 OK |
 | Actual status | 200 OK |
@@ -298,7 +298,7 @@ curl -i curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: 
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization`, `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token`, `Prefer: code=403` |
 | Body | None |
 | Expected status | 403 Forbidden |
 | Actual status | 403 Forbidden |
@@ -308,7 +308,8 @@ curl -i curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: 
 {
 "code":"FORBIDDEN",
 "message":"You are not allowed to perform this action.",
-"details":null,"hint":null
+"details":null,
+"hint":null
 }
 ```
 
@@ -432,7 +433,8 @@ curl -i "http://127.0.0.1:4010/rest/v1/faculty_profiles?__code=403" -H "apikey: 
 {
 "code":"FORBIDDEN",
 "message":"You are not allowed to perform this action.",
-"details":null,"hint":null
+"details":null,
+"hint":null
 }
 ```
 
@@ -531,7 +533,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
 
 | Item | Value |
 |---|---|
-| Headers | None (no Authorization) |
+| Headers | `apikey: test-key` `Content-Type: application/json` `Prefer: return=representation` |
 | Body | `{"status":"active"}` |
 | Expected status | 401 Unauthorized |
 | Actual status | 401 Unauthorized |
@@ -541,7 +543,8 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
 {
 "code":"PGRST301",
 "message":"JWT is invalid or expired.",
-"details":null,"hint":null
+"details":null,
+"hint":null
 }
 ```
 
@@ -638,7 +641,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=t
 
 | Item | Value |
 |---|---|
-| Headers | None (no Authorization) |
+| Headers | `apikey: test-key` |
 | Body | None |
 | Expected status | 401 Unauthorized |
 | Actual status | 401 Unauthorized |
@@ -878,7 +881,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 | Item | Value |
 |---|---|
 | URL | `http://127.0.0.1:4010/rest/v1/student_profiles` |
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
 | Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 201 Created |
 | Actual status | 201 Created |
