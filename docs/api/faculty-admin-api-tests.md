@@ -8,7 +8,7 @@
 | Mock server command | `npx @stoplight/prism-cli mock contract/openapi.yaml` |
 | Base URL | `http://127.0.0.1:4010` |
 | Tools used | curl |
-| Tested by | @Zaming |
+| Tested by | @Zaming, @AzrielKaye |
 | Date | 2026-10-30 |
 
 > Prism returns responses defined in the OpenAPI file. These tests verify the **contract**, not real database behavior.
@@ -29,7 +29,7 @@
 | 2.4 | /rest/v1/rpc/get_own_profile | GET | Role violation | 403 | **Pass** |
 | 2.5 | /rest/v1/rpc/get_own_profile | GET | Invalid UUID | 422 | **Pass** |
 | 2.6 | /rest/v1/rpc/get_own_profile | GET | Missing parameter | 422 | Pass/Fail |
-
+| 8.1 | /rest/v1/rpc/student_profiles | PATCH | Valid request | 200 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -381,6 +381,46 @@ sl-violations: [{"location":["request","query"],"severity":"Error","code":"requi
   "message": "Invalid input syntax for a column value.",
   "details": null,
   "hint": "Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## PATCH /rest/v1/rpc/student_profiles
+
+**Summary:** Get one student visible to the caller
+**Roles:** Faculty, Admin
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | `@body.json` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+{
+"id":"45b54332-e470-4c21-a839-7428c4f6bf42",
+"student_id_number":"27-1-12345",
+"last_name":"Santos",
+"first_name":"Maria",
+"middle_name":null,
+"program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+"registration_source":"admin_direct",
+"created_at":"2026-10-26T00:00:00Z",
+"updated_at":"2026-10-26T00:00:00Z"
 }
 ```
 
