@@ -50,7 +50,8 @@
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 403 | **Fail** |
-| 8.4 | /rest/v1/student_profiles | PATCH | Invalid UUID | 400 | **Pass** |
+| 8.4 | /rest/v1/student_profiles | PATCH | Invalid request | 400 | **Pass** |
+| 9.1 | /rest/v1/departments | GET | Valid request | 200 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -1080,7 +1081,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 ---
 
-### Case 4: Invalid UUID (400 / 422)
+### Case 4: Invalid request (400 / 422)
 
 **Request**
 ```bash
@@ -1113,6 +1114,43 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 "message":"Invalid input syntax for a column value.",
 "details":null,
 "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## GET rest/v1/departments
+
+**Summary:** List departments
+**Roles:** Faculty, Admin
+**Request body:** None
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+{
+  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+  "name":"Computer Science",
+  "status":"approved",
+  "proposed_by":null,
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
 }
 ```
 
