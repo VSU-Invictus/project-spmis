@@ -1012,7 +1012,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 |---|---|
 | URL | `http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
-| Body | `@body.json` |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 200 OK |
 | Actual status | 200 OK |
 
@@ -1035,41 +1035,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 ---
 
-### Case 2: Valid request (201 Created)
-
-**Request**
-```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
-```
-
-| Item | Value |
-|---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6` |
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
-| Body | `@body.json` |
-| Expected status | 201 Created |
-| Actual status | 201 Created |
-
-**Response**
-```json
-{
-"id":"45b54332-e470-4c21-a839-7428c4f6bf42",
-"student_id_number":"27-1-12345",
-"first_name":"Maria",
-"last_name":"Santos",
-"middle_name":null,
-"program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
-"registration_source":"admin_direct",
-"created_at":"2026-10-26T00:00:00Z",
-"updated_at":"2026-10-26T00:00:00Z"
-}
-```
-
-**Result:** Pass
-
----
-
-### Case 3: Missing JWT Bearer token (401 Unauthorized)
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
 
 **Request**
 ```bash
@@ -1079,7 +1045,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 | Item | Value |
 |---|---|
 | Headers | None (no authorization) |
-| Body | `@body.json` |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 401 Unauthorized |
 | Actual status | 401 Unauthorized |
 
@@ -1100,7 +1066,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json"
 ```
 
 | Item | Value |
@@ -1115,7 +1081,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-2
 
 ---
 
-### Case 5: Invalid UUID (400 / 422)
+### Case 4: Invalid UUID (400 / 422)
 
 **Request**
 ```bash
@@ -1161,4 +1127,4 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 |---|---|---|---| 
 | 4.3 | `PATCH /rest/v1/faculty_profiles` | `Prefer` is restricted to a constant, so a 403 cannot be simulated with `Prefer: code=403` | Allow additional `Prefer` values (enum or pattern) so Prism can simulate status codes |
 | 7.3 |`POST /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 8.4 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
+| 8.3 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
