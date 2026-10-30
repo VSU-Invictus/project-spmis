@@ -22,7 +22,7 @@
 | 1.3 | /rest/v1/rpc/get_student_by_id | GET | Missing JWT | 401 | Pass |
 | 1.4 | /rest/v1/rpc/get_student_by_id | GET | Role violation | 403 | Pass |
 | 1.5 | /rest/v1/rpc/get_student_by_id | GET | Invalid UUID | 422 | Pass |
-| 1.6 | /rest/v1/rpc/get_student_by_id | GET | Missing parameter | 422 | Pass / Fail |
+| 1.6 | /rest/v1/rpc/get_student_by_id | GET | Missing parameter | 422 | Pass |
 
 ---
 
@@ -175,23 +175,33 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id" \
-  -H "Authorization: Bearer test.jwt.token"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `Authorization: Bearer test.jwt.token` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 or 422 |
-| Actual status | |
+| Actual status | 400 Bad request |
+
+**Validation header**
+```
+sl-violations: [{"location":["request","query"],"severity":"Error","code":"required","message":"Request query must have required property 'p_student_id'"}]
+```
+
 
 **Response**
 ```json
-PASTE ACTUAL RESPONSE HERE
+{
+  "code": "22P02",
+  "message": "Invalid input syntax for a column value.",
+  "details": null,
+  "hint": "Correct the request."
+}
 ```
 
-**Result:** Pass / Fail
+**Result:** Pass
 
 ---
 
