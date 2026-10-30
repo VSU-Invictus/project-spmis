@@ -42,7 +42,11 @@
 | 6.1 | /rest/v1/rpc/search_students | GET | Valid request | 200 | **Pass**|
 | 6.2 | /rest/v1/rpc/search_students | GET | Missing JWT | 401 | **Pass** |
 | 6.3 | /rest/v1/rpc/search_students | GET | Role violation (simulated)| 403 | **Pass** |
-| 6.4 | /rest/v1/rpc/search_students | GET | Invalid request | 400/422 |  |
+| 6.4 | /rest/v1/rpc/search_students | GET | Invalid UUID | 400/422 | **Pass** |
+| 7.1 | /rest/v1/rpc/student_profiles | POST | Valid request | 201 | **Pass**|
+| 7.2 | /rest/v1/rpc/student_profiles | POST | Missing JWT | 401 |  |
+| 7.3 | /rest/v1/rpc/student_profiles | POST | Role violation (simulated)| 403 |  |
+| 7.4 | /rest/v1/rpc/student_profiles | POST | Invalid UUID | 400/422 |  |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
@@ -852,6 +856,47 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=not-a-uuid
 "details":null,
 "hint":"Correct the request."
 }
+```
+
+**Result:** Pass
+
+---
+## POST /rest/v1/rpc/student_profiles
+
+**Summary:** Directly add a student
+**Roles:** Admin
+**Request body:** None.
+
+### Case 1: Valid request (201 Created)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/student_profiles` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
+| Expected status | 201 Created |
+| Actual status | 201 Created |
+
+**Response**
+```json
+[
+  {
+  "id":"45b54332-e470-4c21-a839-7428c4f6bf42",
+  "student_id_number":"27-1-12345",
+  "last_name":"Santos",
+  "first_name":"Maria",
+  "middle_name":null,
+  "program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+  "registration_source":"admin_direct",
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
