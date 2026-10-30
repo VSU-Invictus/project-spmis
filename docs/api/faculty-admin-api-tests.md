@@ -31,6 +31,10 @@
 | 3.2 | /rest/v1/rpc/faculty_profiles | GET | Missing JWT | 401 | **Pass** |
 | 3.3 | /rest/v1/rpc/faculty_profiles | GET | Role violation (simulated)| 403 | **Pass** |
 | 3.4 | /rest/v1/rpc/faculty_profiles | GET | Invalid request | 400/422 | **Pass** |
+| 4.1 | /rest/v1/rpc/faculty_profiles | PATCH | Valid request | 200 | **Pass**|
+| 4.2 | /rest/v1/rpc/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
+| 4.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated)| 403 | Pass |
+| 4.4 | /rest/v1/rpc/faculty_profiles | PATCH  | Invalid request | 400/422 | Pass |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
@@ -480,8 +484,8 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6` |
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| URL | `http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-Fea3-43de-83fa-a2CD8945DdFA` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` `Content-Type: application/json` |
 | Body | `{"status":"active"}` |
 | Expected status | 200 OK |
 | Actual status | 200 OK |
@@ -500,6 +504,33 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
   "updated_at":"2026-10-26T00:00:00Z"
   }
 ]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-Fea3-43de-83fa-a2CD8945DdFA" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"status\":\"active\"}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no Authorization) |
+| Body | `{"status":"active"}` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,"hint":null
+}
 ```
 
 **Result:** Pass
