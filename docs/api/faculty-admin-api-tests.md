@@ -25,7 +25,7 @@
 | 1.6 | /rest/v1/rpc/get_student_by_id | GET | Missing parameter | 422 | **Pass** |
 | 2.1 | /rest/v1/rpc/get_own_profile | GET | Valid request | 200 | **Pass** |
 | 2.2 | /rest/v1/rpc/get_own_profile | GET | Null result | 200 | **Pass** |
-| 2.3 | /rest/v1/rpc/get_own_profile | GET | Missing JWT | 401 | Pass/Fail |
+| 2.3 | /rest/v1/rpc/get_own_profile | GET | Missing JWT | 401 | **Pass** |
 | 2.4 | /rest/v1/rpc/get_own_profile | GET | Role violation | 403 | Pass/Fail |
 | 2.5 | /rest/v1/rpc/get_own_profile | GET | Invalid UUID | 422 | Pass/Fail |
 | 2.6 | /rest/v1/rpc/get_own_profile | GET | Missing parameter | 422 | Pass/Fail |
@@ -276,7 +276,7 @@ null
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile"
 ```
 
 | Item | Value |
@@ -291,7 +291,8 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 {
 "code":"PGRST301",
 "message":"JWT is invalid or expired.",
-"details":null,"hint":null
+"details":null,
+"hint":null
 }
 ```
 
@@ -316,8 +317,8 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 **Response**
 ```json
 {
-"code":"FORBIDDEN",
-"message":"You are not allowed to perform this action.",
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
 "details":null,"hint":null
 }
 ```
