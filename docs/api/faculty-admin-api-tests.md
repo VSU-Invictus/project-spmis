@@ -48,10 +48,9 @@
 | 7.3 | /rest/v1/rpc/student_profiles | POST | Role violation (simulated)| 403 | **Fail** |
 | 7.4 | /rest/v1/rpc/student_profiles | POST | Invalid UUID | 400/422 | **Pass** |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
-| 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
-| 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
-| 8.4 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 403 | **Fail** |
-| 8.5 | /rest/v1/student_profiles | PATCH | Invalid UUID | 400 | **Pass** |
+| 8.2 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
+| 8.3 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 403 | **Fail** |
+| 8.4 | /rest/v1/student_profiles | PATCH | Invalid UUID | 400 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
