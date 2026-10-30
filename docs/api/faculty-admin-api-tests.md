@@ -617,34 +617,11 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=t
 
 ---
 
-### Case 2: Null result (200 OK)
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: example=notVisible"
-```
-
-| Item | Value |
-|---|---|
-| Headers | `apikey: test-key` `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
-| Body | Null |
-| Expected status | 200 OK |
-| Actual status | 200 OK |
-
-**Response**
-```json
-null
-```
-
-**Result:** Pass
-
----
-
-### Case 3: Missing JWT Bearer token (401 Unauthorized)
-
-**Request**
-```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=tag.asc" -H "apikey: test-key"
 ```
 
 | Item | Value |
@@ -668,7 +645,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 ---
 
-### Case 4: Role violation (403 Forbidden)
+### Case 3: Role violation (403 Forbidden, simulated)
 
 **Request**
 ```bash
