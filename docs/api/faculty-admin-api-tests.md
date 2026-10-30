@@ -41,7 +41,7 @@
 | 5.4 | /rest/v1/rpc/suggest_review_tags | GET | Invalid request | 400/422 | **Pass** |
 | 6.1 | /rest/v1/rpc/search_students | GET | Valid request | 200 | **Pass**|
 | 6.2 | /rest/v1/rpc/search_students | GET | Missing JWT | 401 | **Pass** |
-| 6.3 | /rest/v1/rpc/search_students | GET | Role violation (simulated)| 403 |  |
+| 6.3 | /rest/v1/rpc/search_students | GET | Role violation (simulated)| 403 | **Pass** |
 | 6.4 | /rest/v1/rpc/search_students | GET | Invalid request | 400/422 |  |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
@@ -795,7 +795,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=8ce85743-2
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=tag.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=8ce85743-2e9a-52c2-391a-0a42c9787972&owner_id=d96991c4-f61a-f9c7-2f5f-7f6bd8799d49&owner_department_id=6ecae807-d397-2a76-5eb2-121284fcc550&tag=atqui&order=created_at.desc%2Cid.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
