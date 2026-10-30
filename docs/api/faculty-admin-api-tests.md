@@ -35,6 +35,10 @@
 | 4.2 | /rest/v1/rpc/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
 | 4.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated)| 403 | **Fail** |
 | 4.4 | /rest/v1/rpc/faculty_profiles | PATCH  | Invalid Payload | 400/422 | **Pass** |
+| 5.1 | /rest/v1/rpc/faculty_profiles | PATCH | Valid request | 200 | **Pass**|
+| 5.2 | /rest/v1/rpc/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
+| 5.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated)| 403 | **Pass** |
+| 5.4 | /rest/v1/rpc/faculty_profiles | PATCH  | Invalid Payload | 400/422 | |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
@@ -649,12 +653,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=t
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=tag.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization`, `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 403 Forbidden |
 | Actual status | 403 Forbidden |
