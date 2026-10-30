@@ -8,7 +8,7 @@
 | Mock server command | `npx @stoplight/prism-cli mock contract/openapi.yaml` |
 | Base URL | `http://127.0.0.1:4010` |
 | Tools used | curl |
-| Tested by | @Zaminf |
+| Tested by | @Zaming |
 | Date | 2026-10-30 |
 
 > Prism returns responses defined in the OpenAPI file. These tests verify the **contract**, not real database behavior.
