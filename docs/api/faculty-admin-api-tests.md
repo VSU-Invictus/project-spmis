@@ -43,8 +43,8 @@
 | 6.2 | /rest/v1/rpc/search_students | GET | Missing JWT | 401 | **Pass** |
 | 6.3 | /rest/v1/rpc/search_students | GET | Role violation (simulated)| 403 | **Pass** |
 | 6.4 | /rest/v1/rpc/search_students | GET | Invalid UUID | 400/422 | **Pass** |
-| 7.1 | /rest/v1/rpc/student_profiles | POST | Valid request | 201 | **Pass**|
-| 7.2 | /rest/v1/rpc/student_profiles | POST | Missing JWT | 401 |  |
+| 7.1 | /rest/v1/rpc/student_profiles | POST | Valid request | 201 | **Pass** |
+| 7.2 | /rest/v1/rpc/student_profiles | POST | Missing JWT | 401 | **Pass** |
 | 7.3 | /rest/v1/rpc/student_profiles | POST | Role violation (simulated)| 403 |  |
 | 7.4 | /rest/v1/rpc/student_profiles | POST | Invalid UUID | 400/422 |  |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
@@ -861,6 +861,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=not-a-uuid
 **Result:** Pass
 
 ---
+
 ## POST /rest/v1/rpc/student_profiles
 
 **Summary:** Directly add a student
@@ -897,6 +898,101 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
   "updated_at":"2026-10-26T00:00:00Z"
   }
 ]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,
+"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden, simulated)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=8ce85743-2e9a-52c2-391a-0a42c9787972&owner_id=d96991c4-f61a-f9c7-2f5f-7f6bd8799d49&owner_department_id=6ecae807-d397-2a76-5eb2-121284fcc550&tag=atqui&order=created_at.desc%2Cid.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+"code":"FORBIDDEN",
+"message":"You are not allowed to perform this action.",
+"details":null,
+"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Invalid UUID (400 / 422)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=not-a-uuid&owner_id=d96991c4-f61a-f9c7-2f5f-7f6bd8799d49&owner_department_id=6ecae807-d397-2a76-5eb2-121284fcc550&tag=atqui&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Validation header**
+```json
+[
+  {
+  "location":["request","query","program_id"],
+  "severity":"Error",
+  "code":"format",
+  "message":"Request query parameter program_id must match format \"uuid\""
+  }
+]
+```
+**Response**
+```json
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
+}
 ```
 
 **Result:** Pass
