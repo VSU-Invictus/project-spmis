@@ -52,6 +52,7 @@
 | 8.3 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 403 | **Fail** |
 | 8.4 | /rest/v1/student_profiles | PATCH | Invalid request | 400 | **Pass** |
 | 9.1 | /rest/v1/departments | GET | Valid request | 200 | **Pass** |
+| 9.2 | /rest/v1/departments | GET | Missing JWT | 401 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -1151,6 +1152,33 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
   "proposed_by":null,
   "created_at":"2026-10-26T00:00:00Z",
   "updated_at":"2026-10-26T00:00:00Z"
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,"hint":null
 }
 ```
 
