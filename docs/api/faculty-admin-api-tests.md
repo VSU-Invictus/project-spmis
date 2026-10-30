@@ -1,4 +1,4 @@
-# Faculty / Admin API - Prism Mock Test Results
+# openAPI - Prism Mock Test Results
 
 ## Test Setup
 
@@ -17,41 +17,52 @@
 
 | # | Endpoint | Method | Case | Status | Result |
 |---|---|---|---|---|---|
-| 1 |  |  |  |  |  |
-| 2 |  |  |  |  |  |
-| 3 |  |  |  |  |  |
-| 4 |  |  |  |  |  |
-| 5 |  |  |  |  |  |
-| 6 |  |  |  |  |  |
+| 1.1 | /rest/v1/rpc/get_student_by_id | GET | Valid request | 200 | Pass |
+| 1.2 | /rest/v1/rpc/get_student_by_id | GET | Null result | 200 | Pass/Fail |
+| 1.3 | /rest/v1/rpc/get_student_by_id | GET | Missing JWT | 401 | Pass / Fail |
+| 1.4 | /rest/v1/rpc/get_student_by_id | GET | Role violation | 403 | Pass / Fail |
+| 1.5 | /rest/v1/rpc/get_student_by_id | GET | Invalid UUID | 422 | Pass / Fail |
+| 1.6 | /rest/v1/rpc/get_student_by_id | GET | Missing parameter | 422 | Pass / Fail |
 
 ---
 
-## GET 
+## GET /rest/v1/rpc/get_student_by_id
 
-
+**Summary:** Get one student visible to the caller
+**Roles:** Faculty, Admin
+**Request body:** None.
 
 ### Case 1: Valid request (200 OK)
 
 **Request**
 ```bash
-
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL |  |
-| Headers |  |
-| Body |  |
-| Expected status |  |
-| Actual status |  |
+| URL | `http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
 
 **Response**
 ```json
-
+{
+"id":"45b54332-e470-4c21-a839-7428c4f6bf42",
+"student_id_number":"27-1-12345",
+"last_name":"Santos",
+"first_name":"Maria",
+"middle_name":null,
+"program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+"registration_source":"admin_direct",
+"created_at":"2026-10-26T00:00:00Z",
+"updated_at":"2026-10-26T00:00:00Z"
+}
 ```
 
-**Result:** Pass / Fail
-**Notes:**
+**Result:** Pass
 
 ---
 
@@ -59,23 +70,23 @@
 
 **Request**
 ```bash
-
+>curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: example=notVisible"
 ```
 
 | Item | Value |
 |---|---|
-| Headers |  |
-| Body |  |
-| Expected status |  |
-| Actual status | |
+| Headers | `Authorization`, `Prefer: example=NAME_OF_NULL_EXAMPLE` |
+| Body | Null |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
 
 **Response**
 ```json
-
+PASTE ACTUAL RESPONSE HERE
 ```
 
 **Result:** Pass / Fail
-**Notes:** 
+**Notes:** Inaccessible and missing students both return `null`, as described in the contract.
 
 ---
 
@@ -83,23 +94,23 @@
 
 **Request**
 ```bash
-
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42"
 ```
 
 | Item | Value |
 |---|---|
-| Headers |  |
-| Body |  |
-| Expected status |  |
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
 | Actual status | |
 
 **Response**
 ```json
-
+PASTE ACTUAL RESPONSE HERE
 ```
 
 **Result:** Pass / Fail
-**Notes:** 
+**Notes:** If Prism returned 200, the operation has no `security` defined in the contract. Report this to the contract owner.
 
 ---
 
@@ -107,23 +118,25 @@
 
 **Request**
 ```bash
-
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" \
+  -H "Authorization: Bearer test.jwt.token" \
+  -H "Prefer: code=403"
 ```
 
 | Item | Value |
 |---|---|
-| Headers |  |
-| Body |  |
-| Expected status |  |
+| Headers | `Authorization`, `Prefer: code=403` |
+| Body | None |
+| Expected status | 403 Forbidden |
 | Actual status | |
 
 **Response**
 ```json
-
+PASTE ACTUAL RESPONSE HERE
 ```
 
 **Result:** Pass / Fail
-**Notes:** 
+**Notes:** If Prism errors, the 403 response is not defined in the contract.
 
 ---
 
@@ -131,19 +144,20 @@
 
 **Request**
 ```bash
-
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=not-a-uuid" \
+  -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| Headers |  |
-| Body |  |
-| Expected status |  |
+| Headers | `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
 | Actual status | |
 
 **Response**
 ```json
-
+PASTE ACTUAL RESPONSE HERE
 ```
 
 **Result:** Pass / Fail
@@ -154,19 +168,20 @@
 
 **Request**
 ```bash
-
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id" \
+  -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| Headers |  |
-| Body |  |
-| Expected status |  |
+| Headers | `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
 | Actual status | |
 
 **Response**
 ```json
-
+PASTE ACTUAL RESPONSE HERE
 ```
 
 **Result:** Pass / Fail
@@ -179,19 +194,24 @@
 
 **Request**
 ```bash
-
+curl -i -X POST "http://127.0.0.1:4010/PATH_HERE" \
+  -H "Authorization: Bearer test.jwt.token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "field": "value"
+  }'
 ```
 
 | Item | Value |
 |---|---|
-| Headers |  |
-| Body |  |
-| Expected status |  |
+| Headers | `Authorization`, `Content-Type: application/json` |
+| Body | `{"field": "value"}` |
+| Expected status | 201 Created |
 | Actual status | |
 
 **Response**
 ```json
-
+PASTE ACTUAL RESPONSE HERE
 ```
 
 ---
@@ -200,5 +220,5 @@
 
 | # | Endpoint | Issue | Suggested fix |
 |---|---|---|---|
-| 1 | | | |
+| 1 | | Example: 403 response not defined | Add `'403'` under `responses` |
 | 2 | | | |
