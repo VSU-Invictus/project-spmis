@@ -24,7 +24,7 @@
 | 1.5 | /rest/v1/rpc/get_student_by_id | GET | Invalid UUID | 422 | **Pass** |
 | 1.6 | /rest/v1/rpc/get_student_by_id | GET | Missing parameter | 422 | **Pass** |
 | 2.1 | /rest/v1/rpc/get_own_profile | GET | Valid request | 200 | **Pass** |
-| 2.2 | /rest/v1/rpc/get_own_profile | GET | Null result | 200 | Pass/Fail |
+| 2.2 | /rest/v1/rpc/get_own_profile | GET | Null result | 200 | **Pass** |
 | 2.3 | /rest/v1/rpc/get_own_profile | GET | Missing JWT | 401 | Pass/Fail |
 | 2.4 | /rest/v1/rpc/get_own_profile | GET | Role violation | 403 | Pass/Fail |
 | 2.5 | /rest/v1/rpc/get_own_profile | GET | Invalid UUID | 422 | Pass/Fail |
@@ -253,7 +253,7 @@ sl-violations: [{"location":["request","query"],"severity":"Error","code":"requi
 
 **Request**
 ```bash
->curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: example=notVisible"
+>curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: example=notEnrolled"
 ```
 
 | Item | Value |
