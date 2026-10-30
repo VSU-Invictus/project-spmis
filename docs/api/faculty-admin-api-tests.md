@@ -31,6 +31,7 @@
 | 2.6 | /rest/v1/rpc/get_own_profile | GET | Missing parameter | 422 | Pass/Fail |
 | 8.1 | /rest/v1/rpc/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/rpc/student_profiles | PATCH | Valid request | 201 | **Pass** |
+| 8.3 | /rest/v1/rpc/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -456,6 +457,33 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-2
 "registration_source":"admin_direct",
 "created_at":"2026-10-26T00:00:00Z",
 "updated_at":"2026-10-26T00:00:00Z"
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no Authorization) |
+| Body | `@body.json` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,"hint":null
 }
 ```
 
