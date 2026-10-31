@@ -108,6 +108,7 @@
 | 25.1 | /functions/v1/approvals | POST | Valid approve | 200 | **Pass** |
 | 25.2 | /functions/v1/approvals | POST | Valid reject | 200 | **Pass** |
 | 25.3 | /functions/v1/approvals | POST | Missing JWT Bearer token | 401 | **Pass** |
+| 25.4 | /functions/v1/approvals | POST | Role violation (simulated) | 403 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2963,6 +2964,36 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "Content-Type:
 ```
 
 **Result:** Pass
+
+---
+
+### Case 4: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"application_ids\":[\"32272463-1823-4774-a574-558101103e9a\"],\"decision\":\"approve\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/approvals` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | `{"application_ids":["32272463-1823-4774-a574-558101103e9a"],"decision":"approve"}` |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with `Prefer: code=403`.
 
 ---
 
