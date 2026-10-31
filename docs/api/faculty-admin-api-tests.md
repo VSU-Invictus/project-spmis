@@ -119,6 +119,7 @@
 | 26.4 | /rest/v1/rpc/update_own_profile | POST | Invalid payload (empty full_name) | 400 | **Pass** |
 | 26.5 | /rest/v1/rpc/update_own_profile | POST | Missing request body (empty object) | 400 | **Pass** |
 | 26.6 | /rest/v1/rpc/update_own_profile | POST | Conflict | 409 | **Pass** |
+| 27.1 | /rest/v1/review_details | GET | Valid request | 200 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3310,6 +3311,51 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "apike
 
 **Result:** Pass
 **Notes:** Simulated with `Prefer: code=409`.
+
+---
+
+## GET /rest/v1/review_details
+
+**Summary:** List attributed reviews with rich text and normalized tags (operationId listStudentReviews)
+**Roles:** Faculty
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"67015de8-1ce8-4ac4-8634-384bf5fb3821",
+    "student_id":"45b54332-e470-4c21-a839-7428c4f6bf42",
+    "owner_id":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+    "author_name":"Alex Reyes",
+    "author_department_name":"Computer Science",
+    "body_text":"Demonstrated strong leadership.",
+    "body_document":{"blocks":[{"type":"paragraph","content":[{"text":"Demonstrated strong leadership.","bold":true}]}]},
+    "status":"active",
+    "tags":["leadership"],
+    "attachments":[],
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
 
 
 
