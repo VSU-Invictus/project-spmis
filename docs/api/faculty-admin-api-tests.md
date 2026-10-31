@@ -115,6 +115,7 @@
 | 25.8 | /functions/v1/approvals | POST | Application already decided | 409 | **Pass** |
 | 26.1 | /rest/v1/rpc/update_own_profile | POST | Valid request | 200 | **Pass** |
 | 26.2 | /rest/v1/rpc/update_own_profile | POST | Missing JWT Bearer token | 401 | **Pass** |
+| 26.3 | /rest/v1/rpc/update_own_profile | POST | Role violation (simulated) | 403 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3188,6 +3189,38 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "Conte
 ```
 
 **Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"full_name\":\"Alex Reyes\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/rpc/update_own_profile` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | `{"full_name":"Alex Reyes"}` |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with `Prefer: code=403`. 
+
+
 
 ---
 
