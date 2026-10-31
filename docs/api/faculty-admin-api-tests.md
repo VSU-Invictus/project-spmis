@@ -51,10 +51,13 @@
 | 8.2 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 403 | **Fail** |
 | 8.4 | /rest/v1/student_profiles | PATCH | Invalid request | 400 | **Pass** |
+| 8.5 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 409 | **Fail** |
 | 9.1 | /rest/v1/departments | GET | Valid request | 200 | **Pass** |
 | 9.2 | /rest/v1/departments | GET | Missing JWT | 401 | **Pass** |
 | 9.3 | /rest/v1/departments | GET | Role violation | 403 | **Pass** |
 | 9.4 | /rest/v1/departments | GET | Invalid request | 400 | **Pass** |
+| 9.5 | /rest/v1/departments | GET | Valid request | 206 | **Pass** |
+| 9.6 | /rest/v1/departments | GET | Invalid request | 416 | **Pass** |
 | 10.1 | /rest/v1/departments | POST | Valid request | 201 | **Pass** |
 | 10.2 | /rest/v1/departments | POST | Missing JWT | 401 | **Pass** |
 | 10.3 | /rest/v1/departments | POST | Role violation (simulated) | 403 | **Fail** |
@@ -1166,6 +1169,25 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 ---
 
+### Case 5: Role violation (409 Conflict, simulated)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
+| Expected status | 409 Conflict |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+
+---
+
 ## GET rest/v1/departments
 
 **Summary:** List departments
@@ -1281,6 +1303,66 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
   "message":"Invalid input syntax for a column value.",
   "details":null,
   "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Valid request (206 Partial content)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc&__code=206" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Range: 0-4"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Range: 0-4` |
+| Body | None |
+| Expected status | 206 Partial content |
+| Actual status | 206 Partial content |
+
+**Response**
+```json
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 6: Valid request (416 Range not satisfiable)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc&__code=416" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Range: 0-4"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Range: 0-4` |
+| Body | None |
+| Expected status | 416 Range not satisfiable |
+| Actual status | 416 Range not satisfiable |
+
+**Response**
+```json
+{
+  "code":"PGRST103",
+  "message":"Requested range not satisfiable",
+  "details":"An offset of 20 was requested, but there are only 10 rows.",
+  "hint":null
 }
 ```
 
@@ -1855,7 +1937,7 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
 
 ---
 
-### Case 6: Valid request (416 Range not satisfied)
+### Case 6: Valid request (416 Range not satisfiable)
 
 **Request**
 ```bash
@@ -1866,8 +1948,8 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
 |---|---|
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Range: 0-4` |
 | Body | None |
-| Expected status | 416 Range not satisfied |
-| Actual status | 416 Range not satisfied |
+| Expected status | 416 Range not satisfiable |
+| Actual status | 416 Range not satisfiable |
 
 **Response**
 ```json
@@ -2118,6 +2200,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 | 4.3 | `PATCH /rest/v1/faculty_profiles` | `Prefer` is restricted to a constant, so a 403 cannot be simulated with `Prefer: code=403` | Allow additional `Prefer` values (enum or pattern) so Prism can simulate status codes |
 | 7.3 |`POST /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 8.3 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
+| 14.5 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 10.3 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 11.3 |`PATCH /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 14.3 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
