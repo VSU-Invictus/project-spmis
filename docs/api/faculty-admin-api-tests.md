@@ -94,6 +94,7 @@
 | 23.1 | /functions/v1/reviews/{id}/status | POST | Valid request | 200 | **Pass** |
 | 23.2 | /functions/v1/reviews/{id}/status | POST | Missing JWT Bearer token | 401 | **Pass** |
 | 23.3 | /functions/v1/reviews/{id}/status | POST | Role violation (simulated) | 403 | **Pass** |
+| 23.4 | /functions/v1/reviews/{id}/status | POST | Invalid payload (action not in hide/unhide/delete) | 422 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2508,6 +2509,34 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8
 **Result:** Pass
 **Notes:** Simulated with Prefer: code=403. Prism returned the contract’s 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
 
+---
+
+### Case 4: Invalid payload (action not in hide/unhide/delete) (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"archive\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"action":"archive"}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | |
+
+**Response**
+```json
+{
+  "code":"VALIDATION_ERROR",
+  "message":"The request contains invalid data.",
+  "details":"A required value is missing or malformed.",
+  "hint":"Correct the highlighted fields and retry."
+}
+```
+
+**Result:** Pass
 
 ---
 
