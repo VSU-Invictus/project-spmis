@@ -88,6 +88,7 @@
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
 | 22.4 | /functions/v1/reviews/{id} | PATCH | Invalid payload (empty blocks) | 422 | **Pass** |
 | 22.5 | /functions/v1/reviews/{id} | PATCH | Missing request body (empty object) | 422 | **Pass** |
+| 22.6 | /functions/v1/reviews/{id} | PATCH | Invalid review ID in path | 422 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2320,6 +2321,36 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 ```
 
 **Result:** Pass
+
+---
+
+### Case 6: Invalid review ID in path (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"body_document":{"blocks":[{"type":"paragraph","content":[{"text":"Demonstrated strong leadership.","bold":true}]}]},"tags":["leadership"]}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.",
+  "details":null,
+  "hint":"Check the request filters and caller permissions."
+}
+```
+
+**Result:** Pass
+
 
 ---
 
