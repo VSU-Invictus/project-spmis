@@ -118,6 +118,7 @@
 | 26.3 | /rest/v1/rpc/update_own_profile | POST | Role violation (simulated) | 403 | **Pass** |
 | 26.4 | /rest/v1/rpc/update_own_profile | POST | Invalid payload (empty full_name) | 400 | **Pass** |
 | 26.5 | /rest/v1/rpc/update_own_profile | POST | Missing request body (empty object) | 400 | **Pass** |
+| 26.6 | /rest/v1/rpc/update_own_profile | POST | Conflict | 409 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3279,6 +3280,36 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "apike
 ```
 
 **Result:** Pass
+
+---
+
+### Case 6: Conflict (409 Conflict)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"full_name\":\"Alex Reyes\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/rpc/update_own_profile` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Body | `{"full_name":"Alex Reyes"}` |
+| Expected status | 409 Conflict |
+| Actual status | 409 Conflict |
+
+**Response**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with `Prefer: code=409`.
 
 
 
