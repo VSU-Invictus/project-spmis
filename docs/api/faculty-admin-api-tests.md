@@ -61,6 +61,7 @@
 | 10.4 | /rest/v1/departments | POST | Invalid request | 400/422 | **Pass** |
 | 11.1 | /rest/v1/departments | PATCH | Valid request | 200 | **Pass** |
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
+| 11.3 | /rest/v1/departments | PATCH | Forbidden (simulated) | 403 | **Fail** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -1486,6 +1487,24 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 ---
 
+### Case 3: Role violation (403 Forbidden, simulated)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body |  |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad request |
+
+**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+
+---
+
 ## Issues Found in the Contract
 
 | # | Endpoint | Issue | Suggested fix |
@@ -1494,3 +1513,4 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 | 7.3 |`POST /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 8.3 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 10.3 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
+| 11.3 |`PATCH /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
