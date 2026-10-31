@@ -69,6 +69,7 @@
 | 12.4 | /rest/v1/departments | DELETE | Invalid request | 400 | **Pass** |
 | 13.1 | /rest/v1/programs | GET | Valid request | 200 | **Pass** |
 | 13.2 | /rest/v1/programs | GET | Missing JWT | 401 | **Pass** |
+| 13.3 | /rest/v1/programs | GET | Role violation (simulated) | 403 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1751,6 +1752,33 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
 "code":"PGRST301",
 "message":"JWT is invalid or expired.",
 "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,"hint":null
 }
 ```
 
