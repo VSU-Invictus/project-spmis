@@ -61,9 +61,10 @@
 | 10.4 | /rest/v1/departments | POST | Invalid request | 400/422 | **Pass** |
 | 11.1 | /rest/v1/departments | PATCH | Valid request | 200 | **Pass** |
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
-| 11.3 | /rest/v1/departments | PATCH | Forbidden (simulated) | 403 | **Fail** |
+| 11.3 | /rest/v1/departments | PATCH | Role violation (simulated) | 403 | **Fail** |
 | 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
 | 12.1 | /rest/v1/departments | DELETE | Valid request | 204 | **Pass** |
+| 12.2 | /rest/v1/departments | DELETE | Missing JWT | 401 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1568,6 +1569,45 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2
 | Body | None |
 | Expected status | 204 No content |
 | Actual status | 204 No content |
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,"hint":null
+}
+```
 
 **Result:** Pass
 
