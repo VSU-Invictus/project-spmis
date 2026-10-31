@@ -92,6 +92,7 @@
 | 22.7 | /functions/v1/reviews/{id} | PATCH | Review not found | 404 | **Pass** |
 | 22.8 | /functions/v1/reviews/{id} | PATCH | Conflict (deleted review) | 409 | **Pass** |
 | 23.1 | /functions/v1/reviews/{id}/status | POST | Valid request | 200 | **Pass** |
+| 23.2 | /functions/v1/reviews/{id}/status | POST | Missing JWT Bearer token | 401 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2442,6 +2443,35 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8
 {
   "id":"67015de8-1ce8-4ac4-8634-384bf5fb3821",
   "status":"deleted"
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| Headers | `Content-Type: application/json` |
+| Body | `{"action":"hide"}` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
 }
 ```
 
