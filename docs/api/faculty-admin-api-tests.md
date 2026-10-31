@@ -76,6 +76,7 @@
 | 14.1 | /rest/v1/programs | POST | Valid request | 201 | **Pass** |
 | 14.2 | /rest/v1/programs | POST | Missing JWT | 401 | **Pass** |
 | 14.3 | /rest/v1/programs | POST | Role violation (simulated) | 403 | **Fail** |
+| 14.4 | /rest/v1/programs | POST | Invalid request | 400 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1974,6 +1975,46 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 
 **Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request","body"],
+    "severity":"Error",
+    "code":"required",
+    "message":"Request body must have required property 'name'"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
 
 ---
 
