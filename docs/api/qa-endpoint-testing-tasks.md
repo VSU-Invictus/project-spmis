@@ -60,8 +60,8 @@ git push -u origin qa/api-testing/<yourname>
 | Member | Sub-branch | Domain Scope | Doc File | Status |
 |---|---|---|---|---|
 | @Zaming | `qa/api-testing/zaming` | `<Domain 1>` | `docs/api/<domain1>.md` | ⬜ Not started |
-| @dollyraexe | `qa/api-testing/dollyraexe` | `<Domain 2>` | `docs/api/<domain2>.md` | ⬜ Not started |
-| @AzrielKaye | `qa/api-testing/azrielkaye` | `<Domain 3>` | `docs/api/<domain3>.md` | ⬜ Not started |
+| @AzrielKaye | `qa/api-testing/azrielkaye` | `<Domain 2>` | `docs/api/<domain2>.md` | ⬜ Not started |
+| @dollyraexe | `qa/api-testing/dollyraexe` | `<Domain 3>` | `docs/api/<domain3>.md` | ⬜ Not started |
 | @reeseBan | `qa/api-testing/reeseBan` | `<Domain 4>` | `docs/api/<domain4>.md` | ⬜ Not started |
 
 **Lead responsibilities (@reeseBan, in addition to own scope)**
