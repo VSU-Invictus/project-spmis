@@ -62,6 +62,7 @@
 | 11.1 | /rest/v1/departments | PATCH | Valid request | 200 | **Pass** |
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
 | 11.3 | /rest/v1/departments | PATCH | Forbidden (simulated) | 403 | **Fail** |
+| 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -1504,6 +1505,47 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 **Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
 
 ---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request","body"],
+    "severity":"Error",
+    "code":"required",
+    "message":"Request body must have required property 'name'"
+  }
+]
+```
+
+**Response**
+```json
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
 
 ## Issues Found in the Contract
 
