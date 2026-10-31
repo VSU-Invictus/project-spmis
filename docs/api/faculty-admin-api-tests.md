@@ -73,6 +73,7 @@
 | 13.4 | /rest/v1/programs | GET | Invalid request | 400 | **Pass** |
 | 13.5 | /rest/v1/programs | GET | Valid request | 206 | **Pass** |
 | 13.6 | /rest/v1/programs | GET | Invalid request | 416 | **Pass** |
+| 14.1 | /rest/v1/programs | POST | Valid request | 201 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1871,6 +1872,45 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
   "details":"An offset of 20 was requested, but there are only 10 rows.",
   "hint":null
 }
+```
+
+**Result:** Pass
+
+---
+
+## POST /rest/v1/programs
+
+**Summary:** Directly add a program
+**Roles:** Admin
+**Request body:** Required JSON body containing `name`.
+
+### Case 1: Valid request (201 Created)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?__code=201" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/programs?__code=201` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 201 Created |
+| Actual status | 201 Created |
+
+**Response**
+```json
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
