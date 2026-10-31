@@ -68,6 +68,7 @@
 | 12.3 | /rest/v1/departments | DELETE | Role violation | 403 | **Pass** |
 | 12.4 | /rest/v1/departments | DELETE | Invalid request | 400 | **Pass** |
 | 13.1 | /rest/v1/programs | GET | Valid request | 200 | **Pass** |
+| 13.2 | /rest/v1/programs | GET | Missing JWT | 401 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
