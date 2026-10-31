@@ -72,6 +72,7 @@
 | 13.3 | /rest/v1/programs | GET | Role violation (simulated) | 403 | **Pass** |
 | 13.4 | /rest/v1/programs | GET | Invalid request | 400 | **Pass** |
 | 13.5 | /rest/v1/programs | GET | Valid request | 206 | **Pass** |
+| 13.6 | /rest/v1/programs | GET | Invalid request | 416 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1842,6 +1843,34 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
     "updated_at":"2026-10-26T00:00:00Z"
   }
 ]
+```
+
+**Result:** Pass
+
+---
+
+### Case 6: Valid request (416 Range not satisfied)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc&__code=416" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Range: 0-4"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Range: 0-4` |
+| Body | None |
+| Expected status | 416 Range not satisfied |
+| Actual status | 416 Range not satisfied |
+
+**Response**
+```json
+{
+  "code":"PGRST103",
+  "message":"Requested range not satisfiable",
+  "details":"An offset of 20 was requested, but there are only 10 rows.",
+  "hint":null
+}
 ```
 
 **Result:** Pass
