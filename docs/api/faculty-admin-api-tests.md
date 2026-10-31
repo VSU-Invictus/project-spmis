@@ -121,6 +121,7 @@
 | 26.6 | /rest/v1/rpc/update_own_profile | POST | Conflict | 409 | **Pass** |
 | 27.1 | /rest/v1/review_details | GET | Valid request | 200 | **Pass** |
 | 27.2 | /rest/v1/review_details | GET | Missing JWT Bearer token | 401 | **Pass** |
+| 27.3 | /rest/v1/review_details | GET | Role violation (simulated) | 403 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3386,6 +3387,36 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
 ```
 
 **Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&__code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with `__code=403`. `Prefer: code=403` is not used because this operation's `Prefer` header is fixed to `count=exact`.
 
 
 
