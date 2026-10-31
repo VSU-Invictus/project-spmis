@@ -65,6 +65,7 @@
 | 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
 | 12.1 | /rest/v1/departments | DELETE | Valid request | 204 | **Pass** |
 | 12.2 | /rest/v1/departments | DELETE | Missing JWT | 401 | **Pass** |
+| 12.3 | /rest/v1/departments | DELETE | Role violation | 403 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1606,6 +1607,33 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2
 "code":"PGRST301",
 "message":"JWT is invalid or expired.",
 "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,"hint":null
 }
 ```
 
