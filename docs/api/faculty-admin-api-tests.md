@@ -77,6 +77,7 @@
 | 14.2 | /rest/v1/programs | POST | Missing JWT | 401 | **Pass** |
 | 14.3 | /rest/v1/programs | POST | Role violation (simulated) | 403 | **Fail** |
 | 14.4 | /rest/v1/programs | POST | Invalid request | 400 | **Pass** |
+| 14.5 | /rest/v1/programs | POST | Role violation (simulated) | 409 | **Fail** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -2015,6 +2016,25 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 ```
 
 **Result:** Pass
+
+---
+
+### Case 5: Role violation (409 Conflict, simulated)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 409 Conflict |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
 
 ---
 
