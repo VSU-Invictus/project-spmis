@@ -100,6 +100,7 @@
 | 23.7 | /functions/v1/reviews/{id}/status | POST | Review not found | 404 | **Pass** |
 | 23.8 | /functions/v1/reviews/{id}/status | POST | Invalid state transition | 409 | **Pass** |
 | 24.1 | /functions/v1/chat | POST | Valid request | 200 | **Pass** |
+| 24.2 | /functions/v1/chat | POST | Missing JWT Bearer token | 401 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2688,6 +2689,35 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "apikey: test-key" 
 ```json
 {
   "message":"Several students have active reviews describing research and teamwork strengths."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "Content-Type: application/json" -d "{\"message\":\"Which students demonstrate strong research and teamwork skills?\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/chat` |
+| Headers | `Content-Type: application/json` |
+| Body | `{"message":"Which students demonstrate strong research and teamwork skills?"}` |
+| Expected status | 401 Unauthorized |
+| Actual status | |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
 }
 ```
 
