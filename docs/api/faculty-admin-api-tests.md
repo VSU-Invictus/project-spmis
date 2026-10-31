@@ -117,6 +117,7 @@
 | 26.2 | /rest/v1/rpc/update_own_profile | POST | Missing JWT Bearer token | 401 | **Pass** |
 | 26.3 | /rest/v1/rpc/update_own_profile | POST | Role violation (simulated) | 403 | **Pass** |
 | 26.4 | /rest/v1/rpc/update_own_profile | POST | Invalid payload (empty full_name) | 400 | **Pass** |
+| 26.5 | /rest/v1/rpc/update_own_profile | POST | Missing request body (empty object) | 400 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3235,6 +3236,35 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "apike
 | URL | `http://127.0.0.1:4010/rest/v1/rpc/update_own_profile` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
 | Body | `{"full_name":""}` |
+| Expected status | 400 Bad Request |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Missing request body (empty object) (400 Bad Request)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/rpc/update_own_profile` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{}` |
 | Expected status | 400 Bad Request |
 | Actual status | 400 Bad Request |
 
