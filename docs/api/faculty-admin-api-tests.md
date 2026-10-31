@@ -120,6 +120,7 @@
 | 26.5 | /rest/v1/rpc/update_own_profile | POST | Missing request body (empty object) | 400 | **Pass** |
 | 26.6 | /rest/v1/rpc/update_own_profile | POST | Conflict | 409 | **Pass** |
 | 27.1 | /rest/v1/review_details | GET | Valid request | 200 | **Pass** |
+| 27.2 | /rest/v1/review_details | GET | Missing JWT Bearer token | 401 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3353,6 +3354,35 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
     "updated_at":"2026-10-26T00:00:00Z"
   }
 ]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42` |
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
 ```
 
 **Result:** Pass
