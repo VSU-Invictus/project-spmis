@@ -74,6 +74,7 @@
 | 13.5 | /rest/v1/programs | GET | Valid request | 206 | **Pass** |
 | 13.6 | /rest/v1/programs | GET | Invalid request | 416 | **Pass** |
 | 14.1 | /rest/v1/programs | POST | Valid request | 201 | **Pass** |
+| 14.2 | /rest/v1/programs | POST | Missing JWT | 401 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1911,6 +1912,45 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?__code=201" -H "apikey: 
     "updated_at":"2026-10-26T00:00:00Z"
   }
 ]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
+}
 ```
 
 **Result:** Pass
