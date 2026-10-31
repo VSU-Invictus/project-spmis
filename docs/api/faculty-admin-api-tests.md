@@ -67,6 +67,7 @@
 | 12.2 | /rest/v1/departments | DELETE | Missing JWT | 401 | **Pass** |
 | 12.3 | /rest/v1/departments | DELETE | Role violation | 403 | **Pass** |
 | 12.4 | /rest/v1/departments | DELETE | Invalid request | 400 | **Pass** |
+| 13.1 | /rest/v1/programs | GET | Valid request | 200 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1663,6 +1664,43 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2
 "message":"Invalid input syntax for a column value.",
 "details":null,
 "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## GET /rest/v1/programs
+
+**Summary:** List programs
+**Roles:** Faculty, Admin
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+{
+  "id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+  "name":"Bachelor of Science in Computer Science",
+  "status":"approved",
+  "proposed_by":null,
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
 }
 ```
 
