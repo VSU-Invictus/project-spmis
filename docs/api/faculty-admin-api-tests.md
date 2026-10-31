@@ -113,6 +113,7 @@
 | 25.6 | /functions/v1/approvals | POST | Missing request body (empty object) | 422 | **Pass** |
 | 25.7 | /functions/v1/approvals | POST | Application not found | 404 | **Pass** |
 | 25.8 | /functions/v1/approvals | POST | Application already decided | 409 | **Pass** |
+| 26.1 | /rest/v1/rpc/update_own_profile | POST | Valid request | 200 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3117,7 +3118,46 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-
 **Result:** Pass
 **Notes:** Simulated with `Prefer: code=409`.
 
+---
 
+## POST /rest/v1/rpc/update_own_profile
+
+**Summary:** Update the current verified faculty member name (operationId updateOwnProfile)
+**Roles:** Faculty (verified)
+**Request body:** Required JSON object (see each case).
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"full_name\":\"Alex Reyes\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/rpc/update_own_profile` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"full_name":"Alex Reyes"}` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+    "email":"alex.reyes@example.edu",
+    "full_name":"Alex Reyes",
+    "department_id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "role":"faculty",
+    "status":"active",
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
 
 ---
 
