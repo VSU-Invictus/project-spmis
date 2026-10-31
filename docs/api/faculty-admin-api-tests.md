@@ -99,6 +99,7 @@
 | 23.6 | /functions/v1/reviews/{id}/status | POST | Invalid review ID in path | 422 | **Pass** |
 | 23.7 | /functions/v1/reviews/{id}/status | POST | Review not found | 404 | **Pass** |
 | 23.8 | /functions/v1/reviews/{id}/status | POST | Invalid state transition | 409 | **Pass** |
+| 24.1 | /functions/v1/chat | POST | Valid request | 200 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2659,6 +2660,38 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8
 
 **Result:** Pass
 **Notes:** Simulated with Prefer: code=409. Prism returned the contract’s 409 example, so this tests that the contract defines the 409 response, not that the backend rejects an invalid state transition.
+
+---
+
+## POST /functions/v1/chat
+
+**Summary:** Ask the AI Chat Assistant across visible reviews (operationId askChatbot)
+**Roles:** Faculty, Admin
+**Request body:** Required JSON object (see each case).
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"message\":\"Which students demonstrate strong research and teamwork skills?\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/chat` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"message":"Which students demonstrate strong research and teamwork skills?"}` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+{
+  "message":"Several students have active reviews describing research and teamwork strengths."
+}
+```
+
+**Result:** Pass
 
 ---
 
