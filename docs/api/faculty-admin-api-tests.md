@@ -96,6 +96,7 @@
 | 23.3 | /functions/v1/reviews/{id}/status | POST | Role violation (simulated) | 403 | **Pass** |
 | 23.4 | /functions/v1/reviews/{id}/status | POST | Invalid payload (action not in hide/unhide/delete) | 422 | **Pass** |
 | 23.5 | /functions/v1/reviews/{id}/status | POST | Missing request body (empty object) | 422 | **Pass** |
+| 23.6 | /functions/v1/reviews/{id}/status | POST | Invalid review ID in path | 422 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2568,6 +2569,34 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8
 
 **Result:** Pass
 
+---
+
+### Case 6: Invalid review ID in path (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid/status` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"action":"hide"}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"VALIDATION_ERROR",
+  "message":"The request contains invalid data.",
+  "details":"A required value is missing or malformed.",
+  "hint":"Correct the highlighted fields and retry."
+}
+```
+
+**Result:** Pass
 
 ---
 
