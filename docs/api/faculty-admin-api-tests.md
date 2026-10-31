@@ -943,10 +943,10 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,
-"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
 }
 ```
 
@@ -1001,10 +1001,10 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1035,17 +1035,19 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Response**
 ```json
-{
-"id":"45b54332-e470-4c21-a839-7428c4f6bf42",
-"student_id_number":"27-1-12345",
-"last_name":"Santos",
-"first_name":"Maria",
-"middle_name":null,
-"program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
-"registration_source":"admin_direct",
-"created_at":"2026-10-26T00:00:00Z",
-"updated_at":"2026-10-26T00:00:00Z"
-}
+[  
+  {
+    "id":"45b54332-e470-4c21-a839-7428c4f6bf42",
+    "student_id_number":"27-1-12345",
+    "last_name":"Santos",
+    "first_name":"Maria",
+    "middle_name":null,
+    "program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+    "registration_source":"admin_direct",
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
@@ -1069,9 +1071,9 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
 }
 ```
 
@@ -1142,10 +1144,10 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1176,14 +1178,16 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 
 **Response**
 ```json
-{
-  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
-  "name":"Computer Science",
-  "status":"approved",
-  "proposed_by":null,
-  "created_at":"2026-10-26T00:00:00Z",
-  "updated_at":"2026-10-26T00:00:00Z"
-}
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
@@ -1207,9 +1211,9 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
 }
 ```
 
@@ -1234,10 +1238,10 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 **Response**
 ```json
 {
-"code":"FORBIDDEN",
-"message":"You are not allowed to perform this action.",
-"details":null,
-"hint":null
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
 }
 ```
 
@@ -1262,10 +1266,10 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1296,14 +1300,16 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments?__code=201" -H "apike
 
 **Response**
 ```json
-{
-  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
-  "name":"Computer Science",
-  "status":"approved",
-  "proposed_by":null,
-  "created_at":"2026-10-26T00:00:00Z",
-  "updated_at":"2026-10-26T00:00:00Z"
-}
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
@@ -1397,10 +1403,10 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1431,14 +1437,16 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 **Response**
 ```json
-{
-  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
-  "name":"Computer Science",
-  "status":"approved",
-  "proposed_by":null,
-  "created_at":"2026-10-26T00:00:00Z",
-  "updated_at":"2026-10-26T00:00:00Z"
-}
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
@@ -1484,9 +1492,9 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
 }
 ```
 
@@ -1541,10 +1549,10 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1606,9 +1614,9 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
 }
 ```
 
@@ -1660,10 +1668,10 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1694,13 +1702,54 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
 
 **Response**
 ```json
+[
+  {
+    "id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+    "name":"Bachelor of Science in Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
 {
-  "id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
-  "name":"Bachelor of Science in Computer Science",
-  "status":"approved",
-  "proposed_by":null,
-  "created_at":"2026-10-26T00:00:00Z",
-  "updated_at":"2026-10-26T00:00:00Z"
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,"hint":null
 }
 ```
 
