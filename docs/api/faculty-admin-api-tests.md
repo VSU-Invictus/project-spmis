@@ -63,6 +63,7 @@
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
 | 11.3 | /rest/v1/departments | PATCH | Forbidden (simulated) | 403 | **Fail** |
 | 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
+| 12.1 | /rest/v1/departments | DELETE | Valid request | 204 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1274,7 +1275,7 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 **Roles:** Admin
 **Request body:** Required JSON body containing `name`.
 
-### Case 1: Valid request (200 OK)
+### Case 1: Valid request (201 Created)
 
 **Request**
 ```bash
@@ -1286,8 +1287,8 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments?__code=201" -H "apike
 | URL | `http://127.0.0.1:4010/rest/v1/departments?__code=201` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
 | Body | `{ "name": "Computer Science" }` |
-| Expected status | 200 OK |
-| Actual status | 200 OK |
+| Expected status | 201 Created |
+| Actual status | 201 Created |
 
 **Response**
 ```json
@@ -1542,6 +1543,31 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 "hint":"Correct the request."
 }
 ```
+
+**Result:** Pass
+
+---
+
+## DELETE /rest/v1/departments
+
+**Summary:** Remove a department
+**Roles:** Admin
+**Request body:** None.
+
+### Case 1: Valid request (204 No content)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 204 No content |
+| Actual status | 204 No content |
 
 **Result:** Pass
 
