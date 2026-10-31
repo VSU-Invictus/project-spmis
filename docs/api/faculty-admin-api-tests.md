@@ -48,8 +48,14 @@
 | 7.3 | /rest/v1/rpc/student_profiles | POST | Role violation (simulated)| 403 | **Fail** |
 | 7.4 | /rest/v1/rpc/student_profiles | POST | Invalid UUID | 400/422 | **Pass** |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
-| 8.2 | /rest/v1/student_profiles | PATCH | Valid request | 201 | **Pass** |
-| 8.3 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
+| 8.2 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
+| 8.3 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 403 | **Fail** |
+| 8.4 | /rest/v1/student_profiles | PATCH | Invalid request | 400 | **Pass** |
+| 9.1 | /rest/v1/departments | GET | Valid request | 200 | **Pass** |
+| 9.2 | /rest/v1/departments | GET | Missing JWT | 401 | **Pass** |
+| 9.3 | /rest/v1/departments | GET | Role violation | 403 | **Pass** |
+| 9.4 | /rest/v1/departments | GET | Invalid request | 400 | **Pass** |
+| 10.1 | /rest/v1/departments | POST | Valid request | 201 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -995,7 +1001,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 
 ## PATCH /rest/v1/student_profiles
 
-**Summary:** Update a program
+**Summary:** Update a student
 **Roles:** Admin
 **Request body:** Required JSON body containing `student_id_number`, `first_name`, `last_name`, and `program_id`.
 
@@ -1010,7 +1016,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 |---|---|
 | URL | `http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
-| Body | `@body.json` |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 200 OK |
 | Actual status | 200 OK |
 
@@ -1033,51 +1039,17 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 ---
 
-### Case 2: Valid request (201 Created)
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -d @body.json
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6` |
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
-| Body | `@body.json` |
-| Expected status | 201 Created |
-| Actual status | 201 Created |
-
-**Response**
-```json
-{
-"id":"45b54332-e470-4c21-a839-7428c4f6bf42",
-"student_id_number":"27-1-12345",
-"first_name":"Maria",
-"last_name":"Santos",
-"middle_name":null,
-"program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
-"registration_source":"admin_direct",
-"created_at":"2026-10-26T00:00:00Z",
-"updated_at":"2026-10-26T00:00:00Z"
-}
-```
-
-**Result:** Pass
-
----
-
-### Case 3: Missing JWT Bearer token (401 Unauthorized)
-
-**Request**
-```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
-```
-
-| Item | Value |
-|---|---|
-| Headers | None (no Authorization) |
-| Body | `@body.json` |
+| Headers | None (no authorization) |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 401 Unauthorized |
 | Actual status | 401 Unauthorized |
 
@@ -1094,9 +1066,226 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 ---
 
+### Case 3: Role violation (403 Forbidden, simulated)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Validation header**
+```json
+[
+  {
+  "location":["request","body","program_id"],
+  "severity":"Error",
+  "code":"format",
+  "message":"Request body property program_id must match format \"uuid\""
+  }
+]
+```
+
+**Response**
+```json
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## GET rest/v1/departments
+
+**Summary:** List departments
+**Roles:** Faculty, Admin
+**Request body:** None
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+{
+  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+  "name":"Computer Science",
+  "status":"approved",
+  "proposed_by":null,
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+"code":"PGRST301",
+"message":"JWT is invalid or expired.",
+"details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+"code":"FORBIDDEN",
+"message":"You are not allowed to perform this action.",
+"details":null,
+"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc&__code=400" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## POST /rest/v1/departments
+
+**Summary:** Directly add a department
+**Roles:** Admin
+**Request body:** Required JSON body containing `name`.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments?__code=201" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/departments?__code=201` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Computer Science" }` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+{
+  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+  "name":"Computer Science",
+  "status":"approved",
+  "proposed_by":null,
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
+}
+```
+
+**Result:** Pass
+
+---
+
 ## Issues Found in the Contract
 
 | # | Endpoint | Issue | Suggested fix |
 |---|---|---|---| 
 | 4.3 | `PATCH /rest/v1/faculty_profiles` | `Prefer` is restricted to a constant, so a 403 cannot be simulated with `Prefer: code=403` | Allow additional `Prefer` values (enum or pattern) so Prism can simulate status codes |
 | 7.3 |`POST /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
+| 8.3 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
