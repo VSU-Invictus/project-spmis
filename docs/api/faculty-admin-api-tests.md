@@ -8,7 +8,7 @@
 | Mock server command | `npx @stoplight/prism-cli mock contract/openapi.yaml` |
 | Base URL | `http://127.0.0.1:4010` |
 | Tools used | curl |
-| Tested by | @Zaming, @AzrielKaye |
+| Tested by | @Zaming, @AzrielKaye, @reeseBan |
 | Date | 2026-10-30 |
 
 > Prism returns responses defined in the OpenAPI file. These tests verify the **contract**, not real database behavior.
@@ -63,6 +63,7 @@
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
 | 11.3 | /rest/v1/departments | PATCH | Forbidden (simulated) | 403 | **Fail** |
 | 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
+| 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -1546,6 +1547,48 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 ---
 
+## PATCH /functions/v1/reviews/{id}
+
+**Summary:** Update an owned review (operationId updateReview)
+**Roles:** Faculty (verified owner)
+**Request body:** Required JSON object (see each case).
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"body_document":{"blocks":[{"type":"paragraph","content":[{"text":"Demonstrated strong leadership.","bold":true}]}]},"tags":["leadership"]}` |
+| Expected status | 200 OK |
+| Actual status | |
+
+**Response**
+```json
+{
+  "id":"67015de8-1ce8-4ac4-8634-384bf5fb3821",
+  "student_id":"45b54332-e470-4c21-a839-7428c4f6bf42",
+  "owner_id":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+  "author_name":"Alex Reyes",
+  "author_department_name":"Computer Science",
+  "body_text":"Demonstrated strong leadership.",
+  "body_document":{"blocks":[{"type":"paragraph","content":[{"text":"Demonstrated strong leadership.","bold":true}]}]},
+  "status":"active",
+  "tags":["leadership"],
+  "attachments":[],
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
+}
+```
+
+**Result:** Pass 
+
+---
 
 ## Issues Found in the Contract
 
