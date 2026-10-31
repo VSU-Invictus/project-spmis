@@ -112,6 +112,7 @@
 | 25.5 | /functions/v1/approvals | POST | Invalid payload (reject without reason) | 422 | **Pass** |
 | 25.6 | /functions/v1/approvals | POST | Missing request body (empty object) | 422 | **Pass** |
 | 25.7 | /functions/v1/approvals | POST | Application not found | 404 | **Pass** |
+| 25.8 | /functions/v1/approvals | POST | Application already decided | 409 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3085,6 +3086,36 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-
 
 **Result:** Pass
 **Notes:** Simulated with `Prefer: code=404`.
+
+---
+
+### Case 8: Application already decided (409 Conflict)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"application_ids\":[\"32272463-1823-4774-a574-558101103e9a\"],\"decision\":\"approve\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/approvals` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Body | `{"application_ids":["32272463-1823-4774-a574-558101103e9a"],"decision":"approve"}` |
+| Expected status | 409 Conflict |
+| Actual status | 409 Conflict |
+
+**Response**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with `Prefer: code=409`.
 
 
 
