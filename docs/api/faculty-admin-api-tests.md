@@ -91,6 +91,7 @@
 | 22.6 | /functions/v1/reviews/{id} | PATCH | Invalid review ID in path | 422 | **Pass** |
 | 22.7 | /functions/v1/reviews/{id} | PATCH | Review not found | 404 | **Pass** |
 | 22.8 | /functions/v1/reviews/{id} | PATCH | Conflict (deleted review) | 409 | **Pass** |
+| 23.1 | /functions/v1/reviews/{id}/status | POST | Valid request | 200 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2412,6 +2413,39 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 
 **Result:** Pass
 **Notes:** Simulated with Prefer: code=409. Prism returned the contract’s 409 example, so this tests that the contract defines the 409 response, not that the backend returns it for a deleted review.
+
+---
+
+## POST /functions/v1/reviews/{id}/status
+
+**Summary:** Hide, unhide, or delete an owned review (operationId setReviewStatus)
+**Roles:** Faculty (verified owner)
+**Request body:** Required JSON object (see each case).
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"action":"hide"}` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+{
+  "id":"67015de8-1ce8-4ac4-8634-384bf5fb3821",
+  "status":"deleted"
+}
+```
+
+**Result:** Pass
 
 
 ---
