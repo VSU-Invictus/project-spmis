@@ -89,6 +89,7 @@
 | 22.4 | /functions/v1/reviews/{id} | PATCH | Invalid payload (empty blocks) | 422 | **Pass** |
 | 22.5 | /functions/v1/reviews/{id} | PATCH | Missing request body (empty object) | 422 | **Pass** |
 | 22.6 | /functions/v1/reviews/{id} | PATCH | Invalid review ID in path | 422 | **Pass** |
+| 22.7 | /functions/v1/reviews/{id} | PATCH | Review not found | 404 | Pending |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2350,6 +2351,36 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid" -H "api
 ```
 
 **Result:** Pass
+
+---
+
+### Case 7: Review not found (404 Not Found)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=404" -d "{\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=404` |
+| Body | `{"body_document":{"blocks":[{"type":"paragraph","content":[{"text":"Demonstrated strong leadership.","bold":true}]}]},"tags":["leadership"]}` |
+| Expected status | 404 Not Found |
+| Actual status | 404 Not Found |
+
+**Response**
+```json
+{
+  "code":"NOT_FOUND",
+  "message":"The requested record was not found.",
+  "details":null,
+  "hint":"Check the record identifier."
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with Prefer: code=404. Prism returned the contract’s 404 example, so this tests that the contract defines the 404 response, not that the backend returns it for a missing review.
 
 
 ---
