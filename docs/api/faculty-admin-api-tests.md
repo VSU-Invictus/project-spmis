@@ -89,7 +89,8 @@
 | 22.4 | /functions/v1/reviews/{id} | PATCH | Invalid payload (empty blocks) | 422 | **Pass** |
 | 22.5 | /functions/v1/reviews/{id} | PATCH | Missing request body (empty object) | 422 | **Pass** |
 | 22.6 | /functions/v1/reviews/{id} | PATCH | Invalid review ID in path | 422 | **Pass** |
-| 22.7 | /functions/v1/reviews/{id} | PATCH | Review not found | 404 | Pending |
+| 22.7 | /functions/v1/reviews/{id} | PATCH | Review not found | 404 | **Pass** |
+| 22.8 | /functions/v1/reviews/{id} | PATCH | Conflict (deleted review) | 409 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2381,6 +2382,36 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 
 **Result:** Pass
 **Notes:** Simulated with Prefer: code=404. Prism returned the contract’s 404 example, so this tests that the contract defines the 404 response, not that the backend returns it for a missing review.
+
+---
+
+### Case 8: Conflict (deleted review) (409 Conflict)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Body | `{"body_document":{"blocks":[{"type":"paragraph","content":[{"text":"Demonstrated strong leadership.","bold":true}]}]},"tags":["leadership"]}` |
+| Expected status | 409 Conflict |
+| Actual status | 409 Conflict |
+
+**Response**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with Prefer: code=409. Prism returned the contract’s 409 example, so this tests that the contract defines the 409 response, not that the backend returns it for a deleted review.
 
 
 ---
