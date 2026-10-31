@@ -56,6 +56,7 @@
 | 9.3 | /rest/v1/departments | GET | Role violation | 403 | **Pass** |
 | 9.4 | /rest/v1/departments | GET | Invalid request | 400 | **Pass** |
 | 10.1 | /rest/v1/departments | POST | Valid request | 201 | **Pass** |
+| 10.2 | /rest/v1/departments | POST | Missing JWT | 401 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -1275,6 +1276,45 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments?__code=201" -H "apike
   "proposed_by":null,
   "created_at":"2026-10-26T00:00:00Z",
   "updated_at":"2026-10-26T00:00:00Z"
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Computer Science" }`|
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
 }
 ```
 
