@@ -86,6 +86,7 @@
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
+| 22.4 | /functions/v1/reviews/{id} | PATCH | Invalid payload (empty blocks) | 422 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2260,6 +2261,35 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 
 **Result:** Pass
 **Notes:** Simulated with Prefer: code=403. Prism returned the contract’s 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
+
+---
+
+### Case 4: Invalid payload (empty blocks) (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"body_document\":{\"blocks\":[]}}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"body_document":{"blocks":[]}}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.",
+  "details":null,
+  "hint":"Check the request filters and caller permissions."
+}
+```
+
+**Result:** Pass
 
 ---
 
