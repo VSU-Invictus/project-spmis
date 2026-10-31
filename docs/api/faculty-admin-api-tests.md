@@ -103,6 +103,7 @@
 | 24.2 | /functions/v1/chat | POST | Missing JWT Bearer token | 401 | **Pass** |
 | 24.3 | /functions/v1/chat | POST | Role violation (simulated) | 403 | **Pass** |
 | 24.4 | /functions/v1/chat | POST | Invalid payload (empty message) | 422 | **Pass** |
+| 24.5 | /functions/v1/chat | POST | Missing request body (empty object) | 422 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2784,6 +2785,34 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "apikey: test-key" 
 
 **Result:** Pass
 
+---
+
+### Case 5: Missing request body (empty object) (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/chat` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"VALIDATION_ERROR",
+  "message":"The request contains invalid data.",
+  "details":"A required value is missing or malformed.",
+  "hint":"Correct the highlighted fields and retry."
+}
+```
+
+**Result:** Pass
 
 ---
 
