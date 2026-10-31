@@ -105,6 +105,7 @@
 | 24.4 | /functions/v1/chat | POST | Invalid payload (empty message) | 422 | **Pass** |
 | 24.5 | /functions/v1/chat | POST | Missing request body (empty object) | 422 | **Pass** |
 | 24.6 | /functions/v1/chat | POST | Rate limited | 429 | **Pass** |
+| 25.1 | /functions/v1/approvals | POST | Valid approve | 200 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2844,6 +2845,52 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "apikey: test-key" 
 
 **Result:** Pass
 **Notes:** Simulated with Prefer: code=429. Prism returned the contract’s 429 example, so this tests that the contract defines the 429 response, not real rate limiting.
+
+---
+
+## POST /functions/v1/approvals
+
+**Summary:** Bulk approve or reject applications (operationId decideApplications)
+**Roles:** Admin
+**Request body:** Required JSON object (see each case).
+
+### Case 1: Valid approve (200 OK)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"application_ids\":[\"32272463-1823-4774-a574-558101103e9a\"],\"decision\":\"approve\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/approvals` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"application_ids":["32272463-1823-4774-a574-558101103e9a"],"decision":"approve"}` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"07e42297-6b44-4b35-ab2f-d216d547bdc7",
+    "type":"faculty_account",
+    "payload":{
+      "full_name":"Alex Reyes",
+      "email":"alex.reyes@example.edu",
+      "department_id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb"
+    },
+    "status":"approved",
+    "submitted_by":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+    "decided_by":"7cb8976d-86d4-4e06-a61d-5d64eb20eec4",
+    "decision_reason":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "decided_at":"2026-10-27T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass / Fail
 
 ---
 
