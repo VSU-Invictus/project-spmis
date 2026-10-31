@@ -123,6 +123,7 @@
 | 27.2 | /rest/v1/review_details | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 27.3 | /rest/v1/review_details | GET | Role violation (simulated) | 403 | **Pass** |
 | 27.4 | /rest/v1/review_details | GET | Invalid UUID | 400 | **Pass** |
+| 27.5 | /rest/v1/review_details | GET | Invalid status filter | 400 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3448,7 +3449,35 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.not-a-uuid" 
 
 **Result:** Pass
 
+---
 
+### Case 5: Invalid status filter (400 Bad Request)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&status=eq.deleted" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&status=eq.deleted` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 Bad Request |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+**Notes:** `status` only allows `eq.active` and `eq.hidden`.
 
 ---
 
