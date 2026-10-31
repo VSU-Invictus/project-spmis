@@ -55,6 +55,7 @@
 | 9.2 | /rest/v1/departments | GET | Missing JWT | 401 | **Pass** |
 | 9.3 | /rest/v1/departments | GET | Role violation | 403 | **Pass** |
 | 9.4 | /rest/v1/departments | GET | Invalid request | 400 | **Pass** |
+| 10.1 | /rest/v1/departments | POST | Valid request | 201 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -1000,7 +1001,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 
 ## PATCH /rest/v1/student_profiles
 
-**Summary:** Update a program
+**Summary:** Update a student
 **Roles:** Admin
 **Request body:** Required JSON body containing `student_id_number`, `first_name`, `last_name`, and `program_id`.
 
@@ -1237,6 +1238,43 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 "message":"Invalid input syntax for a column value.",
 "details":null,
 "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## POST /rest/v1/departments
+
+**Summary:** Directly add a department
+**Roles:** Admin
+**Request body:** Required JSON body containing `name`.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments?__code=201" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/departments?__code=201` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Computer Science" }` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+{
+  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+  "name":"Computer Science",
+  "status":"approved",
+  "proposed_by":null,
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
 }
 ```
 
