@@ -61,9 +61,23 @@
 | 10.4 | /rest/v1/departments | POST | Invalid request | 400/422 | **Pass** |
 | 11.1 | /rest/v1/departments | PATCH | Valid request | 200 | **Pass** |
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
-| 11.3 | /rest/v1/departments | PATCH | Forbidden (simulated) | 403 | **Fail** |
+| 11.3 | /rest/v1/departments | PATCH | Role violation (simulated) | 403 | **Fail** |
 | 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
 | 12.1 | /rest/v1/departments | DELETE | Valid request | 204 | **Pass** |
+| 12.2 | /rest/v1/departments | DELETE | Missing JWT | 401 | **Pass** |
+| 12.3 | /rest/v1/departments | DELETE | Role violation | 403 | **Pass** |
+| 12.4 | /rest/v1/departments | DELETE | Invalid request | 400 | **Pass** |
+| 13.1 | /rest/v1/programs | GET | Valid request | 200 | **Pass** |
+| 13.2 | /rest/v1/programs | GET | Missing JWT | 401 | **Pass** |
+| 13.3 | /rest/v1/programs | GET | Role violation (simulated) | 403 | **Pass** |
+| 13.4 | /rest/v1/programs | GET | Invalid request | 400 | **Pass** |
+| 13.5 | /rest/v1/programs | GET | Valid request | 206 | **Pass** |
+| 13.6 | /rest/v1/programs | GET | Invalid request | 416 | **Pass** |
+| 14.1 | /rest/v1/programs | POST | Valid request | 201 | **Pass** |
+| 14.2 | /rest/v1/programs | POST | Missing JWT | 401 | **Pass** |
+| 14.3 | /rest/v1/programs | POST | Role violation (simulated) | 403 | **Fail** |
+| 14.4 | /rest/v1/programs | POST | Invalid request | 400 | **Pass** |
+| 14.5 | /rest/v1/programs | POST | Role violation (simulated) | 409 | **Fail** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -939,10 +953,10 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,
-"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
 }
 ```
 
@@ -997,10 +1011,10 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1031,17 +1045,19 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Response**
 ```json
-{
-"id":"45b54332-e470-4c21-a839-7428c4f6bf42",
-"student_id_number":"27-1-12345",
-"last_name":"Santos",
-"first_name":"Maria",
-"middle_name":null,
-"program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
-"registration_source":"admin_direct",
-"created_at":"2026-10-26T00:00:00Z",
-"updated_at":"2026-10-26T00:00:00Z"
-}
+[  
+  {
+    "id":"45b54332-e470-4c21-a839-7428c4f6bf42",
+    "student_id_number":"27-1-12345",
+    "last_name":"Santos",
+    "first_name":"Maria",
+    "middle_name":null,
+    "program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+    "registration_source":"admin_direct",
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
@@ -1065,9 +1081,9 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
 }
 ```
 
@@ -1138,10 +1154,10 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1172,14 +1188,16 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 
 **Response**
 ```json
-{
-  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
-  "name":"Computer Science",
-  "status":"approved",
-  "proposed_by":null,
-  "created_at":"2026-10-26T00:00:00Z",
-  "updated_at":"2026-10-26T00:00:00Z"
-}
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
@@ -1203,9 +1221,9 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
 }
 ```
 
@@ -1230,10 +1248,10 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 **Response**
 ```json
 {
-"code":"FORBIDDEN",
-"message":"You are not allowed to perform this action.",
-"details":null,
-"hint":null
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
 }
 ```
 
@@ -1258,10 +1276,10 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1292,14 +1310,16 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments?__code=201" -H "apike
 
 **Response**
 ```json
-{
-  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
-  "name":"Computer Science",
-  "status":"approved",
-  "proposed_by":null,
-  "created_at":"2026-10-26T00:00:00Z",
-  "updated_at":"2026-10-26T00:00:00Z"
-}
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
@@ -1393,10 +1413,10 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1427,14 +1447,16 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 **Response**
 ```json
-{
-  "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
-  "name":"Computer Science",
-  "status":"approved",
-  "proposed_by":null,
-  "created_at":"2026-10-26T00:00:00Z",
-  "updated_at":"2026-10-26T00:00:00Z"
-}
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
@@ -1480,9 +1502,9 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
 }
 ```
 
@@ -1537,10 +1559,10 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1570,6 +1592,449 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2
 | Actual status | 204 No content |
 
 **Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD&__code=400" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## GET /rest/v1/programs
+
+**Summary:** List programs
+**Roles:** Faculty, Admin
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+    "name":"Bachelor of Science in Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc&__code=400" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Valid request (206 Partial content)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc&__code=206" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Range: 0-4"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Range: 0-4` |
+| Body | None |
+| Expected status | 206 Partial Content |
+| Actual status | 206 Partial Content |
+
+**Response**
+```json
+[
+  {
+    "id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+    "name":"Bachelor of Science in Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 6: Valid request (416 Range not satisfied)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc&__code=416" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Range: 0-4"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Range: 0-4` |
+| Body | None |
+| Expected status | 416 Range not satisfied |
+| Actual status | 416 Range not satisfied |
+
+**Response**
+```json
+{
+  "code":"PGRST103",
+  "message":"Requested range not satisfiable",
+  "details":"An offset of 20 was requested, but there are only 10 rows.",
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+## POST /rest/v1/programs
+
+**Summary:** Directly add a program
+**Roles:** Admin
+**Request body:** Required JSON body containing `name`.
+
+### Case 1: Valid request (201 Created)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?__code=201" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/programs?__code=201` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 201 Created |
+| Actual status | 201 Created |
+
+**Response**
+```json
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Bachelor of Science in Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden, simulated)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request","body"],
+    "severity":"Error",
+    "code":"required",
+    "message":"Request body must have required property 'name'"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Role violation (409 Conflict, simulated)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 409 Conflict |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
 
 ---
 
@@ -1625,3 +2090,5 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 | 8.3 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 10.3 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 11.3 |`PATCH /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
+| 14.3 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
+| 14.5 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
