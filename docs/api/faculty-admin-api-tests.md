@@ -75,6 +75,7 @@
 | 13.6 | /rest/v1/programs | GET | Invalid request | 416 | **Pass** |
 | 14.1 | /rest/v1/programs | POST | Valid request | 201 | **Pass** |
 | 14.2 | /rest/v1/programs | POST | Missing JWT | 401 | **Pass** |
+| 14.3 | /rest/v1/programs | POST | Role violation (simulated) | 403 | **Fail** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1905,7 +1906,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?__code=201" -H "apikey: 
 [
   {
     "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
-    "name":"Computer Science",
+    "name":"Bachelor of Science in Computer Science",
     "status":"approved",
     "proposed_by":null,
     "created_at":"2026-10-26T00:00:00Z",
@@ -1954,6 +1955,25 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 ```
 
 **Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden, simulated)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
 
 ---
 
