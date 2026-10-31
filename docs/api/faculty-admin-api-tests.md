@@ -56,6 +56,7 @@
 | 9.2 | /rest/v1/departments | GET | Missing JWT | 401 | **Pass** |
 | 9.3 | /rest/v1/departments | GET | Role violation | 403 | **Pass** |
 | 9.4 | /rest/v1/departments | GET | Invalid request | 400 | **Pass** |
+| 9.5 | /rest/v1/departments | GET | Valid request | 206 | **Pass** |
 | 10.1 | /rest/v1/departments | POST | Valid request | 201 | **Pass** |
 | 10.2 | /rest/v1/departments | POST | Missing JWT | 401 | **Pass** |
 | 10.3 | /rest/v1/departments | POST | Role violation (simulated) | 403 | **Fail** |
@@ -1301,6 +1302,38 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
   "details":null,
   "hint":"Correct the request."
 }
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Valid request (206 Partial content)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc&__code=206" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Range: 0-4"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Range: 0-4` |
+| Body | None |
+| Expected status | 206 Partial content |
+| Actual status | 206 Partial content |
+
+**Response**
+```json
+[
+  {
+    "id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+    "name":"Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
 ```
 
 **Result:** Pass
