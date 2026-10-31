@@ -104,6 +104,7 @@
 | 24.3 | /functions/v1/chat | POST | Role violation (simulated) | 403 | **Pass** |
 | 24.4 | /functions/v1/chat | POST | Invalid payload (empty message) | 422 | **Pass** |
 | 24.5 | /functions/v1/chat | POST | Missing request body (empty object) | 422 | **Pass** |
+| 24.6 | /functions/v1/chat | POST | Rate limited | 429 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2813,6 +2814,36 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "apikey: test-key" 
 ```
 
 **Result:** Pass
+
+---
+
+### Case 6: Rate limited (429 Too Many Requests)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=429" -d "{\"message\":\"Which students demonstrate strong research and teamwork skills?\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/chat` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=429` |
+| Body | `{"message":"Which students demonstrate strong research and teamwork skills?"}` |
+| Expected status | 429 Too Many Requests |
+| Actual status | 429 Too Many Requests |
+
+**Response**
+```json
+{
+  "code":"RATE_LIMITED",
+  "message":"The AI Chat Assistant is temporarily unavailable.",
+  "details":null,
+  "hint":"Try again later."
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with Prefer: code=429. Prism returned the contract’s 429 example, so this tests that the contract defines the 429 response, not real rate limiting.
 
 ---
 
