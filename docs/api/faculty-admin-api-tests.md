@@ -111,6 +111,7 @@
 | 25.4 | /functions/v1/approvals | POST | Role violation (simulated) | 403 | **Pass** |
 | 25.5 | /functions/v1/approvals | POST | Invalid payload (reject without reason) | 422 | **Pass** |
 | 25.6 | /functions/v1/approvals | POST | Missing request body (empty object) | 422 | **Pass** |
+| 25.7 | /functions/v1/approvals | POST | Application not found | 404 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3054,6 +3055,37 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-
 ```
 
 **Result:** Pass
+
+---
+
+### Case 7: Application not found (404 Not Found)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=404" -d "{\"application_ids\":[\"32272463-1823-4774-a574-558101103e9a\"],\"decision\":\"approve\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/approvals` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=404` |
+| Body | `{"application_ids":["32272463-1823-4774-a574-558101103e9a"],"decision":"approve"}` |
+| Expected status | 404 Not Found |
+| Actual status | 404 Not Found |
+
+**Response**
+```json
+{
+  "code":"NOT_FOUND",
+  "message":"The requested record was not found.",
+  "details":null,
+  "hint":"Check the record identifier."
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with `Prefer: code=404`.
+
 
 
 ---
