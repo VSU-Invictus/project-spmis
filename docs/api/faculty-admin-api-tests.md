@@ -57,6 +57,7 @@
 | 9.3 | /rest/v1/departments | GET | Role violation | 403 | **Pass** |
 | 9.4 | /rest/v1/departments | GET | Invalid request | 400 | **Pass** |
 | 9.5 | /rest/v1/departments | GET | Valid request | 206 | **Pass** |
+| 9.6 | /rest/v1/departments | GET | Invalid request | 416 | **Pass** |
 | 10.1 | /rest/v1/departments | POST | Valid request | 201 | **Pass** |
 | 10.2 | /rest/v1/departments | POST | Missing JWT | 401 | **Pass** |
 | 10.3 | /rest/v1/departments | POST | Role violation (simulated) | 403 | **Fail** |
@@ -1340,6 +1341,34 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 
 ---
 
+### Case 6: Valid request (416 Range not satisfiable)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc&__code=416" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Range: 0-4"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Range: 0-4` |
+| Body | None |
+| Expected status | 416 Range not satisfiable |
+| Actual status | 416 Range not satisfiable |
+
+**Response**
+```json
+{
+  "code":"PGRST103",
+  "message":"Requested range not satisfiable",
+  "details":"An offset of 20 was requested, but there are only 10 rows.",
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
 ## POST /rest/v1/departments
 
 **Summary:** Directly add a department
@@ -1907,7 +1936,7 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
 
 ---
 
-### Case 6: Valid request (416 Range not satisfied)
+### Case 6: Valid request (416 Range not satisfiable)
 
 **Request**
 ```bash
@@ -1918,8 +1947,8 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
 |---|---|
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Range: 0-4` |
 | Body | None |
-| Expected status | 416 Range not satisfied |
-| Actual status | 416 Range not satisfied |
+| Expected status | 416 Range not satisfiable |
+| Actual status | 416 Range not satisfiable |
 
 **Response**
 ```json
