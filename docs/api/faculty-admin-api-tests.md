@@ -70,6 +70,7 @@
 | 13.1 | /rest/v1/programs | GET | Valid request | 200 | **Pass** |
 | 13.2 | /rest/v1/programs | GET | Missing JWT | 401 | **Pass** |
 | 13.3 | /rest/v1/programs | GET | Role violation (simulated) | 403 | **Pass** |
+| 13.4 | /rest/v1/programs | GET | Invalid request | 400 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1749,9 +1750,9 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
 }
 ```
 
@@ -1779,6 +1780,34 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
   "code":"FORBIDDEN",
   "message":"You are not allowed to perform this action.",
   "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq.pending&order=created_at.desc%2Cid.asc&__code=400" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
