@@ -106,6 +106,7 @@
 | 24.5 | /functions/v1/chat | POST | Missing request body (empty object) | 422 | **Pass** |
 | 24.6 | /functions/v1/chat | POST | Rate limited | 429 | **Pass** |
 | 25.1 | /functions/v1/approvals | POST | Valid approve | 200 | **Pass** |
+| 25.2 | /functions/v1/approvals | POST | Valid reject | 200 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2890,7 +2891,48 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-
 ]
 ```
 
-**Result:** Pass / Fail
+**Result:** Pass
+
+---
+
+### Case 2: Valid reject (200 OK)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: example=rejected" -d "{\"application_ids\":[\"32272463-1823-4774-a574-558101103e9a\"],\"decision\":\"reject\",\"reason\":\"The submitted student record could not be physically verified.\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/approvals` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: example=rejected` |
+| Body | `{"application_ids":["32272463-1823-4774-a574-558101103e9a"],"decision":"reject","reason":"The submitted student record could not be physically verified."}` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"07e42297-6b44-4b35-ab2f-d216d547bdc7",
+    "type":"faculty_account",
+    "payload":{
+      "full_name":"Alex Reyes",
+      "email":"alex.reyes@example.edu",
+      "department_id":"5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb"
+    },
+    "status":"rejected",
+    "submitted_by":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+    "decided_by":"7cb8976d-86d4-4e06-a61d-5d64eb20eec4",
+    "decision_reason":"Department affiliation could not be verified.",
+    "created_at":"2026-10-26T00:00:00Z",
+    "decided_at":"2026-10-27T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
+**Notes:** `Prefer: example=rejected` selects the named rejected example.
 
 ---
 
