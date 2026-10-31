@@ -66,6 +66,7 @@
 | 12.1 | /rest/v1/departments | DELETE | Valid request | 204 | **Pass** |
 | 12.2 | /rest/v1/departments | DELETE | Missing JWT | 401 | **Pass** |
 | 12.3 | /rest/v1/departments | DELETE | Role violation | 403 | **Pass** |
+| 12.4 | /rest/v1/departments | DELETE | Invalid request | 400 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 ---
 
@@ -1634,6 +1635,34 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2
   "code":"FORBIDDEN",
   "message":"You are not allowed to perform this action.",
   "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD&__code=400" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+"code":"22P02",
+"message":"Invalid input syntax for a column value.",
+"details":null,
+"hint":"Correct the request."
 }
 ```
 
