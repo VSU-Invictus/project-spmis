@@ -107,6 +107,7 @@
 | 24.6 | /functions/v1/chat | POST | Rate limited | 429 | **Pass** |
 | 25.1 | /functions/v1/approvals | POST | Valid approve | 200 | **Pass** |
 | 25.2 | /functions/v1/approvals | POST | Valid reject | 200 | **Pass** |
+| 25.3 | /functions/v1/approvals | POST | Missing JWT Bearer token | 401 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -2933,6 +2934,35 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "apikey: test-
 
 **Result:** Pass
 **Notes:** `Prefer: example=rejected` selects the named rejected example.
+
+---
+
+### Case 3: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "Content-Type: application/json" -d "{\"application_ids\":[\"32272463-1823-4774-a574-558101103e9a\"],\"decision\":\"approve\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/approvals` |
+| Headers | `Content-Type: application/json` |
+| Body | `{"application_ids":["32272463-1823-4774-a574-558101103e9a"],"decision":"approve"}` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
 
 ---
 
