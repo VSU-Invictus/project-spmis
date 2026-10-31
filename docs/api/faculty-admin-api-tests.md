@@ -122,6 +122,7 @@
 | 27.1 | /rest/v1/review_details | GET | Valid request | 200 | **Pass** |
 | 27.2 | /rest/v1/review_details | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 27.3 | /rest/v1/review_details | GET | Role violation (simulated) | 403 | **Pass** |
+| 27.4 | /rest/v1/review_details | GET | Invalid UUID | 400 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3417,6 +3418,35 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
 
 **Result:** Pass
 **Notes:** Simulated with `__code=403`. `Prefer: code=403` is not used because this operation's `Prefer` header is fixed to `count=exact`.
+
+---
+
+### Case 4: Invalid UUID (400 Bad Request)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.not-a-uuid` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 Bad Request |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
 
 
 
