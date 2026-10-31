@@ -114,6 +114,7 @@
 | 25.7 | /functions/v1/approvals | POST | Application not found | 404 | **Pass** |
 | 25.8 | /functions/v1/approvals | POST | Application already decided | 409 | **Pass** |
 | 26.1 | /rest/v1/rpc/update_own_profile | POST | Valid request | 200 | **Pass** |
+| 26.2 | /rest/v1/rpc/update_own_profile | POST | Missing JWT Bearer token | 401 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -3155,6 +3156,35 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "apike
     "updated_at":"2026-10-26T00:00:00Z"
   }
 ]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "Content-Type: application/json" -d "{\"full_name\":\"Alex Reyes\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/rpc/update_own_profile` |
+| Headers | `Content-Type: application/json` |
+| Body | `{"full_name":"Alex Reyes"}` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
 ```
 
 **Result:** Pass
