@@ -53,6 +53,7 @@
 | 8.4 | /rest/v1/student_profiles | PATCH | Invalid request | 400 | **Pass** |
 | 9.1 | /rest/v1/departments | GET | Valid request | 200 | **Pass** |
 | 9.2 | /rest/v1/departments | GET | Missing JWT | 401 | **Pass** |
+| 9.3 | /rest/v1/departments | GET | Role violation | 403 | **Pass** |
 ---
 
 ## GET /rest/v1/rpc/get_student_by_id
@@ -1179,6 +1180,34 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 "code":"PGRST301",
 "message":"JWT is invalid or expired.",
 "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&status=eq.approved&order=name.asc%2Cid.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+"code":"FORBIDDEN",
+"message":"You are not allowed to perform this action.",
+"details":null,
+"hint":null
 }
 ```
 
