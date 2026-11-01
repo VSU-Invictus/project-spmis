@@ -102,7 +102,7 @@
 | 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
 | 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Fail** |
 | 19.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
-| 10.3 | /rest/v1/approval_queue_items | POST | Role violation (simulated) | 403 | **Fail** |
+| 19.3 | /rest/v1/approval_queue_items | POST | Role violation (simulated) | 403 | **Fail** |
 | 10.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
@@ -2860,7 +2860,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey:
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403"
 ```
 
 | Item | Value |
@@ -2871,7 +2871,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 | Actual status | 400 Bad request |
 
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+**Result:** Fail (cannot simulate). `Prefer: code=403` get 400 Bad request.
 
 ---
 
