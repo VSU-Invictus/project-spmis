@@ -85,6 +85,7 @@
 | 14.5 | /rest/v1/programs | POST | Role violation (simulated) | 409 | **Fail** |
 | 15.1 | /rest/v1/programs | PATCH | Valid Request | 200 | **Pass** |
 | 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
+| 15.3 | /rest/v1/programs | PATCH | Role violation | 403 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2291,18 +2292,25 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
-| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: code=403` |
+| Body | `N/A` |
 | Expected status | 403 Forbidden |
 | Actual status | 400 Bad request |
 
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+**Result:** 
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.","details":null,
+  "hint":"Correct the request."
+}
+```
 
 ---
 
