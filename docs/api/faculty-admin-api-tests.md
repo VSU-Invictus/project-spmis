@@ -112,6 +112,7 @@
 | 21.2 | /functions/v1/reviews | POST | Missing JWT Bearer token | 401 | **Pass** |
 | 21.3 | /functions/v1/reviews | POST | Role violation (simulated) | 403 | **Fail** |
 | 21.4 | /functions/v1/reviews | POST | Invalid payload (empty message) | 422 | **Pass** |
+| 21.5 | /functions/v1/reviews | POST | Missing request body (empty object) | 422 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -3171,12 +3172,12 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-ke
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{}"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
 | Body | `{}` |
 | Expected status | 422 Unprocessable Entity |
@@ -3185,10 +3186,9 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8
 **Response**
 ```json
 {
-  "code":"VALIDATION_ERROR",
-  "message":"The request contains invalid data.",
-  "details":"A required value is missing or malformed.",
-  "hint":"Correct the highlighted fields and retry."
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.","details":null,
+  "hint":"Check the request filters and caller permissions."
 }
 ```
 
