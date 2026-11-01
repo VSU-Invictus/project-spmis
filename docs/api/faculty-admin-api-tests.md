@@ -93,6 +93,7 @@
 | 16.3 | /rest/v1/programs | DELETE | Role violation | 403 | **Pass** |
 | 16.4 | /rest/v1/programs | DELETE | Invalid request | 400 / 422 | **Pass** |
 | 17.1 | /rest/v1/review_revisions | GET | Valid request | 200 | **Pass** |
+| 17.2 | /rest/v1/review_revisions | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2558,12 +2559,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42"
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42` |
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
 | Headers | None (no Authorization) |
 | Body | None |
 | Expected status | 401 Unauthorized |
