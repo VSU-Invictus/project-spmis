@@ -105,7 +105,7 @@
 | 19.3 | /rest/v1/approval_queue_items | POST | Role violation (simulated) | 403 | **Fail** |
 | 19.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
 | 20.1 | /rest/v1/audit_log_entries | GET | Valid request | 200 | **Pass** |
-| 18.2 | /rest/v1/approval_queue_items | GET | Missing JWT Bearer token | 401 | **Pass** |
+| 20.2 | /rest/v1/approval_queue_items | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 18.3 | /rest/v1/approval_queue_items | GET | Role violation | 403 | **Fail** |
 | 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
@@ -2960,12 +2960,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc"
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc` |
 | Headers | None (no Authorization) |
 | Body | None |
 | Expected status | 401 Unauthorized |
