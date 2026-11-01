@@ -4511,3 +4511,13 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
 | 11.5 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 14.3 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 14.5 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
+| 15.3 |`PATCH /rest/v1/programs` |	403 cannot be simulated |
+| 15.4 |`PATCH /rest/v1/programs`	| 400/422 got 401 (test doc: apikey header missing, see section 4) |
+| 15.5 |`PATCH /rest/v1/programs`	| 409 cannot be simulated |
+| 17.3 |`GET /rest/v1/review_revisions`	| 403 returns 400 |
+| 18.3 |`GET /rest/v1/approval_queue_items`	| 403 returns 400 |
+| 19.1 |`POST /rest/v1/approval_queue_items` | Valid request returns 400, not 201 |
+| 19.3 |`POST /rest/v1/approval_queue_items` | 403 returns 400 |
+| 20.3 |`GET /rest/v1/audit_log_entries	403` | returns 400 |
+| 21.1 |`POST /functions/v1/reviews` | Valid request returns 422, not 200 |
+| 21.3 |`POST /functions/v1/reviews` | 403 returns 422 |
