@@ -113,6 +113,7 @@
 | 21.3 | /functions/v1/reviews | POST | Role violation (simulated) | 403 | **Fail** |
 | 21.4 | /functions/v1/reviews | POST | Invalid payload (empty message) | 422 | **Pass** |
 | 21.5 | /functions/v1/reviews | POST | Missing request body (empty object) | 422 | **Pass** |
+| 21.6 | /functions/v1/reviews | POST | Rate limited | 422 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2229,7 +2230,6 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 ---
 
-//dollera
 ## PATCH /rest/v1/programs
 
 **Summary:** Directly add a program
@@ -2406,7 +2406,6 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 **Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
 
-//dollera2
 ---
 
 ## DELETE /rest/v1/programs
@@ -2525,8 +2524,6 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB
 ```
 
 **Result:** Pass
-
-//dollera3
 
 ---
 
@@ -2658,8 +2655,6 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E
 
 **Result:** Pass
 
-//dollera4
-
 ---
 
 ## GET /rest/v1/approval_queue_items
@@ -2779,8 +2774,6 @@ curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_regi
 ```
 
 **Result:** Pass
-
-//dollera5
 
 ---
 
@@ -2922,8 +2915,6 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey:
 
 **Result:** Pass
 
-//dollera6
-
 ---
 
 ## GET /rest/v1/audit_log_entries
@@ -3044,8 +3035,6 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
 ```
 
 **Result:** Pass
-
-//dollera7
 
 ---
 
@@ -3200,12 +3189,12 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-ke
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid/status` |
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
 | Body | `{"action":"hide"}` |
 | Expected status | 422 Unprocessable Entity |
@@ -3214,10 +3203,9 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid/status" -
 **Response**
 ```json
 {
-  "code":"VALIDATION_ERROR",
-  "message":"The request contains invalid data.",
-  "details":"A required value is missing or malformed.",
-  "hint":"Correct the highlighted fields and retry."
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.","details":null,
+  "hint":"Check the request filters and caller permissions."
 }
 ```
 
