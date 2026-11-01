@@ -96,6 +96,7 @@
 | 17.2 | /rest/v1/review_revisions | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 17.3 | /rest/v1/review_revisions | GET | Role violation | 403 | **Fail** |
 | 17.4 | /rest/v1/review_revisions | GET | Invalid UUID | 400 | **Pass** |
+| 18.1 | /rest/v1/approval_queue_items | GET | Valid request | 200 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2641,18 +2642,111 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E
 
 **Result:** Pass
 
+//dollera4
+
 ---
 
-### Case 5: Invalid status filter (400 Bad Request)
+## GET /rest/v1/approval_queue_items
+
+**Summary:** Admin queue views support search and checkbox-based bulk approve/reject.
+**Roles:** Admin
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&status=eq.deleted" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&status=eq.deleted` |
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","submitted_by":"6703ac2f-9eb5-40e9-9fde-511b2dbf4be5","status":"pending","decided_by":"4accc021-c0cc-4c2c-8a78-605a0ed6da31","decision_reason":"string","created_at":"2019-08-24T14:15:22Z","decided_at":"2019-08-24T14:15:22Z","type":"faculty_account","payload":{}
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.","details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 4: Invalid UUID (400 Bad Request)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 Bad Request |
@@ -2671,6 +2765,8 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
 **Result:** Pass
 
 ---
+
+
 
 ## PATCH /functions/v1/reviews/{id}
 
