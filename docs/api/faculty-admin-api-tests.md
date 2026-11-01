@@ -101,7 +101,7 @@
 | 18.3 | /rest/v1/approval_queue_items | GET | Role violation | 403 | **Fail** |
 | 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
 | 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Fail** |
-| 10.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
+| 19.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
 | 10.3 | /rest/v1/approval_queue_items | POST | Role violation (simulated) | 403 | **Fail** |
 | 10.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
@@ -2815,7 +2815,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey:
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" 
 ```
 
 | Item | Value |
@@ -2833,6 +2833,12 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
     "severity":"Error",
     "code":401,
     "message":"Invalid security scheme used"
+  },
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":"required",
+    "message":"Body parameter is required"
   }
 ]
 ```
