@@ -91,6 +91,7 @@
 | 16.1 | /rest/v1/programs | DELETE | Valid Request | 204 | **Pass** |
 | 16.2 | /rest/v1/programs | DELETE | Missing JWT Bearer token | 401 | **Pass** |
 | 16.3 | /rest/v1/programs | DELETE | Role violation | 403 | **Pass** |
+| 16.4 | /rest/v1/programs | DELETE | Invalid request | 400 / 422 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2482,7 +2483,7 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2
 
 **Request**
 ```bash
-curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD&__code=400" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB26-C41d-F8cDA8f6Eedd" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
 ```
 
 | Item | Value |
