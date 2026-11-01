@@ -100,6 +100,10 @@
 | 18.2 | /rest/v1/approval_queue_items | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 18.3 | /rest/v1/approval_queue_items | GET | Role violation | 403 | **Fail** |
 | 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
+| 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Fail** |
+| 10.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
+| 10.3 | /rest/v1/approval_queue_items | POST | Role violation (simulated) | 403 | **Fail** |
+| 10.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2754,6 +2758,142 @@ curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_regi
 | Body | None |
 | Expected status | 400 Bad Request |
 | Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+//dollera5
+
+---
+
+## POST /rest/v1/approval_queue_items
+
+**Summary:** Admin queue views support search and checkbox-based bulk approve/reject.
+**Roles:** Admin
+**Request body:** None
+
+### Case 1: Valid request (201 Created)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` |
+| Body | `{ "name": "Computer Science" }` |
+| Expected status | 201 Created |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+[
+  {
+    "code":"22P02",
+    "message":"Invalid input syntax for a column value.","details":null,
+    "hint":"Correct the request."
+  }
+]
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Computer Science" }`|
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden, simulated)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | `{ "name": "Computer Science" }` |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request","body"],
+    "severity":"Error",
+    "code":"required",
+    "message":"Request body must have required property 'name'"
+  }
+]
+```
 
 **Response**
 ```json
