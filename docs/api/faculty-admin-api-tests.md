@@ -104,6 +104,10 @@
 | 19.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
 | 19.3 | /rest/v1/approval_queue_items | POST | Role violation (simulated) | 403 | **Fail** |
 | 19.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
+| 20.1 | /rest/v1/audit_log_entries | GET | Valid request | 200 | **Pass** |
+| 18.2 | /rest/v1/approval_queue_items | GET | Missing JWT Bearer token | 401 | **Pass** |
+| 18.3 | /rest/v1/approval_queue_items | GET | Role violation | 403 | **Fail** |
+| 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2900,6 +2904,129 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey:
   }
 ]
 ```
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+//dollera6
+
+---
+
+## GET /rest/v1/audit_log_entries
+
+**Summary:** A hide/unhide event that never exposes review content to anyone but the owner
+**Roles:** Admin
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc
+` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","submitted_by":"6703ac2f-9eb5-40e9-9fde-511b2dbf4be5","status":"pending","decided_by":"4accc021-c0cc-4c2c-8a78-605a0ed6da31","decision_reason":"string","created_at":"2019-08-24T14:15:22Z","decided_at":"2019-08-24T14:15:22Z","type":"faculty_account","payload":{}
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.","details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 4: Invalid UUID (400 Bad Request)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 Bad Request |
+| Actual status | 400 Bad Request |
 
 **Response**
 ```json
