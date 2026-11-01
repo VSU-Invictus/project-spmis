@@ -107,7 +107,7 @@
 | 20.1 | /rest/v1/audit_log_entries | GET | Valid request | 200 | **Pass** |
 | 20.2 | /rest/v1/audit_log_entries | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 20.3 | /rest/v1/audit_log_entries | GET | Role violation | 403 | **Fail** |
-| 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
+| 20.4 | /rest/v1/audit_log_entries | GET | Invalid UUID | 400 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -3017,12 +3017,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 Bad Request |
