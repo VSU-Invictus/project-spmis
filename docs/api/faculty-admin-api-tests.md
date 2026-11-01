@@ -90,6 +90,7 @@
 | 15.5 | /rest/v1/programs | PATCH | Role violation | 409 | **Fail** |
 | 16.1 | /rest/v1/programs | DELETE | Valid Request | 204 | **Pass** |
 | 16.2 | /rest/v1/programs | DELETE | Missing JWT Bearer token | 401 | **Pass** |
+| 16.3 | /rest/v1/programs | DELETE | Role violation | 403 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
