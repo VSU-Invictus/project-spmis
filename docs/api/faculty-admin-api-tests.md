@@ -97,6 +97,7 @@
 | 17.3 | /rest/v1/review_revisions | GET | Role violation | 403 | **Fail** |
 | 17.4 | /rest/v1/review_revisions | GET | Invalid UUID | 400 | **Pass** |
 | 18.1 | /rest/v1/approval_queue_items | GET | Valid request | 200 | **Pass** |
+| 18.2 | /rest/v1/review_revisions | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2684,12 +2685,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_regi
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc"
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
 | Headers | None (no Authorization) |
 | Body | None |
 | Expected status | 401 Unauthorized |
