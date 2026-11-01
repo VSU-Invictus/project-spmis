@@ -92,6 +92,7 @@
 | 16.2 | /rest/v1/programs | DELETE | Missing JWT Bearer token | 401 | **Pass** |
 | 16.3 | /rest/v1/programs | DELETE | Role violation | 403 | **Pass** |
 | 16.4 | /rest/v1/programs | DELETE | Invalid request | 400 / 422 | **Pass** |
+| 17.1 | /rest/v1/review_revisions | GET | Valid request | 200 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2491,6 +2492,169 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+//dollera3
+
+---
+
+## GET /rest/v1/review_revisions
+
+**Summary:** Update an owned review (revisions)
+**Roles:** Faculty
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"3731173e-5880-47d6-b914-da53521a607e","review_id":"67015de8-1ce8-4ac4-8634-384bf5fb3821","body_text_snapshot":"Demonstrated strong research skills.","edited_by":"e48adc9e-1b79-4b92-9848-aa12b25d63d7","edited_at":"2026-10-26T01:00:00Z","body_document_snapshot":{
+      "blocks":
+      [
+        {"type":"paragraph","content":
+          [
+            {"text":"Demonstrated strong research skills."}
+          ]
+        }
+      ]
+    },
+    "tags_snapshot":["research"]
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42` |
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&__code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with `__code=403`. `Prefer: code=403` is not used because this operation's `Prefer` header is fixed to `count=exact`.
+
+---
+
+### Case 4: Invalid UUID (400 Bad Request)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.not-a-uuid" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.not-a-uuid` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 Bad Request |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Invalid status filter (400 Bad Request)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&status=eq.deleted" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&status=eq.deleted` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 Bad Request |
 | Actual status | 400 Bad Request |
 
 **Response**
