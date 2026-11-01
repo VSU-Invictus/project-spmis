@@ -110,6 +110,7 @@
 | 20.4 | /rest/v1/audit_log_entries | GET | Invalid UUID | 400 | **Pass** |
 | 21.1 | /functions/v1/reviews | POST | Valid request | 200 | **Fail** |
 | 21.2 | /functions/v1/reviews | POST | Missing JWT Bearer token | 401 | **Pass** |
+| 21.3 | /functions/v1/reviews | POST | Role violation (simulated) | 403 | **Fail** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -3113,29 +3114,27 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "Content-Type: a
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"action\":\"hide\"}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"action\":\"hide\"}"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
 | Body | `{"action":"hide"}` |
 | Expected status | 403 Forbidden |
-| Actual status | 403 Forbidden |
+| Actual status | 422 Unprocessable Entity |
 
 **Response**
 ```json
 {
-  "code":"FORBIDDEN",
-  "message":"You are not allowed to perform this action.",
-  "details":null,
-  "hint":null
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.","details":null,
+  "hint":"Check the request filters and caller permissions."
 }
 ```
 
-**Result:** Pass
-**Notes:** Simulated with Prefer: code=403. Prism returned the contract’s 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
+**Result:** Fail (cannot simulate)
 
 ---
 
