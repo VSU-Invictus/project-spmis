@@ -108,6 +108,8 @@
 | 20.2 | /rest/v1/audit_log_entries | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 20.3 | /rest/v1/audit_log_entries | GET | Role violation | 403 | **Fail** |
 | 20.4 | /rest/v1/audit_log_entries | GET | Invalid UUID | 400 | **Pass** |
+| 21.1 | /functions/v1/reviews | POST | Valid request | 200 | **Fail** |
+
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -3035,6 +3037,188 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
   "message":"Invalid input syntax for a column value.",
   "details":null,
   "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+//dollera7
+
+---
+
+## POST /functions/v1/reviews
+
+**Summary:** Hide, unhide, or delete an owned review 
+**Roles:** Faculty (verified owner)
+**Request body:** Required JSON object (see each case).
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"action":"hide"}` |
+| Expected status | 200 OK |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.","details":null,
+  "hint":"Check the request filters and caller permissions."
+}
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| Headers | `Content-Type: application/json` |
+| Body | `{"action":"hide"}` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | `{"action":"hide"}` |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+**Notes:** Simulated with Prefer: code=403. Prism returned the contract’s 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
+
+---
+
+### Case 4: Invalid payload (action not in hide/unhide/delete) (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"archive\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"action":"archive"}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"VALIDATION_ERROR",
+  "message":"The request contains invalid data.",
+  "details":"A required value is missing or malformed.",
+  "hint":"Correct the highlighted fields and retry."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Missing request body (empty object) (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"VALIDATION_ERROR",
+  "message":"The request contains invalid data.",
+  "details":"A required value is missing or malformed.",
+  "hint":"Correct the highlighted fields and retry."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 6: Invalid review ID in path (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid/status" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews/not-a-uuid/status` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"action":"hide"}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"VALIDATION_ERROR",
+  "message":"The request contains invalid data.",
+  "details":"A required value is missing or malformed.",
+  "hint":"Correct the highlighted fields and retry."
 }
 ```
 
