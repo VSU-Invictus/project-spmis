@@ -87,7 +87,8 @@
 | 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 15.3 | /rest/v1/programs | PATCH | Role violation | 403 | **Fail** |
 | 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Fail** |
-| 15.3 | /rest/v1/programs | PATCH | Role violation | 409 | **Fail** |
+| 15.5 | /rest/v1/programs | PATCH | Role violation | 409 | **Fail** |
+| 16.1 | /rest/v1/programs | DELETE | Valid Request | 204 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2380,6 +2381,126 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 
 **Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+
+//dollera2
+---
+
+## DELETE /rest/v1/programs
+
+**Summary:** Remove a department
+**Roles:** Admin
+**Request body:** None.
+
+### Case 1: Valid request (204 No content)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB26-C41d-F8cDA8f6Eedd" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB26-C41d-F8cDA8f6Eedd` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 204 No content |
+| Actual status | 204 No content |
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD&__code=400" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
 
 ---
 
