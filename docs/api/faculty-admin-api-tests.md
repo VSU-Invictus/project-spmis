@@ -87,6 +87,7 @@
 | 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 15.3 | /rest/v1/programs | PATCH | Role violation | 403 | **Fail** |
 | 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Fail** |
+| 15.3 | /rest/v1/programs | PATCH | Role violation | 409 | **Fail** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2366,7 +2367,8 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409"
+
 ```
 
 | Item | Value |
