@@ -109,7 +109,7 @@
 | 20.3 | /rest/v1/audit_log_entries | GET | Role violation | 403 | **Fail** |
 | 20.4 | /rest/v1/audit_log_entries | GET | Invalid UUID | 400 | **Pass** |
 | 21.1 | /functions/v1/reviews | POST | Valid request | 200 | **Fail** |
-
+| 21.2 | /functions/v1/reviews | POST | Missing JWT Bearer token | 401 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -3084,12 +3084,12 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-ke
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8634-384bf5fb3821/status` |
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
 | Headers | `Content-Type: application/json` |
 | Body | `{"action":"hide"}` |
 | Expected status | 401 Unauthorized |
