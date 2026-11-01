@@ -85,7 +85,8 @@
 | 14.5 | /rest/v1/programs | POST | Role violation (simulated) | 409 | **Fail** |
 | 15.1 | /rest/v1/programs | PATCH | Valid Request | 200 | **Pass** |
 | 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
-| 15.3 | /rest/v1/programs | PATCH | Role violation | 403 | **Pass** |
+| 15.3 | /rest/v1/programs | PATCH | Role violation | 403 | **Fail** |
+| 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Fail** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2303,7 +2304,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 | Actual status | 400 Bad request |
 
 
-**Result:** 
+**Response:** 
 ```json
 {
   "code":"22P02",
@@ -2312,25 +2313,32 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 }
 ```
 
+**Result:**  Fail (cannot simulate). `Prefer: code=403`get 400 Bad request.
 ---
 
 ### Case 4: Invalid request (400 / 422)
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Headers | `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
 | Body | None |
 | Expected status | 400 or 422 |
-| Actual status | 400 Bad Request |
+| Actual status | 401 Unauthorized |
 
-**Validation header**
+**s-l violations**
 ```json
 [
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code": 401,
+    "message":"Invalid security scheme used"
+  },
   {
     "location":["request","body"],
     "severity":"Error",
@@ -2343,14 +2351,14 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 **Response**
 ```json
 {
-  "code":"22P02",
-  "message":"Invalid input syntax for a column value.",
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
   "details":null,
-  "hint":"Correct the request."
+  "hint":null
 }
 ```
 
-**Result:** Pass
+**Result:**  Fail (cannot simulate). `Prefer: return=representation` get 401 Unauthorized.
 
 ---
 
