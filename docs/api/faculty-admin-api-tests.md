@@ -94,6 +94,7 @@
 | 16.4 | /rest/v1/programs | DELETE | Invalid request | 400 / 422 | **Pass** |
 | 17.1 | /rest/v1/review_revisions | GET | Valid request | 200 | **Pass** |
 | 17.2 | /rest/v1/review_revisions | GET | Missing JWT Bearer token | 401 | **Pass** |
+| 17.3 | /rest/v1/review_revisions | GET | Role violation | 403 | **Fail** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2588,29 +2589,27 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e470-4c21-a839-7428c4f6bf42&__code=403` |
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 403 Forbidden |
-| Actual status | 403 Forbidden |
+| Actual status | 400 Bad Request |
 
 **Response**
 ```json
 {
-  "code":"FORBIDDEN",
-  "message":"You are not allowed to perform this action.",
-  "details":null,
-  "hint":null
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.","details":null,
+  "hint":"Correct the request."
 }
 ```
 
-**Result:** Pass
-**Notes:** Simulated with `__code=403`. `Prefer: code=403` is not used because this operation's `Prefer` header is fixed to `count=exact`.
+**Result:** Fail (cannot simulate)
 
 ---
 
