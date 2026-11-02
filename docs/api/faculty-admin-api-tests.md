@@ -33,7 +33,7 @@
 | 3.4 | /rest/v1/rpc/faculty_profiles | GET | Invalid request | 400/422 | **Pass** |
 | 4.1 | /rest/v1/rpc/faculty_profiles | PATCH | Valid request | 200 | **Pass**|
 | 4.2 | /rest/v1/rpc/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
-| 4.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated)| 403 | **Fail** |
+| 4.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated) | 403 | **Fail** |
 | 4.4 | /rest/v1/rpc/faculty_profiles | PATCH  | Invalid Payload | 400/422 | **Pass** |
 | 5.1 | /rest/v1/rpc/suggest_review_tags | GET | Valid request | 200 | **Pass**|
 | 5.2 | /rest/v1/rpc/suggest_review_tags | GET | Missing JWT | 401 | **Pass** |
@@ -1029,10 +1029,10 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 **Response**
 ```json
 {
-"code":"PGRST301",
-"message":"JWT is invalid or expired.",
-"details":null,
-"hint":null
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
 }
 ```
 
@@ -1087,10 +1087,10 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 **Response**
 ```json
 {
-"code":"22P02",
-"message":"Invalid input syntax for a column value.",
-"details":null,
-"hint":"Correct the request."
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
 }
 ```
 
@@ -1238,6 +1238,25 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 ```
 
 **Result:** Pass
+
+---
+
+### Case 5: Role violation (409 Conflict, simulated)
+
+**Request**
+```bash
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d @body.json
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
+| Expected status | 409 Conflict |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
 
 ---
 
@@ -4474,6 +4493,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
 ```
 
 **Result:** Pass
+**Notes:** `status` only allows `eq.active` and `eq.hidden`.
 
 ---
 
