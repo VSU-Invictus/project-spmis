@@ -544,7 +544,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/faculty_profiles?__code=403" -H "apikey: 
 ```
 
 **Result:** Pass
-**Notes:** Simulated with `?__code=403`. `Prefer: code=403` can’t be used here.
+**Notes:** Simulated with `?__code=403`. `Prefer: code=403` can't be used here.
 
 ---
 
@@ -1108,7 +1108,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
 ```
 
 | Item | Value |
@@ -1144,7 +1144,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -d @body.json
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
 ```
 
 | Item | Value |
@@ -1171,7 +1171,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
 ```
 
 | Item | Value |
@@ -1245,7 +1245,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d @body.json
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
 ```
 
 | Item | Value |
@@ -1452,7 +1452,7 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments?__code=201" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments?__code=201" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -1485,7 +1485,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments?__code=201" -H "apike
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -1524,7 +1524,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -1583,7 +1583,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -1608,7 +1608,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -1641,7 +1641,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -d @body.json
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -1690,7 +1690,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -1748,7 +1748,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d @body.json
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -2084,7 +2084,7 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?__code=201" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?__code=201" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 ```
 
 | Item | Value |
@@ -2117,7 +2117,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?__code=201" -H "apikey: 
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 ```
 
 | Item | Value |
@@ -2156,7 +2156,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 ```
 
 | Item | Value |
@@ -2215,7 +2215,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d @body.json
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 ```
 
 | Item | Value |
@@ -3313,7 +3313,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 ```
 
 **Result:** Pass
-**Notes:** Simulated with Prefer: code=403. Prism returned the contract’s 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
+**Notes:** Simulated with Prefer: code=403. Prism returned the contract's 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
 
 ---
 
@@ -3430,7 +3430,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 ```
 
 **Result:** Pass
-**Notes:** Simulated with Prefer: code=404. Prism returned the contract’s 404 example, so this tests that the contract defines the 404 response, not that the backend returns it for a missing review.
+**Notes:** Simulated with Prefer: code=404. Prism returned the contract's 404 example, so this tests that the contract defines the 404 response, not that the backend returns it for a missing review.
 
 ---
 
@@ -3460,7 +3460,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 ```
 
 **Result:** Pass
-**Notes:** Simulated with Prefer: code=409. Prism returned the contract’s 409 example, so this tests that the contract defines the 409 response, not that the backend returns it for a deleted review.
+**Notes:** Simulated with Prefer: code=409. Prism returned the contract's 409 example, so this tests that the contract defines the 409 response, not that the backend returns it for a deleted review.
 
 ---
 
@@ -3552,7 +3552,7 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8
 ```
 
 **Result:** Pass
-**Notes:** Simulated with Prefer: code=403. Prism returned the contract’s 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
+**Notes:** Simulated with Prefer: code=403. Prism returned the contract's 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
 
 ---
 
@@ -3669,7 +3669,7 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8
 ```
 
 **Result:** Pass
-**Notes:** Simulated with Prefer: code=404. Prism returned the contract’s 404 example, so this tests that the contract defines the 404 response, not that the backend returns it for a missing review.
+**Notes:** Simulated with Prefer: code=404. Prism returned the contract's 404 example, so this tests that the contract defines the 404 response, not that the backend returns it for a missing review.
 
 ---
 
@@ -3699,7 +3699,7 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8
 ```
 
 **Result:** Pass
-**Notes:** Simulated with Prefer: code=409. Prism returned the contract’s 409 example, so this tests that the contract defines the 409 response, not that the backend rejects an invalid state transition.
+**Notes:** Simulated with Prefer: code=409. Prism returned the contract's 409 example, so this tests that the contract defines the 409 response, not that the backend rejects an invalid state transition.
 
 ---
 
@@ -3790,7 +3790,7 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "apikey: test-key" 
 ```
 
 **Result:** Pass
-**Notes:** Simulated with Prefer: code=403. Prism returned the contract’s 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
+**Notes:** Simulated with Prefer: code=403. Prism returned the contract's 403 example, so this tests that the contract defines the 403 response, not real role enforcement.
 
 ---
 
@@ -3878,7 +3878,7 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "apikey: test-key" 
 ```
 
 **Result:** Pass
-**Notes:** Simulated with Prefer: code=429. Prism returned the contract’s 429 example, so this tests that the contract defines the 429 response, not real rate limiting.
+**Notes:** Simulated with Prefer: code=429. Prism returned the contract's 429 example, so this tests that the contract defines the 429 response, not real rate limiting.
 
 ---
 
