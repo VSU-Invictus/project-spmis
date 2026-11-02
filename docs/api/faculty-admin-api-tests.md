@@ -12,6 +12,8 @@
 | Date | 2026-10-30 |
 
 > Prism returns responses defined in the OpenAPI file. These tests verify the **contract**, not real database behavior.
+>
+> **Scope note:** 403 and 409 cases are Prism contract simulations only. They verify the documented response code and shape; they do not test real role authorization, row-level security (RLS), database conflicts, uniqueness constraints, or state transitions. `Prefer: code=...` and `__code=...` request a documented response from Prism; they do not simulate authorization or database state.
 
 ## Summary
 
@@ -20,103 +22,103 @@
 | 1.1 | /rest/v1/rpc/get_student_by_id | GET | Valid request | 200 | **Pass** |
 | 1.2 | /rest/v1/rpc/get_student_by_id | GET | Null result | 200 | **Pass** |
 | 1.3 | /rest/v1/rpc/get_student_by_id | GET | Missing JWT | 401 | **Pass** |
-| 1.4 | /rest/v1/rpc/get_student_by_id | GET | Role violation | 403 | **Pass** |
+| 1.4 | /rest/v1/rpc/get_student_by_id | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 1.5 | /rest/v1/rpc/get_student_by_id | GET | Invalid UUID | 400/422 | **Pass** |
 | 2.1 | /rest/v1/rpc/get_own_profile | GET | Valid request | 200 | **Pass** |
 | 2.2 | /rest/v1/rpc/get_own_profile | GET | Null result | 200 | **Pass** |
 | 2.3 | /rest/v1/rpc/get_own_profile | GET | Missing JWT | 401 | **Pass** |
-| 2.4 | /rest/v1/rpc/get_own_profile | GET | Role violation | 403 | **Pass** |
+| 2.4 | /rest/v1/rpc/get_own_profile | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 2.5 | /rest/v1/rpc/get_own_profile | GET | Invalid request (simulated) | 400/422 | **Pass** |
-| 3.1 | /rest/v1/rpc/faculty_profiles | GET | Valid request | 200 | **Pass**|
-| 3.2 | /rest/v1/rpc/faculty_profiles | GET | Missing JWT | 401 | **Pass** |
-| 3.3 | /rest/v1/rpc/faculty_profiles | GET | Role violation (simulated)| 403 | **Pass** |
-| 3.4 | /rest/v1/rpc/faculty_profiles | GET | Invalid request | 400/422 | **Pass** |
-| 4.1 | /rest/v1/rpc/faculty_profiles | PATCH | Valid request | 200 | **Pass**|
-| 4.2 | /rest/v1/rpc/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
-| 4.3 | /rest/v1/rpc/faculty_profiles | PATCH  | Role violation (simulated) | 403 | **Fail** |
-| 4.4 | /rest/v1/rpc/faculty_profiles | PATCH  | Invalid Payload | 400/422 | **Pass** |
+| 3.1 | /rest/v1/faculty_profiles | GET | Valid request | 200 | **Pass**|
+| 3.2 | /rest/v1/faculty_profiles | GET | Missing JWT | 401 | **Pass** |
+| 3.3 | /rest/v1/faculty_profiles | GET | 403 Forbidden contract simulation | 403 | **Pass** |
+| 3.4 | /rest/v1/faculty_profiles | GET | Invalid request | 400/422 | **Pass** |
+| 4.1 | /rest/v1/faculty_profiles | PATCH | Valid request | 200 | **Pass**|
+| 4.2 | /rest/v1/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
+| 4.3 | /rest/v1/faculty_profiles | PATCH  | 403 Forbidden contract simulation | 403 | **Fail** |
+| 4.4 | /rest/v1/faculty_profiles | PATCH  | Invalid Payload | 400/422 | **Pass** |
 | 5.1 | /rest/v1/rpc/suggest_review_tags | GET | Valid request | 200 | **Pass**|
 | 5.2 | /rest/v1/rpc/suggest_review_tags | GET | Missing JWT | 401 | **Pass** |
-| 5.3 | /rest/v1/rpc/suggest_review_tags | GET | Role violation (simulated)| 403 | **Pass** |
+| 5.3 | /rest/v1/rpc/suggest_review_tags | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 5.4 | /rest/v1/rpc/suggest_review_tags | GET | Invalid request | 400/422 | **Pass** |
 | 6.1 | /rest/v1/rpc/search_students | GET | Valid request | 200 | **Pass**|
 | 6.2 | /rest/v1/rpc/search_students | GET | Missing JWT | 401 | **Pass** |
-| 6.3 | /rest/v1/rpc/search_students | GET | Role violation (simulated)| 403 | **Pass** |
+| 6.3 | /rest/v1/rpc/search_students | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 6.4 | /rest/v1/rpc/search_students | GET | Invalid UUID | 400/422 | **Pass** |
-| 7.1 | /rest/v1/rpc/student_profiles | POST | Valid request | 201 | **Pass** |
-| 7.2 | /rest/v1/rpc/student_profiles | POST | Missing JWT | 401 | **Pass** |
-| 7.3 | /rest/v1/rpc/student_profiles | POST | Role violation (simulated)| 403 | **Fail** |
-| 7.4 | /rest/v1/rpc/student_profiles | POST | Invalid UUID | 400/422 | **Pass** |
+| 7.1 | /rest/v1/student_profiles | POST | Valid request | 201 | **Pass** |
+| 7.2 | /rest/v1/student_profiles | POST | Missing JWT | 401 | **Pass** |
+| 7.3 | /rest/v1/student_profiles | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 7.4 | /rest/v1/student_profiles | POST | Invalid UUID | 400/422 | **Pass** |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
-| 8.3 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 403 | **Fail** |
+| 8.3 | /rest/v1/student_profiles | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
 | 8.4 | /rest/v1/student_profiles | PATCH | Invalid request | 400 | **Pass** |
-| 8.5 | /rest/v1/student_profiles | PATCH | Role violation (simulated) | 409 | **Fail** |
+| 8.5 | /rest/v1/student_profiles | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
 | 9.1 | /rest/v1/departments | GET | Valid request | 200 | **Pass** |
 | 9.2 | /rest/v1/departments | GET | Missing JWT | 401 | **Pass** |
-| 9.3 | /rest/v1/departments | GET | Role violation | 403 | **Pass** |
+| 9.3 | /rest/v1/departments | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 9.4 | /rest/v1/departments | GET | Invalid request | 400 | **Pass** |
 | 9.5 | /rest/v1/departments | GET | Valid request | 206 | **Pass** |
 | 9.6 | /rest/v1/departments | GET | Invalid request | 416 | **Pass** |
 | 10.1 | /rest/v1/departments | POST | Valid request | 201 | **Pass** |
 | 10.2 | /rest/v1/departments | POST | Missing JWT | 401 | **Pass** |
-| 10.3 | /rest/v1/departments | POST | Role violation (simulated) | 403 | **Fail** |
+| 10.3 | /rest/v1/departments | POST | 403 Forbidden contract simulation | 403 | **Fail** |
 | 10.4 | /rest/v1/departments | POST | Invalid request | 400/422 | **Pass** |
-| 10.5 | /rest/v1/departments | POST | Role violation (simulated) | 409 | **Fail** |
+| 10.5 | /rest/v1/departments | POST | 409 Conflict contract simulation | 409 | **Fail** |
 | 11.1 | /rest/v1/departments | PATCH | Valid request | 200 | **Pass** |
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
-| 11.3 | /rest/v1/departments | PATCH | Role violation (simulated) | 403 | **Fail** |
+| 11.3 | /rest/v1/departments | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
 | 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
-| 11.5 | /rest/v1/departments | PATCH | Role violation (simulated) | 409 | **Fail** |
+| 11.5 | /rest/v1/departments | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
 | 12.1 | /rest/v1/departments | DELETE | Valid request | 204 | **Pass** |
 | 12.2 | /rest/v1/departments | DELETE | Missing JWT | 401 | **Pass** |
-| 12.3 | /rest/v1/departments | DELETE | Role violation | 403 | **Pass** |
+| 12.3 | /rest/v1/departments | DELETE | 403 Forbidden contract simulation | 403 | **Pass** |
 | 12.4 | /rest/v1/departments | DELETE | Invalid request | 400 | **Pass** |
 | 13.1 | /rest/v1/programs | GET | Valid request | 200 | **Pass** |
 | 13.2 | /rest/v1/programs | GET | Missing JWT | 401 | **Pass** |
-| 13.3 | /rest/v1/programs | GET | Role violation (simulated) | 403 | **Pass** |
+| 13.3 | /rest/v1/programs | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 13.4 | /rest/v1/programs | GET | Invalid request | 400 | **Pass** |
 | 13.5 | /rest/v1/programs | GET | Valid request | 206 | **Pass** |
 | 13.6 | /rest/v1/programs | GET | Invalid request | 416 | **Pass** |
 | 14.1 | /rest/v1/programs | POST | Valid request | 201 | **Pass** |
 | 14.2 | /rest/v1/programs | POST | Missing JWT | 401 | **Pass** |
-| 14.3 | /rest/v1/programs | POST | Role violation (simulated) | 403 | **Fail** |
+| 14.3 | /rest/v1/programs | POST | 403 Forbidden contract simulation | 403 | **Fail** |
 | 14.4 | /rest/v1/programs | POST | Invalid request | 400 | **Pass** |
-| 14.5 | /rest/v1/programs | POST | Role violation (simulated) | 409 | **Fail** |
+| 14.5 | /rest/v1/programs | POST | 409 Conflict contract simulation | 409 | **Fail** |
 | 15.1 | /rest/v1/programs | PATCH | Valid Request | 200 | **Pass** |
 | 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
-| 15.3 | /rest/v1/programs | PATCH | Role violation | 403 | **Fail** |
+| 15.3 | /rest/v1/programs | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
 | 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Fail** |
-| 15.5 | /rest/v1/programs | PATCH | Role violation | 409 | **Fail** |
+| 15.5 | /rest/v1/programs | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
 | 16.1 | /rest/v1/programs | DELETE | Valid Request | 204 | **Pass** |
 | 16.2 | /rest/v1/programs | DELETE | Missing JWT Bearer token | 401 | **Pass** |
-| 16.3 | /rest/v1/programs | DELETE | Role violation | 403 | **Pass** |
+| 16.3 | /rest/v1/programs | DELETE | 403 Forbidden contract simulation | 403 | **Pass** |
 | 16.4 | /rest/v1/programs | DELETE | Invalid request | 400 / 422 | **Pass** |
 | 17.1 | /rest/v1/review_revisions | GET | Valid request | 200 | **Pass** |
 | 17.2 | /rest/v1/review_revisions | GET | Missing JWT Bearer token | 401 | **Pass** |
-| 17.3 | /rest/v1/review_revisions | GET | Role violation | 403 | **Fail** |
+| 17.3 | /rest/v1/review_revisions | GET | 403 Forbidden contract simulation | 403 | **Fail** |
 | 17.4 | /rest/v1/review_revisions | GET | Invalid UUID | 400 | **Pass** |
 | 18.1 | /rest/v1/approval_queue_items | GET | Valid request | 200 | **Pass** |
 | 18.2 | /rest/v1/approval_queue_items | GET | Missing JWT Bearer token | 401 | **Pass** |
-| 18.3 | /rest/v1/approval_queue_items | GET | Role violation | 403 | **Fail** |
+| 18.3 | /rest/v1/approval_queue_items | GET | 403 Forbidden contract simulation | 403 | **Fail** |
 | 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
 | 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Fail** |
 | 19.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
-| 19.3 | /rest/v1/approval_queue_items | POST | Role violation (simulated) | 403 | **Fail** |
+| 19.3 | /rest/v1/approval_queue_items | POST | 403 Forbidden contract simulation | 403 | **Fail** |
 | 19.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
 | 20.1 | /rest/v1/audit_log_entries | GET | Valid request | 200 | **Pass** |
 | 20.2 | /rest/v1/audit_log_entries | GET | Missing JWT Bearer token | 401 | **Pass** |
-| 20.3 | /rest/v1/audit_log_entries | GET | Role violation | 403 | **Fail** |
+| 20.3 | /rest/v1/audit_log_entries | GET | 403 Forbidden contract simulation | 403 | **Fail** |
 | 20.4 | /rest/v1/audit_log_entries | GET | Invalid UUID | 400 | **Pass** |
-| 21.1 | /functions/v1/reviews | POST | Valid request | 200 | **Fail** |
+| 21.1 | /functions/v1/reviews | POST | Valid request | 201 | **Pass** |
 | 21.2 | /functions/v1/reviews | POST | Missing JWT Bearer token | 401 | **Pass** |
-| 21.3 | /functions/v1/reviews | POST | Role violation (simulated) | 403 | **Fail** |
-| 21.4 | /functions/v1/reviews | POST | Invalid payload (empty message) | 422 | **Pass** |
+| 21.3 | /functions/v1/reviews | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 21.4 | /functions/v1/reviews | POST | Invalid payload (missing student_id) | 422 | **Pass** |
 | 21.5 | /functions/v1/reviews | POST | Missing request body (empty object) | 422 | **Pass** |
-| 21.6 | /functions/v1/reviews | POST | Rate limited | 422 | **Pass** |
+| 21.6 | /functions/v1/reviews | POST | Invalid student UUID | 422 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
-| 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
+| 22.3 | /functions/v1/reviews/{id} | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
 | 22.4 | /functions/v1/reviews/{id} | PATCH | Invalid payload (empty blocks) | 422 | **Pass** |
 | 22.5 | /functions/v1/reviews/{id} | PATCH | Missing request body (empty object) | 422 | **Pass** |
 | 22.6 | /functions/v1/reviews/{id} | PATCH | Invalid review ID in path | 422 | **Pass** |
@@ -124,7 +126,7 @@
 | 22.8 | /functions/v1/reviews/{id} | PATCH | Conflict (deleted review) | 409 | **Pass** |
 | 23.1 | /functions/v1/reviews/{id}/status | POST | Valid request | 200 | **Pass** |
 | 23.2 | /functions/v1/reviews/{id}/status | POST | Missing JWT Bearer token | 401 | **Pass** |
-| 23.3 | /functions/v1/reviews/{id}/status | POST | Role violation (simulated) | 403 | **Pass** |
+| 23.3 | /functions/v1/reviews/{id}/status | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 23.4 | /functions/v1/reviews/{id}/status | POST | Invalid payload (action not in hide/unhide/delete) | 422 | **Pass** |
 | 23.5 | /functions/v1/reviews/{id}/status | POST | Missing request body (empty object) | 422 | **Pass** |
 | 23.6 | /functions/v1/reviews/{id}/status | POST | Invalid review ID in path | 422 | **Pass** |
@@ -132,27 +134,27 @@
 | 23.8 | /functions/v1/reviews/{id}/status | POST | Invalid state transition | 409 | **Pass** |
 | 24.1 | /functions/v1/chat | POST | Valid request | 200 | **Pass** |
 | 24.2 | /functions/v1/chat | POST | Missing JWT Bearer token | 401 | **Pass** |
-| 24.3 | /functions/v1/chat | POST | Role violation (simulated) | 403 | **Pass** |
+| 24.3 | /functions/v1/chat | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 24.4 | /functions/v1/chat | POST | Invalid payload (empty message) | 422 | **Pass** |
 | 24.5 | /functions/v1/chat | POST | Missing request body (empty object) | 422 | **Pass** |
 | 24.6 | /functions/v1/chat | POST | Rate limited | 429 | **Pass** |
 | 25.1 | /functions/v1/approvals | POST | Valid approve | 200 | **Pass** |
 | 25.2 | /functions/v1/approvals | POST | Valid reject | 200 | **Pass** |
 | 25.3 | /functions/v1/approvals | POST | Missing JWT Bearer token | 401 | **Pass** |
-| 25.4 | /functions/v1/approvals | POST | Role violation (simulated) | 403 | **Pass** |
+| 25.4 | /functions/v1/approvals | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 25.5 | /functions/v1/approvals | POST | Invalid payload (reject without reason) | 422 | **Pass** |
 | 25.6 | /functions/v1/approvals | POST | Missing request body (empty object) | 422 | **Pass** |
 | 25.7 | /functions/v1/approvals | POST | Application not found | 404 | **Pass** |
 | 25.8 | /functions/v1/approvals | POST | Application already decided | 409 | **Pass** |
 | 26.1 | /rest/v1/rpc/update_own_profile | POST | Valid request | 200 | **Pass** |
 | 26.2 | /rest/v1/rpc/update_own_profile | POST | Missing JWT Bearer token | 401 | **Pass** |
-| 26.3 | /rest/v1/rpc/update_own_profile | POST | Role violation (simulated) | 403 | **Pass** |
+| 26.3 | /rest/v1/rpc/update_own_profile | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 26.4 | /rest/v1/rpc/update_own_profile | POST | Invalid payload (empty full_name) | 400 | **Pass** |
 | 26.5 | /rest/v1/rpc/update_own_profile | POST | Missing request body (empty object) | 400 | **Pass** |
 | 26.6 | /rest/v1/rpc/update_own_profile | POST | Conflict | 409 | **Pass** |
 | 27.1 | /rest/v1/review_details | GET | Valid request | 200 | **Pass** |
 | 27.2 | /rest/v1/review_details | GET | Missing JWT Bearer token | 401 | **Pass** |
-| 27.3 | /rest/v1/review_details | GET | Role violation (simulated) | 403 | **Pass** |
+| 27.3 | /rest/v1/review_details | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 27.4 | /rest/v1/review_details | GET | Invalid UUID | 400 | **Pass** |
 | 27.5 | /rest/v1/review_details | GET | Invalid status filter | 400 | **Pass** |
 ---
@@ -248,7 +250,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_student_by_id?p_student_id=45b543
 
 ---
 
-### Case 4: Role violation (403 Forbidden)
+### Case 4: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -394,11 +396,11 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile"
 
 ---
 
-### Case 4: Role violation (403 Forbidden)
+### Case 4: 403 Forbidden contract simulation
 
 **Request**
 ```bash
-curl -i curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
 ```
 
 | Item | Value |
@@ -450,7 +452,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/get_own_profile" -H "apikey: test-key
 
 ---
 
-## GET /rest/v1/rpc/faculty_profile
+## GET /rest/v1/faculty_profiles
 
 **Summary:** List faculty profiles visible to the caller
 **Roles:** Faculty, Admin
@@ -519,7 +521,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/faculty_profiles?department_id=eq.580ED6e
 
 ---
 
-### Case 3: Role violation (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -657,7 +659,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
 
 ---
 
-### Case 3: Role Violation (403, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -765,7 +767,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/suggest_review_tags?prefix=re&order=t
 
 ---
 
-### Case 3: Role violation (403 Forbidden, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -903,7 +905,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=8ce85743-2
 
 ---
 
-### Case 3: Role violation (403 Forbidden, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -970,7 +972,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/rpc/search_students?program_id=not-a-uuid
 
 ---
 
-## POST /rest/v1/rpc/student_profiles
+## POST /rest/v1/student_profiles
 
 **Summary:** Directly add a student
 **Roles:** Admin
@@ -1040,7 +1042,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 
 ---
 
-### Case 3: Role violation (403 Forbidden, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -1167,7 +1169,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 ---
 
-### Case 3: Role violation (403 Forbidden, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -1241,7 +1243,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 ---
 
-### Case 5: Role violation (409 Conflict, simulated)
+### Case 5: 409 Conflict contract simulation
 
 **Request**
 ```bash
@@ -1260,7 +1262,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 ---
 
-## GET rest/v1/departments
+## GET /rest/v1/departments
 
 **Summary:** List departments
 **Roles:** Faculty, Admin
@@ -1326,7 +1328,7 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/departments?name=ilike.qCZaH%5Em&s
 
 ---
 
-### Case 3: Role violation (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -1520,7 +1522,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 
 ---
 
-### Case 3: Role violation (403 Forbidden, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -1579,7 +1581,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 
 ---
 
-### Case 5: Role violation (409 Conflict, simulated)
+### Case 5: 409 Conflict contract simulation
 
 **Request**
 ```bash
@@ -1686,7 +1688,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 ---
 
-### Case 3: Role violation (403 Forbidden, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -1744,7 +1746,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 ---
 
-### Case 5: Role violation (409 Conflict, simulated)
+### Case 5: 409 Conflict contract simulation
 
 **Request**
 ```bash
@@ -1826,7 +1828,7 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2
 
 ---
 
-### Case 3: Role violation (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -1959,7 +1961,7 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?name=ilike.%20g&status=eq
 
 ---
 
-### Case 3: Role violation (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -2152,7 +2154,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 ---
 
-### Case 3: Role violation (403 Forbidden, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -2211,7 +2213,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 ---
 
-### Case 5: Role violation (409 Conflict, simulated)
+### Case 5: 409 Conflict contract simulation
 
 **Request**
 ```bash
@@ -2273,7 +2275,7 @@ curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Prefer: return=representation"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Prefer: return=representation" -d "{\"name\":\"Bachelor of Science in Computer Science\"}" -H "Content-Type: application/json"
 ```
 
 | Item | Value |
@@ -2315,11 +2317,11 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 
 ---
 
-### Case 3: Role violation (403 Forbidden, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}" -H "Content-Type: application/json"
 ```
 
 | Item | Value |
@@ -2388,11 +2390,11 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 
 ---
 
-### Case 5: Role violation (409 Conflict, simulated)
+### Case 5: 409 Conflict contract simulation
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 
 ```
 
@@ -2472,7 +2474,7 @@ curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB
 
 ---
 
-### Case 3: Role violation (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -2600,7 +2602,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E
 
 ---
 
-### Case 3: Role violation (simulated) (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -2632,12 +2634,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.not-a-uuid&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.not-a-uuid&order=edited_at.asc%2Cid.asc` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 Bad Request |
@@ -2720,7 +2722,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_regi
 
 ---
 
-### Case 3: Role violation (simulated) (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -2752,12 +2754,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_regi
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?id=eq.not-a-uuid&type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?id=eq.not-a-uuid&type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 Bad Request |
@@ -2787,7 +2789,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_regi
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation" -d "{\"name\":\"Computer Science\"}" -H "Content-Type: application/json"
 ```
 
 | Item | Value |
@@ -2817,7 +2819,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey:
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" 
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation"  -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -2858,11 +2860,11 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey:
 
 ---
 
-### Case 3: Role violation (403 Forbidden, simulated)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
@@ -2981,7 +2983,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
 
 ---
 
-### Case 3: Role violation (simulated) (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -3013,12 +3015,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?id=eq.not-a-uuid&actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?id=eq.not-a-uuid&actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 400 Bad Request |
@@ -3040,50 +3042,58 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
 
 ## POST /functions/v1/reviews
 
-**Summary:** Hide, unhide, or delete an owned review 
-**Roles:** Faculty (verified owner)
-**Request body:** Required JSON object (see each case).
+**Summary:** Create a student review
+**Roles:** Faculty
+**Request body:** Required JSON object containing `student_id` and `body_document`; `tags` is optional.
 
-### Case 1: Valid request (200 OK)
+### Case 1: Valid request (201 Created)
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: ******" -H "Content-Type: application/json" -d "{\"student_id\":\"45b54332-e470-4c21-a839-7428c4f6bf42\",\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
 ```
 
 | Item | Value |
 |---|---|
 | URL | `http://127.0.0.1:4010/functions/v1/reviews` |
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
-| Body | `{"action":"hide"}` |
-| Expected status | 200 OK |
-| Actual status | 422 Unprocessable Entity |
+| Headers | `apikey: test-key` `Authorization: ******` `Content-Type: application/json` |
+| Body | `{"student_id":"45b54332-e470-4c21-a839-7428c4f6bf42","body_document":{"blocks":[{"type":"paragraph","content":[{"text":"Demonstrated strong leadership.","bold":true}]}]},"tags":["leadership"]}` |
+| Expected status | 201 Created |
+| Actual status | 201 Created |
 
 **Response**
 ```json
 {
-  "code":"PGRST116",
-  "message":"The requested resource could not be returned.","details":null,
-  "hint":"Check the request filters and caller permissions."
+  "id":"67015de8-1ce8-4ac4-8634-384bf5fb3821",
+  "student_id":"45b54332-e470-4c21-a839-7428c4f6bf42",
+  "owner_id":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+  "author_name":"Alex Reyes",
+  "author_department_name":"Computer Science",
+  "body_text":"Demonstrated strong leadership.",
+  "body_document":{"blocks":[{"type":"paragraph","content":[{"text":"Demonstrated strong leadership.","bold":true}]}]},
+  "status":"active",
+  "tags":["leadership"],
+  "attachments":[],
+  "created_at":"2026-10-26T00:00:00Z",
+  "updated_at":"2026-10-26T00:00:00Z"
 }
 ```
 
-**Result:** Fail (cannot simulate)
+**Result:** Pass
 
 ---
 
-### Case 2: Missing JWT Bearer token (401 Unauthorized)
+### Case 2: Missing JWT (401 Unauthorized)
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "Content-Type: application/json" -d "{\"student_id\":\"45b54332-e470-4c21-a839-7428c4f6bf42\",\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
 | Headers | `Content-Type: application/json` |
-| Body | `{"action":"hide"}` |
+| Body | Valid review creation JSON |
 | Expected status | 401 Unauthorized |
 | Actual status | 401 Unauthorized |
 
@@ -3101,57 +3111,36 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "Content-Type: a
 
 ---
 
-### Case 3: Role violation (simulated) (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"action\":\"hide\"}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: ******" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"student_id\":\"45b54332-e470-4c21-a839-7428c4f6bf42\",\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
-| Body | `{"action":"hide"}` |
+| Headers | `apikey: test-key` `Authorization: ******` `Content-Type: application/json` `Prefer: code=403` |
+| Body | Valid review creation JSON |
 | Expected status | 403 Forbidden |
-| Actual status | 422 Unprocessable Entity |
+| Actual status | 201 Created |
 
-**Response**
-```json
-{
-  "code":"PGRST116",
-  "message":"The requested resource could not be returned.","details":null,
-  "hint":"Check the request filters and caller permissions."
-}
-```
-
-**Result:** Fail (cannot simulate)
+**Result:** Fail (cannot simulate). Prism returned the default 201 creation response; this does not test real role authorization.
 
 ---
 
-### Case 4: Invalid payload (action not in hide/unhide/delete) (422 Unprocessable Entity)
+### Case 4: Invalid payload (missing student_id) (422 Unprocessable Entity)
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"archive\"}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: ******" -H "Content-Type: application/json" -d "{\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]}}"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
-| Body | `{"action":"archive"}` |
+| Body | `{"body_document":{"blocks":[{"type":"paragraph","content":[{"text":"Demonstrated strong leadership.","bold":true}]}]}}` |
 | Expected status | 422 Unprocessable Entity |
 | Actual status | 422 Unprocessable Entity |
-
-**Response**
-```json
-{
-  "code":"PGRST116",
-  "message":"The requested resource could not be returned.","details":null,
-  "hint":"Check the request filters and caller permissions."
-}
-```
 
 **Result:** Pass
 
@@ -3161,59 +3150,35 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-ke
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: ******" -H "Content-Type: application/json" -d "{}"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
 | Body | `{}` |
 | Expected status | 422 Unprocessable Entity |
 | Actual status | 422 Unprocessable Entity |
 
-**Response**
-```json
-{
-  "code":"PGRST116",
-  "message":"The requested resource could not be returned.","details":null,
-  "hint":"Check the request filters and caller permissions."
-}
-```
-
 **Result:** Pass
 
 ---
 
-### Case 6: Invalid review ID in path (422 Unprocessable Entity)
+### Case 6: Invalid student UUID (422 Unprocessable Entity)
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: ******" -H "Content-Type: application/json" -d "{\"student_id\":\"not-a-uuid\",\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]}}"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
-| Body | `{"action":"hide"}` |
+| Body | Invalid `student_id` UUID and otherwise valid review JSON |
 | Expected status | 422 Unprocessable Entity |
 | Actual status | 422 Unprocessable Entity |
-
-**Response**
-```json
-{
-  "code":"PGRST116",
-  "message":"The requested resource could not be returned.","details":null,
-  "hint":"Check the request filters and caller permissions."
-}
-```
 
 **Result:** Pass
 
 ---
-
-
 
 ## PATCH /functions/v1/reviews/{id}
 
@@ -3287,7 +3252,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-
 
 ---
 
-### Case 3: Role violation (simulated) (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -3526,7 +3491,7 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews/67015de8-1ce8-4ac4-8
 
 ---
 
-### Case 3: Role violation (simulated) (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -3764,7 +3729,7 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/chat" -H "Content-Type: appl
 
 ---
 
-### Case 3: Role violation (simulated) (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -3998,7 +3963,7 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/approvals" -H "Content-Type:
 
 ---
 
-### Case 4: Role violation (simulated) (403 Forbidden)
+### Case 4: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -4216,7 +4181,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/rpc/update_own_profile" -H "Conte
 
 ---
 
-### Case 3: Role violation (simulated) (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -4408,7 +4373,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
 
 ---
 
-### Case 3: Role violation (simulated) (403 Forbidden)
+### Case 3: 403 Forbidden contract simulation
 
 **Request**
 ```bash
@@ -4519,5 +4484,4 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
 | 19.1 |`POST /rest/v1/approval_queue_items` | Valid request returns 400, not 201 |
 | 19.3 |`POST /rest/v1/approval_queue_items` | 403 returns 400 |
 | 20.3 |`GET /rest/v1/audit_log_entries	403` | returns 400 |
-| 21.1 |`POST /functions/v1/reviews` | Valid request returns 422, not 200 |
-| 21.3 |`POST /functions/v1/reviews` | 403 returns 422 |
+| 21.3 |`POST /functions/v1/reviews` | Prism returns the default 201 response; the 403 contract response cannot be simulated with this request |
