@@ -8,7 +8,7 @@
 | Mock server command | `npx @stoplight/prism-cli mock contract/openapi.yaml` |
 | Base URL | `http://127.0.0.1:4010` |
 | Tools used | curl |
-| Tested by | @Zaming, @AzrielKaye, @reeseBan |
+| Tested by | @Zaming, @AzrielKaye, @reeseBan, @dollyraexe|
 | Date | 2026-10-30 |
 
 > Prism returns responses defined in the OpenAPI file. These tests verify the **contract**, not real database behavior.
@@ -83,6 +83,37 @@
 | 14.3 | /rest/v1/programs | POST | Role violation (simulated) | 403 | **Fail** |
 | 14.4 | /rest/v1/programs | POST | Invalid request | 400 | **Pass** |
 | 14.5 | /rest/v1/programs | POST | Role violation (simulated) | 409 | **Fail** |
+| 15.1 | /rest/v1/programs | PATCH | Valid Request | 200 | **Pass** |
+| 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
+| 15.3 | /rest/v1/programs | PATCH | Role violation | 403 | **Fail** |
+| 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Fail** |
+| 15.5 | /rest/v1/programs | PATCH | Role violation | 409 | **Fail** |
+| 16.1 | /rest/v1/programs | DELETE | Valid Request | 204 | **Pass** |
+| 16.2 | /rest/v1/programs | DELETE | Missing JWT Bearer token | 401 | **Pass** |
+| 16.3 | /rest/v1/programs | DELETE | Role violation | 403 | **Pass** |
+| 16.4 | /rest/v1/programs | DELETE | Invalid request | 400 / 422 | **Pass** |
+| 17.1 | /rest/v1/review_revisions | GET | Valid request | 200 | **Pass** |
+| 17.2 | /rest/v1/review_revisions | GET | Missing JWT Bearer token | 401 | **Pass** |
+| 17.3 | /rest/v1/review_revisions | GET | Role violation | 403 | **Fail** |
+| 17.4 | /rest/v1/review_revisions | GET | Invalid UUID | 400 | **Pass** |
+| 18.1 | /rest/v1/approval_queue_items | GET | Valid request | 200 | **Pass** |
+| 18.2 | /rest/v1/approval_queue_items | GET | Missing JWT Bearer token | 401 | **Pass** |
+| 18.3 | /rest/v1/approval_queue_items | GET | Role violation | 403 | **Fail** |
+| 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
+| 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Fail** |
+| 19.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
+| 19.3 | /rest/v1/approval_queue_items | POST | Role violation (simulated) | 403 | **Fail** |
+| 19.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
+| 20.1 | /rest/v1/audit_log_entries | GET | Valid request | 200 | **Pass** |
+| 20.2 | /rest/v1/audit_log_entries | GET | Missing JWT Bearer token | 401 | **Pass** |
+| 20.3 | /rest/v1/audit_log_entries | GET | Role violation | 403 | **Fail** |
+| 20.4 | /rest/v1/audit_log_entries | GET | Invalid UUID | 400 | **Pass** |
+| 21.1 | /functions/v1/reviews | POST | Valid request | 200 | **Fail** |
+| 21.2 | /functions/v1/reviews | POST | Missing JWT Bearer token | 401 | **Pass** |
+| 21.3 | /functions/v1/reviews | POST | Role violation (simulated) | 403 | **Fail** |
+| 21.4 | /functions/v1/reviews | POST | Invalid payload (empty message) | 422 | **Pass** |
+| 21.5 | /functions/v1/reviews | POST | Missing request body (empty object) | 422 | **Pass** |
+| 21.6 | /functions/v1/reviews | POST | Rate limited | 422 | **Pass** |
 | 22.1 | /functions/v1/reviews/{id} | PATCH | Valid request | 200 | **Pass** |
 | 22.2 | /functions/v1/reviews/{id} | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 22.3 | /functions/v1/reviews/{id} | PATCH | Role violation (simulated) | 403 | **Pass** |
@@ -2199,6 +2230,991 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 ---
 
+## PATCH /rest/v1/programs
+
+**Summary:** Directly add a program
+**Roles:** Admin
+**Request body:** Required JSON body containing `name`.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X GET "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65",
+    "name":"Bachelor of Science in Computer Science",
+    "status":"approved",
+    "proposed_by":null,
+    "created_at":"2026-10-26T00:00:00Z",
+    "updated_at":"2026-10-26T00:00:00Z"
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Prefer: return=representation"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `N/A` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**sl-violations**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  },
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":"required",
+    "message":"Body parameter is required"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden, simulated)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: code=403` |
+| Body | `N/A` |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad request |
+
+
+**Response:** 
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.","details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:**  Fail (cannot simulate). `Prefer: code=403`get 400 Bad request.
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 401 Unauthorized |
+
+**s-l violations**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code": 401,
+    "message":"Invalid security scheme used"
+  },
+  {
+    "location":["request","body"],
+    "severity":"Error",
+    "code":"required",
+    "message":"Request body must have required property 'name'"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:**  Fail (cannot simulate). `Prefer: return=representation` get 401 Unauthorized.
+
+---
+
+### Case 5: Role violation (409 Conflict, simulated)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409"
+
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Body | `{ "name": "Bachelor of Science in Computer Science" }` |
+| Expected status | 409 Conflict |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+
+---
+
+## DELETE /rest/v1/programs
+
+**Summary:** Remove a department
+**Roles:** Admin
+**Request body:** None.
+
+### Case 1: Valid request (204 No content)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB26-C41d-F8cDA8f6Eedd" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB26-C41d-F8cDA8f6Eedd` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 204 No content |
+| Actual status | 204 No content |
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB26-C41d-F8cDA8f6Eedd"
+```
+
+| Item | Value |
+|---|---|
+| Headers | None (no authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/departments?id=eq.5D85cf8f-59A2-D648-09aa-f05bCf8aeACD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 403 Forbidden |
+
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X DELETE "http://127.0.0.1:4010/rest/v1/programs?id=eq.2A60ae5D-0Eea-FB26-C41d-F8cDA8f6Eedd" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## GET /rest/v1/review_revisions
+
+**Summary:** Update an owned review (revisions)
+**Roles:** Faculty
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"3731173e-5880-47d6-b914-da53521a607e","review_id":"67015de8-1ce8-4ac4-8634-384bf5fb3821","body_text_snapshot":"Demonstrated strong research skills.","edited_by":"e48adc9e-1b79-4b92-9848-aa12b25d63d7","edited_at":"2026-10-26T01:00:00Z","body_document_snapshot":{
+      "blocks":
+      [
+        {"type":"paragraph","content":
+          [
+            {"text":"Demonstrated strong research skills."}
+          ]
+        }
+      ]
+    },
+    "tags_snapshot":["research"]
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.","details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 4: Invalid UUID (400 Bad Request)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 Bad Request |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## GET /rest/v1/approval_queue_items
+
+**Summary:** Admin queue views support search and checkbox-based bulk approve/reject.
+**Roles:** Admin
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","submitted_by":"6703ac2f-9eb5-40e9-9fde-511b2dbf4be5","status":"pending","decided_by":"4accc021-c0cc-4c2c-8a78-605a0ed6da31","decision_reason":"string","created_at":"2019-08-24T14:15:22Z","decided_at":"2019-08-24T14:15:22Z","type":"faculty_account","payload":{}
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.","details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 4: Invalid UUID (400 Bad Request)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 Bad Request |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## POST /rest/v1/approval_queue_items
+
+**Summary:** Admin queue views support search and checkbox-based bulk approve/reject.
+**Roles:** Admin
+**Request body:** None
+
+### Case 1: Valid request (201 Created)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` |
+| Body | `{ "name": "Computer Science" }` |
+| Expected status | 201 Created |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+[
+  {
+    "code":"22P02",
+    "message":"Invalid input syntax for a column value.","details":null,
+    "hint":"Correct the request."
+  }
+]
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" 
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | `{ "name": "Computer Science" }`|
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":401,
+    "message":"Invalid security scheme used"
+  },
+  {
+    "location":["request"],
+    "severity":"Error",
+    "code":"required",
+    "message":"Body parameter is required"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,"hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (403 Forbidden, simulated)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | `{ "name": "Computer Science" }` |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad request |
+
+
+**Result:** Fail (cannot simulate). `Prefer: code=403` get 400 Bad request.
+
+---
+
+### Case 4: Invalid request (400 / 422)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | None |
+| Expected status | 400 or 422 |
+| Actual status | 400 Bad Request |
+
+**Validation header**
+```json
+[
+  {
+    "location":["request","body"],
+    "severity":"Error",
+    "code":"required",
+    "message":"Request body must have required property 'name'"
+  }
+]
+```
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## GET /rest/v1/audit_log_entries
+
+**Summary:** A hide/unhide event that never exposes review content to anyone but the owner
+**Roles:** Admin
+**Request body:** None.
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc
+` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
+**Response**
+```json
+[
+  {
+    "id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","submitted_by":"6703ac2f-9eb5-40e9-9fde-511b2dbf4be5","status":"pending","decided_by":"4accc021-c0cc-4c2c-8a78-605a0ed6da31","decision_reason":"string","created_at":"2019-08-24T14:15:22Z","decided_at":"2019-08-24T14:15:22Z","type":"faculty_account","payload":{}
+  }
+]
+```
+
+**Result:** Pass
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc` |
+| Headers | None (no Authorization) |
+| Body | None |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 403 Forbidden |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.","details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 4: Invalid UUID (400 Bad Request)
+
+**Request**
+```bash
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=400"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
+| Body | None |
+| Expected status | 400 Bad Request |
+| Actual status | 400 Bad Request |
+
+**Response**
+```json
+{
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
+  "details":null,
+  "hint":"Correct the request."
+}
+```
+
+**Result:** Pass
+
+---
+
+## POST /functions/v1/reviews
+
+**Summary:** Hide, unhide, or delete an owned review 
+**Roles:** Faculty (verified owner)
+**Request body:** Required JSON object (see each case).
+
+### Case 1: Valid request (200 OK)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"action":"hide"}` |
+| Expected status | 200 OK |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.","details":null,
+  "hint":"Check the request filters and caller permissions."
+}
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 2: Missing JWT Bearer token (401 Unauthorized)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
+| Headers | `Content-Type: application/json` |
+| Body | `{"action":"hide"}` |
+| Expected status | 401 Unauthorized |
+| Actual status | 401 Unauthorized |
+
+**Response**
+```json
+{
+  "code":"PGRST301",
+  "message":"JWT is invalid or expired.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 3: Role violation (simulated) (403 Forbidden)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Body | `{"action":"hide"}` |
+| Expected status | 403 Forbidden |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.","details":null,
+  "hint":"Check the request filters and caller permissions."
+}
+```
+
+**Result:** Fail (cannot simulate)
+
+---
+
+### Case 4: Invalid payload (action not in hide/unhide/delete) (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"archive\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"action":"archive"}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.","details":null,
+  "hint":"Check the request filters and caller permissions."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 5: Missing request body (empty object) (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.","details":null,
+  "hint":"Check the request filters and caller permissions."
+}
+```
+
+**Result:** Pass
+
+---
+
+### Case 6: Invalid review ID in path (422 Unprocessable Entity)
+
+**Request**
+```bash
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"action\":\"hide\"}"
+```
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/functions/v1/reviews` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
+| Body | `{"action":"hide"}` |
+| Expected status | 422 Unprocessable Entity |
+| Actual status | 422 Unprocessable Entity |
+
+**Response**
+```json
+{
+  "code":"PGRST116",
+  "message":"The requested resource could not be returned.","details":null,
+  "hint":"Check the request filters and caller permissions."
+}
+```
+
+**Result:** Pass
+
+---
+
+
+
 ## PATCH /functions/v1/reviews/{id}
 
 **Summary:** Update an owned review (operationId updateReview)
@@ -3495,3 +4511,13 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
 | 11.5 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 14.3 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
 | 14.5 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
+| 15.3 |`PATCH /rest/v1/programs` |	403 cannot be simulated |
+| 15.4 |`PATCH /rest/v1/programs`	| 400/422 got 401 (test doc: apikey header missing, see section 4) |
+| 15.5 |`PATCH /rest/v1/programs`	| 409 cannot be simulated |
+| 17.3 |`GET /rest/v1/review_revisions`	| 403 returns 400 |
+| 18.3 |`GET /rest/v1/approval_queue_items`	| 403 returns 400 |
+| 19.1 |`POST /rest/v1/approval_queue_items` | Valid request returns 400, not 201 |
+| 19.3 |`POST /rest/v1/approval_queue_items` | 403 returns 400 |
+| 20.3 |`GET /rest/v1/audit_log_entries	403` | returns 400 |
+| 21.1 |`POST /functions/v1/reviews` | Valid request returns 422, not 200 |
+| 21.3 |`POST /functions/v1/reviews` | 403 returns 422 |
