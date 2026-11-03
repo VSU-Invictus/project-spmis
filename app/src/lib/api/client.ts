@@ -3,13 +3,14 @@ import type { paths } from '../../../../contract/generated/schema';
 import { throwApiError } from './errors';
 
 const defaultBaseUrl = 'http://localhost:4010';
+const baseUrl = import.meta.env.VITE_SUPABASE_URL ?? (import.meta.env.DEV ? defaultBaseUrl : undefined);
 
 let accessToken: string | undefined;
 let projectApiKey: string | undefined =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const apiClient = createClient<paths>({
-  baseUrl: import.meta.env.VITE_API_BASE_URL ?? defaultBaseUrl,
+  baseUrl,
 });
 
 apiClient.use({
@@ -25,7 +26,7 @@ export function configureApiAuth(auth: {
   projectApiKey?: string;
 }): void {
   accessToken = auth.accessToken;
-  projectApiKey = auth.projectApiKey;
+  if (auth.projectApiKey !== undefined) projectApiKey = auth.projectApiKey;
 }
 
 type ApiResult<T> =
