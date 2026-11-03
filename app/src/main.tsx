@@ -4,7 +4,8 @@ import { createBrowserRouter, RouterProvider, Navigate, Outlet, useLocation } fr
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
 import App from './App';
-import DocsPage from './pages/DocsPage';
+import DocsPage from './routes/docs/DocsPage';
+import SignInPage from './pages/SignInPage';
 import StyleguidePage from './pages/StyleguidePage';
 import {
   ButtonsClassifiedPage,
@@ -99,6 +100,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <App /> },
       { path: '/docs', element: <DocsPage /> },
+      { path: '/signin', element: <SignInPage /> },
       { path: '/styleguide', element: <StyleguidePage /> },
       { path: '/design-system', element: <Navigate to="/styleguide" replace /> },
       // Classified Component Visualization Pages
