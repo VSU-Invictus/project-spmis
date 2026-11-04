@@ -32,8 +32,6 @@ assignees: ''
 - 
 - 
 
----
-
 ## Definition of Ready (DoR)
 <!-- No GitHub Issue can be moved to "In Progress" unless these are met: -->
 - **User/Role** is explicitly defined.
@@ -41,3 +39,13 @@ assignees: ''
 - **Authorization Rule** is defined.
 - **Validation/Error** handling is defined.
 - Task is **Assigned** to a specific developer.
+
+---
+
+## Definition of Done (DoD)
+<!-- An Issue is only considered "Finished" when: -->
+- **Linked PR:** A Pull Request is attached to the issue.
+- **Approved:** At least one other teammate has reviewed and approved the PR.
+- **Green CI:** All automated GitHub Actions/tests have passed.
+- **Tested:** You have included basic tests proving it works.
+- **No Real Data:** Absolutely ZERO real student data is used in the code or test.
