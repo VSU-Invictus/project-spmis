@@ -11,7 +11,8 @@
     "contract:lint": "npx --yes @redocly/cli@2.71.0 lint ../contract/openapi.yaml --config ../contract/redocly.yaml",
     "contract:docs": "redocly build-docs ../contract/openapi.yaml --config ../contract/redocly.yaml --output ../contract/dist/index.html",
     "contract:gen": "npx --yes openapi-typescript@7.13.0 ../contract/openapi.yaml --default-non-nullable=false -o ../contract/generated/schema.d.ts",
-    "contract:check": "npm run contract:lint && node ../contract/check-generated.mjs"
+    "contract:check": "npm run contract:lint && node ../contract/check-generated.mjs",
+    "mock:server": "prism mock ../contract/openapi.yaml --port 4010 --cors"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.104.2",
@@ -21,6 +22,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.0.0",
+    "openapi-fetch": "^0.14.0",
     "tailwind-merge": "^3.7.0",
     "zod": "^4.6.7"
   },
@@ -30,6 +32,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
+    "@stoplight/prism-cli": "^5.14.0",
     "@redocly/cli": "2.71.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.6.0",
