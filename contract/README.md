@@ -23,6 +23,7 @@ Run from the repository root:
 ```powershell
 npm --prefix app run contract:gen
 npm --prefix app run contract:check
+npm --prefix app run contract:docs
 ```
 
 For lint only:
@@ -37,6 +38,10 @@ schema defaults do not turn optional request fields into required TypeScript
 properties. Rich-text `bold`/`italic` and chat `history` can be omitted, as
 documented in the YAML. Required fields remain required.
 Linting uses `redocly.yaml` for the shared rules and Redoc theme.
+`contract:docs` writes the static Redoc bundle to `contract/dist/index.html`. The generated
+bundle is ignored by Git because it is a build artifact.
+The Vite app exposes that bundle through `/docs`; production access requires an
+authenticated Supabase session and anonymous users are sent to `/signin`.
 `.redocly.lint-ignore.yaml` records only the three intentional unused entity schemas
 required by Issue #3 (`ReviewTag`, internal `ReviewEmbedding` and internal
 `ReviewAttachment`). Review responses use `ReviewAttachmentMetadata`, which
