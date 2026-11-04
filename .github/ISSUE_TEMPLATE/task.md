@@ -6,15 +6,40 @@ labels: enhancement, task
 assignees: ''
 ---
 
-## Objective
-<!-- Clearly state the goal of this task. -->
+## User/Role
+<!-- Who is doing the action? (e.g., "As a Faculty member...") -->
 
 
-## Tasks to Complete
-- [ ] 
-- [ ] 
+## Expected Behavior
+<!-- What exactly should happen when it works? -->
+- 
+- 
+- 
 
-## Definition of Done
-- [ ] Code is written and self-reviewed.
-- [ ] Pull Request is submitted targeting the `dev` branch.
-- [ ] QA has verified the changes.
+## Authorization Rule
+<!-- Who is allowed to do this, and who is blocked? -->
+- **Allowed:** 
+- **Blocked:** 
+
+## Validation/Error Handling
+<!-- What happens if they type in bad data or a system error occurs? -->
+- 
+- 
+
+## Definition of Ready (DoR)
+<!-- No GitHub Issue can be moved to "In Progress" unless these are met: -->
+- [ ] **User/Role** is explicitly defined.
+- [ ] **Expected Behavior** is listed.
+- [ ] **Authorization Rule** is defined.
+- [ ] **Validation/Error** handling is defined.
+- [ ] Task is **Assigned** to a specific developer.
+
+---
+
+## Definition of Done (DoD)
+<!-- An Issue is only considered "Finished" when: -->
+- [ ] **Linked PR:** A Pull Request is attached to the issue.
+- [ ] **Approved:** At least one other teammate has reviewed and approved the PR.
+- [ ] **Green CI:** All automated GitHub Actions/tests have passed.
+- [ ] **Tested:** You have included basic tests proving it works.
+- [ ] **No Real Data:** Absolutely ZERO real student data is used in the code or test.
