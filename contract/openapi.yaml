@@ -2739,7 +2739,8 @@ components:
           format: date-time
         type:
           type: string
-          const: faculty_account
+          enum:
+            - faculty_account
         payload:
           $ref: '#/components/schemas/FacultyAccountPayload'
     StudentRegistrationItem:
@@ -2788,7 +2789,8 @@ components:
           format: date-time
         type:
           type: string
-          const: student_registration
+          enum:
+            - student_registration
         payload:
           $ref: '#/components/schemas/StudentRegistrationPayload'
     ProgramProposalItem:
@@ -2837,7 +2839,8 @@ components:
           format: date-time
         type:
           type: string
-          const: program_proposal
+          enum:
+            - program_proposal
         payload:
           $ref: '#/components/schemas/ProgramProposalPayload'
     DepartmentProposalItem:
@@ -2886,7 +2889,8 @@ components:
           format: date-time
         type:
           type: string
-          const: department_proposal
+          enum:
+            - department_proposal
         payload:
           $ref: '#/components/schemas/DepartmentProposalPayload'
   headers:
