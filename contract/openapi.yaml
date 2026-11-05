@@ -2513,7 +2513,8 @@ components:
       properties:
         type:
           type: string
-          const: paragraph
+          enum:
+            - paragraph
         content:
           type: array
           minItems: 1
@@ -2634,7 +2635,8 @@ components:
             assignments outside the batch return 422.
         decision:
           type: string
-          const: approve
+          enum:
+            - approve
     RejectApplicationsRequest:
       type: object
       additionalProperties: false
@@ -2653,7 +2655,8 @@ components:
             format: uuid
         decision:
           type: string
-          const: reject
+          enum:
+            - reject
         reason:
           type: string
           minLength: 1

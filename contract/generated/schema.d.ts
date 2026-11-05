@@ -955,7 +955,7 @@ export interface components {
             italic?: boolean;
         };
         ParagraphBlock: {
-            /** @constant */
+            /** @enum {string} */
             type: "paragraph";
             content: components["schemas"]["RichTextRun"][];
         };
