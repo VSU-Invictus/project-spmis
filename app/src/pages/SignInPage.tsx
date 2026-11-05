@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Navigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { Button, Card, CardContent, TypographyHeading, TypographyText } from '../components/ui';
 
 export default function SignInPage() {
   const [searchParams] = useSearchParams();
@@ -31,13 +32,15 @@ export default function SignInPage() {
   }
 
   return (
-    <main>
-      <h1>Sign in</h1>
-      <p>Sign in to access the API documentation.</p>
-      <button type="button" onClick={() => void signInWithGoogle()}>
-        Continue with Google
-      </button>
-      {error && <p role="alert">{error}</p>}
+    <main className="contract-auth-page">
+      <Card className="contract-auth-card">
+        <CardContent>
+          <TypographyHeading level={1}>Sign in</TypographyHeading>
+          <TypographyText variant="muted">Sign in to access the API documentation.</TypographyText>
+          <Button onClick={() => void signInWithGoogle()}>Continue with Google</Button>
+          {error && <TypographyText as="p" role="alert">{error}</TypographyText>}
+        </CardContent>
+      </Card>
     </main>
   );
 }

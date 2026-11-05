@@ -101,6 +101,7 @@ const router = createBrowserRouter([
       { path: '/', element: <App /> },
       { path: '/docs', element: <DocsPage /> },
       { path: '/signin', element: <SignInPage /> },
+      { path: '/login', element: <SignInPage /> },
       { path: '/styleguide', element: <StyleguidePage /> },
       { path: '/design-system', element: <Navigate to="/styleguide" replace /> },
       // Classified Component Visualization Pages

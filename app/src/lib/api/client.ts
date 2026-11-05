@@ -36,8 +36,11 @@ type ApiResult<T> =
 export async function request<T>(result: Promise<ApiResult<T>>): Promise<T> {
   try {
     const response = await result;
-    if ('error' in response) {
+    if (response.error !== undefined) {
       throwApiError(response.error, response.response.status);
+    }
+    if (response.data === undefined) {
+      throwApiError({ code: 'EMPTY_RESPONSE', message: 'The API returned no data.', details: null, hint: null }, response.response.status);
     }
     return response.data;
   } catch (error) {
