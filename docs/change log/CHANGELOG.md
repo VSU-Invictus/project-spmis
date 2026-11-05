@@ -40,6 +40,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - **Issue #138 API and docs integration:** Corrected typed API response handling
   and made `contract:docs` refresh the Redoc HTML served at `/docs`.
+  Successful bodyless responses remain valid; added request-wrapper regression
+  tests and handled rejected OAuth/session promises without unhandled errors.
 - **Issue #3 scope:** Removed five additional operations for faculty profile
   creation/removal, student directory/removal and faculty enrollment, together
   with their exclusive schemas, response and filter parameter. Narrowed current

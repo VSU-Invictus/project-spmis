@@ -1,6 +1,6 @@
 import createClient from 'openapi-fetch';
 import type { paths } from '../../../../contract/generated/schema';
-import { throwApiError } from './errors';
+export { request } from './request';
 
 const defaultBaseUrl = 'http://localhost:4010';
 const baseUrl = import.meta.env.VITE_SUPABASE_URL ?? (import.meta.env.DEV ? defaultBaseUrl : undefined);
@@ -27,24 +27,4 @@ export function configureApiAuth(auth: {
 }): void {
   accessToken = auth.accessToken;
   if (auth.projectApiKey !== undefined) projectApiKey = auth.projectApiKey;
-}
-
-type ApiResult<T> =
-  | { data: T; error?: never; response: Response }
-  | { data?: never; error: unknown; response: Response };
-
-export async function request<T>(result: Promise<ApiResult<T>>): Promise<T> {
-  try {
-    const response = await result;
-    if (response.error !== undefined) {
-      throwApiError(response.error, response.response.status);
-    }
-    if (response.data === undefined) {
-      throwApiError({ code: 'EMPTY_RESPONSE', message: 'The API returned no data.', details: null, hint: null }, response.response.status);
-    }
-    return response.data;
-  } catch (error) {
-    if (error instanceof Error && error.name === 'ApiRequestError') throw error;
-    throwApiError(error);
-  }
 }

@@ -11,7 +11,15 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (!supabase) return;
-    void supabase.auth.getSession().then(({ data }) => setHasSession(Boolean(data.session)));
+    let active = true;
+    void supabase.auth.getSession().then(({ data, error: sessionError }) => {
+      if (!active) return;
+      if (sessionError) setError(sessionError.message);
+      setHasSession(Boolean(data.session));
+    }).catch(() => {
+      if (active) setError('Unable to check your session. Please try again.');
+    });
+    return () => { active = false; };
   }, []);
 
   if (hasSession) return <Navigate to={redirectPath} replace />;
@@ -22,13 +30,18 @@ export default function SignInPage() {
       return;
     }
 
-    const { error: authError } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}${redirectPath}`,
-      },
-    });
-    if (authError) setError(authError.message);
+    setError(undefined);
+    try {
+      const { error: authError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}${redirectPath}`,
+        },
+      });
+      if (authError) setError(authError.message);
+    } catch {
+      setError('Unable to sign in. Please try again.');
+    }
   }
 
   return (

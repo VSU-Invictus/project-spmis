@@ -32,6 +32,8 @@ export default function DocsPage() {
     void supabase.auth.getSession().then(({ data, error }) => {
       if (!active) return;
       setSessionState(error || !data.session ? 'anonymous' : 'authenticated');
+    }).catch(() => {
+      if (active) setSessionState('anonymous');
     });
 
     const {
