@@ -60,3 +60,13 @@ Include the YAML, matching generated types, decision log and changelog together.
 Backend implementers must implement the documented view/RPC projections and
 record approved schema additions in migrations. The contract needs frontend and
 backend review before merge into dev.
+
+## Prism response simulation
+
+Prism validates request headers before applying a response override. Include the
+required `Prefer: return=representation` header for mutation requests and use
+`Prefer: count=exact` where the operation documents the count preference. To
+exercise a documented error response without changing the request body, append
+`?__code=403`, `?__code=409`, `?__code=422`, or `?__code=429` to the mock URL.
+Keep the request's required authentication headers in place; Prism overrides
+the response status but does not bypass OpenAPI request validation.
