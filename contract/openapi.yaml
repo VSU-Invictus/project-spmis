@@ -1416,7 +1416,8 @@ components:
       description: Requests that PostgREST return the affected record representation.
       schema:
         type: string
-        const: return=representation
+        enum:
+          - return=representation
     IdFilter:
       name: id
       in: query
@@ -1491,7 +1492,8 @@ components:
       in: header
       schema:
         type: string
-        const: count=exact
+        enum:
+          - count=exact
       description: Request the total count in Content-Range. Without this header the total may be *.
   responses:
     Unauthorized:
@@ -2149,7 +2151,8 @@ components:
       properties:
         type:
           type: string
-          const: student_registration
+          enum:
+            - student_registration
         payload:
           $ref: '#/components/schemas/StudentRegistrationPayload'
       example:
@@ -2171,7 +2174,8 @@ components:
       properties:
         type:
           type: string
-          const: program_proposal
+          enum:
+            - program_proposal
         payload:
           $ref: '#/components/schemas/ProgramProposalPayload'
     ProgramProposalPayload:
@@ -2198,7 +2202,8 @@ components:
       properties:
         type:
           type: string
-          const: department_proposal
+          enum:
+            - department_proposal
         payload:
           $ref: '#/components/schemas/DepartmentProposalPayload'
     DepartmentProposalPayload:
