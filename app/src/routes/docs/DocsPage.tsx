@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import { Card, CardContent, TypographyHeading, TypographyText } from '../../components/ui';
 
 function ConfigurationError() {
   return (
-    <main>
-      <h1>Documentation unavailable</h1>
-      <p>Supabase authentication is not configured for this deployment.</p>
+    <main className="contract-auth-page">
+      <Card className="contract-auth-card">
+        <CardContent>
+          <TypographyHeading level={1}>Documentation unavailable</TypographyHeading>
+          <TypographyText variant="muted">Supabase authentication is not configured for this deployment.</TypographyText>
+        </CardContent>
+      </Card>
     </main>
   );
 }
@@ -27,6 +32,8 @@ export default function DocsPage() {
     void supabase.auth.getSession().then(({ data, error }) => {
       if (!active) return;
       setSessionState(error || !data.session ? 'anonymous' : 'authenticated');
+    }).catch(() => {
+      if (active) setSessionState('anonymous');
     });
 
     const {
@@ -42,7 +49,7 @@ export default function DocsPage() {
   }, []);
 
   if (sessionState === 'unconfigured') return <ConfigurationError />;
-  if (sessionState === 'loading') return <main aria-busy="true">Checking session...</main>;
+  if (sessionState === 'loading') return <main className="contract-auth-page" aria-busy="true"><TypographyText>Checking session...</TypographyText></main>;
   if (sessionState === 'anonymous') {
     return <Navigate to="/signin?redirect=%2Fdocs" replace />;
   }
@@ -51,12 +58,7 @@ export default function DocsPage() {
     <iframe
       src="/docs/index.html"
       title="SPMIS API documentation"
-      style={{
-        width: '100%',
-        minHeight: '100vh',
-        border: 0,
-        display: 'block',
-      }}
+      className="contract-docs-frame"
     />
   );
 }
