@@ -107,7 +107,7 @@ git push -u origin qa/api-testing/<yourname>
   - [ ] Missing JWT Bearer token: `401 Unauthorized`
   - [ ] Role violation: `Prefer: code=403`
   - [ ] Invalid payload: `400` / `422`
-- [ ] Write `docs/api/<filename>.md` with exact URLs, headers, sample request bodies, simulated status codes, and the actual JSON responses returned by Prism
+- [ ] Write `docs/api/faculty-admin-api-tests.md` with exact URLs, headers, sample request bodies, simulated status codes, and the actual JSON responses returned by Prism
 - [ ] Re-run all curl commands from your doc to confirm they are reproducible
 - [ ] Log any contract mismatches (section 5)
 - [ ] Open a PR into `qa/api-testing/base`
@@ -142,7 +142,7 @@ git push -u origin qa/api-testing/<yourname>
 
 ## 6. Acceptance Criteria / Review Checklist
 
-- [ ] `docs/api/<filename>.md` is committed
+- [ ] `docs/api/faculty-admin-api-tests.md` is committed
 - [ ] Every endpoint in scope has all four test types documented
 - [ ] Curl commands are reproducible (copy-paste runnable)
 - [ ] JSON outputs are real Prism responses (not hand-edited)
@@ -156,24 +156,31 @@ git push -u origin qa/api-testing/<yourname>
 ````markdown
 ## METHOD /path
 
-**Description:** ...
-**Auth:** Bearer JWT
+**Summary:** ...
+**Roles:** Bearer JWT
 
-### Test 1: Valid request (200/201)
+### Case 1: Valid request (200/201)
 **Request**
 ```bash
-curl -i -X METHOD http://127.0.0.1:4010/path \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{...}'
+curl -i -X METHOD http://127.0.0.1:4010/path -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{...}'
 ```
-**Status:** 200 OK
+
+| Item | Value |
+|---|---|
+| URL | `http://127.0.0.1:4010/path` |
+| Headers | `Authorization: Bearer <token>`  `Content-Type: application/json` |
+| Body | `{...}` |
+| Expected status | 200 OK |
+| Actual status | 200 OK |
+
 **Response**
 ```json
 { ... }
 ```
+**Result:**
+**Notes:**
 
-### Test 2: Missing token (401)
-### Test 3: Forbidden (Prefer: code=403)
-### Test 4: Invalid payload (400/422)
+### Case 2: Missing token (401)
+### Case 3: Forbidden (Prefer: code=403)
+### Case 4: Invalid payload (400/422)
 ````
