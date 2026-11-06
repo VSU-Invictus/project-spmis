@@ -11,7 +11,7 @@
 
 ## 1. Objective
 
-Run the Prism mock backend from `contract/openapi.yaml`, test every endpoint in each member's domain scope (happy paths plus error/role codes), and document the requests and actual responses in `docs/api/faculy-admin-api-tests.md`. Report and resolve any contract mismatches found.
+Run the Prism mock backend from `contract/openapi.yaml`, test every endpoint in each member's domain scope (happy paths plus error/role codes), and document the requests and actual responses in `docs/api/faculty-admin-api-tests.md`. Report and resolve any contract mismatches found.
 
 ---
 
@@ -73,13 +73,13 @@ git push -u origin qa/api-testing/<yourname>
 | @AzrielKaye | `qa/api-testing/AzrielKaye` | `DELETE` `/rest/v1/departments` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
 | @AzrielKaye | `qa/api-testing/AzrielKaye` | `GET` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
 | @AzrielKaye | `qa/api-testing/AzrielKaye` | `POST` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
-| @dollyraexe | `qa/api-testing/AzrielKaye` | `PATCH` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
-| @dollyraexe | `qa/api-testing/AzrielKaye` | `DELETE` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
-| @dollyraexe | `qa/api-testing/AzrielKaye` | `GET` `/rest/v1/review_revisions` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
-| @dollyraexw | `qa/api-testing/AzrielKaye` | `GET` `/rest/v1/approval_queue_items` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
-| @dollyraexe | `qa/api-testing/AzrielKaye` | `POST` `/rest/v1/approval_queue_items` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
-| @dollyraexe | `qa/api-testing/AzrielKaye` | `GET` `/rest/v1/audit_log_entries` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
-| @dollyraexe | `qa/api-testing/AzrielKaye` | `POST` `/functions/v1/reviews` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/dollyraexe` | `PATCH` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/dollyraexe` | `DELETE` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/dollyraexe` | `GET` `/rest/v1/review_revisions` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/dollyraexe` | `GET` `/rest/v1/approval_queue_items` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/dollyraexe` | `POST` `/rest/v1/approval_queue_items` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/dollyraexe` | `GET` `/rest/v1/audit_log_entries` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/dollyraexe` | `POST` `/functions/v1/reviews` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
 | @reeseBan | `qa/api-testing/reeseBan` | `PATCH` `/functions/v1/reviews/{id}` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
 | @reeseBan | `qa/api-testing/reeseBan` | `POST` `/functions/v1/reviews/{id}/status` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
 | @reeseBan | `qa/api-testing/reeseBan` | `POST` `/functions/v1/chat` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |

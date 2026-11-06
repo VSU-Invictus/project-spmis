@@ -8,14 +8,14 @@ When resolving conflicts, AI agents must evaluate directives in this strict orde
 4. **`mockup/pages/design-system.html`** — the living, interactive style guide. Consult it for `.ui-*` primitives before inventing new components. Its React port is `app/src/pages/StyleguidePage.tsx` (`/styleguide`).
 5. **This `ai-context.md` file.**
 
-> Note: README §3–§5 and §13–§14 describe the *target* repository (root `src/`, `supabase/`, `.nvmrc`, `vercel.json`, `LICENSE.md`). These do not exist yet; do not assume they do. The OpenAPI contract and generated schema are present under `contract/`, but `.github/`, `app/src/lib/api/`, and `app/tests/` are not present in the current worktree. `docs/DESIGN_SYSTEM.md` also references an `AdminLayout` in `app/src/pages/admin.tsx` and an `@/` import alias, neither of which exists, and its file links use absolute `c:/Users/monarch/...` paths.
+> Note: README §3–§5 and §13–§14 describe the *target* repository (root `src/`, `supabase/`, `.nvmrc`, `vercel.json`, `LICENSE.md`). These do not exist yet; do not assume they do. The OpenAPI contract and generated schema are present under `contract/`, and `.github/`, `app/src/lib/api/`, and `app/tests/` are present in the current worktree. `docs/DESIGN_SYSTEM.md` also references an `AdminLayout` in `app/src/pages/admin.tsx` and an `@/` import alias, neither of which exists, and its file links use absolute `c:/Users/monarch/...` paths.
 
 ## 2. Repo Map & Structural Constraints
 Top level: `README.md`, `ai-context.md`, `.gitignore`, `app/`, `contract/`, `docs/`, `mockup/`.
 
-**`contract/` — API contract.** `openapi.yaml` is the OpenAPI 3.1 review draft; `generated/schema.d.ts` contains its generated TypeScript types. `app/package.json` provides `contract:lint`, `contract:gen`, and `contract:check` scripts. There is not yet a frontend API client in `app/src/lib/api/`.
+**`contract/` — API contract.** `openapi.yaml` is the OpenAPI 3.1 review draft; `generated/schema.d.ts` contains its generated TypeScript types. `app/package.json` provides contract linting, generation, and freshness-check scripts.
 
-**Not present in the current worktree:** `.github/`, `app/src/lib/api/`, and `app/tests/`. No `/docs`, `/login`, or `/signin` routes are registered by the React app.
+The React app registers `/docs`, `/login`, and `/signin` routes; see `app/src/main.tsx`.
 
 **`mockup/` — static M1 mockup.** Per MoM #4, the mockup folder structure is locked and a strict **one-file-per-route** rule applies (each sitemap route = exactly one HTML file).
 * `mockup/index.html` — meta-refresh redirect to `pages/auth/signin.html`.
@@ -51,7 +51,7 @@ Top level: `README.md`, `ai-context.md`, `.gitignore`, `app/`, `contract/`, `doc
 * **Commits:** Conventional Commits (`type(scope): description`) per README §13; the git history follows this, often with an issue suffix such as `(#113)`.
 
 ## 4. Current Phase: Milestone 1 (Descriptive Realities)
-This section describes the *actual current state* of the repository. Milestone 1 is still `[Unreleased]` in the changelog. An OpenAPI review draft and generated TypeScript schema exist, but there is no backend, Supabase project, CI workflow, or AI integration in the repo; app data remains static fixtures and there is no frontend API client.
+This section describes the *actual current state* of the repository. Milestone 1 is still `[Unreleased]` in the changelog. An OpenAPI review draft, generated TypeScript schema, and frontend API client exist, but there is no backend, Supabase project, CI workflow, or AI integration in the repo; some app data remains static fixtures.
 
 ### 4.1 `mockup/` (static HTML)
 * **Tech Stack:** Static HTML5, vanilla CSS, and vanilla JavaScript with no build step (per `DESIGN_SYSTEM.md`). Do NOT add React, JSX, Vue, Angular, or bundlers to `mockup/`. Pages work from `file://` or any static server, and are also served by the app's Vite server at `/mockup/*`.
@@ -64,8 +64,8 @@ This section describes the *actual current state* of the repository. Milestone 1
 
 ### 4.2 `app/` (React styleguide port)
 * **Installed stack:** React 19, React Router 7 (`createBrowserRouter`), TanStack Query 5, TypeScript 5.6 (`strict`, `noEmit`), Vite 6 + `@vitejs/plugin-react`, `clsx` + `tailwind-merge` (`cn()` in `src/lib/utils.ts`). npm with `package-lock.json`.
-* **Scripts:** `dev`, `build` (`tsc -b && vite build`), `preview`, `typecheck`, `contract:lint`, `contract:gen`, and `contract:check`. No lint or test scripts, `app/tests/`, or frontend API client exist.
-* **Routes (`src/main.tsx`):** `/` landing page (`App.tsx`), `/styleguide` (`/design-system` redirects there), and nine `/components/*` classified pages (buttons, badges, forms, cards, tables, navigation, modals, colors-typography, chats-auth). `/docs`, `/login`, `/signin`, `/admin/*`, `/faculty/*`, and auth routes are not registered yet, although `AppShell` navigates to `/admin/<key>` / `/faculty/<key>` and `queues.ts` defines `QUEUE_ROUTES`.
+* **Scripts:** See `app/package.json` for the available build, test, API-contract, and development scripts. The frontend API client is in `src/lib/api/`, with tests in `tests/`.
+* **Routes (`src/main.tsx`):** `/` landing page (`App.tsx`), `/docs`, `/signin` (`/login` alias), `/styleguide` (`/design-system` redirects there), and nine `/components/*` classified pages (buttons, badges, forms, cards, tables, navigation, modals, colors-typography, chats-auth). `/admin/*`, `/faculty/*`, and other auth routes are not registered yet, although `AppShell` navigates to `/admin/<key>` / `/faculty/<key>` and `queues.ts` defines `QUEUE_ROUTES`.
 * **Providers:** `QueryClientProvider` (`staleTime` 5m, `gcTime` 30m, no refetch on mount/focus/reconnect) → `ThemeProvider` (`src/context/ThemeContext.tsx`; default dark; persists `spmis-theme` and `theme` in localStorage; toggles `.dark` and `data-theme` on `<html>`) → `RouterProvider`.
 * **Styling:** The app reuses mockup CSS directly. `src/index.css` `@import`s `components.css`, `queue-modal.css`, `logout-confirmation.css`, admin `admin-common.css`/`dashboard.css`, faculty `chat.css`, and `pages/design-system.css`, then re-declares the Claude+ tokens. `StyleguidePage.tsx` imports `design-system.css` and `global.css`. `vite.config.ts` sets `server.fs.allow: ['..']` and a `serve-mockup` plugin that serves `../mockup` at `/mockup/*`.
 * **Components:** `components/ui/` (Button/ActionLink, Badge/TagCluster, Card/KpiMetricCard/InteractiveLinkCard, Label, Input/Textarea, Select, Checkbox, Modal, Table, Tabs, EmptyState, RejectionRow, DataTable + pagination, QueueMetricCard, SystemActivityLog, Typography, ShowcaseWidgets, PortalDialogs); `components/navigation/` (AdminSidebar, FacultySidebar, AppShell, FooterNav, LogoutModal); `components/queue-modal/` (QueueModal, QueueModalHost, `useQueueSearchParam`, `queues.ts`); `components/application-queue/ApplicationQueue`. `components/ui/index.ts` re-exports all of them.
@@ -80,7 +80,7 @@ Zero real data is permitted in mockups. AI text de-identification uses `{{STUDEN
 This section describes the *target state* that new code should build toward.
 * **Target Stack:** React 19 + Vite, TypeScript, React Router, TanStack Query, React Hook Form + Zod, Tailwind + shadcn/ui, Supabase, Vitest/RTL + Playwright (README §3). Already present in `app/`: React 19, Vite, TypeScript, React Router, TanStack Query. Installed but unused: `zod`, `lucide-react`, and `tailwindcss` + `@tailwindcss/vite` (the Vite plugin is not registered and no `@import "tailwindcss"` exists). Not yet present: shadcn/ui, React Hook Form, Supabase, test tooling, ESLint.
 * **Target Modals:** Route-backed modals, with no nested modals (e.g., rejection reasons captured inline via row expansion — implemented as `RejectionRow` / `.ui-queue-rejection-row`). *Note: This is a binding design directive mandated by the instructor; it is now reflected in `README.md` §9 (Modals & Dialogs).*
-* **API Boundary:** Contract-first via the existing `contract/openapi.yaml` (OpenAPI 3.1), with generated TypeScript types in `contract/generated/schema.d.ts`. The contract is a review draft; no frontend API client or backend is present yet. Do not add ad-hoc PostgREST queries that bypass this schema.
+* **API Boundary:** Contract-first via the existing `contract/openapi.yaml` (OpenAPI 3.1), with generated TypeScript types in `contract/generated/schema.d.ts` and a frontend API client in `app/src/lib/api/`. The contract is a review draft; no backend is present yet. Do not add ad-hoc PostgREST queries that bypass this schema.
 * **Styling Targets:** Claude+ theme. All styling relies on CSS custom properties: OKLCH primitives (`--background`, `--primary`, …) plus semantic `--color-*` tokens in `design-system.css`. No ad-hoc hex colors or inline styles.
 
 ## 6. Known Debt & Active Migrations
