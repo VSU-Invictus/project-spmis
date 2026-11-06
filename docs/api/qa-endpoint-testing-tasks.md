@@ -5,27 +5,27 @@
 **QA Lead:** @reeseBan
 **Members:** @Zaming, @dollyraexe, @reeseBan, @AzrielKaye
 **Contract:** `contract/openapi.yaml`
-**Output:** `docs/api/<filename>.md` (one file per member's domain scope)
+**Output:** `docs/api/faculty-admin-api-tests.md`
 
 ---
 
 ## 1. Objective
 
-Run the Prism mock backend from `contract/openapi.yaml`, test every endpoint in each member's domain scope (happy paths plus error/role codes), and document the requests and actual responses in `docs/api/`. Report and resolve any contract mismatches found.
+Run the Prism mock backend from `contract/openapi.yaml`, test every endpoint in each member's domain scope (happy paths plus error/role codes), and document the requests and actual responses in `docs/api/faculy-admin-api-tests.md`. Report and resolve any contract mismatches found.
 
 ---
 
 ## 2. Branching Strategy
 
-One parent QA branch, with one sub-branch per member. Sub-branches are merged into the parent branch through PRs, and the parent branch is merged into `main` once everything is reviewed.
+One parent QA branch, with one sub-branch per member. Sub-branches are merged into the parent branch through PRs, and the parent branch is merged into `feat/open-api` once everything is reviewed.
 
 ```
-main
+feat/open-api
  └── qa/api-testing/base            <- parent QA branch
-      ├── qa/api-testing/zaming
+      ├── qa/api-testing/Zaming
       ├── qa/api-testing/dollyraexe
       ├── qa/api-testing/reeseBan
-      └── qa/api-testing/azrielkaye
+      └── qa/api-testing/AzrielKaye
 ```
 
 > Git cannot have both `qa/api-testing` and `qa/api-testing/<name>` as branches (ref name conflict), so the parent is named `qa/api-testing/base`.
@@ -34,7 +34,7 @@ main
 
 ```bash
 # Lead creates the parent branch once
-git checkout main && git pull origin main
+git checkout dev && git pull origin dev
 git checkout -b qa/api-testing/base
 git push -u origin qa/api-testing/base
 
@@ -49,7 +49,7 @@ git push -u origin qa/api-testing/<yourname>
 1. Member commits their doc on their sub-branch.
 2. Member opens a PR: `qa/api-testing/<name>` -> `qa/api-testing/base`.
 3. QA Lead (or another member) reviews against the checklist in section 6.
-4. After all four are merged, the Lead opens a PR: `qa/api-testing/base` -> `main`.
+4. After all four are merged, the Lead opens a PR: `qa/api-testing/base` -> `feat/open-api`.
 
 ---
 
@@ -59,10 +59,33 @@ git push -u origin qa/api-testing/<yourname>
 
 | Member | Sub-branch | Domain Scope | Doc File | Status |
 |---|---|---|---|---|
-| @Zaming | `qa/api-testing/zaming` | `<Domain 1>` | `docs/api/<domain1>.md` | ⬜ Not started |
-| @AzrielKaye | `qa/api-testing/azrielkaye` | `<Domain 2>` | `docs/api/<domain2>.md` | ⬜ Not started |
-| @dollyraexe | `qa/api-testing/dollyraexe` | `<Domain 3>` | `docs/api/<domain3>.md` | ⬜ Not started |
-| @reeseBan | `qa/api-testing/reeseBan` | `<Domain 4>` | `docs/api/<domain4>.md` | ⬜ Not started |
+| @Zaming | `qa/api-testing/Zaming` | `GET` `/rest/v1/rpc/get_student_by_id` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @Zaming | `qa/api-testing/Zaming` | `GET` `/rest/v1/rpc/get_own_profile` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @Zaming | `qa/api-testing/Zaming` | `GET` `/rest/v1/faculty_profiles` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @Zaming | `qa/api-testing/Zaming` | `PATCH` `/rest/v1/faculty_profiles` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @Zaming | `qa/api-testing/Zaming` | `GET` `/rest/v1/rpc/suggest_review_tags` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @Zaming | `qa/api-testing/Zaming` | `GET` `/rest/v1/rpc/search_students` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @Zaming | `qa/api-testing/Zaming` | `POST` `/rest/v1/student_profiles` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @AzrielKaye | `qa/api-testing/AzrielKaye` | `PATCH` `/rest/v1/student_profiles` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @AzrielKaye | `qa/api-testing/AzrielKaye` | `GET` `/rest/v1/departments` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @AzrielKaye | `qa/api-testing/AzrielKaye` | `POST` `/rest/v1/departments` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @AzrielKaye | `qa/api-testing/AzrielKaye` | `PATCH` `/rest/v1/departments` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @AzrielKaye | `qa/api-testing/AzrielKaye` | `DELETE` `/rest/v1/departments` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @AzrielKaye | `qa/api-testing/AzrielKaye` | `GET` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @AzrielKaye | `qa/api-testing/AzrielKaye` | `POST` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/AzrielKaye` | `PATCH` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/AzrielKaye` | `DELETE` `/rest/v1/programs` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/AzrielKaye` | `GET` `/rest/v1/review_revisions` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexw | `qa/api-testing/AzrielKaye` | `GET` `/rest/v1/approval_queue_items` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/AzrielKaye` | `POST` `/rest/v1/approval_queue_items` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/AzrielKaye` | `GET` `/rest/v1/audit_log_entries` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @dollyraexe | `qa/api-testing/AzrielKaye` | `POST` `/functions/v1/reviews` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished|
+| @reeseBan | `qa/api-testing/reeseBan` | `PATCH` `/functions/v1/reviews/{id}` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @reeseBan | `qa/api-testing/reeseBan` | `POST` `/functions/v1/reviews/{id}/status` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @reeseBan | `qa/api-testing/reeseBan` | `POST` `/functions/v1/chat` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @reeseBan | `qa/api-testing/reeseBan` | `POST` `/functions/v1/approvals` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @reeseBan | `qa/api-testing/reeseBan` | `POST` `/rest/v1/rpc/update_own_profile` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
+| @reeseBan | `qa/api-testing/reeseBan` | `GET` `/rest/v1/review_details` | `docs/api/faculty-admin-api-tests.md` | ✅ Finished |
 
 **Lead responsibilities (@reeseBan, in addition to own scope)**
 
@@ -70,7 +93,7 @@ git push -u origin qa/api-testing/<yourname>
 - Assign domain scopes and keep the table above updated
 - Review all sub-branch PRs and merge into the parent branch
 - Track contract mismatches in section 5 and coordinate fixes
-- Open the final PR to `main`
+- Open the final PR to `feat/open-api`
 
 ---
 
@@ -95,7 +118,25 @@ git push -u origin qa/api-testing/<yourname>
 
 | # | Endpoint | Expected (contract) | Actual (Prism) | Reported by | Issue/PR | Resolved |
 |---|---|---|---|---|---|---|
-| 1 | | | | | | ⬜ |
+| 4.3 | `PATCH` `/rest/v1/faculty_profiles` | `403 Forbidden` | `200 OK` | @Zaming | `#137/#139` | ⬜ Not yet |
+| 7.3 | `POST` `/rest/v1/student_profiles` | `403 Forbidden` | `400 Bad request` | @Zaming | `#137/#139` | ⬜ Not yet |
+| 8.3 | `PATCH` `/rest/v1/student_profiles` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
+| 8.5 | `PATCH` `/rest/v1/student_profiles` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
+| 10.3 | `POST` `/rest/v1/departments` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
+| 10.5 | `POST` `/rest/v1/departments` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
+| 11.3 | `PATCH` `/rest/v1/departments` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
+| 11.5 | `POST` `/rest/v1/departments` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
+| 14.3 | `POST` `/rest/v1/programs` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
+| 14.5 | `POST` `/rest/v1/programs` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
+| 15.3 | `PATCH` `/rest/v1/programs` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
+| 15.4 | `PATCH` `/rest/v1/programs` | `400 or 422` | `401 Unauthorized` | @dollyraexe | `#137/#139` | ⬜ Not yet |
+| 15.5 | `PATCH` `/rest/v1/programs` | `409 Conflict` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
+| 17.3 | `GET` `/rest/v1/review_revisions` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
+| 18.3 | `GET` `/rest/v1/approval_queue_items` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
+| 19.1 | `POST` `/rest/v1/approval_queue_items` | `201 Created` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
+| 20.3 | `GET` `/rest/v1/audit_log_entries` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
+| 21.3 | `POST` `/functions/v1/reviews` | `403 Forbidden` | `201 Created` | @dollyraexe | `#137/#139` | ⬜ Not yet |
+
 
 ---
 
