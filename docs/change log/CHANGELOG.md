@@ -6,9 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 <!-- Active development updates -->
 
-### Added
-- **Issue #138 app routes:** Added `/login` as an alias for `/signin` and aligned
-  the sign-in and documentation screens with the shared UI components.
+### Added 
+- **API documentation:** Added a Redoc documentation route with a bundled OpenAPI viewer. Added Supabase session authentication and a sign-in page to protect access.
+- **API client:** Added a typed API client with shared request and error handling, Supabase configuration, and generated TypeScript types. Added tests for API request and error handling.
+- **API testing:** Added faculty and admin endpoint test cases with reproducible Prism requests, sample bodies, and recorded responses. Documented valid requests, missing authentication, role violations, and invalid payloads; added QA task guidance and a contract mismatch log.
+- **GitHub templates:** Added issue templates for bugs, tasks, and QA test cases, plus a pull request template with QA and author checklists.
+
 - **Issue #3 detail reads:** Added dedicated getStudentById and getOwnProfile
   read-only PostgREST RPC contracts with object-or-null responses, caller/RLS
   requirements and explicit examples. Removed the shared-read mapping exception;
@@ -38,10 +41,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
-- **Issue #138 API and docs integration:** Corrected typed API response handling
-  and made `contract:docs` refresh the Redoc HTML served at `/docs`.
-  Successful bodyless responses remain valid; added request-wrapper regression
-  tests and handled rejected OAuth/session promises without unhandled errors.
+- **OpenAPI/Prism compatibility (#137, #139):** Fixed the `update_own_profile` response  indentation and Prism validation issues that caused valid requests to return false `400` errors. Replaced Prism-incompatible single-value `const` schemas with `enum`, normalized request discriminators and preference header schemas, and documented required `Prefer` headers and `__code` response overrides. Regenerated the OpenAPI TypeScript definitions.
+- **API client, docs, and sign-in (#138, #140):** Fixed API response handling when `error` is `undefined`, including bodyless `204` responses and `null` results, and normalized request failures into `ApiRequestError`. Updated Redoc generation to write to the bundle served at `/docs`, applied Design System components and tokens to `/docs` and `/signin`, added `/login` as a sign-in alias, and handled OAuth/session errors. Added nine regression tests. The React `/docs` route enforces its access checks, but the static documentation bundle remains directly accessible unless protected at the deployment level.
 - **Issue #3 scope:** Removed five additional operations for faculty profile
   creation/removal, student directory/removal and faculty enrollment, together
   with their exclusive schemas, response and filter parameter. Narrowed current
@@ -131,7 +132,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Admin Departments/Programs/Faculty:** Updated the Remove modals to match the design system. Removed the top-right X button and restored a secondary "Cancel" button beside the primary "Confirm" button in a standard `.modal-actions` row (reusing `.ui-btn-outline`/`.modal-btn-cancel` and `.ui-btn-primary`/`.modal-submit`). Cancel dismisses the modal without removing the record; Confirm still performs the removal. The warning alert, icon, irreversible-action message, heading, and Outfit typography are unchanged. The obsolete `.remove-modal .modal-close` and full-width `.modal-submit` CSS rules were removed.
 - **Admin Departments/Programs/Faculty:** Moved the confirmation notice from the removed "Confirm Edit" step into the existing Edit modal. Each Edit modal now shows an inline `.ui-alert ui-alert--info` notice ("Confirm Update") with the established icon, colors, typography, and spacing, informing the admin they are about to update the record (no irreversible-action warning). The notice is hidden by default and toggled by the current operation, so it appears only in Edit mode and never affects the Add modal's labels, fields, or behavior. The single-modal workflow, editable Name field, "Cancel"/"Update" buttons, unchanged/whitespace-only validation, and success toasts are preserved; Remove modals still require explicit confirmation.
 - **Admin Departments/Programs/Faculty:** Refined the Edit modal confirmation notice to match the original "Confirm Edit" design (commit `bea6405b`). The notice was moved inside the `.modal-form` so it inherits the same 20px horizontal padding as the modal header and fields, aligning it with the rest of the modal instead of rendering full-bleed against the card edge. It now uses the form's natural 14px gap for spacing, so it reads as an integrated part of the modal rather than a separate oversized component. The `.ui-alert--info` container, circle-info icon, colors, and Outfit typography are unchanged, and no functional behavior was altered.
-- **Admin Departments/Programs/Faculty:** Added the same confirmation notice to the Add modals. Each Add modal now shows an inline `.ui-alert ui-alert--info` notice ("Confirm Addition" / "You are about to add this … record. Review the details below before proceeding.") reusing the exact Edit notice component, colors, icon, typography, border, and spacing, positioned above the form fields. The notice is informational only — clicking the primary Add button still submits a valid form immediately with no extra dialog. Both notices are toggled by the current operation, so Add shows "Confirm Addition" and Edit shows "Confirm Update" with no incorrect messages when switching between modes. Modal headings, primary button labels, validation, success toasts, and cancellation are unchanged.
+- **Admin Departments/Programs/Faculty:** Added the same confirmation notice to the Add modals. Each Add modal now shows an inline `.ui-alert ui-alert--info` notice ("Confirm Addition" / "You are about to add this â€¦ record. Review the details below before proceeding.") reusing the exact Edit notice component, colors, icon, typography, border, and spacing, positioned above the form fields. The notice is informational only â€” clicking the primary Add button still submits a valid form immediately with no extra dialog. Both notices are toggled by the current operation, so Add shows "Confirm Addition" and Edit shows "Confirm Update" with no incorrect messages when switching between modes. Modal headings, primary button labels, validation, success toasts, and cancellation are unchanged.
 - **Admin students:** Renamed the add modal title from "Create Student" to "Add Student" (`79cbb2f`).
 - **Admin students:** Aligned the student modal with the Faculty Register Student form by placing First Name and Last Name together and Middle Name below. The submit button now reads "Add Student" when adding and "Update Student" when editing (`9a7e39a`).
 - **UI:** Standardized Portal Modals across `components.css`, `design-system.html`, and Admin application pages (`faculty-applications.html`, `student-applications.html`, `department-applications.html`, `program-applications.html`) to strictly follow the **Standard Card** container specification (`background: var(--card)`, `border: 1px solid var(--border)` with 16px radius and dark shadow), eliminating light `#444746` backgrounds and outer terracotta borders (`2c7ab3f`, `f52e935`).
@@ -218,6 +219,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Corrected javascript syntax error in generate function (`a0ca4b3`).
 - **UI:** Removed hardcoded legacy orange borders and corrected component focus states (`9fbc3c9`, `567aa26`).
 - **UI:** Removed stray text beside the closing `</html>` tag in the sign-up page markup (`f84144f`).
+
 
 ## [Milestone 1] - YYYY-MM-DD
 <!-- Milestone release updates -->

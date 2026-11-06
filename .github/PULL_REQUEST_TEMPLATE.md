@@ -24,7 +24,7 @@ Closes #
 
 ## Author Checklist
 <!-- You must verify all of the following before requesting a review: -->
-- [ ] **Target Branch:** My target branch is `dev` (not `main`).
+- [ ] **Target Branch:** This PR targets `feat/<milestone-name>` during milestone development, or `dev` on milestone completion. It never targets `main` directly from a feature branch. 
 - [ ] **Issue Linked:** This PR is directly linked to an approved issue.
 - [ ] **Conventional Commits:** My commit messages follow the `type(scope): description` format.
 - [ ] **No Real Data (Privacy):** I verify there is absolutely NO real student information, secret keys (e.g., `GEMINI_API_KEY`), or raw review content in this code, fixtures, or logs.
