@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added
+- **Issue #138 app routes:** Added `/login` as an alias for `/signin` and aligned
+  the sign-in and documentation screens with the shared UI components.
 - **Issue #3 detail reads:** Added dedicated getStudentById and getOwnProfile
   read-only PostgREST RPC contracts with object-or-null responses, caller/RLS
   requirements and explicit examples. Removed the shared-read mapping exception;
@@ -36,6 +38,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **Issue #138 API and docs integration:** Corrected typed API response handling
+  and made `contract:docs` refresh the Redoc HTML served at `/docs`.
+  Successful bodyless responses remain valid; added request-wrapper regression
+  tests and handled rejected OAuth/session promises without unhandled errors.
 - **Issue #3 scope:** Removed five additional operations for faculty profile
   creation/removal, student directory/removal and faculty enrollment, together
   with their exclusive schemas, response and filter parameter. Narrowed current
