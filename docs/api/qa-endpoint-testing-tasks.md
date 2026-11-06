@@ -118,24 +118,24 @@ git push -u origin qa/api-testing/<yourname>
 
 | # | Endpoint | Expected (contract) | Actual (Prism) | Reported by | Issue/PR | Resolved |
 |---|---|---|---|---|---|---|
-| 4.3 | `PATCH` `/rest/v1/faculty_profiles` | `403 Forbidden` | `200 OK` | @Zaming | `#137/#139` | ⬜ Not yet |
-| 7.3 | `POST` `/rest/v1/student_profiles` | `403 Forbidden` | `400 Bad request` | @Zaming | `#137/#139` | ⬜ Not yet |
-| 8.3 | `PATCH` `/rest/v1/student_profiles` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
-| 8.5 | `PATCH` `/rest/v1/student_profiles` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
-| 10.3 | `POST` `/rest/v1/departments` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
-| 10.5 | `POST` `/rest/v1/departments` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
-| 11.3 | `PATCH` `/rest/v1/departments` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
-| 11.5 | `POST` `/rest/v1/departments` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
-| 14.3 | `POST` `/rest/v1/programs` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
-| 14.5 | `POST` `/rest/v1/programs` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ⬜ Not yet |
-| 15.3 | `PATCH` `/rest/v1/programs` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
-| 15.4 | `PATCH` `/rest/v1/programs` | `400 or 422` | `401 Unauthorized` | @dollyraexe | `#137/#139` | ⬜ Not yet |
-| 15.5 | `PATCH` `/rest/v1/programs` | `409 Conflict` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
-| 17.3 | `GET` `/rest/v1/review_revisions` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
-| 18.3 | `GET` `/rest/v1/approval_queue_items` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
-| 19.1 | `POST` `/rest/v1/approval_queue_items` | `201 Created` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
-| 20.3 | `GET` `/rest/v1/audit_log_entries` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ⬜ Not yet |
-| 21.3 | `POST` `/functions/v1/reviews` | `403 Forbidden` | `201 Created` | @dollyraexe | `#137/#139` | ⬜ Not yet |
+| 4.3 | `PATCH` `/rest/v1/faculty_profiles` | `403 Forbidden` | `200 OK` | @Zaming | `#137/#139` | ✅ Resolved |
+| 7.3 | `POST` `/rest/v1/student_profiles` | `403 Forbidden` | `400 Bad request` | @Zaming | `#137/#139` | ✅ Resolved |
+| 8.3 | `PATCH` `/rest/v1/student_profiles` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ✅ Resolved |
+| 8.5 | `PATCH` `/rest/v1/student_profiles` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ✅ Resolved |
+| 10.3 | `POST` `/rest/v1/departments` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ✅ Resolved |
+| 10.5 | `POST` `/rest/v1/departments` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ✅ Resolved |
+| 11.3 | `PATCH` `/rest/v1/departments` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ✅ Resolved |
+| 11.5 | `POST` `/rest/v1/departments` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ✅ Resolved |
+| 14.3 | `POST` `/rest/v1/programs` | `403 Forbidden` | `400 Bad request` | @AzrielKaye | `#137/#139` | ✅ Resolved |
+| 14.5 | `POST` `/rest/v1/programs` | `409 Conflict` | `400 Bad request` | @AzrielKaye | `#137/#139` | ✅ Resolved |
+| 15.3 | `PATCH` `/rest/v1/programs` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ✅ Resolved |
+| 15.4 | `PATCH` `/rest/v1/programs` | `400 or 422` | `401 Unauthorized` | @dollyraexe | `#137/#139` | ✅ Resolved |
+| 15.5 | `PATCH` `/rest/v1/programs` | `409 Conflict` | `400 Bad request` | @dollyraexe | `#137/#139` | ✅ Resolved |
+| 17.3 | `GET` `/rest/v1/review_revisions` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ✅ Resolved |
+| 18.3 | `GET` `/rest/v1/approval_queue_items` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ✅ Resolved |
+| 19.1 | `POST` `/rest/v1/approval_queue_items` | `201 Created` | `400 Bad request` | @dollyraexe | `#137/#139` | ✅ Resolved |
+| 20.3 | `GET` `/rest/v1/audit_log_entries` | `403 Forbidden` | `400 Bad request` | @dollyraexe | `#137/#139` | ✅ Resolved |
+| 21.3 | `POST` `/functions/v1/reviews` | `403 Forbidden` | `201 Created` | @dollyraexe | `#137/#139` | ✅ Resolved |
 
 
 ---
