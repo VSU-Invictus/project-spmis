@@ -682,6 +682,32 @@ Milestones group issues by development phase/sprint (e.g., "Review Authoring & L
 - **1 required reviewer approval** before merging, enforced via GitHub branch protection on `main`.
 - CI (see below) must pass before a PR is eligible for merge.
 
+#### PR Milestone Guideline
+
+**Canonical branch flow:**
+
+```text
+feat/<feature-name> -> feat/<milestone-name> -> dev -> staging -> main
+```
+
+Feature and QA PRs during milestone development target the milestone branch, not `main`. Once the milestone is complete, open a PR from the milestone branch to `dev`; promote changes through `staging` before `main`.
+
+**PR titles:**
+
+- Milestone completion: `[Milestone] <milestone-name>`
+- Promotion: `[Promotion] <source-branch> -> <target-branch>`
+
+**Review matrix:**
+
+| Promotion | Required review and validation |
+|---|---|
+| Feature → Milestone | Team review and standard checks; Sir Kyle/Sir Bars review is not required. |
+| Milestone → `dev` | Requestor + Sir Bars. |
+| `dev` → `staging` | Team review + manual and automated checks. |
+| `staging` → `main` | Team + Sir Kyle + Sir Bars + UAT. |
+
+Do not promote a branch with failing checks or missing required approvals. If validation or UAT fails, document the failure on the PR and open a fix branch from the affected branch.
+
 ### CI (GitHub Actions)
 Workflows in `.github/workflows/` run on every PR:
 - Contract lint (`npm run contract:lint`)
