@@ -20,6 +20,7 @@ import {
 } from './pages/ClassifiedComponentPages';
 import { FacultyStudentsPage } from './pages/faculty/FacultyStudentsPage';
 import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
+import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
 import { ThemeProvider } from './context/ThemeContext';
 
 // Ensure the browser does not restore previous scroll position on refresh
@@ -110,6 +111,10 @@ const router = createBrowserRouter([
       { path: '/faculty', element: <Navigate to="/faculty/dashboard" replace /> },
       { path: '/faculty/dashboard', element: <FacultyDashboardPage /> },
       { path: '/faculty/students', element: <FacultyStudentsPage /> },
+      // Admin Portal Routes
+      { path: '/admin', element: <Navigate to="/admin/dashboard" replace /> },
+      { path: '/admin/dashboard', element: <AdminApprovalQueuePage /> },
+      { path: '/admin/applications', element: <AdminApprovalQueuePage /> },
       // Classified Component Visualization Pages
       { path: '/components', element: <Navigate to="/components/buttons" replace /> },
       { path: '/components/buttons', element: <ButtonsClassifiedPage /> },
