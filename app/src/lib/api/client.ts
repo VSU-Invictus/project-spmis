@@ -5,9 +5,14 @@ export { request } from './request';
 const defaultBaseUrl = 'http://localhost:4010';
 const baseUrl = import.meta.env.VITE_SUPABASE_URL ?? (import.meta.env.DEV ? defaultBaseUrl : undefined);
 
-let accessToken: string | undefined;
+export const DEFAULT_MOCK_DEV_TOKEN = 'mock-dev-token';
+export const DEFAULT_MOCK_ANON_KEY = 'mock-anon-key';
+
+let accessToken: string | undefined = import.meta.env.DEV ? DEFAULT_MOCK_DEV_TOKEN : undefined;
 let projectApiKey: string | undefined =
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY;
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
+  import.meta.env.VITE_SUPABASE_ANON_KEY ??
+  (import.meta.env.DEV ? DEFAULT_MOCK_ANON_KEY : undefined);
 
 export const apiClient = createClient<paths>({
   baseUrl,
@@ -27,4 +32,13 @@ export function configureApiAuth(auth: {
 }): void {
   accessToken = auth.accessToken;
   if (auth.projectApiKey !== undefined) projectApiKey = auth.projectApiKey;
+}
+
+export function getApiAuth(): { accessToken?: string; projectApiKey?: string } {
+  return { accessToken, projectApiKey };
+}
+
+export function resetApiAuth(): void {
+  accessToken = undefined;
+  projectApiKey = undefined;
 }
