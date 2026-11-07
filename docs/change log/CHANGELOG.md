@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added 
 - **API documentation:** Added a Redoc documentation route with a bundled OpenAPI viewer. Added Supabase session authentication and a sign-in page to protect access.
 - **API client:** Added a typed API client with shared request and error handling, Supabase configuration, and generated TypeScript types. Added tests for API request and error handling.
+- **Vitest and domain rule tests:** Added Vitest test and watch scripts, with unit tests for entity-name validation, review word limits, and review-tag normalization.
 - **API testing:** Added faculty and admin endpoint test cases with reproducible Prism requests, sample bodies, and recorded responses. Documented valid requests, missing authentication, role violations, and invalid payloads; added QA task guidance and a contract mismatch log.
 - **GitHub templates:** Added issue templates for bugs, tasks, and QA test cases, plus a pull request template with QA and author checklists.
 
