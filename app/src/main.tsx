@@ -19,6 +19,7 @@ import {
   ChatsAuthClassifiedPage,
 } from './pages/ClassifiedComponentPages';
 import { FacultyStudentsPage } from './pages/faculty/FacultyStudentsPage';
+import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
 import { ThemeProvider } from './context/ThemeContext';
 
 // Ensure the browser does not restore previous scroll position on refresh
@@ -106,6 +107,8 @@ const router = createBrowserRouter([
       { path: '/styleguide', element: <StyleguidePage /> },
       { path: '/design-system', element: <Navigate to="/styleguide" replace /> },
       // Faculty Portal Routes
+      { path: '/faculty', element: <Navigate to="/faculty/dashboard" replace /> },
+      { path: '/faculty/dashboard', element: <FacultyDashboardPage /> },
       { path: '/faculty/students', element: <FacultyStudentsPage /> },
       // Classified Component Visualization Pages
       { path: '/components', element: <Navigate to="/components/buttons" replace /> },
