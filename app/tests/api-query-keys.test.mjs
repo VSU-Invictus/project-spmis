@@ -44,3 +44,4 @@ test('queryKeys derives taxonomy and audit log keys', () => {
   assert.equal(queryKeys.programs()[0], 'listPrograms');
   assert.equal(queryKeys.auditLogs()[0], 'listAuditLogs');
 });
+

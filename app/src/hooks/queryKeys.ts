@@ -9,3 +9,4 @@ export const queryKeys = {
   tags: (params?: Record<string, unknown>) => ['listTags', params ?? {}] as const,
   facultyProfiles: (params?: Record<string, unknown>) => ['listFaculty', params ?? {}] as const,
 };
+
