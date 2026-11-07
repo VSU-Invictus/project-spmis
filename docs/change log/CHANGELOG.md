@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Milestone 2 Gate (A5) - Prism Mock Typed Client & Reachable Failure State (#146):**
+  - Created TanStack Query hooks in `app/src/hooks/` for contract operation IDs: `useSearchStudents`, `useStudentById`, `useStudentReviews`, `useCreateReview`, `useApprovalQueueItems`, `useDecideApplications`, `useDepartments`, `usePrograms`, `useAuditLogs`, and `useAskChatbot`.
+  - Derived query keys mechanically from contract `operationId` and input parameters in `queryKeys.ts`.
+  - Added accessible `Skeleton`, `TableRowSkeleton`, and `CardSkeleton` components with `isPending` state handling.
+  - Registered and wired Faculty Portal (`/faculty/dashboard`, `/faculty/students`, `/faculty/chat`, `/faculty/departments`, `/faculty/programs`, `/faculty/applications`) and Admin Portal (`/admin/dashboard`, `/admin/applications`, `/admin/students`, `/admin/departments`, `/admin/programs`, `/admin/audit-log`) routes in `app/src/main.tsx` backed by Prism mock server data.
+  - Implemented reachable and demonstrable 422 Unprocessable Entity failure states (`REVIEW_WORD_LIMIT` and `REVIEW_BODY_REQUIRED`) on review creation with form validation highlight and contract `error.hint` guidance.
+  - Implemented reachable and demonstrable 429 Too Many Requests failure state (`RATE_LIMITED`) on AI Chat Assistant with graceful retry prompt and non-crashing UI state.
+  - Added unit and failure scenario test suites (`api-query-keys.test.mjs`, `api-failure-states.test.mjs`) verifying 200, 422, 429, and 401 error normalization and contract compliance.
 - **API documentation:** Added a Redoc documentation route with a bundled OpenAPI viewer. Added Supabase session authentication and a sign-in page to protect access.
 - **API client:** Added a typed API client with shared request and error handling, Supabase configuration, and generated TypeScript types. Added tests for API request and error handling.
 - **API testing:** Added faculty and admin endpoint test cases with reproducible Prism requests, sample bodies, and recorded responses. Documented valid requests, missing authentication, role violations, and invalid payloads; added QA task guidance and a contract mismatch log.
