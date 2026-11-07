@@ -3,3 +3,5 @@ export * from './useSearchStudents';
 export * from './useStudentById';
 export * from './useStudentReviews';
 export * from './useCreateReview';
+export * from './useApprovalQueueItems';
+export * from './useDecideApplications';
