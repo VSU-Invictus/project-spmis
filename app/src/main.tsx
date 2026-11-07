@@ -21,6 +21,8 @@ import {
 import { FacultyStudentsPage } from './pages/faculty/FacultyStudentsPage';
 import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
 import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
+import { AdminTaxonomyPage } from './pages/admin/AdminTaxonomyPage';
+import { AdminAuditLogPage } from './pages/admin/AdminAuditLogPage';
 import { ThemeProvider } from './context/ThemeContext';
 
 // Ensure the browser does not restore previous scroll position on refresh
@@ -111,10 +113,17 @@ const router = createBrowserRouter([
       { path: '/faculty', element: <Navigate to="/faculty/dashboard" replace /> },
       { path: '/faculty/dashboard', element: <FacultyDashboardPage /> },
       { path: '/faculty/students', element: <FacultyStudentsPage /> },
+      { path: '/faculty/departments', element: <AdminTaxonomyPage mode="departments" /> },
+      { path: '/faculty/programs', element: <AdminTaxonomyPage mode="programs" /> },
+      { path: '/faculty/applications', element: <AdminApprovalQueuePage /> },
       // Admin Portal Routes
       { path: '/admin', element: <Navigate to="/admin/dashboard" replace /> },
       { path: '/admin/dashboard', element: <AdminApprovalQueuePage /> },
       { path: '/admin/applications', element: <AdminApprovalQueuePage /> },
+      { path: '/admin/students', element: <FacultyStudentsPage /> },
+      { path: '/admin/departments', element: <AdminTaxonomyPage mode="departments" /> },
+      { path: '/admin/programs', element: <AdminTaxonomyPage mode="programs" /> },
+      { path: '/admin/audit-log', element: <AdminAuditLogPage /> },
       // Classified Component Visualization Pages
       { path: '/components', element: <Navigate to="/components/buttons" replace /> },
       { path: '/components/buttons', element: <ButtonsClassifiedPage /> },
