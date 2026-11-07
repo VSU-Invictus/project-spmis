@@ -54,15 +54,61 @@ export default function App() {
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '22px' }}>
-          <Link to="/styleguide" style={{ textDecoration: 'none' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <Link to="/faculty" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="primary"
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  padding: '10px 14px',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                }}
+              >
+                Faculty Portal (M1)
+              </Button>
+            </Link>
+            <Link to="/admin" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="secondary"
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  padding: '10px 14px',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                }}
+              >
+                Admin Portal (M1)
+              </Button>
+            </Link>
+          </div>
+
+          <Link to="/faculty/chat" style={{ textDecoration: 'none' }}>
             <Button
-              variant="primary"
+              variant="outline"
               style={{
                 width: '100%',
                 justifyContent: 'center',
-                padding: '12px 20px',
-                fontSize: '14px',
+                padding: '10px 14px',
+                fontSize: '13px',
                 fontWeight: 600,
+              }}
+            >
+              AI Chat Assistant (Gate A5 429 Test)
+            </Button>
+          </Link>
+
+          <Link to="/styleguide" style={{ textDecoration: 'none' }}>
+            <Button
+              variant="ghost"
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+                padding: '8px 14px',
+                fontSize: '13px',
+                fontWeight: 500,
               }}
             >
               Open Living Styleguide (All Sections)
