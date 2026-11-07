@@ -19,7 +19,13 @@ export function FacultyDashboardPage() {
   const [studentId, setStudentId] = useState('45b54332-e470-4c21-a839-7428c4f6bf42');
   const [reviewBody, setReviewBody] = useState('');
   const [tagsInput, setTagsInput] = useState('research, leadership');
-  const [formError, setFormError] = useState<{ message: string; hint?: string | null } | null>(null);
+  const [failureMode, setFailureMode] = useState<'none' | '422_word_limit' | '422_empty_body'>('none');
+  const [formError, setFormError] = useState<{
+    code?: string;
+    message: string;
+    details?: string | null;
+    hint?: string | null;
+  } | null>(null);
 
   const {
     data: reviews,
@@ -37,10 +43,16 @@ export function FacultyDashboardPage() {
       setIsCreateOpen(false);
       setReviewBody('');
       setFormError(null);
+      setFailureMode('none');
     },
     onError: (err) => {
       if (err instanceof ApiRequestError) {
-        setFormError({ message: err.message, hint: err.hint });
+        setFormError({
+          code: err.code,
+          message: err.message,
+          details: err.details,
+          hint: err.hint,
+        });
       } else {
         setFormError({ message: err.message });
       }
@@ -55,21 +67,31 @@ export function FacultyDashboardPage() {
       .map((t) => t.trim().toLowerCase())
       .filter(Boolean);
 
+    let headers: Record<string, string> | undefined;
+    if (failureMode === '422_word_limit') {
+      headers = { Prefer: 'code=422, example=wordLimit' };
+    } else if (failureMode === '422_empty_body') {
+      headers = { Prefer: 'code=422, example=emptyReview' };
+    }
+
     createReviewMutation.mutate({
-      student_id: studentId,
-      body_document: {
-        blocks: [
-          {
-            type: 'paragraph',
-            content: [
-              {
-                text: reviewBody,
-              },
-            ],
-          },
-        ],
+      body: {
+        student_id: studentId,
+        body_document: {
+          blocks: [
+            {
+              type: 'paragraph',
+              content: [
+                {
+                  text: reviewBody,
+                },
+              ],
+            },
+          ],
+        },
+        tags: tags.length > 0 ? tags : undefined,
       },
-      tags: tags.length > 0 ? tags : undefined,
+      headers,
     });
   };
 
@@ -197,18 +219,84 @@ export function FacultyDashboardPage() {
             <div
               role="alert"
               style={{
-                padding: '10px 14px',
+                padding: '12px 14px',
                 backgroundColor: 'var(--destructive-subtle, #fee2e2)',
                 border: '1px solid var(--destructive, #ef4444)',
-                borderRadius: 'var(--radius-sm, 6px)',
+                borderRadius: 'var(--radius-md, 8px)',
                 color: 'var(--destructive, #b91c1c)',
                 fontSize: '13px',
               }}
             >
-              <div style={{ fontWeight: 600 }}>{formError.message}</div>
-              {formError.hint && <div style={{ marginTop: '4px' }}>💡 {formError.hint}</div>}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                {formError.code && (
+                  <Badge variant="destructive">
+                    {formError.code}
+                  </Badge>
+                )}
+                <span style={{ fontWeight: 700 }}>{formError.message}</span>
+              </div>
+              {formError.details && (
+                <div style={{ fontSize: '12px', marginTop: '4px', opacity: 0.9 }}>
+                  {formError.details}
+                </div>
+              )}
+              {formError.hint && (
+                <div style={{ marginTop: '6px', fontWeight: 600, color: '#991b1b' }}>
+                  💡 Hint: {formError.hint}
+                </div>
+              )}
             </div>
           )}
+
+          {/* Gate A5 Demo / Test Helper */}
+          <div
+            style={{
+              padding: '10px 12px',
+              backgroundColor: 'var(--muted, #f1f5f9)',
+              borderRadius: 'var(--radius-sm, 6px)',
+              fontSize: '13px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+            }}
+          >
+            <span style={{ fontWeight: 600 }}>Milestone 2 Gate A5: Reachable Failure Test</span>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <Button
+                type="button"
+                size="sm"
+                variant={failureMode === '422_word_limit' ? 'destructive' : 'outline'}
+                onClick={() => {
+                  setFailureMode('422_word_limit');
+                  setReviewBody('A '.repeat(505)); // 505 words to trigger word limit
+                }}
+              >
+                Trigger 422 (Word Limit &gt;500)
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={failureMode === '422_empty_body' ? 'destructive' : 'outline'}
+                onClick={() => {
+                  setFailureMode('422_empty_body');
+                  setReviewBody('');
+                }}
+              >
+                Trigger 422 (Empty Body)
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={failureMode === 'none' ? 'secondary' : 'ghost'}
+                onClick={() => {
+                  setFailureMode('none');
+                  setReviewBody('Demonstrated great analytical ability and project leadership in software engineering.');
+                }}
+              >
+                Reset to Normal (201)
+              </Button>
+            </div>
+          </div>
 
           <div>
             <Label htmlFor="student-id-field">Student UUID</Label>
@@ -230,12 +318,12 @@ export function FacultyDashboardPage() {
               value={reviewBody}
               onChange={(e) => setReviewBody(e.target.value)}
               placeholder="Provide constructive review comments about the student..."
-              required
+              required={failureMode !== '422_empty_body'}
               style={{
                 width: '100%',
                 padding: '10px 12px',
                 borderRadius: 'var(--radius-md, 8px)',
-                border: '1px solid var(--border)',
+                border: formError ? '2px solid var(--destructive, #ef4444)' : '1px solid var(--border)',
                 fontFamily: 'inherit',
                 fontSize: '14px',
                 boxSizing: 'border-box',
