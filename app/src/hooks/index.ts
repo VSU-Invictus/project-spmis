@@ -5,3 +5,5 @@ export * from './useStudentReviews';
 export * from './useCreateReview';
 export * from './useApprovalQueueItems';
 export * from './useDecideApplications';
+export * from './useDepartments';
+export * from './usePrograms';
