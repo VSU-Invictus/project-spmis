@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **CI Workflow, Contract Freeze (`v1.0.0`), and Pinned Tooling:**
+  - Added GitHub Actions CI workflow (`.github/workflows/ci.yml`) running `contract:lint`, `contract:check`, `contract:docs` verification and artifact upload, `typecheck`, `test` (Vitest), and `build` on pushes and pull requests.
+  - Marked `contract/openapi.yaml` as frozen at `v1.0.0` (effective `2026-10-30`) in `contract/README.md` with cross-team change-control rules, and extended `PreferReturnRepresentation` to support `return=representation, code=403` and `return=representation, code=409` for Prism mock simulation.
+  - Pinned `@redocly/cli` (`2.71.0`), `@stoplight/prism-cli` (`5.16.0`), `openapi-typescript` (`7.13.0`), and `msw` (`2.15.0`) in `app/package.json`, and migrated `api-failure-states.test.mjs` and `api-query-keys.test.mjs` to Vitest.
 - **Milestone 2 Gate (A5) - Prism Mock Typed Client & Reachable Failure State (#146):**
   - Created TanStack Query hooks in `app/src/hooks/` for contract operation IDs: `useSearchStudents`, `useStudentById`, `useStudentReviews`, `useCreateReview`, `useApprovalQueueItems`, `useDecideApplications`, `useDepartments`, `usePrograms`, `useAuditLogs`, and `useAskChatbot`.
   - Derived query keys mechanically from contract `operationId` and input parameters in `queryKeys.ts`.
