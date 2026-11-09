@@ -89,7 +89,7 @@
 | 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 15.3 | /rest/v1/programs | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
 | 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Pass** |
-| 15.5 | /rest/v1/programs | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
+| 15.5 | /rest/v1/programs | PATCH | 409 Conflict contract simulation | 409 | **Pass** |
 | 16.1 | /rest/v1/programs | DELETE | Valid Request | 204 | **Pass** |
 | 16.2 | /rest/v1/programs | DELETE | Missing JWT Bearer token | 401 | **Pass** |
 | 16.3 | /rest/v1/programs | DELETE | 403 Forbidden contract simulation | 403 | **Pass** |
@@ -2414,7 +2414,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation, code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}" -H "Content-Type: application/json"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation, code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}" -H "Content-Type: application/json"
 ```
 
 | Item | Value |
@@ -2482,19 +2482,28 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.8ef76d5f-e6b2-49a
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=409` |
 | Body | `{ "name": "Bachelor of Science in Computer Science" }` |
 | Expected status | 409 Conflict |
-| Actual status | 400 Bad request |
+| Actual status | 409 Conflict |
 
+**Response:**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
