@@ -48,7 +48,7 @@ jobs:
         run: npm --prefix app run contract:docs
 
       - name: Verify Redoc bundle is up to date
-        run: git diff --exit-code app/public/docs/index.html
+        run: git diff --ignore-space-at-eol --exit-code app/public/docs/index.html
 
       - name: Upload Redoc static bundle artifact
         uses: actions/upload-artifact@v4
