@@ -2982,11 +2982,11 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey:
 | Item | Value |
 |---|---|
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
-| Body | `{ "name": "Computer Science" }` |
+| Body | `{"type":"program_proposal","payload":{"name":"BS Computer Science"}}` |
 | Expected status | 403 Forbidden |
 | Actual status | 403 Forbidden |
 
-***Response:** 
+**Response:** 
 ```json
 {
   "code":"FORBIDDEN",
