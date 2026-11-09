@@ -69,7 +69,7 @@
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
 | 11.3 | /rest/v1/departments | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
 | 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
-| 11.5 | /rest/v1/departments | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
+| 11.5 | /rest/v1/departments | PATCH | 409 Conflict contract simulation | 409 | **Pass** |
 | 12.1 | /rest/v1/departments | DELETE | Valid request | 204 | **Pass** |
 | 12.2 | /rest/v1/departments | DELETE | Missing JWT | 401 | **Pass** |
 | 12.3 | /rest/v1/departments | DELETE | 403 Forbidden contract simulation | 403 | **Pass** |
@@ -1815,17 +1815,27 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Computer Science\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=409` |
 | Body |  |
 | Expected status | 409 Conflict |
-| Actual status | 400 Bad request |
+| Actual status | 409 Conflict |
 
-**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+
+**Response:**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
+**Result:** Pass
 
 ---
 
