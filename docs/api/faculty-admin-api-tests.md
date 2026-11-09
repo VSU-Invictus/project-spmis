@@ -87,7 +87,7 @@
 | 14.5 | /rest/v1/programs | POST | 409 Conflict contract simulation | 409 | **Pass** |
 | 15.1 | /rest/v1/programs | PATCH | Valid Request | 200 | **Pass** |
 | 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
-| 15.3 | /rest/v1/programs | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
+| 15.3 | /rest/v1/programs | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
 | 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Pass** |
 | 15.5 | /rest/v1/programs | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
 | 16.1 | /rest/v1/programs | DELETE | Valid Request | 204 | **Pass** |
@@ -2414,12 +2414,12 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}" -H "Content-Type: application/json"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation, code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}" -H "Content-Type: application/json"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation, code=403` |
 | Body | `N/A` |
 | Expected status | 403 Forbidden |
 | Actual status | 400 Bad request |
@@ -2428,13 +2428,14 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 **Response:** 
 ```json
 {
-  "code":"22P02",
-  "message":"Invalid input syntax for a column value.","details":null,
-  "hint":"Correct the request."
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
 }
 ```
 
-**Result:**  Fail (cannot simulate). `Prefer: code=403`get 400 Bad request.
+**Result:** Pass
 ---
 
 ### Case 4: Invalid request (400 / 422)
