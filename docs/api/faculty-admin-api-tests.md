@@ -62,7 +62,7 @@
 | 9.6 | /rest/v1/departments | GET | Invalid request | 416 | **Pass** |
 | 10.1 | /rest/v1/departments | POST | Valid request | 201 | **Pass** |
 | 10.2 | /rest/v1/departments | POST | Missing JWT | 401 | **Pass** |
-| 10.3 | /rest/v1/departments | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 10.3 | /rest/v1/departments | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 10.4 | /rest/v1/departments | POST | Invalid request | 400/422 | **Pass** |
 | 10.5 | /rest/v1/departments | POST | 409 Conflict contract simulation | 409 | **Fail** |
 | 11.1 | /rest/v1/departments | PATCH | Valid request | 200 | **Pass** |
@@ -1562,18 +1562,27 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Computer Science\"}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{ "name": "Computer Science" }` |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
+**Response:** 
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
