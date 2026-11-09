@@ -96,7 +96,7 @@
 | 16.4 | /rest/v1/programs | DELETE | Invalid request | 400 / 422 | **Pass** |
 | 17.1 | /rest/v1/review_revisions | GET | Valid request | 200 | **Pass** |
 | 17.2 | /rest/v1/review_revisions | GET | Missing JWT Bearer token | 401 | **Pass** |
-| 17.3 | /rest/v1/review_revisions | GET | 403 Forbidden contract simulation | 403 | **Fail** |
+| 17.3 | /rest/v1/review_revisions | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 17.4 | /rest/v1/review_revisions | GET | Invalid UUID | 400 | **Pass** |
 | 18.1 | /rest/v1/approval_queue_items | GET | Valid request | 200 | **Pass** |
 | 18.2 | /rest/v1/approval_queue_items | GET | Missing JWT Bearer token | 401 | **Pass** |
@@ -2606,27 +2606,28 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.67015de8-1ce8-4ac4-8634-384bf5fb3821&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.67015de8-1ce8-4ac4-8634-384bf5fb3821&__code=403` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad Request |
+| Actual status | 403 Forbidden |
 
 **Response**
 ```json
 {
-  "code":"22P02",
-  "message":"Invalid input syntax for a column value.","details":null,
-  "hint":"Correct the request."
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
 }
 ```
 
-**Result:** Fail (cannot simulate)
+**Result:** Pass
 
 ---
 
