@@ -4596,24 +4596,24 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_details?student_id=eq.45b54332-e47
 
 ## Issues Found in the Contract
 
-| # | Endpoint | Issue | Suggested fix |
-|---|---|---|---| 
-| 4.3 | `PATCH /rest/v1/faculty_profiles` | `Prefer` is restricted to a constant, so a 403 cannot be simulated with `Prefer: code=403` | Allow additional `Prefer` values (enum or pattern) so Prism can simulate status codes |
-| 7.3 |`POST /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 8.3 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 8.5 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 10.3 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 10.5 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 11.3 |`PATCH /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 11.5 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 14.3 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 14.5 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses |
-| 15.3 |`PATCH /rest/v1/programs` |	403 cannot be simulated |
-| 15.4 |`PATCH /rest/v1/programs`	| 400/422 got 401 (test doc: apikey header missing, see section 4) |
-| 15.5 |`PATCH /rest/v1/programs`	| 409 cannot be simulated |
-| 17.3 |`GET /rest/v1/review_revisions`	| 403 returns 400 |
-| 18.3 |`GET /rest/v1/approval_queue_items`	| 403 returns 400 |
-| 19.1 |`POST /rest/v1/approval_queue_items` | Valid request returns 400, not 201 |
-| 19.3 |`POST /rest/v1/approval_queue_items` | 403 returns 400 |
-| 20.3 |`GET /rest/v1/audit_log_entries	403` | returns 400 |
-| 21.3 |`POST /functions/v1/reviews` | Prism returns the default 201 response; the 403 contract response cannot be simulated with this request |
+| # | Endpoint | Issue | Suggested fix | Status |
+|---|---|---|---|---|
+| 4.3 | `PATCH /rest/v1/faculty_profiles` | `Prefer` is restricted to a constant, so a 403 cannot be simulated with `Prefer: code=403` | Allow additional `Prefer` values (enum or pattern) so Prism can simulate status codes | ✅ Resolved |
+| 7.3 |`POST /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses | ✅ Resolved |
+| 8.3 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses | ✅ Resolved |
+| 8.5 |`PATCH /rest/v1/student_profiles` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses | ✅ Resolved |
+| 10.3 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses | ✅ Resolved |
+| 10.5 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses | ✅ Resolved |
+| 11.3 |`PATCH /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses | ✅ Resolved |
+| 11.5 |`POST /rest/v1/departments` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses | ✅ Resolved |
+| 14.3 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=403` returns 400 and 403 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses | ✅ Resolved |
+| 14.5 |`POST /rest/v1/programs` | `Prefer` is restricted to a constant, so `Prefer: code=409` returns 400 and 409 cannot be simulated | Allow additional `Prefer` values (enum or pattern), or document another way to simulate error responses | ✅ Resolved |
+| 15.3 |`PATCH /rest/v1/programs` |	403 cannot be simulated | | ✅ Resolved |
+| 15.4 |`PATCH /rest/v1/programs`	| 400/422 got 401 (test doc: apikey header missing, see section 4) | | ✅ Resolved |
+| 15.5 |`PATCH /rest/v1/programs`	| 409 cannot be simulated | | ✅ Resolved |
+| 17.3 |`GET /rest/v1/review_revisions`	| 403 returns 400 | | ✅ Resolved |
+| 18.3 |`GET /rest/v1/approval_queue_items`	| 403 returns 400 | | ✅ Resolved |
+| 19.1 |`POST /rest/v1/approval_queue_items` | Valid request returns 400, not 201 | | ✅ Resolved |
+| 19.3 |`POST /rest/v1/approval_queue_items` | 403 returns 400 | | ✅ Resolved |
+| 20.3 |`GET /rest/v1/audit_log_entries	403` | returns 400 | | ✅ Resolved |
+| 21.3 |`POST /functions/v1/reviews` | Prism returns the default 201 response; the 403 contract response cannot be simulated with this request | | ✅ Resolved |
