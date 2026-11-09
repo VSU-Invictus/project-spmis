@@ -67,7 +67,7 @@
 | 10.5 | /rest/v1/departments | POST | 409 Conflict contract simulation | 409 | **Pass** |
 | 11.1 | /rest/v1/departments | PATCH | Valid request | 200 | **Pass** |
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
-| 11.3 | /rest/v1/departments | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
+| 11.3 | /rest/v1/departments | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
 | 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
 | 11.5 | /rest/v1/departments | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
 | 12.1 | /rest/v1/departments | DELETE | Valid request | 204 | **Pass** |
@@ -1746,17 +1746,28 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Computer Science\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body |  |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+
+**Response:**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
 
 ---
 
