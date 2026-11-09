@@ -112,7 +112,7 @@
 | 20.4 | /rest/v1/audit_log_entries | GET | Invalid UUID | 400 | **Pass** |
 | 21.1 | /functions/v1/reviews | POST | Valid request | 201 | **Pass** |
 | 21.2 | /functions/v1/reviews | POST | Missing JWT Bearer token | 401 | **Pass** |
-| 21.3 | /functions/v1/reviews | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 21.3 | /functions/v1/reviews | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 21.4 | /functions/v1/reviews | POST | Invalid payload (missing student_id) | 422 | **Pass** |
 | 21.5 | /functions/v1/reviews | POST | Missing request body (empty object) | 422 | **Pass** |
 | 21.6 | /functions/v1/reviews | POST | Invalid student UUID | 422 | **Pass** |
@@ -3131,17 +3131,27 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "Content-Type: a
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: ******" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"student_id\":\"45b54332-e470-4c21-a839-7428c4f6bf42\",\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews?__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"student_id\":\"45b54332-e470-4c21-a839-7428c4f6bf42\",\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: ******` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
 | Body | Valid review creation JSON |
 | Expected status | 403 Forbidden |
-| Actual status | 201 Created |
+| Actual status | 403 Forbidden |
 
-**Result:** Fail (cannot simulate). Prism returned the default 201 creation response; this does not test real role authorization.
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
 
 ---
 
