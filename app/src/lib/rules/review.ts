@@ -8,6 +8,20 @@ export type ReviewWordLimitResult =
   | { valid: true; wordCount: number }
   | { valid: false; code: ReviewWordLimitErrorCode; wordCount: number };
 
+type ReviewTextRun = { text: string };
+type ReviewDocumentBlock =
+  | { type: 'paragraph'; content: readonly ReviewTextRun[] }
+  | { type: 'bullet_list' | 'ordered_list'; items: readonly (readonly ReviewTextRun[])[] };
+
+export function extractPlainText(document: { blocks: readonly ReviewDocumentBlock[] }): string {
+  return document.blocks
+    .map((block) => block.type === 'paragraph'
+      ? block.content.map((run) => run.text).join('')
+      : block.items.map((item) => item.map((run) => run.text).join('')).join(' '))
+    .join(' ')
+    .trim();
+}
+
 export function countReviewWords(text: string): number {
   const trimmedText = text.trim();
   return trimmedText === '' ? 0 : trimmedText.split(/\s+/u).length;
