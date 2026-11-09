@@ -68,9 +68,9 @@ export function FacultyDashboardPage() {
       .filter(Boolean);
 
     let headers: Record<string, string> | undefined;
-    if (failureMode === '422_word_limit') {
+    if (import.meta.env.DEV && failureMode === '422_word_limit') {
       headers = { Prefer: 'code=422, example=wordLimit' };
-    } else if (failureMode === '422_empty_body') {
+    } else if (import.meta.env.DEV && failureMode === '422_empty_body') {
       headers = { Prefer: 'code=422, example=emptyReview' };
     }
 
@@ -249,6 +249,7 @@ export function FacultyDashboardPage() {
           )}
 
           {/* Gate A5 Demo / Test Helper */}
+          {import.meta.env.DEV && (
           <div
             style={{
               padding: '10px 12px',
@@ -297,6 +298,7 @@ export function FacultyDashboardPage() {
               </Button>
             </div>
           </div>
+          )}
 
           <div>
             <Label htmlFor="student-id-field">Student UUID</Label>
@@ -318,7 +320,7 @@ export function FacultyDashboardPage() {
               value={reviewBody}
               onChange={(e) => setReviewBody(e.target.value)}
               placeholder="Provide constructive review comments about the student..."
-              required={failureMode !== '422_empty_body'}
+              required={!(import.meta.env.DEV && failureMode === '422_empty_body')}
               style={{
                 width: '100%',
                 padding: '10px 12px',
