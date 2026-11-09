@@ -13,6 +13,8 @@ import {
 import { useStudentReviews } from '../../hooks/useStudentReviews';
 import { useCreateReview } from '../../hooks/useCreateReview';
 import { ApiRequestError } from '../../lib/api';
+import { extractPlainText, REVIEW_WORD_LIMIT, validateReviewWordLimit } from '../../lib/rules/review';
+import { normalizeTags } from '../../lib/rules/tags';
 
 export function FacultyDashboardPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -62,10 +64,48 @@ export function FacultyDashboardPage() {
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
-    const tags = tagsInput
-      .split(',')
-      .map((t) => t.trim().toLowerCase())
-      .filter(Boolean);
+    const tagResult = normalizeTags(tagsInput.split(','));
+    if (!tagResult.valid) {
+      setFormError({
+        code: tagResult.reason === 'too_many_tags' ? 'TOO_MANY_TAGS' : 'TAG_TOO_LONG',
+        message: tagResult.reason === 'too_many_tags'
+          ? 'A review can have no more than 30 tags.'
+          : 'Each tag must be 50 characters or fewer.',
+      });
+      return;
+    }
+
+    const bodyDocument = {
+      blocks: [
+        {
+          type: 'paragraph' as const,
+          content: [{ text: reviewBody }],
+        },
+      ],
+    };
+    const plainText = extractPlainText(bodyDocument);
+    const normalizedBodyDocument = {
+      blocks: [{ type: 'paragraph' as const, content: [{ text: plainText }] }],
+    };
+    const isFailureSimulation = import.meta.env.DEV && failureMode !== 'none';
+    if (!isFailureSimulation) {
+      const validation = validateReviewWordLimit(reviewBody);
+      if (!validation.valid) {
+        setFormError({
+          code: validation.code,
+          message: validation.code === 'REVIEW_BODY_REQUIRED'
+            ? 'Enter a review before saving.'
+            : `A review can contain no more than ${REVIEW_WORD_LIMIT} words.`,
+          details: validation.code === 'REVIEW_WORD_LIMIT'
+            ? `This review contains ${validation.wordCount} words.`
+            : null,
+          hint: validation.code === 'REVIEW_WORD_LIMIT'
+            ? 'Shorten the review and submit it again.'
+            : 'Add review text and submit it again.',
+        });
+        return;
+      }
+    }
 
     let headers: Record<string, string> | undefined;
     if (import.meta.env.DEV && failureMode === '422_word_limit') {
@@ -77,19 +117,8 @@ export function FacultyDashboardPage() {
     createReviewMutation.mutate({
       body: {
         student_id: studentId,
-        body_document: {
-          blocks: [
-            {
-              type: 'paragraph',
-              content: [
-                {
-                  text: reviewBody,
-                },
-              ],
-            },
-          ],
-        },
-        tags: tags.length > 0 ? tags : undefined,
+        body_document: normalizedBodyDocument,
+        tags: tagResult.tags.length > 0 ? tagResult.tags : undefined,
       },
       headers,
     });
