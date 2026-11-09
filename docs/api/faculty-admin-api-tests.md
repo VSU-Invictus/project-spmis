@@ -64,7 +64,7 @@
 | 10.2 | /rest/v1/departments | POST | Missing JWT | 401 | **Pass** |
 | 10.3 | /rest/v1/departments | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 10.4 | /rest/v1/departments | POST | Invalid request | 400/422 | **Pass** |
-| 10.5 | /rest/v1/departments | POST | 409 Conflict contract simulation | 409 | **Fail** |
+| 10.5 | /rest/v1/departments | POST | 409 Conflict contract simulation | 409 | **Pass** |
 | 11.1 | /rest/v1/departments | PATCH | Valid request | 200 | **Pass** |
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
 | 11.3 | /rest/v1/departments | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
@@ -1630,18 +1630,27 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Computer Science\"}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=409` |
 | Body | `{ "name": "Computer Science" }` |
 | Expected status | 409 Conflict |
-| Actual status | 400 Bad request |
+| Actual status | 409 Conflict |
 
+**Response:**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
