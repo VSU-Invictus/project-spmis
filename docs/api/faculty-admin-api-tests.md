@@ -2482,7 +2482,7 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.8ef76d5f-e6b2-49a
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 
 ```
 
