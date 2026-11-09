@@ -1,10 +1,11 @@
 openapi: 3.1.0
 info:
   title: SPMIS API
-  version: 0.1.0
+  version: 1.0.0
   description: >-
     Contract-first API for the Student Profiling Management Information System. This curated
-    contract documents only the operations available to the frontend. This is a review draft.
+    contract documents only the operations available to the frontend. Frozen at v1.0.0 (2026-10-30)
+    for Milestone 3 (Backend) and Milestone 4 (Frontend) parallel implementation.
     Proposed backend views and functions are described before implementation; scope decisions are
     recorded in docs/contract-decisions.md. Data API calls require a public project apikey and the
     caller JWT. OAuth and refresh use Supabase Auth through its SDK. An RLS-filtered read or update
@@ -1413,11 +1414,16 @@ components:
       name: Prefer
       in: header
       required: true
-      description: Requests that PostgREST return the affected record representation.
+      description: >-
+        Requests that PostgREST return the affected record representation. During Prism mock
+        testing, `return=representation, code=403` and `return=representation, code=409` may be
+        supplied to simulate documented error responses.
       schema:
         type: string
         enum:
           - return=representation
+          - return=representation, code=403
+          - return=representation, code=409
     IdFilter:
       name: id
       in: query
