@@ -3011,7 +3011,7 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&ord
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad Request |
+| Actual status | 403 Forbidden |
 
 **Response**
 ```json
