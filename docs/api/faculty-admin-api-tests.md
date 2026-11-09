@@ -47,11 +47,11 @@
 | 6.4 | /rest/v1/rpc/search_students | GET | Invalid UUID | 400/422 | **Pass** |
 | 7.1 | /rest/v1/student_profiles | POST | Valid request | 201 | **Pass** |
 | 7.2 | /rest/v1/student_profiles | POST | Missing JWT | 401 | **Pass** |
-| 7.3 | /rest/v1/student_profiles | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 7.3 | /rest/v1/student_profiles | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 7.4 | /rest/v1/student_profiles | POST | Invalid UUID | 400/422 | **Pass** |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
-| 8.3 | /rest/v1/student_profiles | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
+| 8.3 | /rest/v1/student_profiles | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
 | 8.4 | /rest/v1/student_profiles | PATCH | Invalid request | 400 | **Pass** |
 | 8.5 | /rest/v1/student_profiles | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
 | 9.1 | /rest/v1/departments | GET | Valid request | 200 | **Pass** |
@@ -1190,18 +1190,28 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
+**Response:**
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
 
 ---
 
