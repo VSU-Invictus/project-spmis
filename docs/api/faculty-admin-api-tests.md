@@ -2420,9 +2420,9 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-988
 | Item | Value |
 |---|---|
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation, code=403` |
-| Body | `N/A` |
+| Body | `{\"name\":\"Bachelor of Science in Computer Science\"}` |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
 
 **Response:** 
