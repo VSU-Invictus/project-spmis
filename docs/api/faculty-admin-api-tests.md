@@ -9,7 +9,7 @@
 | Base URL | `http://127.0.0.1:4010` |
 | Tools used | curl |
 | Tested by | @Zaming, @AzrielKaye, @reeseBan, @dollyraexe|
-| Date | 2026-10-30 |
+| Date | 2026-11-09 |
 
 > Prism returns responses defined in the OpenAPI file. These tests verify the **contract**, not real database behavior.
 >
@@ -88,7 +88,7 @@
 | 15.1 | /rest/v1/programs | PATCH | Valid Request | 200 | **Pass** |
 | 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
 | 15.3 | /rest/v1/programs | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
-| 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Fail** |
+| 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Pass** |
 | 15.5 | /rest/v1/programs | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
 | 16.1 | /rest/v1/programs | DELETE | Valid Request | 204 | **Pass** |
 | 16.2 | /rest/v1/programs | DELETE | Missing JWT Bearer token | 401 | **Pass** |
@@ -2348,7 +2348,7 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.8ef76d5f-e6b2-49aa-a627-171dee1b8b65" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}""
 ```
 
 | Item | Value |
@@ -2356,21 +2356,15 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 | Headers | `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
 | Body | None |
 | Expected status | 400 or 422 |
-| Actual status | 401 Unauthorized |
+| Actual status | 400 Bad Request |
 
 **s-l violations**
 ```json
 [
   {
-    "location":["request"],
+    "location":["request", "body"],
     "severity":"Error",
-    "code": 401,
-    "message":"Invalid security scheme used"
-  },
-  {
-    "location":["request","body"],
-    "severity":"Error",
-    "code":"required",
+    "code": "required",
     "message":"Request body must have required property 'name'"
   }
 ]
@@ -2379,14 +2373,14 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 **Response**
 ```json
 {
-  "code":"PGRST301",
-  "message":"JWT is invalid or expired.",
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
   "details":null,
-  "hint":null
+  "hint":"Correct the request."
 }
 ```
 
-**Result:**  Fail (cannot simulate). `Prefer: return=representation` get 401 Unauthorized.
+**Result:** Pass
 
 ---
 
