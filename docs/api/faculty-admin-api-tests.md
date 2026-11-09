@@ -96,23 +96,23 @@
 | 16.4 | /rest/v1/programs | DELETE | Invalid request | 400 / 422 | **Pass** |
 | 17.1 | /rest/v1/review_revisions | GET | Valid request | 200 | **Pass** |
 | 17.2 | /rest/v1/review_revisions | GET | Missing JWT Bearer token | 401 | **Pass** |
-| 17.3 | /rest/v1/review_revisions | GET | 403 Forbidden contract simulation | 403 | **Fail** |
+| 17.3 | /rest/v1/review_revisions | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 17.4 | /rest/v1/review_revisions | GET | Invalid UUID | 400 | **Pass** |
 | 18.1 | /rest/v1/approval_queue_items | GET | Valid request | 200 | **Pass** |
 | 18.2 | /rest/v1/approval_queue_items | GET | Missing JWT Bearer token | 401 | **Pass** |
-| 18.3 | /rest/v1/approval_queue_items | GET | 403 Forbidden contract simulation | 403 | **Fail** |
+| 18.3 | /rest/v1/approval_queue_items | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
-| 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Fail** |
+| 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Pass** |
 | 19.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
 | 19.3 | /rest/v1/approval_queue_items | POST | 403 Forbidden contract simulation | 403 | **Fail** |
 | 19.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
 | 20.1 | /rest/v1/audit_log_entries | GET | Valid request | 200 | **Pass** |
 | 20.2 | /rest/v1/audit_log_entries | GET | Missing JWT Bearer token | 401 | **Pass** |
-| 20.3 | /rest/v1/audit_log_entries | GET | 403 Forbidden contract simulation | 403 | **Fail** |
+| 20.3 | /rest/v1/audit_log_entries | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 20.4 | /rest/v1/audit_log_entries | GET | Invalid UUID | 400 | **Pass** |
 | 21.1 | /functions/v1/reviews | POST | Valid request | 201 | **Pass** |
 | 21.2 | /functions/v1/reviews | POST | Missing JWT Bearer token | 401 | **Pass** |
-| 21.3 | /functions/v1/reviews | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 21.3 | /functions/v1/reviews | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 21.4 | /functions/v1/reviews | POST | Invalid payload (missing student_id) | 422 | **Pass** |
 | 21.5 | /functions/v1/reviews | POST | Missing request body (empty object) | 422 | **Pass** |
 | 21.6 | /functions/v1/reviews | POST | Invalid student UUID | 422 | **Pass** |
@@ -2606,27 +2606,28 @@ curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.67015de8-1ce8-4ac4-8634-384bf5fb3821&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.DA1A2cA2-9E3c-59d6-5FCB-28b0F78d7f07&order=edited_at.asc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/review_revisions?review_id=eq.67015de8-1ce8-4ac4-8634-384bf5fb3821&__code=403` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad Request |
+| Actual status | 403 Forbidden |
 
 **Response**
 ```json
 {
-  "code":"22P02",
-  "message":"Invalid input syntax for a column value.","details":null,
-  "hint":"Correct the request."
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
 }
 ```
 
-**Result:** Fail (cannot simulate)
+**Result:** Pass
 
 ---
 
@@ -2726,27 +2727,28 @@ curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_regi
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc,id.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending&order=created_at.desc,id.asc&__code=403` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad Request |
+| Actual status | 403 Forbidden |
 
 **Response**
 ```json
 {
-  "code":"22P02",
-  "message":"Invalid input syntax for a column value.","details":null,
-  "hint":"Correct the request."
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
 }
 ```
 
-**Result:** Fail (cannot simulate)
+**Result:** Pass
 
 ---
 
@@ -2789,29 +2791,42 @@ curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?id=eq.not-a-uuid&typ
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation" -d "{\"name\":\"Computer Science\"}" -H "Content-Type: application/json"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation" -H "Content-Type: application/json" -d "{\"type\":\"program_proposal\",\"payload\":{\"name\":\"BS Computer Science\"}}"
 ```
 
 | Item | Value |
 |---|---|
 | URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` |
-| Body | `{ "name": "Computer Science" }` |
+| Body | `{\"type\":\"program_proposal\",\"payload\":{\"name\":\"BS Computer Science\"}}` |
 | Expected status | 201 Created |
-| Actual status | 400 Bad Request |
+| Actual status | 201 Created |
 
 **Response**
 ```json
 [
   {
-    "code":"22P02",
-    "message":"Invalid input syntax for a column value.","details":null,
-    "hint":"Correct the request."
+    "id":"32272463-1823-4774-a574-558101103e9a",
+    "type":"student_registration",
+    "submitted_by":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+    "payload":
+    {
+      "student_id_number":"27-1-12345",
+      "first_name":"Maria",
+      "last_name":"Santos",  
+      "middle_name":null,
+      "program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"
+    },
+      "status":"pending",
+      "decided_by":null,
+      "decision_reason":null,
+      "created_at":"2026-10-26T00:00:00Z",
+      "decided_at":null
   }
 ]
 ```
 
-**Result:** Fail (cannot simulate)
+**Result:** Pass
 
 ---
 
@@ -2987,27 +3002,28 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&order=created_at.asc,id.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&order=created_at.asc,id.asc&__code=403` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad Request |
+| Actual status | 403 Forbidden |
 
 **Response**
 ```json
 {
-  "code":"22P02",
-  "message":"Invalid input syntax for a column value.","details":null,
-  "hint":"Correct the request."
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
 }
 ```
 
-**Result:** Fail (cannot simulate)
+**Result:** Pass
 
 ---
 
@@ -3115,17 +3131,27 @@ curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "Content-Type: a
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews" -H "apikey: test-key" -H "Authorization: ******" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"student_id\":\"45b54332-e470-4c21-a839-7428c4f6bf42\",\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
+curl -i -X POST "http://127.0.0.1:4010/functions/v1/reviews?__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -d "{\"student_id\":\"45b54332-e470-4c21-a839-7428c4f6bf42\",\"body_document\":{\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"text\":\"Demonstrated strong leadership.\",\"bold\":true}]}]},\"tags\":[\"leadership\"]}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: ******` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` |
 | Body | Valid review creation JSON |
 | Expected status | 403 Forbidden |
-| Actual status | 201 Created |
+| Actual status | 403 Forbidden |
 
-**Result:** Fail (cannot simulate). Prism returned the default 201 creation response; this does not test real role authorization.
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
 
 ---
 
