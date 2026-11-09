@@ -102,7 +102,7 @@
 | 18.2 | /rest/v1/approval_queue_items | GET | Missing JWT Bearer token | 401 | **Pass** |
 | 18.3 | /rest/v1/approval_queue_items | GET | 403 Forbidden contract simulation | 403 | **Fail** |
 | 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
-| 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Fail** |
+| 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Pass** |
 | 19.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
 | 19.3 | /rest/v1/approval_queue_items | POST | 403 Forbidden contract simulation | 403 | **Fail** |
 | 19.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
@@ -2789,29 +2789,42 @@ curl -i "http://127.0.0.1:4010/rest/v1/approval_queue_items?id=eq.not-a-uuid&typ
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation" -d "{\"name\":\"Computer Science\"}" -H "Content-Type: application/json"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation" -H "Content-Type: application/json" -d "{\"type\":\"program_proposal\",\"payload\":{\"name\":\"BS Computer Science\"}}"
 ```
 
 | Item | Value |
 |---|---|
 | URL | `http://127.0.0.1:4010/rest/v1/approval_queue_items` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation` |
-| Body | `{ "name": "Computer Science" }` |
+| Body | `{\"type\":\"program_proposal\",\"payload\":{\"name\":\"BS Computer Science\"}}` |
 | Expected status | 201 Created |
-| Actual status | 400 Bad Request |
+| Actual status | 201 Created |
 
 **Response**
 ```json
 [
   {
-    "code":"22P02",
-    "message":"Invalid input syntax for a column value.","details":null,
-    "hint":"Correct the request."
+    "id":"32272463-1823-4774-a574-558101103e9a",
+    "type":"student_registration",
+    "submitted_by":"e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+    "payload":
+    {
+      "student_id_number":"27-1-12345",
+      "first_name":"Maria",
+      "last_name":"Santos",  
+      "middle_name":null,
+      "program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"
+    },
+      "status":"pending",
+      "decided_by":null,
+      "decision_reason":null,
+      "created_at":"2026-10-26T00:00:00Z",
+      "decided_at":null
   }
 ]
 ```
 
-**Result:** Fail (cannot simulate)
+**Result:** Pass
 
 ---
 
