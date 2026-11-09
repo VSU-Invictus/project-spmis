@@ -35,7 +35,7 @@
 | 3.4 | /rest/v1/faculty_profiles | GET | Invalid request | 400/422 | **Pass** |
 | 4.1 | /rest/v1/faculty_profiles | PATCH | Valid request | 200 | **Pass**|
 | 4.2 | /rest/v1/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
-| 4.3 | /rest/v1/faculty_profiles | PATCH  | 403 Forbidden contract simulation | 403 | **Fail** |
+| 4.3 | /rest/v1/faculty_profiles | PATCH  | 403 Forbidden contract simulation | 403 | **Pass** |
 | 4.4 | /rest/v1/faculty_profiles | PATCH  | Invalid Payload | 400/422 | **Pass** |
 | 5.1 | /rest/v1/rpc/suggest_review_tags | GET | Valid request | 200 | **Pass**|
 | 5.2 | /rest/v1/rpc/suggest_review_tags | GET | Missing JWT | 401 | **Pass** |
@@ -663,19 +663,27 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-Fea3-43de-83fa-a2CD8945DdFA&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"status\":\"active\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-Fea3-43de-83fa-a2CD8945DdFA&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"status\":\"active\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{"status":"active"}` |
 | Expected status | 403 Forbidden |
-| Actual status | 200 OK |
+| Actual status | 403 Forbidden |
 
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` is rejected because the contract fixes `Prefer` to a constant, and `?__code=403` was ignored by this Prism version.
-
+**Result:** Pass
 ---
 
 ### Case 4: Invalid Payload (400, real validation)
