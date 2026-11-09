@@ -104,7 +104,7 @@
 | 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
 | 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Fail** |
 | 19.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
-| 19.3 | /rest/v1/approval_queue_items | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 19.3 | /rest/v1/approval_queue_items | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 19.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
 | 20.1 | /rest/v1/audit_log_entries | GET | Valid request | 200 | **Pass** |
 | 20.2 | /rest/v1/audit_log_entries | GET | Missing JWT Bearer token | 401 | **Pass** |
@@ -2961,18 +2961,27 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey:
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Computer Science\"}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"type\":\"program_proposal\",\"payload\":{\"name\":\"BS Computer Science\"}}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{ "name": "Computer Science" }` |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
+***Response:** 
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` get 400 Bad request.
+**Result:** Pass
 
 ---
 
