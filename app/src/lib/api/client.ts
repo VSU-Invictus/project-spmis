@@ -16,6 +16,8 @@ let projectApiKey: string | undefined =
 
 export const apiClient = createClient<paths>({
   baseUrl,
+  // Resolve fetch at request time so MSW's Node interceptor is used in Vitest.
+  fetch: (request) => globalThis.fetch(request),
 });
 
 apiClient.use({
