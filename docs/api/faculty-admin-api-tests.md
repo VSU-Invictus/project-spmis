@@ -108,7 +108,7 @@
 | 19.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
 | 20.1 | /rest/v1/audit_log_entries | GET | Valid request | 200 | **Pass** |
 | 20.2 | /rest/v1/audit_log_entries | GET | Missing JWT Bearer token | 401 | **Pass** |
-| 20.3 | /rest/v1/audit_log_entries | GET | 403 Forbidden contract simulation | 403 | **Fail** |
+| 20.3 | /rest/v1/audit_log_entries | GET | 403 Forbidden contract simulation | 403 | **Pass** |
 | 20.4 | /rest/v1/audit_log_entries | GET | Invalid UUID | 400 | **Pass** |
 | 21.1 | /functions/v1/reviews | POST | Valid request | 201 | **Pass** |
 | 21.2 | /functions/v1/reviews | POST | Missing JWT Bearer token | 401 | **Pass** |
@@ -3002,12 +3002,12 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
 
 **Request**
 ```bash
-curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403"
+curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&order=created_at.asc,id.asc&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token"
 ```
 
 | Item | Value |
 |---|---|
-| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&action=eq.%296jV%3Ak%5D%3A%40M%26&created_at=gt.l%3DE%3D7p.6as&and=assumenda&order=created_at.asc%2Cid.asc` |
+| URL | `http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&order=created_at.asc,id.asc&__code=403` |
 | Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` |
 | Body | None |
 | Expected status | 403 Forbidden |
@@ -3016,13 +3016,14 @@ curl -i "http://127.0.0.1:4010/rest/v1/audit_log_entries?actor_role=eq.admin&act
 **Response**
 ```json
 {
-  "code":"22P02",
-  "message":"Invalid input syntax for a column value.","details":null,
-  "hint":"Correct the request."
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
 }
 ```
 
-**Result:** Fail (cannot simulate)
+**Result:** Pass
 
 ---
 
