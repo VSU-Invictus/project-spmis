@@ -92,8 +92,8 @@ export function FacultyChatPage() {
       content: m.content,
     }));
 
-    const isRateLimit = forceSuccess ? false : simulateRateLimit;
-    const headers = isRateLimit ? { Prefer: 'code=429' } : undefined;
+    const isRateLimit = import.meta.env.DEV && (forceSuccess ? false : simulateRateLimit);
+    const headers = import.meta.env.DEV && isRateLimit ? { Prefer: 'code=429' } : undefined;
 
     askChatbotMutation.mutate({
       body: {
@@ -129,6 +129,7 @@ export function FacultyChatPage() {
           </div>
 
           {/* Demonstration Helper for Milestone 2 Gate A5 */}
+          {import.meta.env.DEV && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Badge variant={simulateRateLimit ? 'danger' : 'neutral'}>
               Mode: {simulateRateLimit ? '429 Rate Limit Simulation' : '200 Normal'}
@@ -141,6 +142,7 @@ export function FacultyChatPage() {
               {simulateRateLimit ? 'Disable 429 Simulator' : '⚡ Simulate 429 Rate Limit'}
             </Button>
           </div>
+          )}
         </div>
 
         {/* Message Thread */}
