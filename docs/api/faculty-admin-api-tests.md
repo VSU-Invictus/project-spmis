@@ -9,7 +9,7 @@
 | Base URL | `http://127.0.0.1:4010` |
 | Tools used | curl |
 | Tested by | @Zaming, @AzrielKaye, @reeseBan, @dollyraexe|
-| Date | 2026-10-30 |
+| Date | 2026-11-09 |
 
 > Prism returns responses defined in the OpenAPI file. These tests verify the **contract**, not real database behavior.
 >
@@ -35,7 +35,7 @@
 | 3.4 | /rest/v1/faculty_profiles | GET | Invalid request | 400/422 | **Pass** |
 | 4.1 | /rest/v1/faculty_profiles | PATCH | Valid request | 200 | **Pass**|
 | 4.2 | /rest/v1/faculty_profiles | PATCH  | Missing JWT | 401 | **Pass** |
-| 4.3 | /rest/v1/faculty_profiles | PATCH  | 403 Forbidden contract simulation | 403 | **Fail** |
+| 4.3 | /rest/v1/faculty_profiles | PATCH  | 403 Forbidden contract simulation | 403 | **Pass** |
 | 4.4 | /rest/v1/faculty_profiles | PATCH  | Invalid Payload | 400/422 | **Pass** |
 | 5.1 | /rest/v1/rpc/suggest_review_tags | GET | Valid request | 200 | **Pass**|
 | 5.2 | /rest/v1/rpc/suggest_review_tags | GET | Missing JWT | 401 | **Pass** |
@@ -47,13 +47,13 @@
 | 6.4 | /rest/v1/rpc/search_students | GET | Invalid UUID | 400/422 | **Pass** |
 | 7.1 | /rest/v1/student_profiles | POST | Valid request | 201 | **Pass** |
 | 7.2 | /rest/v1/student_profiles | POST | Missing JWT | 401 | **Pass** |
-| 7.3 | /rest/v1/student_profiles | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 7.3 | /rest/v1/student_profiles | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 7.4 | /rest/v1/student_profiles | POST | Invalid UUID | 400/422 | **Pass** |
 | 8.1 | /rest/v1/student_profiles | PATCH | Valid request | 200 | **Pass** |
 | 8.2 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
-| 8.3 | /rest/v1/student_profiles | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
+| 8.3 | /rest/v1/student_profiles | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
 | 8.4 | /rest/v1/student_profiles | PATCH | Invalid request | 400 | **Pass** |
-| 8.5 | /rest/v1/student_profiles | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
+| 8.5 | /rest/v1/student_profiles | PATCH | 409 Conflict contract simulation | 409 | **Pass** |
 | 9.1 | /rest/v1/departments | GET | Valid request | 200 | **Pass** |
 | 9.2 | /rest/v1/departments | GET | Missing JWT | 401 | **Pass** |
 | 9.3 | /rest/v1/departments | GET | 403 Forbidden contract simulation | 403 | **Pass** |
@@ -62,14 +62,14 @@
 | 9.6 | /rest/v1/departments | GET | Invalid request | 416 | **Pass** |
 | 10.1 | /rest/v1/departments | POST | Valid request | 201 | **Pass** |
 | 10.2 | /rest/v1/departments | POST | Missing JWT | 401 | **Pass** |
-| 10.3 | /rest/v1/departments | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 10.3 | /rest/v1/departments | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 10.4 | /rest/v1/departments | POST | Invalid request | 400/422 | **Pass** |
-| 10.5 | /rest/v1/departments | POST | 409 Conflict contract simulation | 409 | **Fail** |
+| 10.5 | /rest/v1/departments | POST | 409 Conflict contract simulation | 409 | **Pass** |
 | 11.1 | /rest/v1/departments | PATCH | Valid request | 200 | **Pass** |
 | 11.2 | /rest/v1/departments | PATCH | Missing JWT | 401 | **Pass** |
-| 11.3 | /rest/v1/departments | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
+| 11.3 | /rest/v1/departments | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
 | 11.4 | /rest/v1/departments | PATCH | Invalid request | 400/422 | **Pass** |
-| 11.5 | /rest/v1/departments | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
+| 11.5 | /rest/v1/departments | PATCH | 409 Conflict contract simulation | 409 | **Pass** |
 | 12.1 | /rest/v1/departments | DELETE | Valid request | 204 | **Pass** |
 | 12.2 | /rest/v1/departments | DELETE | Missing JWT | 401 | **Pass** |
 | 12.3 | /rest/v1/departments | DELETE | 403 Forbidden contract simulation | 403 | **Pass** |
@@ -82,14 +82,14 @@
 | 13.6 | /rest/v1/programs | GET | Invalid request | 416 | **Pass** |
 | 14.1 | /rest/v1/programs | POST | Valid request | 201 | **Pass** |
 | 14.2 | /rest/v1/programs | POST | Missing JWT | 401 | **Pass** |
-| 14.3 | /rest/v1/programs | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 14.3 | /rest/v1/programs | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 14.4 | /rest/v1/programs | POST | Invalid request | 400 | **Pass** |
-| 14.5 | /rest/v1/programs | POST | 409 Conflict contract simulation | 409 | **Fail** |
+| 14.5 | /rest/v1/programs | POST | 409 Conflict contract simulation | 409 | **Pass** |
 | 15.1 | /rest/v1/programs | PATCH | Valid Request | 200 | **Pass** |
 | 15.2 | /rest/v1/programs | PATCH | Missing JWT Bearer token | 401 | **Pass** |
-| 15.3 | /rest/v1/programs | PATCH | 403 Forbidden contract simulation | 403 | **Fail** |
-| 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Fail** |
-| 15.5 | /rest/v1/programs | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
+| 15.3 | /rest/v1/programs | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
+| 15.4 | /rest/v1/programs | PATCH | Invalid request | 400 / 422 | **Pass** |
+| 15.5 | /rest/v1/programs | PATCH | 409 Conflict contract simulation | 409 | **Pass** |
 | 16.1 | /rest/v1/programs | DELETE | Valid Request | 204 | **Pass** |
 | 16.2 | /rest/v1/programs | DELETE | Missing JWT Bearer token | 401 | **Pass** |
 | 16.3 | /rest/v1/programs | DELETE | 403 Forbidden contract simulation | 403 | **Pass** |
@@ -104,7 +104,7 @@
 | 18.4 | /rest/v1/approval_queue_items | GET | Invalid UUID | 400 | **Pass** |
 | 19.1 | /rest/v1/approval_queue_items | POST | Valid request | 201 | **Pass** |
 | 19.2 | /rest/v1/approval_queue_items | POST | Missing JWT | 401 | **Pass** |
-| 19.3 | /rest/v1/approval_queue_items | POST | 403 Forbidden contract simulation | 403 | **Fail** |
+| 19.3 | /rest/v1/approval_queue_items | POST | 403 Forbidden contract simulation | 403 | **Pass** |
 | 19.4 | /rest/v1/approval_queue_items | POST | Invalid request | 400/422 | **Pass** |
 | 20.1 | /rest/v1/audit_log_entries | GET | Valid request | 200 | **Pass** |
 | 20.2 | /rest/v1/audit_log_entries | GET | Missing JWT Bearer token | 401 | **Pass** |
@@ -663,19 +663,27 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-Fea3-43de-83fa-a2CD8945DdFA&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{\"status\":\"active\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/faculty_profiles?id=eq.dAF67EA5-Fea3-43de-83fa-a2CD8945DdFA&__code=403" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"status\":\"active\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{"status":"active"}` |
 | Expected status | 403 Forbidden |
-| Actual status | 200 OK |
+| Actual status | 403 Forbidden |
 
+**Response**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` is rejected because the contract fixes `Prefer` to a constant, and `?__code=403` was ignored by this Prism version.
-
+**Result:** Pass
 ---
 
 ### Case 4: Invalid Payload (400, real validation)
@@ -1046,18 +1054,27 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: tes
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/student_profiles" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
+**Response:**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+  }
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
@@ -1173,18 +1190,28 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
+**Response:**
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
 
 ---
 
@@ -1247,18 +1274,27 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=409` |
 | Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 409 Conflict |
-| Actual status | 400 Bad request |
+| Actual status | 409 Conflict |
 
+**Response:** 
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
@@ -1526,18 +1562,27 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Computer Science\"}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{ "name": "Computer Science" }` |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
+**Response:** 
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
@@ -1585,18 +1630,27 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Computer Science\"}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/departments" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=409` |
 | Body | `{ "name": "Computer Science" }` |
 | Expected status | 409 Conflict |
-| Actual status | 400 Bad request |
+| Actual status | 409 Conflict |
 
+**Response:**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
@@ -1692,17 +1746,28 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Computer Science\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body |  |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+
+**Response:**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
+
+**Result:** Pass
 
 ---
 
@@ -1750,17 +1815,27 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Computer Science\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/departments?id=eq.81cDddb2-4c5f-7A1f-FD3c-ACB4fF9C08CD" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"name\":\"Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=409` |
 | Body |  |
 | Expected status | 409 Conflict |
-| Actual status | 400 Bad request |
+| Actual status | 409 Conflict |
 
-**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+
+**Response:**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
+**Result:** Pass
 
 ---
 
@@ -2158,18 +2233,27 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{ "name": "Bachelor of Science in Computer Science" }` |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
+**Response:**
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` and `?__code=403` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
@@ -2217,18 +2301,27 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=409` |
 | Body | `{ "name": "Bachelor of Science in Computer Science" }` |
 | Expected status | 409 Conflict |
-| Actual status | 400 Bad request |
+| Actual status | 409 Conflict |
 
+**Response:**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
@@ -2321,12 +2414,12 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}" -H "Content-Type: application/json"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Prefer: return=representation, code=403" -d "{\"name\":\"Bachelor of Science in Computer Science\"}" -H "Content-Type: application/json"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Prefer: return=representation, code=403` |
 | Body | `N/A` |
 | Expected status | 403 Forbidden |
 | Actual status | 400 Bad request |
@@ -2335,20 +2428,21 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 **Response:** 
 ```json
 {
-  "code":"22P02",
-  "message":"Invalid input syntax for a column value.","details":null,
-  "hint":"Correct the request."
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
 }
 ```
 
-**Result:**  Fail (cannot simulate). `Prefer: code=403`get 400 Bad request.
+**Result:** Pass
 ---
 
 ### Case 4: Invalid request (400 / 422)
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889-6e4b-E9217631ceEc" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.8ef76d5f-e6b2-49aa-a627-171dee1b8b65" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}""
 ```
 
 | Item | Value |
@@ -2356,21 +2450,15 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 | Headers | `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
 | Body | None |
 | Expected status | 400 or 422 |
-| Actual status | 401 Unauthorized |
+| Actual status | 400 Bad Request |
 
 **s-l violations**
 ```json
 [
   {
-    "location":["request"],
+    "location":["request", "body"],
     "severity":"Error",
-    "code": 401,
-    "message":"Invalid security scheme used"
-  },
-  {
-    "location":["request","body"],
-    "severity":"Error",
-    "code":"required",
+    "code": "required",
     "message":"Request body must have required property 'name'"
   }
 ]
@@ -2379,14 +2467,14 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 **Response**
 ```json
 {
-  "code":"PGRST301",
-  "message":"JWT is invalid or expired.",
+  "code":"22P02",
+  "message":"Invalid input syntax for a column value.",
   "details":null,
-  "hint":null
+  "hint":"Correct the request."
 }
 ```
 
-**Result:**  Fail (cannot simulate). `Prefer: return=representation` get 401 Unauthorized.
+**Result:** Pass
 
 ---
 
@@ -2394,19 +2482,28 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-9889
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"name\":\"Bachelor of Science in Computer Science\"}"
 
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=409` |
 | Body | `{ "name": "Bachelor of Science in Computer Science" }` |
 | Expected status | 409 Conflict |
-| Actual status | 400 Bad request |
+| Actual status | 409 Conflict |
 
+**Response:**
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
@@ -2879,18 +2976,27 @@ curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey:
 
 **Request**
 ```bash
-curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=403" -d "{\"name\":\"Computer Science\"}"
+curl -i -X POST "http://127.0.0.1:4010/rest/v1/approval_queue_items" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=403" -d "{\"type\":\"program_proposal\",\"payload\":{\"name\":\"BS Computer Science\"}}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=403` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=403` |
 | Body | `{ "name": "Computer Science" }` |
 | Expected status | 403 Forbidden |
-| Actual status | 400 Bad request |
+| Actual status | 403 Forbidden |
 
+***Response:** 
+```json
+{
+  "code":"FORBIDDEN",
+  "message":"You are not allowed to perform this action.",
+  "details":null,
+  "hint":null
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=403` get 400 Bad request.
+**Result:** Pass
 
 ---
 
