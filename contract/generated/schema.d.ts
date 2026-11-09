@@ -1251,8 +1251,8 @@ export interface components {
         };
     };
     parameters: {
-        /** @description Requests that PostgREST return the affected record representation. */
-        PreferReturnRepresentation: "return=representation";
+        /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
+        PreferReturnRepresentation: "return=representation" | "return=representation, code=403" | "return=representation, code=409";
         /** @description PostgREST filter, for example `eq.<uuid>`. */
         IdFilter: components["schemas"]["UuidEqualityFilter"];
         /** @description Required PostgREST equality filter, formatted as `eq.<uuid>`. */
@@ -1388,7 +1388,7 @@ export interface operations {
                 id: components["parameters"]["RequiredIdFilter"];
             };
             header: {
-                /** @description Requests that PostgREST return the affected record representation. */
+                /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
                 Prefer: components["parameters"]["PreferReturnRepresentation"];
             };
             path?: never;
@@ -1521,7 +1521,7 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Requests that PostgREST return the affected record representation. */
+                /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
                 Prefer: components["parameters"]["PreferReturnRepresentation"];
             };
             path?: never;
@@ -1555,7 +1555,7 @@ export interface operations {
                 id: components["parameters"]["RequiredIdFilter"];
             };
             header: {
-                /** @description Requests that PostgREST return the affected record representation. */
+                /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
                 Prefer: components["parameters"]["PreferReturnRepresentation"];
             };
             path?: never;
@@ -1632,7 +1632,7 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Requests that PostgREST return the affected record representation. */
+                /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
                 Prefer: components["parameters"]["PreferReturnRepresentation"];
             };
             path?: never;
@@ -1691,7 +1691,7 @@ export interface operations {
                 id: components["parameters"]["RequiredIdFilter"];
             };
             header: {
-                /** @description Requests that PostgREST return the affected record representation. */
+                /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
                 Prefer: components["parameters"]["PreferReturnRepresentation"];
             };
             path?: never;
@@ -1768,7 +1768,7 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Requests that PostgREST return the affected record representation. */
+                /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
                 Prefer: components["parameters"]["PreferReturnRepresentation"];
             };
             path?: never;
@@ -1827,7 +1827,7 @@ export interface operations {
                 id: components["parameters"]["RequiredIdFilter"];
             };
             header: {
-                /** @description Requests that PostgREST return the affected record representation. */
+                /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
                 Prefer: components["parameters"]["PreferReturnRepresentation"];
             };
             path?: never;
@@ -1949,7 +1949,7 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Requests that PostgREST return the affected record representation. */
+                /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
                 Prefer: components["parameters"]["PreferReturnRepresentation"];
             };
             path?: never;
