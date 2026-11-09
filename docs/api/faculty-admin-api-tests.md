@@ -2442,13 +2442,13 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.eF5FfA65-ddfb-988
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.8ef76d5f-e6b2-49aa-a627-171dee1b8b65" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}""
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/programs?id=eq.8ef76d5f-e6b2-49aa-a627-171dee1b8b65" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "apikey: test-key" -H "Content-Type: application/json" -H "Prefer: return=representation" -d "{}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation` |
-| Body | None |
+| Headers | `Authorization: Bearer test.jwt.token` `apikey: test-key` `Content-Type: application/json` `Prefer: return=representation` |
+| Body | {}  |
 | Expected status | 400 or 422 |
 | Actual status | 400 Bad Request |
 
