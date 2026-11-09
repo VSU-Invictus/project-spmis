@@ -13,6 +13,6 @@
     "noUnusedParameters": true,
     "types": ["vite/client"]
   },
-  "include": ["src", "tests", "vitest.setup.ts"]
+  "include": ["src", "tests"]
 }
 
