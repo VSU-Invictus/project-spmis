@@ -53,7 +53,7 @@
 | 8.2 | /rest/v1/student_profiles | PATCH | Missing JWT | 401 | **Pass** |
 | 8.3 | /rest/v1/student_profiles | PATCH | 403 Forbidden contract simulation | 403 | **Pass** |
 | 8.4 | /rest/v1/student_profiles | PATCH | Invalid request | 400 | **Pass** |
-| 8.5 | /rest/v1/student_profiles | PATCH | 409 Conflict contract simulation | 409 | **Fail** |
+| 8.5 | /rest/v1/student_profiles | PATCH | 409 Conflict contract simulation | 409 | **Pass** |
 | 9.1 | /rest/v1/departments | GET | Valid request | 200 | **Pass** |
 | 9.2 | /rest/v1/departments | GET | Missing JWT | 401 | **Pass** |
 | 9.3 | /rest/v1/departments | GET | 403 Forbidden contract simulation | 403 | **Pass** |
@@ -1274,18 +1274,27 @@ curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-
 
 **Request**
 ```bash
-curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: code=409" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
+curl -i -X PATCH "http://127.0.0.1:4010/rest/v1/student_profiles?id=eq.6ba1bfDE-243f-7fd9-24e6-dE4Dedd3B2c6" -H "apikey: test-key" -H "Authorization: Bearer test.jwt.token" -H "Content-Type: application/json" -H "Prefer: return=representation, code=409" -d "{\"student_id_number\":\"27-1-12345\",\"first_name\":\"Maria\",\"last_name\":\"Santos\",\"program_id\":\"8ef76d5f-e6b2-49aa-a627-171dee1b8b65\"}"
 ```
 
 | Item | Value |
 |---|---|
-| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: code=409` |
+| Headers | `apikey: test-key` `Authorization: Bearer test.jwt.token` `Content-Type: application/json` `Prefer: return=representation, code=409` |
 | Body | `{"student_id_number":"27-1-12345","first_name":"Maria","last_name":"Santos","program_id":"8ef76d5f-e6b2-49aa-a627-171dee1b8b65"}` |
 | Expected status | 409 Conflict |
-| Actual status | 400 Bad request |
+| Actual status | 409 Conflict |
 
+**Response:** 
+```json
+{
+  "code":"INVALID_STATE",
+  "message":"The operation is not allowed in the current state.",
+  "details":null,
+  "hint":"Refresh the record and try an allowed action."
+}
+```
 
-**Result:** Fail (cannot simulate). `Prefer: code=409` and `?__code=409` both get 400 Bad request.
+**Result:** Pass
 
 ---
 
