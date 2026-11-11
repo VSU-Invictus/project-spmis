@@ -15,12 +15,12 @@ When resolving conflicts, AI agents must evaluate directives in this strict orde
 Top level: `README.md`, `ai-context.md`, `.gitignore`, `.github/`, `app/`, `contract/`, `docs/`, `mockup/`, `supabase/`.
 
 * **`contract/` — Frozen API Contract (`v1.0.0`, tagged `contract-v1.0.0`).**
-  * `openapi.yaml` defines all 27 curated operations (`getOwnProfile`, `updateOwnProfile`, `updateFacultyByAdmin`, `listFaculty`, `searchStudents`, `getStudentById`, `createStudentDirect`, `updateStudent`, `listDepartments`, `createDepartment`, `updateDepartment`, `deleteDepartment`, `listPrograms`, `createProgram`, `updateProgram`, `deleteProgram`, `listStudentReviews`, `createReview`, `updateReview`, `setReviewStatus`, `listReviewVersions`, `listTags`, `suggestReviewTags`, `listApprovalQueueItems`, `submitApplication`, `decideApplications`, `askChatbot`, `listAuditLogs`).
+  * `openapi.yaml` defines all 27 curated operations (`getOwnProfile`, `updateOwnProfile`, `updateFacultyByAdmin`, `listFaculty`, `searchStudents`, `getStudentById`, `createStudentDirect`, `updateStudent`, `listDepartments`, `createDepartment`, `updateDepartment`, `deleteDepartment`, `listPrograms`, `createProgram`, `updateProgram`, `deleteProgram`, `listStudentReviews`, `createReview`, `updateReview`, `setReviewStatus`, `listReviewRevisions`, `listTags`, `listApprovalQueueItems`, `submitApplication`, `decideApplications`, `askChatbot`, `listAuditLogs`).
   * `generated/schema.d.ts` contains the `openapi-typescript` (`7.13.0`) types verified in CI by `contract/check-generated.mjs`.
   * `collection/` contains `spmis-contract.postman_collection.json` and `spmis-prism.postman_environment.json` (81 requests, 176 assertions across all 27 operations).
 * **`app/` — React SPA Workspace (`spmis-app`).**
-  * `app/.env.example` defines browser-public `VITE_SUPABASE_*` variables. **Never** put `GEMINI_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, or OAuth client secrets in `app/.env*`.
-  * `app/public/docs/index.html` is the pre-built Redoc bundle served at `/docs` (guarded by Supabase session auth in `app/src/pages/ContractDocsPage.tsx`).
+  * `app/.env.example` documents browser-public `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and `VITE_SITE_URL` (`app/src/lib/supabase.ts` checks `VITE_SUPABASE_PUBLISHABLE_KEY ?? VITE_SUPABASE_ANON_KEY`). **Never** put `GEMINI_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `sb_secret_*`, or OAuth client secrets in `app/.env*`.
+  * `app/public/docs/index.html` is the pre-built Redoc bundle served at `/docs` (guarded by Supabase session auth in `app/src/routes/docs/DocsPage.tsx`).
 * **`supabase/` — Backend Database, RLS & Edge Functions (M3).**
   * `supabase/.env.example` defines server-only `GEMINI_API_KEY`, `GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET` for Edge Functions and local Supabase Auth.
   * Target subdirectories for M3: `supabase/migrations/`, `supabase/functions/{reviews,chat,approvals,_shared}/`, `supabase/tests/*.sql` (`pgTAP`), and `supabase/seed.sql`.
@@ -76,7 +76,7 @@ Top level: `README.md`, `ai-context.md`, `.gitignore`, `.github/`, `app/`, `cont
 
 ### 5.1 Milestone 3 — Backend (`feat/m3-backend`) Rules
 1. **Strict Contract Alignment (`v1.0.0`):**
-   * All SQL tables, views (`review_details`), and RPCs (`search_students`, `get_student_by_id`, `get_own_profile`, `update_own_profile`, `suggest_review_tags`) in `supabase/migrations/` must match the exact column names, parameter names, and return shapes defined in `contract/openapi.yaml`.
+   * All SQL tables, views (`review_details`), and RPCs (`search_students`, `get_student_by_id`, `get_own_profile`, `update_own_profile`) in `supabase/migrations/` must match the exact column names, parameter names, and return shapes defined in `contract/openapi.yaml`.
 2. **Row Level Security (RLS) & `reviews.body_text` Lock:**
    * Enable RLS on **every** table in the `public` schema.
    * Enforce the 4 contract identities:
@@ -88,7 +88,7 @@ Top level: `README.md`, `ai-context.md`, `.gitignore`, `.github/`, `app/`, `cont
 3. **Edge Functions, De-identification & Gemini Isolation (`supabase/functions/`):**
    * Always forward the caller's `Authorization: Bearer <jwt>` header when creating the request-scoped Supabase client inside an Edge Function so RLS policies remain enforced.
    * Replace all student name variants (`first_name`, `middle_name`, `last_name`, `"First Last"`, `"Last, First"`) case-insensitively with `{{STUDENT:<system_uuid>}}` (never using `student_id_number`) **before** any text is sent to Gemini for embeddings or chat completion, and reverse-substitute `{{STUDENT:<uuid>}}` back into the response.
-   * `GEMINI_API_KEY` must only be read via `Deno.env.get('GEMINI_API_KEY')` inside `supabase/functions/`.
+   * `GEMINI_API_KEY` must only be read via `Deno.env.get('GEMINI_API_KEY')` inside `supabase/functions/`. Do **not** reject keys that begin with `AQ.` (Google AI Studio Authorization key format) by assuming an `AIza` prefix; authenticate via the official Gemini SDK or `x-goog-api-key` header.
    * All Deno unit and Edge Function tests (`supabase/functions/**/*.test.ts`) must mock Gemini and **never** make live network calls to `generativelanguage.googleapis.com` in local or CI test runs.
 
 ### 5.2 Milestone 4 — Frontend (`feat/m4-frontend`) Rules
@@ -103,7 +103,9 @@ Top level: `README.md`, `ai-context.md`, `.gitignore`, `.github/`, `app/`, `cont
    * Client forms validate via Zod before firing network mutations (500-word review limit, non-blank review body, tag limits, 1–200 char taxonomy names, unchanged-edit rejection, mandatory rejection reason).
    * Server errors (`400`, `401`, `403`, `404`, `409`, `422`, `429`) are normalized via `ApiRequestError` and surfaced inline with `error.message` and `error.hint`.
    * Any Prism mock-only header (`Prefer: code=...`) or simulation button in UI pages must be strictly gated behind `import.meta.env.DEV`.
-3. **Modal & Design System Rules:**
+3. **Vitest / React Testing Library Environment:**
+   * `app/vite.config.ts` sets `test.environment: 'node'` globally so MSW and pure Node `.mjs` tests stay fast. New React component tests (`.test.tsx`) using `@testing-library/react` and `@testing-library/jest-dom` must include `// @vitest-environment jsdom` at the top of the file.
+4. **Modal & Design System Rules:**
    * No nested modals (e.g., rejection reasons in approval queues use inline row expansion via `RejectionRow` / `.ui-queue-rejection-row`).
    * Use `.ui-*` Design System primitives (`app/src/components/ui/`) and CSS custom properties (`var(--*)` tokens from `design-system.css`).
 

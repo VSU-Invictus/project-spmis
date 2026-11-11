@@ -216,7 +216,8 @@ app/
     pages/
       faculty/                   # faculty portal screens (Dashboard, Students, Chat, Proposals, Applications)
       admin/                     # admin portal screens (Dashboard, Applications, Students, Taxonomy, Audit Log)
-      ContractDocsPage.tsx       # in-app Redoc viewer (auth-gated outside development)
+    routes/
+      docs/DocsPage.tsx          # in-app Redoc viewer (auth-gated outside development)
     components/
       ui/                        # Design System primitives (Button, Card, Badge, Input, Modal, Skeleton, EmptyState)
       navigation/                # AppShell, Sidebar, Topbar
