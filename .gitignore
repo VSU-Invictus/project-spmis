@@ -1,6 +1,7 @@
-tatus
 node_modules/
 dist/
+/contract/dist/
 .env*
+!.env.example
 *.tsbuildinfo
 .vite/

@@ -18,7 +18,7 @@ const temporaryDirectory = await mkdtemp(join(tmpdir(), 'spmis-contract-'));
 try {
   const expectedPath = join(temporaryDirectory, 'schema.d.ts');
   const result = spawnSync(process.execPath, [
-    npmCli, 'exec', '--yes', '--package=openapi-typescript@7.13.0', '--',
+    npmCli, 'exec', '--no', '--',
     'openapi-typescript', source, '--default-non-nullable=false', '-o', expectedPath,
   ], { cwd: app, stdio: 'inherit' });
 
