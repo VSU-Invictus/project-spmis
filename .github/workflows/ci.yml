@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - dev
+      - 'feat/**'
+      - 'fix/**'
+      - 'qa/**'
+  pull_request:
+    branches:
+      - main
+      - staging
+      - dev
+      - 'feat/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contract:
+    name: Contract Lint, Check & Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm --prefix app ci
+
+      - name: Lint OpenAPI contract (contract:lint)
+        run: npm --prefix app run contract:lint
+
+      - name: Check generated TypeScript types freshness (contract:check)
+        run: npm --prefix app run contract:check
+
+      - name: Build Redoc documentation bundle (contract:docs)
+        run: npm --prefix app run contract:docs
+
+      - name: Verify Redoc bundle is up to date
+        run: git diff --ignore-space-at-eol --exit-code app/public/docs/index.html
+
+      - name: Upload Redoc static bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: redoc-contract-docs
+          path: app/public/docs/index.html
+          retention-days: 14
+
+  app:
+    name: Typecheck, Unit Tests & Build
+    runs-on: ubuntu-latest
+    needs: contract
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm --prefix app ci
+
+      - name: Run TypeScript typecheck (typecheck)
+        run: npm --prefix app run typecheck
+
+      - name: Run Vitest unit & contract client tests (test)
+        run: npm --prefix app run test
+
+      - name: Build production SPA bundle (build)
+        run: npm --prefix app run build
