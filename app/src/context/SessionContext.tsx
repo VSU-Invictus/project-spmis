@@ -28,9 +28,32 @@ export interface SessionContextValue {
   syncProfile: (profile: FacultyProfile) => void;
 }
 
-const MOCK_ENABLED =
+function isPrismUrl(value: string | undefined): boolean {
+  try {
+    const url = new URL(value ?? 'http://localhost:4010');
+    return url.protocol === 'http:' &&
+      (url.hostname === 'localhost' || url.hostname === '127.0.0.1') &&
+      url.port === '4010';
+  } catch {
+    return false;
+  }
+}
+
+const MOCK_ENABLED = import.meta.env.DEV &&
   import.meta.env.VITE_USE_MOCK_AUTH === 'true' &&
-  (import.meta.env.VITE_SUPABASE_URL ?? 'http://localhost:4010') === 'http://localhost:4010';
+  isPrismUrl(import.meta.env.VITE_SUPABASE_URL);
+const MOCK_ROLE_STORAGE_KEY = 'spmis-mock-role';
+const MOCK_ROLES: MockRole[] = ['active', 'pending', 'admin'];
+
+function readMockRole(): MockRole {
+  if (!MOCK_ENABLED || typeof window === 'undefined') return 'active';
+  try {
+    const stored = window.localStorage.getItem(MOCK_ROLE_STORAGE_KEY);
+    return MOCK_ROLES.includes(stored as MockRole) ? stored as MockRole : 'active';
+  } catch {
+    return 'active';
+  }
+}
 
 const MOCK_DEPARTMENT_ID = '5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb';
 const MOCK_PROFILE_ID = 'e48adc9e-1b79-4b92-9848-aa12b25d63d7';
@@ -57,13 +80,18 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<FacultyProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [mockRole, setMockRoleState] = useState<MockRole>('active');
+  const [mockRole, setMockRoleState] = useState<MockRole>(readMockRole);
 
   const setMockRole = useCallback((nextRole: MockRole) => {
     if (!MOCK_ENABLED) return;
     setLoading(true);
     setProfile(createMockProfile(nextRole));
     setMockRoleState(nextRole);
+    try {
+      window.localStorage.setItem(MOCK_ROLE_STORAGE_KEY, nextRole);
+    } catch {
+      // Role switching still works for the current session if storage is unavailable.
+    }
     setLoading(false);
   }, []);
   const syncProfile = useCallback((nextProfile: FacultyProfile) => {

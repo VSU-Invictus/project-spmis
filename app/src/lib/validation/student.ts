@@ -9,7 +9,7 @@ export const studentSchema = z.object({
   student_id_number: requiredText(50),
   first_name: requiredText(200),
   last_name: requiredText(200),
-  middle_name: z.string().trim().nullable().optional(),
+  middle_name: z.string().trim().transform((value) => value || null).nullable().optional(),
   program_id: z.string().uuid(),
 }).strict();
 

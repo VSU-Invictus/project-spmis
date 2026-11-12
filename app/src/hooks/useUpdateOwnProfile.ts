@@ -26,7 +26,6 @@ export function useUpdateOwnProfile(
     onSuccess: async (profile, variables, onMutateResult, context) => {
       queryClient.setQueryData(queryKeys.ownProfile(), profile);
       syncProfile(profile);
-      await queryClient.invalidateQueries({ queryKey: queryKeys.ownProfile() });
       await options?.onSuccess?.(profile, variables, onMutateResult, context);
     },
   });

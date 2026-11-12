@@ -118,10 +118,21 @@ function ScrollToTop() {
 }
 
 function RootLayout() {
+  const { mockRole, setMockRole } = useSession();
   return (
     <>
       <ScrollToTop />
       <Outlet />
+      {mockRole !== null && (
+        <label style={{ position: 'fixed', right: 16, bottom: 16, zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
+          <span style={{ fontSize: 12 }}>Mock role</span>
+          <select aria-label="Mock role" value={mockRole} onChange={(event) => setMockRole(event.target.value as 'active' | 'pending' | 'admin')}>
+            <option value="active">Active Faculty</option>
+            <option value="pending">Pending Faculty</option>
+            <option value="admin">Admin</option>
+          </select>
+        </label>
+      )}
     </>
   );
 }
@@ -174,17 +185,6 @@ const router = createBrowserRouter([
             { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
             { path: 'programs', element: <AdminTaxonomyPage mode="programs" /> },
             { path: 'applications', element: <AdminApprovalQueuePage /> },
-            {
-              path: 'faculty',
-              element: (
-                <ReservedPortalPage
-                  role="admin"
-                  navKey="faculty"
-                  title="Faculty Management"
-                  breadcrumb="Admin Portal / Faculty Management"
-                />
-              ),
-            },
           ],
         }],
       },
@@ -202,6 +202,17 @@ const router = createBrowserRouter([
             { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
             { path: 'programs', element: <AdminTaxonomyPage mode="programs" /> },
             { path: 'audit-log', element: <AdminAuditLogPage /> },
+            {
+              path: 'faculty',
+              element: (
+                <ReservedPortalPage
+                  role="admin"
+                  navKey="faculty"
+                  title="Faculty Management"
+                  breadcrumb="Admin Portal / Faculty Management"
+                />
+              ),
+            },
           ],
         }],
       },
