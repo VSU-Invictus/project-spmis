@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   TableContainer,
@@ -120,7 +121,12 @@ export function FacultyStudentsPage() {
                         {student.student_id_number}
                       </TableCell>
                       <TableCell>
-                        <div style={{ fontWeight: 600 }}>{fullName}</div>
+                        <Link
+                          to={`/faculty/students/${student.id}`}
+                          style={{ fontWeight: 600, color: 'var(--foreground)' }}
+                        >
+                          {fullName}
+                        </Link>
                         <div style={{ fontSize: '12px', color: 'var(--muted-foreground, #64748b)' }}>
                           Registered via {student.registration_source === 'admin_direct' ? 'Admin Direct' : 'Faculty Application'}
                         </div>
@@ -142,13 +148,22 @@ export function FacultyStudentsPage() {
                         </div>
                       </TableCell>
                       <TableCell style={{ textAlign: 'right' }}>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => setSelectedStudent(student)}
-                        >
-                          View Reviews
-                        </Button>
+                        <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
+                          <Link
+                            to={`/faculty/students/${student.id}`}
+                            className="ui-btn ui-btn-primary ui-btn--sm"
+                            style={{ textDecoration: 'none' }}
+                          >
+                            Student Detail
+                          </Link>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => setSelectedStudent(student)}
+                          >
+                            View Reviews
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );

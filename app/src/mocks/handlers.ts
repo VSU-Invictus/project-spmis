@@ -8,14 +8,29 @@ const ownerId = 'e48adc9e-1b79-4b92-9848-aa12b25d63d7';
 const reviewWordLimit = 500;
 const chatbotRateLimit = 3;
 
+type RichTextRun = { text?: string; bold?: boolean; italic?: boolean };
+
+type ReviewDocumentBlock = {
+  type?: string;
+  content?: Array<RichTextRun>;
+  items?: Array<Array<RichTextRun>>;
+};
+
 type ReviewDocument = {
-  blocks?: Array<{ type?: string; content?: Array<{ text?: string }> }>;
+  blocks?: Array<ReviewDocumentBlock>;
 };
 
 type ReviewInput = {
   student_id?: string;
   body_document?: ReviewDocument;
   tags?: string[];
+};
+
+type MockAttachment = {
+  id: string;
+  mime_type: string;
+  size_bytes: number;
+  created_at: string;
 };
 
 type MockReview = {
@@ -28,9 +43,19 @@ type MockReview = {
   body_document: ReviewDocument;
   status: 'active' | 'hidden';
   tags: string[];
-  attachments: never[];
+  attachments: MockAttachment[];
   created_at: string;
   updated_at: string;
+};
+
+type MockReviewRevision = {
+  id: string;
+  review_id: string;
+  body_text_snapshot: string;
+  edited_by: string;
+  edited_at: string;
+  body_document_snapshot?: ReviewDocument;
+  tags_snapshot?: string[];
 };
 
 type ApprovalItem = {
@@ -80,24 +105,45 @@ const students = [
   },
 ];
 
-const reviews: MockReview[] = [
-  {
-    id: '67015de8-1ce8-4ac4-8634-384bf5fb3821',
-    student_id: studentId,
-    owner_id: ownerId,
-    author_name: 'Alex Reyes',
-    author_department_name: 'Computer Science',
-    body_text: 'Demonstrated strong leadership and research skills.',
-    body_document: {
-      blocks: [{ type: 'paragraph', content: [{ text: 'Demonstrated strong leadership and research skills.' }] }],
-    },
-    status: 'active' as const,
-    tags: ['leadership', 'research'],
-    attachments: [],
-    created_at: now,
-    updated_at: now,
+const initialReview: MockReview = {
+  id: '67015de8-1ce8-4ac4-8634-384bf5fb3821',
+  student_id: studentId,
+  owner_id: ownerId,
+  author_name: 'Alex Reyes',
+  author_department_name: 'Computer Science',
+  body_text: 'Demonstrated strong leadership and research skills.',
+  body_document: {
+    blocks: [{ type: 'paragraph', content: [{ text: 'Demonstrated strong leadership and research skills.' }] }],
   },
-];
+  status: 'active' as const,
+  tags: ['leadership', 'research'],
+  attachments: [
+    {
+      id: 'c32b11a0-51df-4e3f-8c04-75a10885a201',
+      mime_type: 'application/pdf',
+      size_bytes: 184320,
+      created_at: now,
+    },
+  ],
+  created_at: now,
+  updated_at: now,
+};
+
+const reviews: MockReview[] = [structuredClone(initialReview)];
+
+const initialRevision: MockReviewRevision = {
+  id: '5180c0d4-9423-4ef8-b7d8-9418193d02f9',
+  review_id: initialReview.id,
+  body_text_snapshot: 'Demonstrated strong leadership skills.',
+  edited_by: ownerId,
+  edited_at: '2026-10-25T12:00:00.000Z',
+  body_document_snapshot: {
+    blocks: [{ type: 'paragraph', content: [{ text: 'Demonstrated strong leadership skills.' }] }],
+  },
+  tags_snapshot: ['leadership'],
+};
+
+const reviewRevisions: MockReviewRevision[] = [structuredClone(initialRevision)];
 
 const approvalQueue: ApprovalItem[] = [
   {
@@ -144,14 +190,20 @@ const auditLogs = [
 
 let chatbotCallCount = 0;
 let nextReviewId = 1;
+let nextRevisionId = 1;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 const extractReviewText = (document: ReviewDocument | undefined): string =>
   (document?.blocks ?? [])
-    .flatMap((block) => block.content ?? [])
-    .map((item) => item.text ?? '')
+    .map((block) =>
+      block.type === 'paragraph'
+        ? (block.content ?? []).map((item) => item.text ?? '').join('')
+        : (block.items ?? [])
+            .map((item) => item.map((run) => run.text ?? '').join(''))
+            .join(' ')
+    )
     .join(' ')
     .trim();
 
@@ -206,6 +258,27 @@ export const handlers = [
     return HttpResponse.json(result);
   }),
 
+  http.get('*/rest/v1/rpc/get_student_by_id', async ({ request }) => {
+    await delay(10);
+    const url = new URL(request.url);
+    const targetId = url.searchParams.get('p_student_id');
+    const found = students.find((student) => student.id === targetId);
+    if (!found) {
+      return HttpResponse.json(null);
+    }
+    return HttpResponse.json({
+      id: found.id,
+      student_id_number: found.student_id_number,
+      first_name: found.first_name,
+      middle_name: found.middle_name,
+      last_name: found.last_name,
+      program_id: found.program_id,
+      registration_source: found.registration_source,
+      created_at: found.created_at,
+      updated_at: found.updated_at,
+    });
+  }),
+
   http.get('*/rest/v1/review_details', async ({ request }) => {
     await delay(10);
     const url = new URL(request.url);
@@ -248,6 +321,130 @@ export const handlers = [
     };
     reviews.push(review);
     return HttpResponse.json(review, { status: 201 });
+  }),
+
+  http.patch('*/functions/v1/reviews/:id', async ({ params, request }) => {
+    await delay(10);
+    const id = String(params.id ?? '');
+    const review = reviews.find((item) => item.id === id);
+    if (!review) {
+      return HttpResponse.json(
+        { code: 'NOT_FOUND', message: 'The requested review was not found.', details: null, hint: 'Check the review identifier.' },
+        { status: 404 },
+      );
+    }
+    if (review.owner_id !== ownerId) {
+      return HttpResponse.json(
+        { code: 'FORBIDDEN', message: 'Only the review owner can update this review.', details: null, hint: 'Sign in as the owning faculty member.' },
+        { status: 403 },
+      );
+    }
+    const input: unknown = await request.json().catch(() => null);
+    if (!isRecord(input)) {
+      return HttpResponse.json(
+        { code: 'VALIDATION_ERROR', message: 'The request contains invalid data.', details: 'Expected a JSON object.', hint: 'Correct the request and retry.' },
+        { status: 422 },
+      );
+    }
+    const body = input as ReviewInput;
+    const text = extractReviewText(body.body_document);
+    if (!text) return reviewValidationError('REVIEW_BODY_REQUIRED', 'The extracted review contains no non-whitespace text.');
+    const wordCount = countWords(text);
+    if (wordCount > reviewWordLimit) return reviewValidationError('REVIEW_WORD_LIMIT', `The extracted review contains ${wordCount} words; the limit is ${reviewWordLimit}.`);
+
+    const timestamp = new Date().toISOString();
+    reviewRevisions.unshift({
+      id: `mock-revision-${nextRevisionId++}`,
+      review_id: review.id,
+      body_text_snapshot: review.body_text,
+      edited_by: ownerId,
+      edited_at: timestamp,
+      body_document_snapshot: structuredClone(review.body_document),
+      tags_snapshot: [...review.tags],
+    });
+
+    review.body_text = text;
+    review.body_document = body.body_document ?? { blocks: [] };
+    if (body.tags !== undefined) {
+      review.tags = [...new Set(body.tags.flatMap((tag) => tag.toLowerCase().trim().split(/\s+/).filter(Boolean)))];
+    }
+    review.updated_at = timestamp;
+    return HttpResponse.json(review);
+  }),
+
+  http.post('*/functions/v1/reviews/:id/status', async ({ params, request }) => {
+    await delay(10);
+    const id = String(params.id ?? '');
+    const reviewIndex = reviews.findIndex((item) => item.id === id);
+    if (reviewIndex === -1) {
+      return HttpResponse.json(
+        { code: 'NOT_FOUND', message: 'The requested review was not found.', details: null, hint: 'Check the review identifier.' },
+        { status: 404 },
+      );
+    }
+    const review = reviews[reviewIndex];
+    if (review.owner_id !== ownerId) {
+      return HttpResponse.json(
+        { code: 'FORBIDDEN', message: 'Only the review owner can change this review status.', details: null, hint: 'Sign in as the owning faculty member.' },
+        { status: 403 },
+      );
+    }
+    const input: unknown = await request.json().catch(() => null);
+    const action = isRecord(input) ? String(input.action ?? '') : '';
+    if (!['hide', 'unhide', 'delete'].includes(action)) {
+      return HttpResponse.json(
+        { code: 'VALIDATION_ERROR', message: 'Invalid status action.', details: 'Expected hide, unhide, or delete.', hint: 'Choose a valid review status action.' },
+        { status: 422 },
+      );
+    }
+    if (action === 'hide' && review.status !== 'active') {
+      return HttpResponse.json(
+        { code: 'INVALID_STATE', message: 'Only active reviews can be hidden.', details: null, hint: 'Refresh the page and try again.' },
+        { status: 409 },
+      );
+    }
+    if (action === 'unhide' && review.status !== 'hidden') {
+      return HttpResponse.json(
+        { code: 'INVALID_STATE', message: 'Only hidden reviews can be restored.', details: null, hint: 'Refresh the page and try again.' },
+        { status: 409 },
+      );
+    }
+    if (action === 'delete') {
+      reviews.splice(reviewIndex, 1);
+      return HttpResponse.json({ id, status: 'deleted' as const });
+    }
+    review.status = action === 'hide' ? 'hidden' : 'active';
+    review.updated_at = new Date().toISOString();
+    return HttpResponse.json({ id: review.id, status: review.status });
+  }),
+
+  http.get('*/rest/v1/review_revisions', async ({ request }) => {
+    await delay(10);
+    const url = new URL(request.url);
+    const reviewIdFilter = url.searchParams.get('review_id');
+    const result = reviewRevisions.filter((revision) => matches(revision.review_id, reviewIdFilter));
+    return HttpResponse.json(result);
+  }),
+
+  http.get('*/rest/v1/rpc/suggest_review_tags', async ({ request }) => {
+    await delay(10);
+    const url = new URL(request.url);
+    const prefix = (url.searchParams.get('prefix') ?? '').trim().toLowerCase();
+    const defaultSuggestions = [
+      'algorithms',
+      'communication',
+      'leadership',
+      'mentorship',
+      'research',
+      'robotics',
+      'teamwork',
+    ];
+    const activeTags = reviews
+      .filter((review) => review.status === 'active')
+      .flatMap((review) => review.tags);
+    const distinct = [...new Set([...defaultSuggestions, ...activeTags])].sort((a, b) => a.localeCompare(b));
+    const filtered = prefix ? distinct.filter((tag) => tag.startsWith(prefix) || tag.includes(prefix)) : distinct;
+    return HttpResponse.json(filtered.map((tag) => ({ tag })));
   }),
 
   http.post('*/functions/v1/chat', async ({ request }) => {
@@ -336,7 +533,9 @@ export const handlers = [
 export const __resetMocks = () => {
   chatbotCallCount = 0;
   nextReviewId = 1;
-  reviews.splice(1);
+  nextRevisionId = 1;
+  reviews.splice(0, reviews.length, structuredClone(initialReview));
+  reviewRevisions.splice(0, reviewRevisions.length, structuredClone(initialRevision));
   approvalQueue.forEach((item) => {
     item.status = 'pending';
     item.decided_by = null;

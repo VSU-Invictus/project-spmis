@@ -21,6 +21,7 @@ import {
   ChatsAuthClassifiedPage,
 } from './pages/ClassifiedComponentPages';
 import { FacultyStudentsPage } from './pages/faculty/FacultyStudentsPage';
+import { FacultyStudentDetailPage } from './pages/faculty/FacultyStudentDetailPage';
 import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
 import { FacultyChatPage } from './pages/faculty/FacultyChatPage';
 import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
@@ -172,14 +173,7 @@ const router = createBrowserRouter([
             { path: 'students', element: <FacultyStudentsPage /> },
             {
               path: 'students/:id',
-              element: (
-                <ReservedPortalPage
-                  role="faculty"
-                  navKey="students"
-                  title="Student Profile"
-                  breadcrumb="Faculty Portal / Student Profile"
-                />
-              ),
+              element: <FacultyStudentDetailPage />,
             },
             { path: 'chat', element: <FacultyChatPage /> },
             { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
