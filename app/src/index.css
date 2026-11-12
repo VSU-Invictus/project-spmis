@@ -14,6 +14,8 @@
 @import '../../mockup/assets/css/pages/admin/admin-common.css';
 @import '../../mockup/assets/css/pages/admin/dashboard.css';
 @import '../../mockup/assets/css/pages/faculty/chat.css';
+@import '../../mockup/assets/css/pages/faculty/student-detail.css';
+@import '../../mockup/assets/css/pages/faculty/new-review.css';
 @import '../../mockup/assets/css/pages/design-system.css';
 
 /* --- 3. CLAUDE+ DESIGN SYSTEM ROOT TOKENS (LIGHT DEFAULTS) --- */
