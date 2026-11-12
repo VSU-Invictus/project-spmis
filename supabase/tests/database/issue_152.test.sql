@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(9);
+select plan(14);
 
 -- Use the synthetic identities from seed.sql.
 set local role authenticated;
@@ -41,6 +41,33 @@ select is_empty('select id from public.review_details', 'Admins receive no raw r
 select is(
   (select count(*) from public.approval_queue_items),
   6::bigint, 'Admins can read the seeded approval queue'
+);
+
+set local request.jwt.claim.sub = '30000000-0000-4000-8000-000000000001';
+select throws_ok(
+  $$insert into public.approval_queue_items (type, payload) values ('student_registration', '{}')$$,
+  '23514', 'Invalid application payload for submission type.', 'Rejects an empty student application'
+);
+select throws_ok(
+  $$insert into public.approval_queue_items (type, payload)
+    values ('student_registration', '{"student_id_number":"TEST-004","first_name":"Example","last_name":"Applicant","program_id":"invalid"}')$$,
+  '23514', 'Invalid application payload for submission type.', 'Rejects an invalid program UUID'
+);
+select throws_ok(
+  $$insert into public.approval_queue_items (type, payload) values ('program_proposal', '{"name":" "}')$$,
+  '23514', 'Invalid application payload for submission type.', 'Rejects a blank proposal name'
+);
+select throws_ok(
+  $$insert into public.approval_queue_items (type, payload)
+    values ('department_proposal', '{"name":"Example Department","department_id":null}')$$,
+  '23514', 'Invalid application payload for submission type.', 'Rejects an explicit null edit ID'
+);
+select lives_ok(
+  $$insert into public.approval_queue_items (type, payload) values
+    ('student_registration', '{"student_id_number":"TEST-004","first_name":"Example","last_name":"Applicant","middle_name":null,"program_id":"20000000-0000-4000-8000-000000000001"}'),
+    ('program_proposal', '{"name":"Example New Program"}'),
+    ('department_proposal', '{"name":"Example Renamed Department","department_id":"10000000-0000-4000-8000-000000000001"}')$$,
+  'Accepts valid student, program, and department applications'
 );
 
 reset role;
