@@ -6,6 +6,8 @@ import './index.css';
 import App from './App';
 import DocsPage from './routes/docs/DocsPage';
 import SignInPage from './pages/SignInPage';
+import PendingVerificationPage from './pages/PendingVerificationPage';
+import { ReservedPortalPage } from './pages/ReservedPortalPage';
 import StyleguidePage from './pages/StyleguidePage';
 import {
   ButtonsClassifiedPage,
@@ -25,6 +27,42 @@ import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
 import { AdminTaxonomyPage } from './pages/admin/AdminTaxonomyPage';
 import { AdminAuditLogPage } from './pages/admin/AdminAuditLogPage';
 import { ThemeProvider } from './context/ThemeContext';
+import { SessionProvider } from './context/SessionContext';
+import { useSession } from './context/SessionContext';
+
+function GuardLoading() {
+  return <main className="contract-auth-page" aria-busy="true"><p>Checking your account…</p></main>;
+}
+
+function RequireAuth() {
+  const { session, profile, mockRole, loading, error } = useSession();
+  const location = useLocation();
+
+  if (loading) return <GuardLoading />;
+  if (!session && !(mockRole && profile)) {
+    const redirect = `${location.pathname}${location.search}${location.hash}`;
+    return <Navigate to={`/signin?redirect=${encodeURIComponent(redirect)}`} replace />;
+  }
+  if (profile?.status === 'pending') {
+    return <Navigate to="/pending-verification" replace />;
+  }
+  if (error && !profile) {
+    return <main className="contract-auth-page"><p role="alert">Unable to load your account: {error.message}</p></main>;
+  }
+
+  return <Outlet />;
+}
+
+function RequireRole({ role }: { role: 'faculty' | 'admin' }) {
+  const { profile } = useSession();
+
+  if (!profile) return <Navigate to="/pending-verification" replace />;
+  if (profile.role !== role) {
+    return <Navigate to={profile.role === 'admin' ? '/admin/dashboard' : '/faculty/dashboard'} replace />;
+  }
+
+  return <Outlet />;
+}
 
 // Ensure the browser does not restore previous scroll position on refresh
 if (typeof window !== 'undefined') {
@@ -80,10 +118,21 @@ function ScrollToTop() {
 }
 
 function RootLayout() {
+  const { mockRole, setMockRole } = useSession();
   return (
     <>
       <ScrollToTop />
       <Outlet />
+      {mockRole !== null && (
+        <label style={{ position: 'fixed', right: 16, bottom: 16, zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
+          <span style={{ fontSize: 12 }}>Mock role</span>
+          <select aria-label="Mock role" value={mockRole} onChange={(event) => setMockRole(event.target.value as 'active' | 'pending' | 'admin')}>
+            <option value="active">Active Faculty</option>
+            <option value="pending">Pending Faculty</option>
+            <option value="admin">Admin</option>
+          </select>
+        </label>
+      )}
     </>
   );
 }
@@ -108,24 +157,65 @@ const router = createBrowserRouter([
       { path: '/docs', element: <DocsPage /> },
       { path: '/signin', element: <SignInPage /> },
       { path: '/login', element: <SignInPage /> },
+      { path: '/pending-verification', element: <PendingVerificationPage /> },
       { path: '/styleguide', element: <StyleguidePage /> },
       { path: '/design-system', element: <Navigate to="/styleguide" replace /> },
       // Faculty Portal Routes
-      { path: '/faculty', element: <Navigate to="/faculty/dashboard" replace /> },
-      { path: '/faculty/dashboard', element: <FacultyDashboardPage /> },
-      { path: '/faculty/students', element: <FacultyStudentsPage /> },
-      { path: '/faculty/chat', element: <FacultyChatPage /> },
-      { path: '/faculty/departments', element: <AdminTaxonomyPage mode="departments" /> },
-      { path: '/faculty/programs', element: <AdminTaxonomyPage mode="programs" /> },
-      { path: '/faculty/applications', element: <AdminApprovalQueuePage /> },
+      {
+        path: '/faculty',
+        element: <RequireAuth />,
+        children: [{
+          element: <RequireRole role="faculty" />,
+          children: [
+            { index: true, element: <Navigate to="/faculty/dashboard" replace /> },
+            { path: 'dashboard', element: <FacultyDashboardPage /> },
+            { path: 'students', element: <FacultyStudentsPage /> },
+            {
+              path: 'students/:id',
+              element: (
+                <ReservedPortalPage
+                  role="faculty"
+                  navKey="students"
+                  title="Student Profile"
+                  breadcrumb="Faculty Portal / Student Profile"
+                />
+              ),
+            },
+            { path: 'chat', element: <FacultyChatPage /> },
+            { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
+            { path: 'programs', element: <AdminTaxonomyPage mode="programs" /> },
+            { path: 'applications', element: <AdminApprovalQueuePage /> },
+          ],
+        }],
+      },
       // Admin Portal Routes
-      { path: '/admin', element: <Navigate to="/admin/dashboard" replace /> },
-      { path: '/admin/dashboard', element: <AdminApprovalQueuePage /> },
-      { path: '/admin/applications', element: <AdminApprovalQueuePage /> },
-      { path: '/admin/students', element: <FacultyStudentsPage /> },
-      { path: '/admin/departments', element: <AdminTaxonomyPage mode="departments" /> },
-      { path: '/admin/programs', element: <AdminTaxonomyPage mode="programs" /> },
-      { path: '/admin/audit-log', element: <AdminAuditLogPage /> },
+      {
+        path: '/admin',
+        element: <RequireAuth />,
+        children: [{
+          element: <RequireRole role="admin" />,
+          children: [
+            { index: true, element: <Navigate to="/admin/dashboard" replace /> },
+            { path: 'dashboard', element: <AdminApprovalQueuePage /> },
+            { path: 'applications', element: <AdminApprovalQueuePage /> },
+            { path: 'students', element: <FacultyStudentsPage /> },
+            { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
+            { path: 'programs', element: <AdminTaxonomyPage mode="programs" /> },
+            { path: 'audit-log', element: <AdminAuditLogPage /> },
+            {
+              path: 'faculty',
+              element: (
+                <ReservedPortalPage
+                  role="admin"
+                  navKey="faculty"
+                  title="Faculty Management"
+                  breadcrumb="Admin Portal / Faculty Management"
+                />
+              ),
+            },
+          ],
+        }],
+      },
       // Classified Component Visualization Pages
       { path: '/components', element: <Navigate to="/components/buttons" replace /> },
       { path: '/components/buttons', element: <ButtonsClassifiedPage /> },
@@ -144,9 +234,11 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <SessionProvider>
+        <ThemeProvider>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </SessionProvider>
     </QueryClientProvider>
   </StrictMode>
 );

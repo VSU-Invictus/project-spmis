@@ -3,6 +3,7 @@ import { Button } from './Button';
 import { Checkbox } from './Checkbox';
 import { EmptyState } from './EmptyState';
 import { RejectionRow } from './RejectionRow';
+import { useOptionalPreferences } from '../../context/PreferencesContext';
 
 export interface DataTableColumn<T> {
   key: string;
@@ -25,6 +26,7 @@ export interface DataTableProps<T> {
   bulkActions?: React.ReactNode;
   entityName?: string;
   defaultPageSize?: number;
+  preferenceKey?: string;
   dynamicPageSizeOptions?: boolean;
   isLoading?: boolean;
   emptyTitle?: string;
@@ -51,6 +53,7 @@ export function DataTable<T>({
   bulkActions,
   entityName = 'entries',
   defaultPageSize = 5,
+  preferenceKey,
   dynamicPageSizeOptions = true,
   isLoading = false,
   emptyTitle = 'No pending applications',
@@ -63,11 +66,14 @@ export function DataTable<T>({
   className = '',
   ariaLabel = 'Data table',
 }: DataTableProps<T>) {
+  const preferences = useOptionalPreferences();
   const rowsPerPageSelectId = useId();
   const [uncontrolledSelected, setUncontrolledSelected] = useState<Set<string>>(
     () => new Set(defaultSelectedIds)
   );
-  const [pageSize, setPageSize] = useState<number>(defaultPageSize);
+  const [pageSize, setPageSize] = useState<number>(
+    () => (preferenceKey && preferences?.tablePageSizes[preferenceKey]) || defaultPageSize
+  );
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const selectedSet = useMemo(() => {
@@ -395,6 +401,7 @@ export function DataTable<T>({
         bulkActions={bulkActions}
         onPageSizeChange={(newSize) => {
           setPageSize(newSize);
+          if (preferenceKey) preferences?.setTablePageSize(preferenceKey, newSize);
           setCurrentPage(1);
         }}
         onPageChange={(newPage) => setCurrentPage(newPage)}

@@ -6,7 +6,12 @@ import { Button, Card, CardContent, TypographyHeading, TypographyText } from '..
 export default function SignInPage() {
   const [searchParams] = useSearchParams();
   const [error, setError] = useState<string>();
-  const redirectPath = searchParams.get('redirect') || '/';
+  const requestedRedirect = searchParams.get('redirect');
+  const redirectPath = requestedRedirect?.startsWith('/') &&
+    !requestedRedirect.startsWith('//') &&
+    !requestedRedirect.includes('\\')
+    ? requestedRedirect
+    : '/';
   const [hasSession, setHasSession] = useState<boolean>();
 
   useEffect(() => {
@@ -49,7 +54,7 @@ export default function SignInPage() {
       <Card className="contract-auth-card">
         <CardContent>
           <TypographyHeading level={1}>Sign in</TypographyHeading>
-          <TypographyText variant="muted">Sign in to access the API documentation.</TypographyText>
+          <TypographyText variant="muted">Sign in to access the SPMIS portal.</TypographyText>
           <Button onClick={() => void signInWithGoogle()}>Continue with Google</Button>
           {error && <TypographyText as="p" role="alert">{error}</TypographyText>}
         </CardContent>
