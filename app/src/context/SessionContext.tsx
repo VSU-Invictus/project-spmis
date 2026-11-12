@@ -55,13 +55,16 @@ const SessionContext = createContext<SessionContextValue | undefined>(undefined)
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<FacultyProfile | null>(null);
-  const [loading, setLoading] = useState(!MOCK_ENABLED);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [mockRole, setMockRoleState] = useState<MockRole>('active');
 
   const setMockRole = useCallback((nextRole: MockRole) => {
     if (!MOCK_ENABLED) return;
+    setLoading(true);
+    setProfile(createMockProfile(nextRole));
     setMockRoleState(nextRole);
+    setLoading(false);
   }, []);
   const syncProfile = useCallback((nextProfile: FacultyProfile) => {
     setProfile(nextProfile);
