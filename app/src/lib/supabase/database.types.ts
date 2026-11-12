@@ -377,11 +377,6 @@ isOneToOne: false
         isOneToOne: false
         isSetofReturn: true
       } },
-"suggest_review_tags":
-{ Args: { "prefix"?: string }; Returns: {
-              "tag": string
-            }[]
-                           },
 "update_own_profile":
 { Args: { "full_name": string }; Returns: {
               "created_at": string,
