@@ -7,6 +7,7 @@ import App from './App';
 import DocsPage from './routes/docs/DocsPage';
 import SignInPage from './pages/SignInPage';
 import PendingVerificationPage from './pages/PendingVerificationPage';
+import { ReservedPortalPage } from './pages/ReservedPortalPage';
 import StyleguidePage from './pages/StyleguidePage';
 import {
   ButtonsClassifiedPage,
@@ -158,10 +159,32 @@ const router = createBrowserRouter([
             { index: true, element: <Navigate to="/faculty/dashboard" replace /> },
             { path: 'dashboard', element: <FacultyDashboardPage /> },
             { path: 'students', element: <FacultyStudentsPage /> },
+            {
+              path: 'students/:id',
+              element: (
+                <ReservedPortalPage
+                  role="faculty"
+                  navKey="students"
+                  title="Student Profile"
+                  breadcrumb="Faculty Portal / Student Profile"
+                />
+              ),
+            },
             { path: 'chat', element: <FacultyChatPage /> },
             { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
             { path: 'programs', element: <AdminTaxonomyPage mode="programs" /> },
             { path: 'applications', element: <AdminApprovalQueuePage /> },
+            {
+              path: 'faculty',
+              element: (
+                <ReservedPortalPage
+                  role="admin"
+                  navKey="faculty"
+                  title="Faculty Management"
+                  breadcrumb="Admin Portal / Faculty Management"
+                />
+              ),
+            },
           ],
         }],
       },
