@@ -9,3 +9,5 @@ export * from './useDepartments';
 export * from './usePrograms';
 export * from './useAuditLogs';
 export * from './useAskChatbot';
+export * from './useOwnProfile';
+export * from './useUpdateOwnProfile';

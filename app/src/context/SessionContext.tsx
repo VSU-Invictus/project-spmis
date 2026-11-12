@@ -25,6 +25,7 @@ export interface SessionContextValue {
   error: Error | null;
   mockRole: MockRole | null;
   setMockRole: (role: MockRole) => void;
+  syncProfile: (profile: FacultyProfile) => void;
 }
 
 const MOCK_ENABLED =
@@ -61,6 +62,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const setMockRole = useCallback((nextRole: MockRole) => {
     if (!MOCK_ENABLED) return;
     setMockRoleState(nextRole);
+  }, []);
+  const syncProfile = useCallback((nextProfile: FacultyProfile) => {
+    setProfile(nextProfile);
   }, []);
 
   useEffect(() => {
@@ -132,7 +136,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     error,
     mockRole: MOCK_ENABLED ? mockRole : null,
     setMockRole,
-  }), [session, profile, loading, error, mockRole, setMockRole]);
+    syncProfile,
+  }), [session, profile, loading, error, mockRole, setMockRole, syncProfile]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
