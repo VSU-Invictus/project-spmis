@@ -25,6 +25,7 @@ import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
 import { AdminTaxonomyPage } from './pages/admin/AdminTaxonomyPage';
 import { AdminAuditLogPage } from './pages/admin/AdminAuditLogPage';
 import { ThemeProvider } from './context/ThemeContext';
+import { SessionProvider } from './context/SessionContext';
 
 // Ensure the browser does not restore previous scroll position on refresh
 if (typeof window !== 'undefined') {
@@ -144,9 +145,11 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <SessionProvider>
+        <ThemeProvider>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </SessionProvider>
     </QueryClientProvider>
   </StrictMode>
 );
