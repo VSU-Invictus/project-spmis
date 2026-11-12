@@ -1,33 +1,27 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   Button,
   Card,
   Badge,
-  Input,
-  Label,
   EmptyState,
   CardSkeleton,
-  Modal,
+  Toast,
 } from '../../components/ui';
+import { ReviewDocumentView, ReviewFormModal, getTagBadgeVariant } from '../../components/reviews';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
-import { useCreateReview } from '../../hooks/useCreateReview';
-import { ApiRequestError } from '../../lib/api';
-import { extractPlainText, REVIEW_WORD_LIMIT, validateReviewWordLimit } from '../../lib/rules/review';
-import { normalizeTags } from '../../lib/rules/tags';
+import { useSession } from '../../context/SessionContext';
 
 export function FacultyDashboardPage() {
+  const { profile } = useSession();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [studentId, setStudentId] = useState('45b54332-e470-4c21-a839-7428c4f6bf42');
-  const [reviewBody, setReviewBody] = useState('');
-  const [tagsInput, setTagsInput] = useState('research, leadership');
-  const [failureMode, setFailureMode] = useState<'none' | '422_word_limit' | '422_empty_body'>('none');
-  const [formError, setFormError] = useState<{
-    code?: string;
-    message: string;
-    details?: string | null;
-    hint?: string | null;
-  } | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = setTimeout(() => setToastMessage(null), 4000);
+    return () => clearTimeout(timer);
+  }, [toastMessage]);
 
   const {
     data: reviews,
@@ -39,90 +33,6 @@ export function FacultyDashboardPage() {
     status: 'eq.active',
     order: 'created_at.desc,id.asc',
   });
-
-  const createReviewMutation = useCreateReview({
-    onSuccess: () => {
-      setIsCreateOpen(false);
-      setReviewBody('');
-      setFormError(null);
-      setFailureMode('none');
-    },
-    onError: (err) => {
-      if (err instanceof ApiRequestError) {
-        setFormError({
-          code: err.code,
-          message: err.message,
-          details: err.details,
-          hint: err.hint,
-        });
-      } else {
-        setFormError({ message: err.message });
-      }
-    },
-  });
-
-  const handleSubmitReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(null);
-    const tagResult = normalizeTags(tagsInput.split(','));
-    if (!tagResult.valid) {
-      setFormError({
-        code: tagResult.reason === 'too_many_tags' ? 'TOO_MANY_TAGS' : 'TAG_TOO_LONG',
-        message: tagResult.reason === 'too_many_tags'
-          ? 'A review can have no more than 30 tags.'
-          : 'Each tag must be 50 characters or fewer.',
-      });
-      return;
-    }
-
-    const bodyDocument = {
-      blocks: [
-        {
-          type: 'paragraph' as const,
-          content: [{ text: reviewBody }],
-        },
-      ],
-    };
-    const plainText = extractPlainText(bodyDocument);
-    const normalizedBodyDocument = {
-      blocks: [{ type: 'paragraph' as const, content: [{ text: plainText }] }],
-    };
-    const isFailureSimulation = import.meta.env.DEV && failureMode !== 'none';
-    if (!isFailureSimulation) {
-      const validation = validateReviewWordLimit(reviewBody);
-      if (!validation.valid) {
-        setFormError({
-          code: validation.code,
-          message: validation.code === 'REVIEW_BODY_REQUIRED'
-            ? 'Enter a review before saving.'
-            : `A review can contain no more than ${REVIEW_WORD_LIMIT} words.`,
-          details: validation.code === 'REVIEW_WORD_LIMIT'
-            ? `This review contains ${validation.wordCount} words.`
-            : null,
-          hint: validation.code === 'REVIEW_WORD_LIMIT'
-            ? 'Shorten the review and submit it again.'
-            : 'Add review text and submit it again.',
-        });
-        return;
-      }
-    }
-
-    let headers: Record<string, string> | undefined;
-    if (import.meta.env.DEV && failureMode === '422_word_limit') {
-      headers = { Prefer: 'code=422, example=wordLimit' };
-    } else if (import.meta.env.DEV && failureMode === '422_empty_body') {
-      headers = { Prefer: 'code=422, example=emptyReview' };
-    }
-
-    createReviewMutation.mutate({
-      body: {
-        student_id: studentId,
-        body_document: normalizedBodyDocument,
-        tags: tagResult.tags.length > 0 ? tagResult.tags : undefined,
-      },
-      headers,
-    });
-  };
 
   return (
     <AppShell
@@ -218,14 +128,15 @@ export function FacultyDashboardPage() {
                   </div>
                 </div>
 
-                <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: 'var(--foreground)' }}>
-                  {review.body_text}
-                </p>
+                <ReviewDocumentView
+                  document={review.body_document}
+                  fallbackText={review.body_text}
+                />
 
                 {review.tags && review.tags.length > 0 && (
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
                     {review.tags.map((tag, idx) => (
-                      <Badge key={idx} variant="neutral">
+                      <Badge key={idx} variant={getTagBadgeVariant(tag)}>
                         #{tag}
                       </Badge>
                     ))}
@@ -236,158 +147,18 @@ export function FacultyDashboardPage() {
         </div>
       </div>
 
-      {/* Create Review Modal */}
-      <Modal
+      <ReviewFormModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        title="Contribute Student Review"
-        description="Your review will be attributed to your verified faculty profile."
-      >
-        <form onSubmit={handleSubmitReview} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {formError && (
-            <div
-              role="alert"
-              style={{
-                padding: '12px 14px',
-                backgroundColor: 'var(--destructive-subtle, #fee2e2)',
-                border: '1px solid var(--destructive, #ef4444)',
-                borderRadius: 'var(--radius-md, 8px)',
-                color: 'var(--destructive, #b91c1c)',
-                fontSize: '13px',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                {formError.code && (
-                  <Badge variant="destructive">
-                    {formError.code}
-                  </Badge>
-                )}
-                <span style={{ fontWeight: 700 }}>{formError.message}</span>
-              </div>
-              {formError.details && (
-                <div style={{ fontSize: '12px', marginTop: '4px', opacity: 0.9 }}>
-                  {formError.details}
-                </div>
-              )}
-              {formError.hint && (
-                <div style={{ marginTop: '6px', fontWeight: 600, color: '#991b1b' }}>
-                  💡 Hint: {formError.hint}
-                </div>
-              )}
-            </div>
-          )}
+        mode="create"
+        studentId="45b54332-e470-4c21-a839-7428c4f6bf42"
+        allowStudentIdEdit
+        enableDevFailureSimulator
+        contributorName={profile?.full_name || 'Alex Reyes'}
+        onSuccess={(msg) => setToastMessage(msg)}
+      />
 
-          {/* Gate A5 Demo / Test Helper */}
-          {import.meta.env.DEV && (
-          <div
-            style={{
-              padding: '10px 12px',
-              backgroundColor: 'var(--muted, #f1f5f9)',
-              borderRadius: 'var(--radius-sm, 6px)',
-              fontSize: '13px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '6px',
-            }}
-          >
-            <span style={{ fontWeight: 600 }}>Milestone 2 Gate A5: Reachable Failure Test</span>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <Button
-                type="button"
-                size="sm"
-                variant={failureMode === '422_word_limit' ? 'destructive' : 'outline'}
-                onClick={() => {
-                  setFailureMode('422_word_limit');
-                  setReviewBody('A '.repeat(505)); // 505 words to trigger word limit
-                }}
-              >
-                Trigger 422 (Word Limit &gt;500)
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant={failureMode === '422_empty_body' ? 'destructive' : 'outline'}
-                onClick={() => {
-                  setFailureMode('422_empty_body');
-                  setReviewBody('');
-                }}
-              >
-                Trigger 422 (Empty Body)
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant={failureMode === 'none' ? 'secondary' : 'ghost'}
-                onClick={() => {
-                  setFailureMode('none');
-                  setReviewBody('Demonstrated great analytical ability and project leadership in software engineering.');
-                }}
-              >
-                Reset to Normal (201)
-              </Button>
-            </div>
-          </div>
-          )}
-
-          <div>
-            <Label htmlFor="student-id-field">Student UUID</Label>
-            <Input
-              id="student-id-field"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              placeholder="e.g. 45b54332-e470-4c21-a839-7428c4f6bf42"
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="review-body-field">Review Body Text</Label>
-            <textarea
-              id="review-body-field"
-              className="ui-input"
-              rows={5}
-              value={reviewBody}
-              onChange={(e) => setReviewBody(e.target.value)}
-              placeholder="Provide constructive review comments about the student..."
-              required={!(import.meta.env.DEV && failureMode === '422_empty_body')}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                borderRadius: 'var(--radius-md, 8px)',
-                border: formError ? '2px solid var(--destructive, #ef4444)' : '1px solid var(--border)',
-                fontFamily: 'inherit',
-                fontSize: '14px',
-                boxSizing: 'border-box',
-                backgroundColor: 'var(--input-bg, transparent)',
-                color: 'inherit',
-              }}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="review-tags-field">Competency Tags (comma separated)</Label>
-            <Input
-              id="review-tags-field"
-              value={tagsInput}
-              onChange={(e) => setTagsInput(e.target.value)}
-              placeholder="e.g. research, academic diligence, python"
-            />
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '12px' }}>
-            <Button type="button" variant="secondary" onClick={() => setIsCreateOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={createReviewMutation.isPending}
-            >
-              {createReviewMutation.isPending ? 'Submitting to Prism...' : 'Submit Review'}
-            </Button>
-          </div>
-        </form>
-      </Modal>
+      <Toast id="dashboard-review-toast" message={toastMessage} />
     </AppShell>
   );
 }
