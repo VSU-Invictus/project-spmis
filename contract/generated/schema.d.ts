@@ -370,8 +370,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Update the current verified faculty member name
-         * @description Verified faculty only. The SQL function obtains the identity from auth.uid(); no caller-supplied role, status, email or department is accepted. It applies only full_name, writes an audit event, and returns a setof FacultyProfile containing one row. RLS and database grants remain enabled.
+         * Update the current faculty member name
+         * @description Active and pending faculty may update their own name. The SQL function obtains the identity from auth.uid(); no caller-supplied role, status, email or department is accepted. It applies only full_name, writes an audit event, and returns a setof FacultyProfile containing one row. RLS and database grants remain enabled.
          */
         post: operations["updateOwnProfile"];
         delete?: never;

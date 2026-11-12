@@ -820,7 +820,7 @@ paths:
       operationId: listApprovalQueueItems
       summary: List applications visible to the caller
       x-access-rules:
-        pending_faculty: Own faculty_account applications only, including rejected history.
+        pending_faculty: No access to the application queue.
         active_faculty: Own applications only.
         admin: All application queues.
       parameters:
@@ -1289,9 +1289,9 @@ paths:
       tags:
         - Auth
       operationId: updateOwnProfile
-      summary: Update the current verified faculty member name
+      summary: Update the current faculty member name
       description: >-
-        Verified faculty only. The SQL function obtains the identity from auth.uid(); no
+        Active and pending faculty may update their own name. The SQL function obtains the identity from auth.uid(); no
         caller-supplied role, status, email or department is accepted. It applies only full_name,
         writes an audit event, and returns a setof FacultyProfile containing one row. RLS and
         database grants remain enabled.

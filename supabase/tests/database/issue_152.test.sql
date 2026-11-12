@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(21);
+select plan(26);
 
 -- Use the synthetic identities from seed.sql.
 set local role authenticated;
@@ -16,6 +16,10 @@ select is(
   (select count(*) from public.search_students(query => 'research', tag => 'research')),
   1::bigint,
   'Student search matches active review text and tag'
+);
+select results_eq(
+  $$select tag from public.suggest_review_tags('res')$$,
+  array['research'], 'Published tag lookup still works'
 );
 select throws_ok(
   $$update public.reviews set body_text = 'Synthetic edit'$$,
@@ -47,6 +51,23 @@ select is_empty('select id from public.review_details', 'Admins receive no raw r
 select is(
   (select count(*) from public.approval_queue_items),
   6::bigint, 'Admins can read the seeded approval queue'
+);
+select throws_ok(
+  $$update public.approval_queue_items set status = 'approved', decided_by = auth.uid(), decided_at = now()
+    where type = 'program_proposal' and status = 'pending'$$,
+  '42501', null, 'Admins cannot bypass the approval workflow'
+);
+select throws_ok(
+  $$delete from public.student_profiles where student_id_number = 'TEST-001'$$,
+  '23503', null, 'Student deletion preserves existing reviews'
+);
+select lives_ok(
+  $$delete from public.student_profiles where student_id_number = 'TEST-002'$$,
+  'Admins can delete an unreferenced student'
+);
+select is_empty(
+  $$select id from public.student_profiles where student_id_number = 'TEST-002'$$,
+  'The unreferenced student is gone'
 );
 select lives_ok(
   $$insert into public.approval_queue_items (type, payload)
