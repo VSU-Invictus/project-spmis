@@ -35,12 +35,16 @@ select results_eq(
 
 set local request.jwt.claim.sub = '30000000-0000-4000-8000-000000000003';
 select is(public.get_own_profile()->>'status', 'pending', 'Pending faculty can read their own status');
-select results_eq(
-  $$select full_name, status from public.update_own_profile('Example Pending Name')$$,
-  $$values ('Example Pending Name'::text, 'pending'::text)$$,
-  'Pending faculty can change their name without changing their status'
+select throws_ok(
+  $$select public.update_own_profile('Example Pending Name')$$,
+  '42501', 'Only active faculty can update their profile.',
+  'Pending faculty cannot update their name'
 );
-select is_empty('select id from public.approval_queue_items', 'Pending faculty cannot read approval queues');
+select results_eq(
+  $$select type, submitted_by from public.approval_queue_items$$,
+  $$values ('faculty_account'::text, '30000000-0000-4000-8000-000000000003'::uuid)$$,
+  'Pending faculty can read only their own faculty-account application'
+);
 select is(
   public.get_student_by_id('40000000-0000-4000-8000-000000000001'),
   null::jsonb, 'Pending faculty cannot read student details'
