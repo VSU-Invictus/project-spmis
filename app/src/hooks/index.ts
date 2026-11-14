@@ -19,3 +19,5 @@ export * from './useUpdateProgram';
 export * from './useDeleteProgram';
 export * from './useCreateStudentDirect';
 export * from './useUpdateStudent';
+export * from './useFacultyList';
+export * from './useUpdateFacultyByAdmin';
