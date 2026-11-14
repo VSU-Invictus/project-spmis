@@ -21,3 +21,4 @@ export * from './useCreateStudentDirect';
 export * from './useUpdateStudent';
 export * from './useFacultyList';
 export * from './useUpdateFacultyByAdmin';
+export * from './useSubmitApplication';
