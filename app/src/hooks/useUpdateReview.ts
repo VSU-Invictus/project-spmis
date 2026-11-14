@@ -31,14 +31,12 @@ export function useUpdateReview(
       return result as Review;
     },
     ...options,
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, onMutateResult, context) => {
       await queryClient.invalidateQueries({ queryKey: ['listStudentReviews'] });
       await queryClient.invalidateQueries({ queryKey: ['listReviewRevisions'] });
       await queryClient.invalidateQueries({ queryKey: ['searchStudents'] });
-      if (options?.onSuccess) {
-        // @ts-expect-error tanstack query v5 callback compatibility
-        options.onSuccess(data, variables, context);
-      }
+      await queryClient.invalidateQueries({ queryKey: ['listTags'] });
+      await options?.onSuccess?.(data, variables, onMutateResult, context);
     },
   });
 }

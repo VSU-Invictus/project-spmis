@@ -39,6 +39,12 @@ test('queryKeys derives listApprovalQueueItems with queue filter', () => {
   assert.deepEqual(key[1], { status: 'eq.pending' });
 });
 
+test('queryKeys derives listReviewRevisions with filters', () => {
+  const key = queryKeys.reviewRevisions({ review_id: 'eq.67015de8-1ce8-4ac4-8634-384bf5fb3821' });
+  assert.equal(key[0], 'listReviewRevisions');
+  assert.deepEqual(key[1], { review_id: 'eq.67015de8-1ce8-4ac4-8634-384bf5fb3821' });
+});
+
 test('queryKeys derives taxonomy and audit log keys', () => {
   assert.equal(queryKeys.departments()[0], 'listDepartments');
   assert.equal(queryKeys.programs()[0], 'listPrograms');
