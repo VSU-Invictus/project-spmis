@@ -43,8 +43,11 @@ export function Modal({
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // Focus the modal or first focusable element
+    // Focus the modal or first focusable element unless focus is already inside the modal
     const timer = setTimeout(() => {
+      if (modalRef.current && modalRef.current.contains(document.activeElement)) {
+        return;
+      }
       const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );

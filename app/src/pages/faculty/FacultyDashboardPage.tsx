@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   Button,
@@ -16,6 +16,7 @@ export function FacultyDashboardPage() {
   const { profile } = useSession();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const handleCloseCreateModal = useCallback(() => setIsCreateOpen(false), []);
 
   useEffect(() => {
     if (!toastMessage) return;
@@ -149,12 +150,12 @@ export function FacultyDashboardPage() {
 
       <ReviewFormModal
         isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
+        onClose={handleCloseCreateModal}
         mode="create"
         studentId="45b54332-e470-4c21-a839-7428c4f6bf42"
         allowStudentIdEdit
         enableDevFailureSimulator
-        contributorName={profile?.full_name || 'Alex Reyes'}
+        contributorName={profile?.full_name || 'Faculty Member'}
         onSuccess={(msg) => setToastMessage(msg)}
       />
 
