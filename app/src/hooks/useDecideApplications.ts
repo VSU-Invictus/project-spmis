@@ -2,6 +2,7 @@ import { useMutation, useQueryClient, type UseMutationOptions } from '@tanstack/
 import { apiClient, request } from '../lib/api';
 import type { components } from '../../../contract/generated/schema';
 import type { ApprovalQueueItem } from './useApprovalQueueItems';
+import { queryKeys } from './queryKeys';
 
 export type ApplicationDecisionRequest = components['schemas']['ApplicationDecisionRequest'];
 
@@ -20,16 +21,20 @@ export function useDecideApplications(
       return (result ?? []) as ApprovalQueueItem[];
     },
     ...options,
-    onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries({ queryKey: ['listApprovalQueueItems'] });
-      await queryClient.invalidateQueries({ queryKey: ['listFaculty'] });
-      await queryClient.invalidateQueries({ queryKey: ['searchStudents'] });
-      await queryClient.invalidateQueries({ queryKey: ['listDepartments'] });
-      await queryClient.invalidateQueries({ queryKey: ['listPrograms'] });
-      if (options?.onSuccess) {
-        // @ts-expect-error tanstack query callback compatibility
-        options.onSuccess(data, variables, context);
-      }
+    onSuccess: async (data, variables, onMutateResult, context) => {
+      await Promise.all([
+        queryKeys.approvalQueueItems(),
+        queryKeys.facultyProfiles(),
+        queryKeys.searchStudents(),
+        queryKeys.departments(),
+        queryKeys.programs(),
+        queryKeys.auditLogs(),
+      ].map(([operationId]) => queryClient.invalidateQueries({
+        queryKey: [operationId],
+        // Cached pages disable refetchOnMount, so refresh inactive variants too.
+        refetchType: 'all',
+      })));
+      await options?.onSuccess?.(data, variables, onMutateResult, context);
     },
   });
 }
