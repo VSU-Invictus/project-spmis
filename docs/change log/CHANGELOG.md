@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #153 Edge Functions:** Added transactional review lifecycle and
+  application-decision RPCs, server-side student-name de-identification,
+  Gemini embedding/chat helpers, vector retrieval, approval notifications, and
+  contract-shaped error handling under `supabase/functions/`.
 - **Milestone 3 database foundation (#152):** Added Supabase schema migrations, row-level security, contract-backed database functions and views, synthetic seed data, and pgTAP tests.
 - **CI Workflow, Contract Freeze (`v1.0.0`), and Pinned Tooling:**
   - Added GitHub Actions CI workflow (`.github/workflows/ci.yml`) running `contract:lint`, `contract:check`, `contract:docs` verification and artifact upload, `typecheck`, `test` (Vitest), and `build` on pushes and pull requests.
