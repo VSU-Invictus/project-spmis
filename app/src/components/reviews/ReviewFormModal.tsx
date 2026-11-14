@@ -50,7 +50,7 @@ export function ReviewFormModal({
   studentName,
   studentIdNumber,
   studentProgram,
-  contributorName = 'Alex Reyes',
+  contributorName = 'Faculty Member',
   initialReview,
   onSuccess,
 }: ReviewFormModalProps) {
@@ -65,7 +65,6 @@ export function ReviewFormModal({
   const [editorText, setEditorText] = useState(initialEditorText);
   const [tagDraft, setTagDraft] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [attachedFiles, setAttachedFiles] = useState<Array<{ name: string; size: number; type: string }>>([]);
   const [failureMode, setFailureMode] = useState<'none' | '422_word_limit' | '422_empty_body'>('none');
   const [serverError, setServerError] = useState<{
     code?: string;
@@ -75,7 +74,6 @@ export function ReviewFormModal({
   } | null>(null);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm<ReviewFormValues>({
     resolver: zodResolver(reviewSchema),
@@ -99,7 +97,6 @@ export function ReviewFormModal({
     setEditorText(nextText);
     setTagDraft('');
     setShowSuggestions(false);
-    setAttachedFiles([]);
     setFailureMode('none');
     setServerError(null);
     form.reset({
@@ -121,18 +118,44 @@ export function ReviewFormModal({
   const charCount = plainText.length;
   const isOverWordLimit = wordCount > REVIEW_WORD_LIMIT;
 
-  const { data: tagSuggestionsData } = useTags({
-    prefix: tagDraft.trim().toLowerCase() || undefined,
-    limit: 10,
-  });
+  const normalizedTagPrefix = useMemo(() => {
+    const token =
+      tagDraft
+        .trim()
+        .toLowerCase()
+        .split(/[\s,]+/)
+        .filter(Boolean)
+        .pop() ?? '';
+    return token.slice(0, 50);
+  }, [tagDraft]);
+
+  const { data: tagSuggestionsData } = useTags(
+    {
+      prefix: normalizedTagPrefix || undefined,
+      limit: 10,
+    },
+    {
+      enabled: isOpen,
+    }
+  );
 
   const filteredSuggestions = useMemo(() => {
-    const query = tagDraft.trim().toLowerCase();
     const list = (tagSuggestionsData ?? []).map((item) => item.tag);
     return list.filter(
-      (tag) => !watchedTags.includes(tag) && (!query || tag.toLowerCase().includes(query))
+      (tag) =>
+        !watchedTags.includes(tag) &&
+        (!normalizedTagPrefix || tag.toLowerCase().includes(normalizedTagPrefix))
     );
-  }, [tagSuggestionsData, watchedTags, tagDraft]);
+  }, [tagSuggestionsData, watchedTags, normalizedTagPrefix]);
+
+  const normalizedDraftTag = useMemo(
+    () => tagDraft.trim().toLowerCase().replace(/\s+/gu, ' '),
+    [tagDraft]
+  );
+  const canQuickAddDraftTag =
+    Boolean(normalizedDraftTag) &&
+    !watchedTags.includes(normalizedDraftTag) &&
+    !filteredSuggestions.includes(normalizedDraftTag);
 
   const handleEditorChange = (nextValue: string) => {
     setEditorText(nextValue);
@@ -312,10 +335,19 @@ export function ReviewFormModal({
           if (tagDraft.trim()) {
             const merged = [...watchedTags, ...tagDraft.split(',').map((t) => t.trim()).filter(Boolean)];
             const normalized = normalizeTags(merged);
-            if (normalized.valid) {
-              form.setValue('tags', normalized.tags, { shouldDirty: true });
-              setTagDraft('');
+            if (!normalized.valid) {
+              form.setError('tags', {
+                type: 'manual',
+                message:
+                  normalized.reason === 'too_many_tags'
+                    ? 'A review can have no more than 30 tags.'
+                    : 'Each tag must be 50 characters or fewer.',
+              });
+              return;
             }
+            form.clearErrors('tags');
+            form.setValue('tags', normalized.tags, { shouldDirty: true, shouldValidate: true });
+            setTagDraft('');
           }
           if (import.meta.env.DEV && enableDevFailureSimulator && failureMode !== 'none') {
             let headers: Record<string, string> | undefined;
@@ -434,9 +466,9 @@ export function ReviewFormModal({
             style={{
               padding: '12px 14px',
               backgroundColor: 'var(--color-status-danger-subtle, rgba(239, 68, 68, 0.12))',
-              border: '1px solid var(--destructive, #ef4444)',
+              border: '1px solid var(--color-status-danger, #ef4444)',
               borderRadius: 'var(--radius-md, 8px)',
-              color: 'var(--destructive, #ef4444)',
+              color: 'var(--color-status-danger, #ef4444)',
               fontSize: '13px',
             }}
           >
@@ -510,36 +542,6 @@ export function ReviewFormModal({
               >
                 ↵ Break
               </button>
-              <div className="toolbar-divider" />
-              <button
-                type="button"
-                className={`toolbar-btn ${attachedFiles.length > 0 ? 'active' : ''}`.trim()}
-                title="Attach files"
-                aria-label="Attach files"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                📎 Attach
-              </button>
-              <input
-                ref={fileInputRef}
-                aria-label="Attach files to review"
-                type="file"
-                multiple
-                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                style={{ display: 'none' }}
-                onChange={(e) => {
-                  const files = Array.from(e.target.files ?? []);
-                  setAttachedFiles((prev) => {
-                    const next = [...prev];
-                    for (const file of files) {
-                      if (!next.some((item) => item.name === file.name && item.size === file.size)) {
-                        next.push({ name: file.name, size: file.size, type: file.type || 'application/octet-stream' });
-                      }
-                    }
-                    return next;
-                  });
-                }}
-              />
               <div style={{ marginLeft: 'auto', fontSize: '11px', color: 'var(--muted-foreground)' }}>
                 Live formatting
               </div>
@@ -558,7 +560,7 @@ export function ReviewFormModal({
                 width: '100%',
                 display: 'block',
                 resize: 'vertical',
-                borderColor: bodyFieldError || isOverWordLimit ? 'var(--destructive, #ef4444)' : undefined,
+                borderColor: bodyFieldError || isOverWordLimit ? 'var(--color-status-danger, #ef4444)' : undefined,
               }}
             />
           </div>
@@ -583,8 +585,8 @@ export function ReviewFormModal({
             </div>
           )}
 
-          {/* Attachment Metadata Display (Existing contract attachments + newly selected files) */}
-          {(existingAttachments.length > 0 || attachedFiles.length > 0) && (
+          {/* Attachment Metadata Display (Read-only existing contract attachments) */}
+          {existingAttachments.length > 0 && (
             <div
               aria-label="Review attachments"
               style={{
@@ -599,46 +601,13 @@ export function ReviewFormModal({
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--muted-foreground)' }}>
-                  Attachments ({existingAttachments.length + attachedFiles.length})
+                  Attachments ({existingAttachments.length})
                 </span>
-                {attachedFiles.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setAttachedFiles([])}
-                    style={{
-                      fontSize: '12px',
-                      color: 'var(--destructive)',
-                      textDecoration: 'underline',
-                      background: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Remove attached files
-                  </button>
-                )}
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {existingAttachments.map((att) => (
                   <Badge key={att.id} variant="neutral">
                     📎 {att.mime_type} ({(att.size_bytes / 1024).toFixed(1)} KB)
-                  </Badge>
-                ))}
-                {attachedFiles.map((file, idx) => (
-                  <Badge key={`${file.name}-${idx}`} variant="neutral">
-                    <span>
-                      📄 {file.name} ({(file.size / 1024).toFixed(1)} KB)
-                    </span>
-                    <button
-                      type="button"
-                      aria-label={`Remove attachment ${file.name}`}
-                      onClick={() =>
-                        setAttachedFiles((prev) => prev.filter((_, index) => index !== idx))
-                      }
-                      style={{ marginLeft: '6px', cursor: 'pointer', fontWeight: 700 }}
-                    >
-                      &times;
-                    </button>
                   </Badge>
                 ))}
               </div>
@@ -652,7 +621,7 @@ export function ReviewFormModal({
               className={isOverWordLimit ? 'word-count-over' : 'muted'}
               style={{
                 fontVariantNumeric: 'tabular-nums',
-                color: isOverWordLimit ? 'var(--destructive, #ef4444)' : undefined,
+                color: isOverWordLimit ? 'var(--color-status-danger, #ef4444)' : undefined,
                 fontWeight: isOverWordLimit ? 700 : undefined,
               }}
             >
@@ -662,7 +631,7 @@ export function ReviewFormModal({
           </div>
 
           {bodyFieldError && (
-            <p role="alert" style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--destructive, #ef4444)', fontWeight: 600 }}>
+            <p role="alert" style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--color-status-danger, #ef4444)', fontWeight: 600 }}>
               {bodyFieldError}
             </p>
           )}
@@ -739,79 +708,73 @@ export function ReviewFormModal({
             />
           </div>
 
-          {showSuggestions && (filteredSuggestions.length > 0 || tagDraft.trim()) && (
-            <div
-              role="listbox"
-              aria-label="Tag suggestions"
-              style={{
-                marginTop: '4px',
-                background: 'var(--card)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-md, 10px)',
-                boxShadow: 'var(--shadow-md)',
-                maxHeight: '180px',
-                overflowY: 'auto',
-                zIndex: 50,
-              }}
-            >
-              {filteredSuggestions.map((suggestion) => (
-                <button
-                  key={suggestion}
-                  type="button"
-                  role="option"
-                  aria-selected={false}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    addTagsFromInput(suggestion);
-                  }}
-                  onClick={() => addTagsFromInput(suggestion)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    fontSize: '13px',
-                    borderBottom: '1px solid var(--border)',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                  }}
-                >
-                  <span>#{suggestion}</span>
-                  <Badge variant={getTagBadgeVariant(suggestion)}>suggested</Badge>
-                </button>
-              ))}
-              {tagDraft.trim() && !filteredSuggestions.includes(tagDraft.trim().toLowerCase()) && (
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={false}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    addTagsFromInput(tagDraft);
-                  }}
-                  onClick={() => addTagsFromInput(tagDraft)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    fontSize: '13px',
-                    color: 'var(--primary)',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                  }}
-                >
-                  + Add tag &quot;{tagDraft.trim().toLowerCase()}&quot;
-                </button>
-              )}
-            </div>
-          )}
+          {showSuggestions && (filteredSuggestions.length > 0 || canQuickAddDraftTag) && (
+              <div
+                role="listbox"
+                aria-label="Tag suggestions"
+                style={{
+                  marginTop: '4px',
+                  background: 'var(--card)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-md, 10px)',
+                  boxShadow: 'var(--shadow-md)',
+                  maxHeight: '180px',
+                  overflowY: 'auto',
+                  zIndex: 50,
+                }}
+              >
+                {filteredSuggestions.map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    role="option"
+                    aria-selected={false}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => addTagsFromInput(suggestion)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontSize: '13px',
+                      borderBottom: '1px solid var(--border)',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                    }}
+                  >
+                    <span>#{suggestion}</span>
+                    <Badge variant={getTagBadgeVariant(suggestion)}>suggested</Badge>
+                  </button>
+                ))}
+                {canQuickAddDraftTag && (
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={false}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => addTagsFromInput(tagDraft)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      fontSize: '13px',
+                      color: 'var(--primary)',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                    }}
+                  >
+                    + Add tag &quot;{normalizedDraftTag}&quot;
+                  </button>
+                )}
+              </div>
+            )}
 
           <small className="muted" style={{ marginTop: '2px' }}>
             Select from suggestions or type tags separated by commas and press Enter.
           </small>
 
           {tagsFieldError && (
-            <p role="alert" style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--destructive, #ef4444)', fontWeight: 600 }}>
+            <p role="alert" style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--color-status-danger, #ef4444)', fontWeight: 600 }}>
               {tagsFieldError}
             </p>
           )}
