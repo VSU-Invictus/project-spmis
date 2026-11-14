@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type FormEventHandler } from 'react';
 import { Button } from './Button';
 import { Card } from './Card';
 import { Input } from './Input';
@@ -6,19 +6,55 @@ import { TypographyHeading, TypographyText } from './Typography';
 import { Alert, ShowcaseGroupCard } from './ShowcaseWidgets';
 import { useQueueSearchParam, type QueueType } from '../queue-modal';
 
+function usePortalFocus(open: boolean, onClose: () => void) {
+  const ref = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const focusable = () => Array.from(ref.current?.querySelectorAll<HTMLElement>(
+      'button:not(:disabled), input:not(:disabled), select:not(:disabled), [tabindex="0"]',
+    ) ?? []);
+    focusable()[0]?.focus();
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); closeRef.current(); }
+      if (event.key !== 'Tab') return;
+      const elements = focusable();
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+      if (!first) { event.preventDefault(); return; }
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => { document.removeEventListener('keydown', handleKey); previous?.focus(); };
+  }, [open]);
+  return ref;
+}
+
 export interface AdminEntityModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: (msg: string) => void;
+  title?: string;
+  subtitle?: string;
+  children?: ReactNode;
+  onSubmit?: FormEventHandler<HTMLFormElement>;
 }
 
-export function AdminEntityModal({ open, onClose, onSuccess }: AdminEntityModalProps) {
+export function AdminEntityModal({ open, onClose, onSuccess, title = 'Add Department', subtitle = 'Enter the official department title below.', children, onSubmit }: AdminEntityModalProps) {
   const [adminDeptName, setAdminDeptName] = useState('Department of Artificial Intelligence');
+  const modalRef = usePortalFocus(open, onClose);
 
   return (
     <div
       className={`modal-overlay ${open ? 'active' : ''}`}
       id="demoAdminModal"
+      ref={modalRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="demoAdminModalTitle"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -27,46 +63,48 @@ export function AdminEntityModal({ open, onClose, onSuccess }: AdminEntityModalP
         <div className="modal-header">
           <div className="modal-header-content">
             <h2 className="modal-title" id="demoAdminModalTitle">
-              Add Department
+              {title}
             </h2>
-            <p className="modal-subtitle">Enter the official department title below.</p>
+            <p className="modal-subtitle">{subtitle}</p>
           </div>
         </div>
         <form
           className="modal-form"
           id="demoAdminForm"
-          onSubmit={(e) => {
+          onSubmit={onSubmit ?? ((e) => {
             e.preventDefault();
             onClose();
             onSuccess?.('Department record saved successfully.');
-          }}
+          })}
         >
-          <Alert
-            variant="info"
-            title="Confirm Addition"
-            description="You are about to add this department record. Review the details below before proceeding."
-          />
-          <Input
-            id="demoAdminDeptName"
-            label="Department Name"
-            placeholder="e.g. Department of Computer Science"
-            required
-            value={adminDeptName}
-            onChange={(e) => setAdminDeptName(e.target.value)}
-          />
-          <div className="modal-actions">
-            <Button
-              id="cancelDemoAdminModal"
-              variant="outline"
-              className="modal-btn-cancel"
-              onClick={onClose}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" className="modal-submit">
-              Add Department
-            </Button>
-          </div>
+          {children ?? <>
+            <Alert
+              variant="info"
+              title="Confirm Addition"
+              description="You are about to add this department record. Review the details below before proceeding."
+            />
+            <Input
+              id="demoAdminDeptName"
+              label="Department Name"
+              placeholder="e.g. Department of Computer Science"
+              required
+              value={adminDeptName}
+              onChange={(e) => setAdminDeptName(e.target.value)}
+            />
+            <div className="modal-actions">
+              <Button
+                id="cancelDemoAdminModal"
+                variant="outline"
+                className="modal-btn-cancel"
+                onClick={onClose}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" className="modal-submit">
+                Add Department
+              </Button>
+            </div>
+          </>}
         </form>
       </section>
     </div>
@@ -77,17 +115,30 @@ export interface RemoveConfirmationModalProps {
   open: boolean;
   onClose: () => void;
   onConfirm?: () => void;
+  entityLabel?: string;
+  pending?: boolean;
+  error?: ReactNode;
+  closeOnConfirm?: boolean;
 }
 
 export function RemoveConfirmationModal({
   open,
   onClose,
   onConfirm,
+  entityLabel = 'Department',
+  pending = false,
+  error,
+  closeOnConfirm = true,
 }: RemoveConfirmationModalProps) {
+  const modalRef = usePortalFocus(open, onClose);
   return (
     <div
       className={`modal-overlay ${open ? 'active' : ''}`}
       id="demoRemoveModal"
+      ref={modalRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="demoRemoveModalTitle"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -95,7 +146,7 @@ export function RemoveConfirmationModal({
       <section className="modal-card compact remove-modal">
         <div className="modal-header">
           <div className="modal-header-content">
-            <h2 className="modal-title">Remove Department</h2>
+            <h2 className="modal-title" id="demoRemoveModalTitle">Remove {entityLabel}</h2>
             <p className="modal-subtitle">Confirm permanent deletion of this record.</p>
           </div>
         </div>
@@ -103,10 +154,12 @@ export function RemoveConfirmationModal({
           <Alert
             variant="warning"
             title="Confirm Removal"
-            description="Are you sure you want to remove this department? This action cannot be undone."
+            description={`Are you sure you want to remove this ${entityLabel.toLowerCase()}? This action cannot be undone.`}
           />
+          {error}
           <div className="modal-actions">
             <Button
+              disabled={pending}
               id="cancelDemoRemoveModal"
               variant="outline"
               className="modal-btn-cancel"
@@ -116,10 +169,11 @@ export function RemoveConfirmationModal({
             </Button>
             <Button
               id="confirmDemoRemoveModal"
+              disabled={pending}
               variant="primary"
               className="modal-submit"
               onClick={() => {
-                onClose();
+                if (closeOnConfirm) onClose();
                 onConfirm?.();
               }}
             >

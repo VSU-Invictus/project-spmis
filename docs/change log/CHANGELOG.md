@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Admin taxonomy management (#157):** Connected Department and Program add/edit/remove forms to the contract hooks using the M1 management layout and reusable dialogs/table. Added name validation, inline API errors, search/status filtering, pagination and queue entry points; preserved Faculty routes. Rendered visual comparison remains pending because browser verification was unavailable.
 - **Faculty application submission hook (#157):** Added typed student/program/department submissions with server-owned fields omitted, API error propagation, and application/audit cache refresh without prematurely changing managed records.
 - **Faculty administration hooks (#157):** Added contract-typed Faculty listing and Admin updates with filtered query keys, API error propagation, and affected profile, attribution, search and audit cache refreshes.
 - **Admin student mutation hooks (#157):** Added contract-typed direct creation and update hooks, preserving API errors and refreshing student search, audit and affected student detail caches.
