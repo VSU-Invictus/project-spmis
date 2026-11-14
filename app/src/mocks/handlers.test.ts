@@ -98,4 +98,84 @@ describe('contract MSW handlers', () => {
     const response = await fetch(`${BASE}/rest/v1/departments`);
     expect(await response.json()).toEqual([]);
   });
+
+  it('retrieves a student by ID via get_student_by_id RPC', async () => {
+    const response = await fetch(`${BASE}/rest/v1/rpc/get_student_by_id?p_student_id=${studentId}`);
+    expect(response.status).toBe(200);
+    const data = await response.json();
+    expect(data).toMatchObject({
+      id: studentId,
+      first_name: 'Maria',
+      last_name: 'Santos',
+      student_id_number: '27-1-12345',
+    });
+  });
+
+  it('updates a review via PATCH /functions/v1/reviews/:id and records a revision snapshot', async () => {
+    const listResp = await fetch(`${BASE}/rest/v1/review_details?student_id=eq.${studentId}`);
+    const [existing] = await listResp.json();
+
+    const patchResp = await fetch(`${BASE}/functions/v1/reviews/${existing.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        body_document: {
+          blocks: [{ type: 'paragraph', content: [{ text: 'Updated review with robotics and teamwork.' }] }],
+        },
+        tags: ['robotics', 'teamwork'],
+      }),
+    });
+    expect(patchResp.status).toBe(200);
+    const updated = await patchResp.json();
+    expect(updated).toMatchObject({
+      id: existing.id,
+      body_text: 'Updated review with robotics and teamwork.',
+      tags: ['robotics', 'teamwork'],
+    });
+
+    const revisionsResp = await fetch(`${BASE}/rest/v1/review_revisions?review_id=eq.${existing.id}`);
+    expect(revisionsResp.status).toBe(200);
+    const revisions = await revisionsResp.json();
+    expect(revisions.length).toBeGreaterThanOrEqual(2);
+    expect(revisions[0]).toMatchObject({
+      review_id: existing.id,
+      body_text_snapshot: 'Demonstrated strong leadership and research skills.',
+    });
+  });
+
+  it('hides, unhides, and deletes a review via POST /functions/v1/reviews/:id/status', async () => {
+    const listResp = await fetch(`${BASE}/rest/v1/review_details?student_id=eq.${studentId}`);
+    const [existing] = await listResp.json();
+
+    const hideResp = await fetch(`${BASE}/functions/v1/reviews/${existing.id}/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'hide' }),
+    });
+    expect(hideResp.status).toBe(200);
+    expect(await hideResp.json()).toEqual({ id: existing.id, status: 'hidden' });
+
+    const unhideResp = await fetch(`${BASE}/functions/v1/reviews/${existing.id}/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'unhide' }),
+    });
+    expect(unhideResp.status).toBe(200);
+    expect(await unhideResp.json()).toEqual({ id: existing.id, status: 'active' });
+
+    const deleteResp = await fetch(`${BASE}/functions/v1/reviews/${existing.id}/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete' }),
+    });
+    expect(deleteResp.status).toBe(200);
+    expect(await deleteResp.json()).toEqual({ id: existing.id, status: 'deleted' });
+  });
+
+  it('returns tag suggestions via GET /rest/v1/rpc/suggest_review_tags', async () => {
+    const response = await fetch(`${BASE}/rest/v1/rpc/suggest_review_tags?prefix=res`);
+    expect(response.status).toBe(200);
+    const data = await response.json();
+    expect(data).toEqual(expect.arrayContaining([{ tag: 'research' }]));
+  });
 });
