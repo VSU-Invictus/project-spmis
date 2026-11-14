@@ -46,7 +46,10 @@ function ProfileBootstrapper({
   return <>{children}</>;
 }
 
-function renderStudentDetailPage(customProfile?: Partial<FacultyProfile>) {
+function renderStudentDetailPage(
+  customProfile?: Partial<FacultyProfile>,
+  initialRoute = `/faculty/students/${studentId}`
+) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -72,9 +75,10 @@ function renderStudentDetailPage(customProfile?: Partial<FacultyProfile>) {
       <SessionProvider>
         <ThemeProvider>
           <ProfileBootstrapper profile={activeProfile}>
-            <MemoryRouter initialEntries={[`/faculty/students/${studentId}`]}>
+            <MemoryRouter initialEntries={[initialRoute]}>
               <Routes>
                 <Route path="/faculty/students/:id" element={<FacultyStudentDetailPage />} />
+                <Route path="/faculty/students/:id/new-review" element={<FacultyStudentDetailPage />} />
               </Routes>
             </MemoryRouter>
           </ProfileBootstrapper>
@@ -224,6 +228,7 @@ describe('FacultyStudentDetailPage (#155)', () => {
     expect(await screen.findByText(/project execution/i)).toBeInTheDocument();
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['listStudentReviews'] });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['searchStudents'] });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['listTags'] });
   });
 
   it('edits an existing review, updates edit history, and invalidates queries', async () => {
@@ -311,21 +316,74 @@ describe('FacultyStudentDetailPage (#155)', () => {
           },
           { status: 422 }
         )
+      ),
+      http.post('*/functions/v1/reviews/:id/status', () =>
+        HttpResponse.json(
+          {
+            code: 'REVIEW_STATUS_CONFLICT',
+            message: 'Review status transition conflicted with current state.',
+            details: 'The review was already modified.',
+            hint: 'Refresh the student page and try again.',
+          },
+          { status: 409 }
+        )
       )
     );
 
     renderStudentDetailPage();
 
+    // 1. Server-side 422 on createReview
     await user.click(await screen.findByRole('button', { name: /write review/i }));
     const dialog = await screen.findByRole('dialog');
+    await waitFor(() => {
+      expect(within(dialog).getByRole('button', { name: /close modal/i })).toHaveFocus();
+    });
+
     const editor = within(dialog).getByLabelText(/review text/i);
     await user.click(editor);
     await user.paste('Valid client text that triggers simulated server 422.');
+    expect(editor).toHaveValue('Valid client text that triggers simulated server 422.');
 
     await user.click(within(dialog).getByRole('button', { name: /publish review/i }));
 
     expect(await within(dialog).findByText('REVIEW_WORD_LIMIT')).toBeInTheDocument();
     expect(within(dialog).getByText('Reviews must contain no more than 500 words.')).toBeInTheDocument();
     expect(within(dialog).getByText(/Shorten the review and submit it again/i)).toBeInTheDocument();
+
+    await user.click(within(dialog).getByRole('button', { name: /cancel/i }));
+
+    // 2. Server-side 409 on setReviewStatus
+    const reviewCard = await screen.findByTestId('review-card-67015de8-1ce8-4ac4-8634-384bf5fb3821');
+    await user.click(within(reviewCard).getByRole('button', { name: /review options/i }));
+    await user.click(within(reviewCard).getByRole('menuitem', { name: /^hide$/i }));
+
+    expect(await screen.findByText('REVIEW_STATUS_CONFLICT')).toBeInTheDocument();
+    expect(screen.getByText(/Refresh the student page and try again/i)).toBeInTheDocument();
+  });
+
+  it('opens the compose modal automatically on /faculty/students/:id/new-review and blocks invalid uncommitted tagDraft on submit', async () => {
+    const user = userEvent.setup();
+    renderStudentDetailPage(undefined, `/faculty/students/${studentId}/new-review`);
+
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).getByText(/Write a review/i)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(within(dialog).getByRole('button', { name: /close modal/i })).toHaveFocus();
+    });
+
+    const editor = within(dialog).getByLabelText(/review text/i);
+    await user.click(editor);
+    await user.paste('Assessment with an overly long uncommitted tag draft.');
+
+    const tagInput = within(dialog).getByLabelText(/tags/i);
+    await user.click(tagInput);
+    await user.paste('a'.repeat(55));
+
+    await user.click(within(dialog).getByRole('button', { name: /publish review/i }));
+
+    expect(
+      await within(dialog).findByText(/Each tag must be 50 characters or fewer/i)
+    ).toBeInTheDocument();
   });
 });

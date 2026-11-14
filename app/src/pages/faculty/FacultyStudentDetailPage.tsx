@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   Alert,
@@ -76,9 +76,12 @@ function ReviewRevisionsSection({ reviewId }: { reviewId: string }) {
 
 export function FacultyStudentDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { profile } = useSession();
 
-  const [isWriteOpen, setIsWriteOpen] = useState(false);
+  const isNewReviewRoute = location.pathname.endsWith('/new-review');
+  const [isWriteOpen, setIsWriteOpen] = useState(isNewReviewRoute);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [deletingReview, setDeletingReview] = useState<Review | null>(null);
   const [openKebabId, setOpenKebabId] = useState<string | null>(null);
@@ -89,6 +92,24 @@ export function FacultyStudentDetailPage() {
     details?: string | null;
     hint?: string | null;
   } | null>(null);
+
+  useEffect(() => {
+    if (isNewReviewRoute) {
+      setIsWriteOpen(true);
+    }
+  }, [isNewReviewRoute]);
+
+  const handleCloseReviewModal = useCallback(() => {
+    setIsWriteOpen(false);
+    setEditingReview(null);
+    if (isNewReviewRoute && id) {
+      navigate(`/faculty/students/${id}`, { replace: true });
+    }
+  }, [isNewReviewRoute, id, navigate]);
+
+  const handleCloseDeleteModal = useCallback(() => {
+    setDeletingReview(null);
+  }, []);
 
   useEffect(() => {
     if (!toastMessage) return;
@@ -109,7 +130,7 @@ export function FacultyStudentDetailPage() {
     error: studentError,
   } = useStudentById(id);
 
-  const { data: programs } = usePrograms();
+  const { data: programs, isPending: isProgramsPending } = usePrograms();
 
   const {
     data: reviews,
@@ -183,9 +204,10 @@ export function FacultyStudentDetailPage() {
 
   const programName = useMemo(() => {
     if (!student) return 'N/A';
+    if (isProgramsPending) return 'Loading…';
     const matched = programs?.find((prog) => prog.id === student.program_id);
-    return matched?.name ?? 'BS Computer Science';
-  }, [student, programs]);
+    return matched?.name ?? 'Unknown program';
+  }, [student, programs, isProgramsPending]);
 
   return (
     <AppShell
@@ -240,9 +262,9 @@ export function FacultyStudentDetailPage() {
             style={{
               padding: '12px 16px',
               backgroundColor: 'var(--color-status-danger-subtle, rgba(239, 68, 68, 0.12))',
-              border: '1px solid var(--destructive, #ef4444)',
+              border: '1px solid var(--color-status-danger, #ef4444)',
               borderRadius: 'var(--radius-md, 8px)',
-              color: 'var(--destructive, #ef4444)',
+              color: 'var(--color-status-danger, #ef4444)',
               fontSize: '13px',
             }}
           >
@@ -543,19 +565,16 @@ export function FacultyStudentDetailPage() {
       </div>
 
       {/* Write / Edit Review Modal */}
-      {student && (isWriteOpen || editingReview) && (
+      {student && (isWriteOpen || isNewReviewRoute || editingReview) && (
         <ReviewFormModal
-          isOpen={Boolean(isWriteOpen || editingReview)}
-          onClose={() => {
-            setIsWriteOpen(false);
-            setEditingReview(null);
-          }}
+          isOpen={Boolean(isWriteOpen || isNewReviewRoute || editingReview)}
+          onClose={handleCloseReviewModal}
           mode={editingReview ? 'edit' : 'create'}
           studentId={student.id}
           studentName={fullName}
           studentIdNumber={student.student_id_number}
           studentProgram={programName}
-          contributorName={profile?.full_name || 'Alex Reyes'}
+          contributorName={profile?.full_name || 'Faculty Member'}
           initialReview={editingReview}
           onSuccess={(msg) => setToastMessage(msg)}
         />
@@ -564,7 +583,7 @@ export function FacultyStudentDetailPage() {
       {/* Design System Delete Review Confirmation Modal */}
       <Modal
         isOpen={Boolean(deletingReview)}
-        onClose={() => setDeletingReview(null)}
+        onClose={handleCloseDeleteModal}
         size="sm"
         title="Delete Review"
       >
@@ -578,7 +597,7 @@ export function FacultyStudentDetailPage() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setDeletingReview(null)}
+              onClick={handleCloseDeleteModal}
             >
               Cancel
             </Button>

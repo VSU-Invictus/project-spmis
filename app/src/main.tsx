@@ -175,6 +175,10 @@ const router = createBrowserRouter([
               path: 'students/:id',
               element: <FacultyStudentDetailPage />,
             },
+            {
+              path: 'students/:id/new-review',
+              element: <FacultyStudentDetailPage />,
+            },
             { path: 'chat', element: <FacultyChatPage /> },
             { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
             { path: 'programs', element: <AdminTaxonomyPage mode="programs" /> },
