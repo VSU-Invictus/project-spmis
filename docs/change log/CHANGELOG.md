@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Admin student mutation hooks (#157):** Added contract-typed direct creation and update hooks, preserving API errors and refreshing student search, audit and affected student detail caches.
 - **Taxonomy mutation hooks (#157):** Added department/program create, update and delete hooks using the frozen contract, API error normalization, and refresh of affected active/inactive query caches.
 - **CI Workflow, Contract Freeze (`v1.0.0`), and Pinned Tooling:**
   - Added GitHub Actions CI workflow (`.github/workflows/ci.yml`) running `contract:lint`, `contract:check`, `contract:docs` verification and artifact upload, `typecheck`, `test` (Vitest), and `build` on pushes and pull requests.

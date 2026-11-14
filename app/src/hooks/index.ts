@@ -17,3 +17,5 @@ export * from './useDeleteDepartment';
 export * from './useCreateProgram';
 export * from './useUpdateProgram';
 export * from './useDeleteProgram';
+export * from './useCreateStudentDirect';
+export * from './useUpdateStudent';
