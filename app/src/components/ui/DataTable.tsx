@@ -26,6 +26,14 @@ export interface DataTableProps<T> {
   bulkActions?: React.ReactNode;
   entityName?: string;
   defaultPageSize?: number;
+  /** When supplied, data contains only the current server page. */
+  pagination?: {
+    page: number;
+    pageSize: number;
+    totalEntries: number;
+    onPageChange: (page: number) => void;
+    onPageSizeChange: (pageSize: number) => void;
+  };
   preferenceKey?: string;
   dynamicPageSizeOptions?: boolean;
   isLoading?: boolean;
@@ -53,6 +61,7 @@ export function DataTable<T>({
   bulkActions,
   entityName = 'entries',
   defaultPageSize = 5,
+  pagination,
   preferenceKey,
   dynamicPageSizeOptions = true,
   isLoading = false,
@@ -92,7 +101,7 @@ export function DataTable<T>({
     onSelectionChange?.(Array.from(nextSet));
   };
 
-  const totalMatches = data.length;
+  const totalMatches = pagination?.totalEntries ?? data.length;
 
   // Dynamic Rows Per Page rules:
   // - If entries <= 9: dropdown is disabled, option [5]
@@ -105,23 +114,24 @@ export function DataTable<T>({
     return [5];
   }, [dynamicPageSizeOptions, totalMatches]);
 
-  const effectivePageSize = allowedPageSizes.includes(pageSize)
+  const effectivePageSize = pagination?.pageSize ?? (allowedPageSizes.includes(pageSize)
     ? pageSize
-    : allowedPageSizes[0];
+    : allowedPageSizes[0]);
 
   const totalPages = Math.max(1, Math.ceil(totalMatches / effectivePageSize));
-  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+  const safeCurrentPage = Math.min(Math.max(1, pagination?.page ?? currentPage), totalPages);
 
   useEffect(() => {
-    if (currentPage > totalPages) {
+    if (!pagination && currentPage > totalPages) {
       setCurrentPage(totalPages);
     }
-  }, [currentPage, totalPages]);
+  }, [currentPage, totalPages, pagination]);
 
   const visibleRows = useMemo(() => {
+    if (pagination) return data;
     const startIndex = (safeCurrentPage - 1) * effectivePageSize;
     return data.slice(startIndex, startIndex + effectivePageSize);
-  }, [data, safeCurrentPage, effectivePageSize]);
+  }, [data, safeCurrentPage, effectivePageSize, pagination]);
 
   const checkRowSelectable = (row: T) =>
     isRowSelectable ? isRowSelectable(row) : true;
@@ -400,11 +410,12 @@ export function DataTable<T>({
         selectionText={selectionText}
         bulkActions={bulkActions}
         onPageSizeChange={(newSize) => {
+          if (pagination) { pagination.onPageSizeChange(newSize); return; }
           setPageSize(newSize);
           if (preferenceKey) preferences?.setTablePageSize(preferenceKey, newSize);
           setCurrentPage(1);
         }}
-        onPageChange={(newPage) => setCurrentPage(newPage)}
+        onPageChange={(newPage) => pagination ? pagination.onPageChange(newPage) : setCurrentPage(newPage)}
       />
     </div>
   );

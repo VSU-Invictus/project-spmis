@@ -25,3 +25,27 @@ export function useSearchStudents(
     ...options,
   });
 }
+
+export interface StudentSearchPage {
+  students: StudentSearchResult[];
+  total: number;
+}
+
+/** Counted variant for server-paginated rosters; keeps the existing Faculty hook unchanged. */
+export function useStudentSearchPage(params: SearchStudentsParams) {
+  return useQuery({
+    queryKey: [...queryKeys.searchStudents(params as Record<string, unknown>), 'counted-page'],
+    queryFn: async (): Promise<StudentSearchPage> => {
+      let contentRange: string | null = null;
+      const students = await request(apiClient.GET('/rest/v1/rpc/search_students', {
+        params: { query: params, header: { Prefer: 'count=exact' } },
+      }).then(result => {
+        contentRange = result.response.headers.get('Content-Range');
+        return result;
+      }));
+      const count = /\/(\d+)$/.exec(contentRange ?? '');
+      if (!count) throw new Error('Student count unavailable. Please retry loading the roster.');
+      return { students: (students ?? []) as StudentSearchResult[], total: Number(count[1]) };
+    },
+  });
+}

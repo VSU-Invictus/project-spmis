@@ -26,6 +26,7 @@ import { FacultyChatPage } from './pages/faculty/FacultyChatPage';
 import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
 import { AdminTaxonomyManagementPage } from './pages/admin/AdminTaxonomyManagementPage';
 import { AdminTaxonomyPage } from './pages/admin/AdminTaxonomyPage';
+import { AdminStudentsPage } from './pages/admin/AdminStudentsPage';
 import { AdminAuditLogPage } from './pages/admin/AdminAuditLogPage';
 import { ThemeProvider } from './context/ThemeContext';
 import { SessionProvider } from './context/SessionContext';
@@ -199,7 +200,7 @@ const router = createBrowserRouter([
             { index: true, element: <Navigate to="/admin/dashboard" replace /> },
             { path: 'dashboard', element: <AdminApprovalQueuePage /> },
             { path: 'applications', element: <AdminApprovalQueuePage /> },
-            { path: 'students', element: <FacultyStudentsPage /> },
+            { path: 'students', element: <AdminStudentsPage /> },
             { path: 'departments', element: <AdminTaxonomyManagementPage mode="departments" /> },
             { path: 'programs', element: <AdminTaxonomyManagementPage mode="programs" /> },
             { path: 'audit-log', element: <AdminAuditLogPage /> },

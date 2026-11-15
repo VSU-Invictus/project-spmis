@@ -26,3 +26,19 @@ export function usePrograms(
   });
 }
 
+/** Complete approved choices for forms, using the contract's bounded result pages. */
+export function useApprovedProgramOptions() {
+  return useQuery({
+    queryKey: [...queryKeys.programs({ status: 'eq.approved' }), 'all-options'],
+    queryFn: async (): Promise<Program[]> => {
+      const programs: Program[] = [];
+      for (let offset = 0; ; offset += 100) {
+        const page = await request(apiClient.GET('/rest/v1/programs', {
+          params: { query: { status: 'eq.approved', limit: 100, offset, order: 'name.asc,id.asc' } },
+        }));
+        programs.push(...(page ?? []));
+        if (!page || page.length < 100) return programs;
+      }
+    },
+  });
+}

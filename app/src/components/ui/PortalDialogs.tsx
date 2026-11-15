@@ -41,9 +41,10 @@ export interface AdminEntityModalProps {
   subtitle?: string;
   children?: ReactNode;
   onSubmit?: FormEventHandler<HTMLFormElement>;
+  cardClassName?: string;
 }
 
-export function AdminEntityModal({ open, onClose, onSuccess, title = 'Add Department', subtitle = 'Enter the official department title below.', children, onSubmit }: AdminEntityModalProps) {
+export function AdminEntityModal({ open, onClose, onSuccess, title = 'Add Department', subtitle = 'Enter the official department title below.', children, onSubmit, cardClassName = '' }: AdminEntityModalProps) {
   const [adminDeptName, setAdminDeptName] = useState('Department of Artificial Intelligence');
   const modalRef = usePortalFocus(open, onClose);
 
@@ -59,7 +60,7 @@ export function AdminEntityModal({ open, onClose, onSuccess, title = 'Add Depart
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <section className="modal-card">
+      <section className={`modal-card ${cardClassName}`.trim()}>
         <div className="modal-header">
           <div className="modal-header-content">
             <h2 className="modal-title" id="demoAdminModalTitle">
@@ -119,6 +120,7 @@ export interface RemoveConfirmationModalProps {
   pending?: boolean;
   error?: ReactNode;
   closeOnConfirm?: boolean;
+  unavailableReason?: string;
 }
 
 export function RemoveConfirmationModal({
@@ -129,6 +131,7 @@ export function RemoveConfirmationModal({
   pending = false,
   error,
   closeOnConfirm = true,
+  unavailableReason,
 }: RemoveConfirmationModalProps) {
   const modalRef = usePortalFocus(open, onClose);
   return (
@@ -147,14 +150,14 @@ export function RemoveConfirmationModal({
         <div className="modal-header">
           <div className="modal-header-content">
             <h2 className="modal-title" id="demoRemoveModalTitle">Remove {entityLabel}</h2>
-            <p className="modal-subtitle">Confirm permanent deletion of this record.</p>
+            <p className="modal-subtitle">{unavailableReason ? `${entityLabel} deletion is not yet available.` : 'Confirm permanent deletion of this record.'}</p>
           </div>
         </div>
         <div className="modal-body">
           <Alert
             variant="warning"
-            title="Confirm Removal"
-            description={`Are you sure you want to remove this ${entityLabel.toLowerCase()}? This action cannot be undone.`}
+            title={unavailableReason ? 'Not yet available' : 'Confirm Removal'}
+            description={unavailableReason ?? `Are you sure you want to remove this ${entityLabel.toLowerCase()}? This action cannot be undone.`}
           />
           {error}
           <div className="modal-actions">
@@ -169,10 +172,11 @@ export function RemoveConfirmationModal({
             </Button>
             <Button
               id="confirmDemoRemoveModal"
-              disabled={pending}
+              disabled={pending || Boolean(unavailableReason)}
               variant="primary"
               className="modal-submit"
               onClick={() => {
+                if (unavailableReason) return;
                 if (closeOnConfirm) onClose();
                 onConfirm?.();
               }}
