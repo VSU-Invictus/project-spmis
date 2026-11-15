@@ -25,7 +25,7 @@ import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
 import { FacultyChatPage } from './pages/faculty/FacultyChatPage';
 import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
 import { AdminTaxonomyManagementPage } from './pages/admin/AdminTaxonomyManagementPage';
-import { AdminTaxonomyPage } from './pages/admin/AdminTaxonomyPage';
+import { FacultyTaxonomyPage } from './pages/faculty/FacultyTaxonomyPage';
 import { AdminFacultyPage } from './pages/admin/AdminFacultyPage';
 import { AdminStudentsPage } from './pages/admin/AdminStudentsPage';
 import { AdminAuditLogPage } from './pages/admin/AdminAuditLogPage';
@@ -185,8 +185,8 @@ const router = createBrowserRouter([
               ),
             },
             { path: 'chat', element: <FacultyChatPage /> },
-            { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
-            { path: 'programs', element: <AdminTaxonomyPage mode="programs" /> },
+            { path: 'departments', element: <FacultyTaxonomyPage mode="departments" /> },
+            { path: 'programs', element: <FacultyTaxonomyPage mode="programs" /> },
             { path: 'applications', element: <AdminApprovalQueuePage /> },
           ],
         }],
