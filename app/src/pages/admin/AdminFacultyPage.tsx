@@ -6,9 +6,10 @@ import { AppShell } from '../../components/navigation/AppShell';
 import { AdminEntityModal, RemoveConfirmationModal, Alert, Badge, Button, DataTable, Input } from '../../components/ui';
 import { useQueueSearchParam } from '../../components/queue-modal';
 import { useSession } from '../../context/SessionContext';
+import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
 import {
   useFacultyList, useFacultyPage, useUpdateFacultyByAdmin, useDepartmentOptions,
-  useApprovalQueueItems, type FacultyListItem, type UpdateFacultyByAdminInput, type Department,
+  type FacultyListItem, type UpdateFacultyByAdminInput, type Department,
 } from '../../hooks';
 import { facultyEditSchema, type FacultyEditValues } from '../../lib/validation/faculty';
 import { ApiRequestError } from '../../lib/api';
@@ -140,7 +141,7 @@ function FacultyEditor({ id, onClose, onSaved }: { id: string; onClose: () => vo
   return <FacultyForm faculty={faculty} departments={departments.data ?? []} onClose={onClose} onSaved={onSaved} />;
 }
 
-function FacultyManagement() {
+function FacultyManagement({ profileId }: { profileId: string }) {
   const [search, setSearch] = useState('');
   const [departmentId, setDepartmentId] = useState('');
   const [page, setPage] = useState(1);
@@ -154,7 +155,7 @@ function FacultyManagement() {
   const faculty = useFacultyPage({ or: search.trim() ? `(full_name.ilike.${pattern},email.ilike.${pattern})` : undefined,
     department_id: departmentId ? `eq.${departmentId}` : undefined,
     limit: pageSize, offset: (page - 1) * pageSize, order: 'created_at.desc,id.asc' });
-  const queue = useApprovalQueueItems({ type: 'eq.faculty_account', status: 'eq.pending' });
+  const queue = useAdminQueueBrowse('faculty_account', profileId);
   useEffect(() => {
     if (!toast) return;
     const timer = window.setTimeout(() => setToast(''), 3000);
@@ -223,8 +224,8 @@ function FacultyManagement() {
 }
 
 export function AdminFacultyPage() {
-  const { role, loading } = useSession();
+  const { role, loading, profile } = useSession();
   if (loading) return null;
-  if (role !== 'admin') return <Navigate to="/" replace />;
-  return <FacultyManagement />;
+  if (role !== 'admin' || !profile) return <Navigate to="/" replace />;
+  return <FacultyManagement key={profile.id} profileId={profile.id} />;
 }

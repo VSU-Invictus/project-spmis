@@ -7,9 +7,10 @@ import { AppShell } from '../../components/navigation/AppShell';
 import { AdminEntityModal, RemoveConfirmationModal, Alert, Button, DataTable, Input } from '../../components/ui';
 import { useQueueSearchParam } from '../../components/queue-modal';
 import { useSession } from '../../context/SessionContext';
+import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
 import {
   useStudentSearchPage, useStudentById, useCreateStudentDirect, useUpdateStudent,
-  useApprovedProgramOptions, useApprovalQueueItems, type StudentProfile, type Program,
+  useApprovedProgramOptions, type StudentProfile, type Program,
 } from '../../hooks';
 import { studentSchema } from '../../lib/validation/student';
 import { ApiRequestError } from '../../lib/api';
@@ -138,7 +139,7 @@ function StudentEditor({ id, onClose, onSaved }: { id?: string; onClose: () => v
   return <StudentForm student={id ? detail.data ?? undefined : undefined} programs={programs.data ?? []} onClose={onClose} onSaved={onSaved} />;
 }
 
-function StudentManagement() {
+function StudentManagement({ profileId }: { profileId: string }) {
   const [search, setSearch] = useState('');
   const [programId, setProgramId] = useState('');
   const [page, setPage] = useState(1);
@@ -149,7 +150,7 @@ function StudentManagement() {
   const programs = useApprovedProgramOptions();
   const students = useStudentSearchPage({ query: search.trim() || undefined, program_id: programId || undefined,
     limit: pageSize, offset: (page - 1) * pageSize, order: 'created_at.desc,id.asc' });
-  const queue = useApprovalQueueItems({ type: 'eq.student_registration', status: 'eq.pending' });
+  const queue = useAdminQueueBrowse('student_registration', profileId);
   useEffect(() => {
     if (!toast) return;
     const timer = window.setTimeout(() => setToast(''), 3000);
@@ -215,8 +216,8 @@ function StudentManagement() {
 }
 
 export function AdminStudentsPage() {
-  const { role, loading } = useSession();
+  const { role, loading, profile } = useSession();
   if (loading) return null;
-  if (role !== 'admin') return <Navigate to="/" replace />;
-  return <StudentManagement />;
+  if (role !== 'admin' || !profile) return <Navigate to="/" replace />;
+  return <StudentManagement key={profile.id} profileId={profile.id} />;
 }

@@ -6,9 +6,10 @@ import { AppShell } from '../../components/navigation/AppShell';
 import { AdminEntityModal, RemoveConfirmationModal, Alert, Badge, Button, DataTable, Input } from '../../components/ui';
 import { useQueueSearchParam } from '../../components/queue-modal';
 import { useSession } from '../../context/SessionContext';
+import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
 import {
   useDepartmentOptions, useProgramOptions, useCreateDepartment, useUpdateDepartment, useDeleteDepartment,
-  useCreateProgram, useUpdateProgram, useDeleteProgram, useApprovalQueueItems,
+  useCreateProgram, useUpdateProgram, useDeleteProgram,
   type Department,
 } from '../../hooks';
 import { ApiRequestError } from '../../lib/api';
@@ -90,7 +91,7 @@ function TaxonomyDialog({ mode, selection, onClose, onSaved }: {
   </AdminEntityModal>;
 }
 
-function TaxonomyManagement({ mode }: { mode: Mode }) {
+function TaxonomyManagement({ mode, profileId }: { mode: Mode; profileId: string }) {
   const label = mode === 'departments' ? 'Department' : 'Program';
   const title = mode === 'departments' ? 'Departments' : 'Programs';
   const [search, setSearch] = useState('');
@@ -101,7 +102,7 @@ function TaxonomyManagement({ mode }: { mode: Mode }) {
   const departments = useDepartmentOptions({ enabled: mode === 'departments' });
   const programs = useProgramOptions({ enabled: mode === 'programs' });
   const list = mode === 'departments' ? departments : programs;
-  const queue = useApprovalQueueItems({ type: `eq.${mode === 'departments' ? 'department_proposal' : 'program_proposal'}`, status: 'eq.pending' });
+  const queue = useAdminQueueBrowse(mode === 'departments' ? 'department_proposal' : 'program_proposal', profileId);
   const records = (list.data ?? []).filter(record => record.name.toLowerCase().includes(search.trim().toLowerCase()) && (status === 'all' || record.status === status));
   useEffect(() => {
     if (!toast) return;
@@ -157,9 +158,9 @@ function TaxonomyManagement({ mode }: { mode: Mode }) {
 }
 
 export function AdminTaxonomyManagementPage({ mode }: { mode: Mode }) {
-  const { role, loading } = useSession();
+  const { role, loading, profile } = useSession();
   if (loading) return null;
-  if (role !== 'admin') return <Navigate to="/" replace />;
-  return <TaxonomyManagement key={mode} mode={mode} />;
+  if (role !== 'admin' || !profile) return <Navigate to="/" replace />;
+  return <TaxonomyManagement key={`${profile.id}:${mode}`} mode={mode} profileId={profile.id} />;
 }
 
