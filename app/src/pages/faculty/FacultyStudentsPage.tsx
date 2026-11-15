@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FacultyStudentRegistration } from './FacultyStudentRegistration';
+import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   TableContainer,
@@ -18,8 +19,11 @@ import {
 import { useSearchStudents, type StudentSearchResult } from '../../hooks/useSearchStudents';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
 import { Modal } from '../../components/ui/Modal';
+import { useSession } from '../../context/SessionContext';
 
 export function FacultyStudentsPage() {
+  const { profile } = useSession();
+  const isFaculty = profile?.role === 'faculty';
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStudent, setSelectedStudent] = useState<StudentSearchResult | null>(null);
 
@@ -29,9 +33,9 @@ export function FacultyStudentsPage() {
 
   return (
     <AppShell
-      role="faculty"
+      role={profile?.role === 'admin' ? 'admin' : 'faculty'}
       activeNavKey="students"
-      breadcrumb="Faculty Portal / Student Roster"
+      breadcrumb={profile?.role === 'admin' ? 'Admin Portal / Student Roster' : 'Faculty Portal / Student Roster'}
     >
       <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -122,7 +126,16 @@ export function FacultyStudentsPage() {
                         {student.student_id_number}
                       </TableCell>
                       <TableCell>
-                        <div style={{ fontWeight: 600 }}>{fullName}</div>
+                        {isFaculty ? (
+                          <Link
+                            to={`/faculty/students/${student.id}`}
+                            style={{ fontWeight: 600, color: 'var(--foreground)' }}
+                          >
+                            {fullName}
+                          </Link>
+                        ) : (
+                          <div style={{ fontWeight: 600 }}>{fullName}</div>
+                        )}
                         <div style={{ fontSize: '12px', color: 'var(--muted-foreground, #64748b)' }}>
                           Registered via {student.registration_source === 'admin_direct' ? 'Admin Direct' : 'Faculty Application'}
                         </div>
@@ -144,13 +157,24 @@ export function FacultyStudentsPage() {
                         </div>
                       </TableCell>
                       <TableCell style={{ textAlign: 'right' }}>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => setSelectedStudent(student)}
-                        >
-                          View Reviews
-                        </Button>
+                        <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center' }}>
+                          {isFaculty && (
+                            <Link
+                              to={`/faculty/students/${student.id}`}
+                              className="ui-btn ui-btn-primary ui-btn--sm"
+                              style={{ textDecoration: 'none' }}
+                            >
+                              Student Detail
+                            </Link>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => setSelectedStudent(student)}
+                          >
+                            View Reviews
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );

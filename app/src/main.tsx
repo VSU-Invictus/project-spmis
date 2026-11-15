@@ -7,7 +7,6 @@ import App from './App';
 import DocsPage from './routes/docs/DocsPage';
 import SignInPage from './pages/SignInPage';
 import PendingVerificationPage from './pages/PendingVerificationPage';
-import { ReservedPortalPage } from './pages/ReservedPortalPage';
 import StyleguidePage from './pages/StyleguidePage';
 import {
   ButtonsClassifiedPage,
@@ -21,6 +20,7 @@ import {
   ChatsAuthClassifiedPage,
 } from './pages/ClassifiedComponentPages';
 import { FacultyStudentsPage } from './pages/faculty/FacultyStudentsPage';
+import { FacultyStudentDetailPage } from './pages/faculty/FacultyStudentDetailPage';
 import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
 import { FacultyChatPage } from './pages/faculty/FacultyChatPage';
 import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
@@ -176,14 +176,11 @@ const router = createBrowserRouter([
             { path: 'students', element: <FacultyStudentsPage /> },
             {
               path: 'students/:id',
-              element: (
-                <ReservedPortalPage
-                  role="faculty"
-                  navKey="students"
-                  title="Student Profile"
-                  breadcrumb="Faculty Portal / Student Profile"
-                />
-              ),
+              element: <FacultyStudentDetailPage />,
+            },
+            {
+              path: 'students/:id/new-review',
+              element: <FacultyStudentDetailPage />,
             },
             { path: 'chat', element: <FacultyChatPage /> },
             { path: 'departments', element: <FacultyTaxonomyPage mode="departments" /> },
