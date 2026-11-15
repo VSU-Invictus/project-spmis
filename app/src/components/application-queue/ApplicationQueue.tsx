@@ -141,21 +141,21 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
       case 'student_registration': cells = {
         studentId: item.payload.student_id_number,
         name: [item.payload.first_name, item.payload.middle_name, item.payload.last_name].filter(Boolean).join(' '),
-        program: programs.data?.find(entry => entry.id === item.payload.program_id)?.name ?? 'Program unavailable', date,
+        program: programs.data?.find(entry => entry.id === item.payload.program_id)?.name ?? (programs.isPending ? 'Loading program…' : 'Program unavailable'), date,
       }; break;
       case 'faculty_account': cells = {
         name: item.payload.full_name, email: item.payload.email,
-        department: item.payload.proposed_department_name ?? departments.data?.find(entry => entry.id === item.payload.department_id)?.name ?? 'Department unavailable',
-        role: person ? (person.role === 'admin' ? 'Admin' : 'Faculty') : 'Role unavailable', status: 'Pending', date,
+        department: item.payload.proposed_department_name ?? departments.data?.find(entry => entry.id === item.payload.department_id)?.name ?? (departments.isPending ? 'Loading department…' : 'Department unavailable'),
+        role: person ? (person.role === 'admin' ? 'Admin' : 'Faculty') : faculty.isPending ? 'Loading role…' : 'Role unavailable', status: 'Pending', date,
       }; break;
       default: cells = {
         [item.type === 'program_proposal' ? 'program' : 'department']: item.payload.name,
-        proposedBy: person?.full_name ?? 'Submitter unavailable',
+        proposedBy: person?.full_name ?? (faculty.isPending ? 'Loading submitter…' : 'Submitter unavailable'),
         type: ('program_id' in item.payload && item.payload.program_id) || ('department_id' in item.payload && item.payload.department_id) ? 'Edit Existing' : 'Addition', date,
       };
     }
     return { id: item.id, status: 'Pending', cells };
-  }), [applications.data, faculty.data, departments.data, programs.data]);
+  }), [applications.data, faculty.data, departments.data, programs.data, faculty.isPending, departments.isPending, programs.isPending]);
   const referenceError = faculty.error ?? departments.error ?? programs.error;
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('Type: All');
