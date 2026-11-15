@@ -26,3 +26,21 @@ export function useApprovalQueueItems(
   });
 }
 
+/** Caller-scoped history, with an identity-specific cache and complete bounded pages. */
+export function useOwnApplications(profileId: string) {
+  return useQuery({
+    queryKey: [...queryKeys.approvalQueueItems(), 'own-history', profileId],
+    queryFn: async (): Promise<ApprovalQueueItem[]> => {
+      const items: ApprovalQueueItem[] = [];
+      for (let offset = 0; ; offset += 100) {
+        const page = await request(apiClient.GET('/rest/v1/approval_queue_items', {
+          params: { query: { limit: 100, offset, order: 'created_at.desc,id.asc' } },
+        }));
+        // RLS remains authoritative. Also avoid displaying unrelated mock/cached rows.
+        items.push(...(page ?? []).filter(item => item.submitted_by === profileId));
+        if (!page || page.length < 100) return items;
+      }
+    },
+  });
+}
+

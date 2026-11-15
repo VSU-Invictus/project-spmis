@@ -15,4 +15,14 @@ export * from './useAuditLogs';
 export * from './useAskChatbot';
 export * from './useOwnProfile';
 export * from './useUpdateOwnProfile';
-
+export * from './useCreateDepartment';
+export * from './useUpdateDepartment';
+export * from './useDeleteDepartment';
+export * from './useCreateProgram';
+export * from './useUpdateProgram';
+export * from './useDeleteProgram';
+export * from './useCreateStudentDirect';
+export * from './useUpdateStudent';
+export * from './useFacultyList';
+export * from './useUpdateFacultyByAdmin';
+export * from './useSubmitApplication';

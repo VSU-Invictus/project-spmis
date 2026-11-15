@@ -118,7 +118,7 @@ export function AppShell({
         }}
       />
 
-      <QueueModalHost />
+      {role === 'admin' && <QueueModalHost />}
     </div>
   );
 }

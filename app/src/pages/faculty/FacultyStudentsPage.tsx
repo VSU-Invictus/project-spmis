@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { FacultyStudentRegistration } from './FacultyStudentRegistration';
 import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
@@ -125,6 +126,7 @@ export function FacultyStudentsPage() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <FacultyStudentRegistration onOpen={() => setSelectedStudent(null)} />
             {hasActiveFilters && (
               <Button size="sm" variant="ghost" onClick={handleResetFilters}>
                 Clear All Filters

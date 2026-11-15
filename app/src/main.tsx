@@ -7,7 +7,6 @@ import App from './App';
 import DocsPage from './routes/docs/DocsPage';
 import SignInPage from './pages/SignInPage';
 import PendingVerificationPage from './pages/PendingVerificationPage';
-import { ReservedPortalPage } from './pages/ReservedPortalPage';
 import StyleguidePage from './pages/StyleguidePage';
 import {
   ButtonsClassifiedPage,
@@ -25,7 +24,11 @@ import { FacultyStudentDetailPage } from './pages/faculty/FacultyStudentDetailPa
 import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
 import { FacultyChatPage } from './pages/faculty/FacultyChatPage';
 import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
-import { AdminTaxonomyPage } from './pages/admin/AdminTaxonomyPage';
+import { AdminTaxonomyManagementPage } from './pages/admin/AdminTaxonomyManagementPage';
+import { FacultyApplicationsPage } from './pages/faculty/FacultyApplicationsPage';
+import { FacultyTaxonomyPage } from './pages/faculty/FacultyTaxonomyPage';
+import { AdminFacultyPage } from './pages/admin/AdminFacultyPage';
+import { AdminStudentsPage } from './pages/admin/AdminStudentsPage';
 import { AdminAuditLogPage } from './pages/admin/AdminAuditLogPage';
 import { ThemeProvider } from './context/ThemeContext';
 import { SessionProvider } from './context/SessionContext';
@@ -181,9 +184,9 @@ const router = createBrowserRouter([
               element: <FacultyStudentDetailPage />,
             },
             { path: 'chat', element: <FacultyChatPage /> },
-            { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
-            { path: 'programs', element: <AdminTaxonomyPage mode="programs" /> },
-            { path: 'applications', element: <AdminApprovalQueuePage /> },
+            { path: 'departments', element: <FacultyTaxonomyPage mode="departments" /> },
+            { path: 'programs', element: <FacultyTaxonomyPage mode="programs" /> },
+            { path: 'applications', element: <FacultyApplicationsPage /> },
           ],
         }],
       },
@@ -197,21 +200,11 @@ const router = createBrowserRouter([
             { index: true, element: <Navigate to="/admin/dashboard" replace /> },
             { path: 'dashboard', element: <AdminApprovalQueuePage /> },
             { path: 'applications', element: <AdminApprovalQueuePage /> },
-            { path: 'students', element: <FacultyStudentsPage /> },
-            { path: 'departments', element: <AdminTaxonomyPage mode="departments" /> },
-            { path: 'programs', element: <AdminTaxonomyPage mode="programs" /> },
+            { path: 'students', element: <AdminStudentsPage /> },
+            { path: 'departments', element: <AdminTaxonomyManagementPage mode="departments" /> },
+            { path: 'programs', element: <AdminTaxonomyManagementPage mode="programs" /> },
             { path: 'audit-log', element: <AdminAuditLogPage /> },
-            {
-              path: 'faculty',
-              element: (
-                <ReservedPortalPage
-                  role="admin"
-                  navKey="faculty"
-                  title="Faculty Management"
-                  breadcrumb="Admin Portal / Faculty Management"
-                />
-              ),
-            },
+            { path: 'faculty', element: <AdminFacultyPage /> },
           ],
         }],
       },

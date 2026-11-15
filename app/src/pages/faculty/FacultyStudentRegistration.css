@@ -1,0 +1,317 @@
+/* Registration modal styles from the approved M1 Faculty Students page, scoped locally. */
+dialog#register-student-modal:not([open]),
+#register-student-modal:not([open]) {
+  display: none !important;
+}
+
+dialog#register-student-modal[open],
+#register-student-modal[open] {
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(450px, calc(100% - 32px)) !important;
+  max-width: 450px !important;
+  padding: 0 !important;
+  background: var(--card, #21201E) !important;
+  border: 1px solid var(--border, #383734) !important;
+  border-radius: var(--radius-xl, 16px) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6), 0 8px 16px -4px rgba(0, 0, 0, 0.4) !important;
+  overflow: hidden !important;
+  margin: auto !important;
+  position: fixed !important;
+  inset: 0 !important;
+}
+
+dialog#register-student-modal::backdrop {
+  background: rgba(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+dialog#register-student-modal[open] {
+  animation: modalPopIn 200ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#register-student-modal .modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  padding: 13px 18px 11px !important;
+  border-bottom: 1px solid var(--border, #383734) !important;
+  gap: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+#register-student-modal .modal-close,
+#close-register-modal {
+  display: none !important;
+}
+
+#register-student-modal .modal-header-content {
+  flex: 1 !important;
+}
+
+#register-student-modal .modal-title {
+  margin: 0 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--foreground, #FAF9F5) !important;
+  line-height: 1.25 !important;
+}
+
+#register-student-modal .modal-subtitle {
+  margin: 2px 0 0 !important;
+  font-size: 0.75rem !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  line-height: 1.3 !important;
+}
+
+#register-student-modal .modal-body {
+  padding: 12px 18px 14px !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+}
+
+#register-student-modal .modal-body .ui-alert {
+  padding: 6px 10px !important;
+  margin-bottom: 9px !important;
+  gap: 8px !important;
+  border-radius: var(--radius-md, 8px) !important;
+}
+
+#register-student-modal .modal-body .ui-alert-icon {
+  width: 14px !important;
+  height: 14px !important;
+  flex-shrink: 0 !important;
+}
+
+#register-student-modal .modal-body .ui-alert-desc {
+  font-size: 0.71875rem !important;
+  line-height: 1.3 !important;
+}
+
+#register-student-modal .modal-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+#register-student-modal .modal-form .ui-form-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  margin-bottom: 0 !important;
+}
+
+#register-student-modal .modal-form .ui-form-label {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: var(--foreground, #FAF9F5) !important;
+  line-height: 1.25 !important;
+}
+
+#register-student-modal .modal-form .ui-form-optional {
+  font-weight: 400 !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  font-size: 0.6875rem !important;
+}
+
+#register-student-modal .modal-form .ui-form-grid--2 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+  margin-bottom: 0 !important;
+}
+
+#register-student-modal .modal-form .ui-form-grid--2 .ui-form-group {
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 480px) {
+  #register-student-modal .modal-form .ui-form-grid--2 {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+#register-student-modal .modal-form .ui-input {
+  width: 100% !important;
+  height: 33px !important;
+  min-height: 33px !important;
+  padding: 5px 10px !important;
+  background: var(--background, #1C1B1A) !important;
+  border: 1px solid var(--border, #383734) !important;
+  border-radius: var(--radius-md, 8px) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  font-size: 0.8125rem !important;
+  font-family: var(--font-sans) !important;
+  outline: none !important;
+  transition: border-color var(--transition-fast, 150ms ease), box-shadow var(--transition-fast, 150ms ease) !important;
+  box-sizing: border-box !important;
+}
+
+#register-student-modal .modal-form .ui-input:focus {
+  border-color: var(--primary, #D97251) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent) !important;
+}
+
+#register-student-modal .modal-form .ui-input::placeholder {
+  color: var(--muted-foreground, #706B65) !important;
+  opacity: 0.8 !important;
+}
+
+#register-student-modal .modal-form input#student-id {
+  font-family: var(--font-number, var(--font-sans)) !important;
+  letter-spacing: 0.04em !important;
+}
+
+#register-student-modal .modal-form .ui-select-wrap {
+  position: relative !important;
+  width: 100% !important;
+}
+
+#register-student-modal .modal-form select.ui-select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  padding-right: 32px !important;
+  cursor: pointer !important;
+}
+
+#register-student-modal .modal-form select.ui-select option {
+  background-color: var(--card, #21201E) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  padding: 6px 10px !important;
+}
+
+#register-student-modal .modal-form .ui-select-chevron {
+  position: absolute !important;
+  right: 10px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none !important;
+  color: var(--muted-foreground, #A0988E) !important;
+}
+
+#register-student-modal .modal-form .ui-form-hint {
+  margin-top: 2px !important;
+  font-size: 0.6875rem !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  line-height: 1.25 !important;
+}
+
+#register-student-modal .modal-form .ui-form-error {
+  margin: 0 !important;
+  min-height: 0 !important;
+  font-size: 0.71875rem !important;
+  color: var(--color-status-danger, #EF4444) !important;
+  font-weight: 500 !important;
+}
+
+#register-student-modal .modal-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: 10px !important;
+  padding-top: 0 !important;
+}
+
+#register-student-modal .modal-actions .ui-btn {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 16px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-md, 8px) !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  flex: initial !important;
+  width: auto !important;
+}
+
+#register-student-modal .modal-actions .ui-btn-primary {
+  background: var(--primary, #D97251) !important;
+  color: #000000 !important;
+  border: 1px solid var(--primary, #D97251) !important;
+  transition: opacity 150ms ease, transform 150ms ease !important;
+}
+
+html:not(.dark) #register-student-modal .modal-actions .ui-btn-primary {
+  color: #FFFFFF !important;
+}
+
+#register-student-modal .modal-actions .ui-btn-primary:hover {
+  opacity: 0.92 !important;
+  transform: translateY(-1px) !important;
+}
+
+#register-student-modal .modal-actions .ui-btn-primary:active {
+  transform: translateY(0) !important;
+}
+
+#register-student-modal .modal-actions .ui-btn-outline {
+  background: transparent !important;
+  border: 1px solid var(--border, #383734) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  transition: background-color 150ms ease, border-color 150ms ease !important;
+}
+
+#register-student-modal .modal-actions .ui-btn-outline:hover {
+  background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+/* Light Theme Overrides */
+html:not(.dark) dialog#register-student-modal,
+html:not(.dark) #register-student-modal {
+  background: var(--card, #FAF9F6) !important;
+  border-color: var(--border, #E2DDD4) !important;
+  color: var(--foreground, #21201E) !important;
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.15), 0 8px 16px -4px rgba(0, 0, 0, 0.08) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-header {
+  border-bottom-color: var(--border, #E2DDD4) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-title {
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-subtitle,
+html:not(.dark) #register-student-modal .modal-form .ui-form-hint,
+html:not(.dark) #register-student-modal .modal-form .ui-form-optional {
+  color: var(--muted-foreground, #706B65) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-form .ui-form-label {
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-form .ui-input {
+  background: #FFFFFF !important;
+  border-color: var(--border, #E2DDD4) !important;
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-form .ui-input:focus {
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-form select.ui-select option {
+  background-color: #FFFFFF !important;
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-form .ui-select-chevron {
+  color: var(--muted-foreground, #706B65) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-actions .ui-btn-outline {
+  border-color: var(--border, #E2DDD4) !important;
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) #register-student-modal .modal-actions .ui-btn-outline:hover {
+  background: var(--muted, #F4F1EA) !important;
+}
