@@ -1,14 +1,19 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { QUEUE_TITLES, type QueueType } from '../queue-modal/queues';
-import { QUEUE_COLUMNS, QUEUE_FIXTURES, type QueueRow } from '../../data/queueFixtures';
+import { QUEUE_COLUMNS, type QueueRow } from './queueBrowse';
+import { useLocation } from 'react-router-dom';
+import { useSession } from '../../context/SessionContext';
+import { useAdminQueueBrowse, useQueueFacultyReferences } from '../../hooks/useAdminQueueBrowse';
+import { useDepartmentOptions } from '../../hooks/useDepartments';
+import { useApprovedProgramOptions } from '../../hooks/usePrograms';
+import { ApiRequestError } from '../../lib/api';
+import { Alert } from '../ui';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { Checkbox } from '../ui/Checkbox';
 import { EmptyState } from '../ui/EmptyState';
 import { Input } from '../ui/Input';
-import { RejectionRow } from '../ui/RejectionRow';
 import { Select } from '../ui/Select';
-import { Toast } from '../ui/ShowcaseWidgets';
 import { TypographyHeading } from '../ui/Typography';
 import { TablePaginationFooter } from '../ui/DataTable';
 
@@ -17,7 +22,7 @@ export interface ApplicationQueueProps {
   isModal?: boolean;
 }
 
-type Rejection = { kind: 'row'; rowId: string } | { kind: 'bulk' } | null;
+const applicationTypes = { student: 'student_registration', faculty: 'faculty_account', department: 'department_proposal', program: 'program_proposal' } as const;
 
 const isActionable = (row: QueueRow) => row.status === 'Pending' && row.source !== 'Admin Direct';
 
@@ -28,7 +33,9 @@ function renderCellContent(colKey: string, val: string) {
     }
     return <Badge requestType="Addition">Addition</Badge>;
   }
+  if (colKey === 'date') return val.slice(0, 10);
   if (colKey === 'role') {
+    if (val !== 'Admin' && val !== 'Faculty') return val;
     if (val === 'Admin') {
       return <Badge variant="destructive">Admin</Badge>;
     }
@@ -109,38 +116,51 @@ const TYPE_FILTER_CONFIG: Partial<Record<QueueType, { label: string; options: st
   }
 };
 
-export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProps) {
+export function ApplicationQueue(props: ApplicationQueueProps) {
+  const { role, loading, profile } = useSession();
+  const { pathname } = useLocation();
+  if (loading || role !== 'admin' || !profile || !pathname.startsWith('/admin/')) return null;
+  return <QueueBrowse key={`${profile.id}:${props.type}`} {...props} profileId={profile.id} />;
+}
+
+function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps & { profileId: string }) {
   const columns = QUEUE_COLUMNS[type];
   const searchMeta = getSearchMeta(type);
   const typeFilterConfig = TYPE_FILTER_CONFIG[type];
-  const [rows, setRows] = useState<QueueRow[]>(() => QUEUE_FIXTURES[type]);
+  const applications = useAdminQueueBrowse(applicationTypes[type], profileId);
+  const faculty = useQueueFacultyReferences(profileId);
+  const departments = useDepartmentOptions();
+  const programs = useApprovedProgramOptions();
+  const rows = useMemo<QueueRow[]>(() => (applications.data ?? []).map(item => {
+    const person = faculty.data?.find(entry => entry.id === item.submitted_by);
+    const date = item.created_at;
+    let cells: Record<string, string>;
+    switch (item.type) {
+      case 'student_registration': cells = {
+        studentId: item.payload.student_id_number,
+        name: [item.payload.first_name, item.payload.middle_name, item.payload.last_name].filter(Boolean).join(' '),
+        program: programs.data?.find(entry => entry.id === item.payload.program_id)?.name ?? 'Program unavailable', date,
+      }; break;
+      case 'faculty_account': cells = {
+        name: item.payload.full_name, email: item.payload.email,
+        department: item.payload.proposed_department_name ?? departments.data?.find(entry => entry.id === item.payload.department_id)?.name ?? 'Department unavailable',
+        role: person ? (person.role === 'admin' ? 'Admin' : 'Faculty') : 'Role unavailable', status: 'Pending', date,
+      }; break;
+      default: cells = {
+        [item.type === 'program_proposal' ? 'program' : 'department']: item.payload.name,
+        proposedBy: person?.full_name ?? 'Submitter unavailable',
+        type: ('program_id' in item.payload && item.payload.program_id) || ('department_id' in item.payload && item.payload.department_id) ? 'Edit Existing' : 'Addition', date,
+      };
+    }
+    return { id: item.id, status: 'Pending', cells };
+  }), [applications.data, faculty.data, departments.data, programs.data]);
+  const referenceError = faculty.error ?? departments.error ?? programs.error;
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('Type: All');
   const [sortOrder, setSortOrder] = useState<'Oldest' | 'Newest'>('Oldest');
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [rejection, setRejection] = useState<Rejection>(null);
-  const [toast, setToast] = useState<string | null>(null);
-  const bulkRejectRef = useRef<HTMLButtonElement>(null);
-
-  // Reset when queue type changes
-  useEffect(() => {
-    setRows(QUEUE_FIXTURES[type]);
-    setSelected(new Set());
-    setRejection(null);
-    setSearch('');
-    setTypeFilter('Type: All');
-    setCurrentPage(1);
-  }, [type]);
-
-  // Toast timer
-  useEffect(() => {
-    if (!toast) return;
-    const timer = window.setTimeout(() => setToast(null), 3000);
-    return () => window.clearTimeout(timer);
-  }, [toast]);
-
   // Filtering & Sorting
   const filteredRows = useMemo(() => {
     let result = rows;
@@ -152,7 +172,7 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
       }
     }
     if (search.trim()) {
-      const q = search.toLowerCase();
+      const q = search.trim().toLowerCase();
       result = result.filter((row) =>
         Object.values(row.cells).some((val) => val.toLowerCase().includes(q))
       );
@@ -161,21 +181,22 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
       const dateA = a.cells.date || '';
       const dateB = b.cells.date || '';
       return sortOrder === 'Oldest'
-        ? dateA.localeCompare(dateB)
-        : dateB.localeCompare(dateA);
+        ? dateA.localeCompare(dateB) || a.id.localeCompare(b.id)
+        : dateB.localeCompare(dateA) || a.id.localeCompare(b.id);
     });
     return sorted;
   }, [rows, search, sortOrder, typeFilter, type]);
 
   // Pagination calculation
   const totalEntries = filteredRows.length;
-  const totalPages = Math.max(1, Math.ceil(totalEntries / rowsPerPage));
+  const pageSize = totalEntries < 10 ? 5 : totalEntries < 20 ? Math.min(rowsPerPage, 10) : rowsPerPage;
+  const totalPages = Math.max(1, Math.ceil(totalEntries / pageSize));
   const safeCurrentPage = Math.min(currentPage, totalPages);
 
   const paginatedRows = useMemo(() => {
-    const startIndex = (safeCurrentPage - 1) * rowsPerPage;
-    return filteredRows.slice(startIndex, startIndex + rowsPerPage);
-  }, [filteredRows, safeCurrentPage, rowsPerPage]);
+    const startIndex = (safeCurrentPage - 1) * pageSize;
+    return filteredRows.slice(startIndex, startIndex + pageSize);
+  }, [filteredRows, safeCurrentPage, pageSize]);
 
   const actionableVisibleRows = useMemo(
     () => paginatedRows.filter(isActionable),
@@ -188,12 +209,14 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
   const someVisibleChecked =
     actionableVisibleRows.some((r) => selected.has(r.id)) && !allVisibleChecked;
 
-  const removeRows = (ids: string[]) => {
-    const drop = new Set(ids);
-    setRows((prev) => prev.filter((r) => !drop.has(r.id)));
-    setSelected((prev) => new Set([...prev].filter((id) => !drop.has(id))));
-    setRejection(null);
-  };
+  // Drop stale/hidden selections after filters or remote data change.
+  useEffect(() => {
+    const visibleIds = new Set(filteredRows.map(row => row.id));
+    setSelected(previous => {
+      const next = new Set([...previous].filter(id => visibleIds.has(id)));
+      return next.size === previous.size ? previous : next;
+    });
+  }, [filteredRows]);
 
   const toggleRow = (row: QueueRow) => {
     if (!isActionable(row)) return;
@@ -203,7 +226,6 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
       else next.add(row.id);
       return next;
     });
-    if (rejection?.kind === 'bulk') setRejection(null);
   };
 
   const toggleAllVisible = () => {
@@ -220,42 +242,16 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
         return next;
       });
     }
-    if (rejection?.kind === 'bulk') setRejection(null);
-  };
-
-  const plural = (n: number) => `${n} Application${n === 1 ? '' : 's'}`;
-
-  const bulkApprove = () => {
-    if (!selected.size) {
-      setToast('Please select at least one application');
-      return;
-    }
-    const count = selected.size;
-    removeRows([...selected]);
-    setToast(`${plural(count)} Approved`);
-  };
-
-  const bulkReject = () => {
-    if (!selected.size) {
-      setToast('Please select at least one application');
-      return;
-    }
-    setRejection({ kind: 'bulk' });
-  };
-
-  const confirmReject = (ids: string[]) => {
-    removeRows(ids);
-    setToast(`${plural(ids.length)} Rejected`);
-  };
-
-  const closeRejection = () => {
-    setRejection(null);
-    bulkRejectRef.current?.focus();
   };
 
   return (
     <div className={`queue-container queue-${type} queue-embedded-workspace ${isModal ? 'is-modal' : ''}`}>
       <main className="section-container">
+        {applications.isPending && <p role="status">Loading applications…</p>}
+        {applications.isError && <><Alert variant="warning" title={applications.error.message} description={applications.error instanceof ApiRequestError ? applications.error.hint ?? '' : ''} />
+          <Button variant="outline" onClick={() => void applications.refetch()}>Retry applications</Button></>}
+        {referenceError && <><Alert variant="warning" title="Some reference details are unavailable" description={referenceError.message} />
+          <Button variant="outline" onClick={() => { void faculty.refetch(); void departments.refetch(); void programs.refetch(); }}>Retry details</Button></>}
         {/* Top Title */}
         <header className="header-container">
           <div className="heading-wrapper">
@@ -352,7 +348,7 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
                     aria-label="Select all rows"
                     checked={allVisibleChecked}
                     indeterminate={someVisibleChecked}
-                    disabled={!actionableVisibleRows.length}
+                    disabled={applications.isPending || applications.isError || !actionableVisibleRows.length}
                     onChange={toggleAllVisible}
                   />
                 </div>
@@ -369,7 +365,7 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
 
               {/* Table Body */}
               <div className="table-body" role="rowgroup">
-                {paginatedRows.map((row) => {
+                {!applications.isPending && !applications.isError && paginatedRows.map((row) => {
                   const enabled = isActionable(row);
                   const checked = selected.has(row.id);
                   return (
@@ -402,38 +398,15 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
                         ))}
                       </div>
 
-                      {rejection?.kind === 'row' && rejection.rowId === row.id && (
-                        <RejectionRow
-                          asTableRow={false}
-                          colSpan={columns.length + 1}
-                          onCancel={closeRejection}
-                          onConfirm={(reason) => {
-                            console.log(`Rejected ${row.id} with reason:`, reason);
-                            confirmReject([row.id]);
-                          }}
-                        />
-                      )}
                     </Fragment>
                   );
                 })}
 
-                {rejection?.kind === 'bulk' && (
-                  <RejectionRow
-                    asTableRow={false}
-                    colSpan={columns.length + 1}
-                    bulkCount={selected.size}
-                    onCancel={closeRejection}
-                    onConfirm={(reason) => {
-                      console.log(`Bulk rejected ${selected.size} applications with reason:`, reason);
-                      confirmReject([...selected]);
-                    }}
-                  />
-                )}
               </div>
             </div>
 
             {/* Empty State */}
-            {filteredRows.length === 0 && (
+            {!applications.isPending && !applications.isError && filteredRows.length === 0 && (
               <EmptyState
                 title={`No pending ${type} applications`}
                 description={`${type.charAt(0).toUpperCase() + type.slice(1)} applications awaiting review will appear here.`}
@@ -446,7 +419,7 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
             currentPage={safeCurrentPage}
             totalPages={totalPages}
             totalEntries={totalEntries}
-            pageSize={rowsPerPage}
+            pageSize={pageSize}
             onPageChange={(page) => setCurrentPage(page)}
             onPageSizeChange={(size) => {
               setRowsPerPage(size);
@@ -458,15 +431,14 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
                 <Button
                   variant="approve"
                   hasSelection={selected.size > 0}
-                  onClick={bulkApprove}
+                  disabled title="Approval is not yet available."
                 >
                   Approve
                 </Button>
                 <Button
-                  ref={bulkRejectRef}
                   variant="reject"
                   hasSelection={selected.size > 0}
-                  onClick={bulkReject}
+                  disabled title="Rejection is not yet available."
                 >
                   Reject
                 </Button>
@@ -475,9 +447,6 @@ export function ApplicationQueue({ type, isModal = false }: ApplicationQueueProp
           />
         </div>
       </main>
-
-      {/* Toast Notification */}
-      <Toast id="toast" message={toast} />
     </div>
   );
 }
