@@ -73,7 +73,7 @@ function createMockProfile(mockRole: MockRole): FacultyProfile {
   };
 }
 
-const SessionContext = createContext<SessionContextValue | undefined>(undefined);
+export const SessionContext = createContext<SessionContextValue | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
