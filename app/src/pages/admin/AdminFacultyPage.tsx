@@ -150,7 +150,8 @@ function FacultyManagement({ profileId }: { profileId: string }) {
   const [toast, setToast] = useState('');
   const { openQueue } = useQueueSearchParam();
   const departments = useDepartmentOptions();
-  // Quote the PostgREST operand and escape LIKE wildcards so search text cannot become filter syntax.
+  // Escape LIKE first, then quote the PostgREST operand. These are separate parser layers;
+  // JSON.stringify must also escape the pattern's backslashes and embedded quotes.
   const pattern = JSON.stringify(`%${search.trim().replace(/[\\%_*]/g, '\\$&')}%`);
   const faculty = useFacultyPage({ or: search.trim() ? `(full_name.ilike.${pattern},email.ilike.${pattern})` : undefined,
     department_id: departmentId ? `eq.${departmentId}` : undefined,

@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
-/** Confirm a single-record write without treating an empty or unrelated response as success. */
+/** Confirm a single-record write without treating an empty or unrelated response as success.
+ * Static Prism examples are not proof of a write: do not bypass matching for mock URLs.
+ */
 export function confirmsMutation(
   response: unknown,
   expected: Record<string, unknown>,
