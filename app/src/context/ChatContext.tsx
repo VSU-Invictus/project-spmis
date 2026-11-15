@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useReducer, useCallback } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
 import { useAskChatbot, type ChatTurn } from '../hooks/useAskChatbot';
 import { ApiRequestError } from '../lib/api';
+import { SessionContext } from './SessionContext';
 
 export type ChatStatus =
   | 'idle'
@@ -39,7 +40,8 @@ export type ChatAction =
   | { type: 'RETRY_START' }
   | { type: 'DISMISS_ERROR' }
   | { type: 'SET_SIMULATE_RATE_LIMIT'; payload: boolean }
-  | { type: 'RESET_CHAT' };
+  | { type: 'RESET_CHAT' }
+  | { type: 'CLEAR_CHAT' };
 
 export const INITIAL_WELCOME_MESSAGE: ChatUiMessage = {
   id: 'welcome-1',
@@ -136,6 +138,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
       };
 
     case 'RESET_CHAT':
+    case 'CLEAR_CHAT':
       return {
         ...initialChatState,
       };
@@ -160,6 +163,17 @@ const ChatContext = createContext<ChatContextValue | null>(null);
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(chatReducer, initialChatState);
+
+  const session = useContext(SessionContext);
+  const currentUserId = session?.profile?.id ?? null;
+  const previousUserIdRef = useRef<string | null>(currentUserId);
+
+  useEffect(() => {
+    if (previousUserIdRef.current !== currentUserId) {
+      previousUserIdRef.current = currentUserId;
+      dispatch({ type: 'RESET_CHAT' });
+    }
+  }, [currentUserId]);
 
   const askChatbotMutation = useAskChatbot();
 
@@ -213,13 +227,23 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: 'SEND_START', payload: { text } });
       }
 
-      // Convert prior UI messages to contract ChatTurn format
-      const history: ChatTurn[] = state.messages
+      // Convert prior UI messages to contract ChatTurn format.
+      // On retry, exclude the current user message at the tail to prevent duplicating it in history.
+      // Also cap to 20 turns per contract maxItems: 20.
+      const priorMessages =
+        isRetry &&
+        state.messages.length > 0 &&
+        state.messages[state.messages.length - 1].role === 'user'
+          ? state.messages.slice(0, -1)
+          : state.messages;
+
+      const history: ChatTurn[] = priorMessages
         .filter((m) => m.id !== 'welcome-1')
         .map((m) => ({
           role: m.role,
           content: m.content,
-        }));
+        }))
+        .slice(-20);
 
       const isRateLimit = import.meta.env.DEV && (forceSuccess ? false : state.simulateRateLimit);
       const headers = import.meta.env.DEV && isRateLimit ? { Prefer: 'code=429' } : undefined;
@@ -286,3 +310,5 @@ export function useChatContext(): ChatContextValue {
   }
   return context;
 }
+
+export const useChat = useChatContext;
