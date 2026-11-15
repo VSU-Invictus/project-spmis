@@ -42,9 +42,10 @@ export interface AdminEntityModalProps {
   children?: ReactNode;
   onSubmit?: FormEventHandler<HTMLFormElement>;
   cardClassName?: string;
+  noValidate?: boolean;
 }
 
-export function AdminEntityModal({ open, onClose, onSuccess, title = 'Add Department', subtitle = 'Enter the official department title below.', children, onSubmit, cardClassName = '' }: AdminEntityModalProps) {
+export function AdminEntityModal({ open, onClose, onSuccess, title = 'Add Department', subtitle = 'Enter the official department title below.', children, onSubmit, cardClassName = '', noValidate }: AdminEntityModalProps) {
   const [adminDeptName, setAdminDeptName] = useState('Department of Artificial Intelligence');
   const modalRef = usePortalFocus(open, onClose);
 
@@ -72,6 +73,7 @@ export function AdminEntityModal({ open, onClose, onSuccess, title = 'Add Depart
         <form
           className="modal-form"
           id="demoAdminForm"
+          noValidate={noValidate}
           onSubmit={onSubmit ?? ((e) => {
             e.preventDefault();
             onClose();

@@ -26,3 +26,19 @@ export function useDepartments(
   });
 }
 
+/** Full department choices/labels for management forms and filters. */
+export function useDepartmentOptions() {
+  return useQuery({
+    queryKey: [...queryKeys.departments(), 'all-options'],
+    queryFn: async (): Promise<Department[]> => {
+      const departments: Department[] = [];
+      for (let offset = 0; ; offset += 100) {
+        const page = await request(apiClient.GET('/rest/v1/departments', {
+          params: { query: { limit: 100, offset, order: 'name.asc,id.asc' } },
+        }));
+        departments.push(...(page ?? []));
+        if (!page || page.length < 100) return departments;
+      }
+    },
+  });
+}

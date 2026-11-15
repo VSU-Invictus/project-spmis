@@ -21,3 +21,22 @@ export function useFacultyList(
     ...options,
   });
 }
+
+/** Counted roster variant; shares the operation prefix used by mutation invalidation. */
+export function useFacultyPage(params: ListFacultyParams) {
+  return useQuery({
+    queryKey: [...queryKeys.facultyProfiles(params as Record<string, unknown>), 'counted-page'],
+    queryFn: async (): Promise<{ faculty: FacultyListItem[]; total: number }> => {
+      let contentRange: string | null = null;
+      const faculty = await request(apiClient.GET('/rest/v1/faculty_profiles', {
+        params: { query: params, header: { Prefer: 'count=exact' } },
+      }).then(result => {
+        contentRange = result.response.headers.get('Content-Range');
+        return result;
+      }));
+      const count = /\/(\d+)$/.exec(contentRange ?? '');
+      if (!count) throw new Error('Faculty count unavailable. Please retry loading the roster.');
+      return { faculty: (faculty ?? []) as FacultyListItem[], total: Number(count[1]) };
+    },
+  });
+}
