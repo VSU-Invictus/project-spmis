@@ -2,6 +2,7 @@ import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 import { apiClient, request } from '../lib/api';
 import type { operations, components } from '../../../contract/generated/schema';
 import { queryKeys } from './queryKeys';
+import { countedPage } from '../lib/api/countedPage';
 
 export type ListFacultyParams = operations['listFaculty']['parameters']['query'];
 export type FacultyListItem = components['schemas']['FacultyProfile'];
@@ -28,15 +29,17 @@ export function useFacultyPage(params: ListFacultyParams) {
     queryKey: [...queryKeys.facultyProfiles(params as Record<string, unknown>), 'counted-page'],
     queryFn: async (): Promise<{ faculty: FacultyListItem[]; total: number }> => {
       let contentRange: string | null = null;
-      const faculty = await request(apiClient.GET('/rest/v1/faculty_profiles', {
+      const faculty = await request<FacultyListItem[]>(apiClient.GET('/rest/v1/faculty_profiles', {
         params: { query: params, header: { Prefer: 'count=exact' } },
       }).then(result => {
         contentRange = result.response.headers.get('Content-Range');
         return result;
       }));
-      const count = /\/(\d+)$/.exec(contentRange ?? '');
-      if (!count) throw new Error('Faculty count unavailable. Please retry loading the roster.');
-      return { faculty: (faculty ?? []) as FacultyListItem[], total: Number(count[1]) };
+      const page = await countedPage(faculty ?? [], contentRange, params?.offset ?? 0, params?.limit ?? 20,
+        async (offset, limit) => (await request(apiClient.GET('/rest/v1/faculty_profiles', {
+          params: { query: { ...params, offset, limit, order: params?.order ?? 'created_at.desc,id.asc' } },
+        }))) ?? []);
+      return { faculty: page.records, total: page.total };
     },
   });
 }
