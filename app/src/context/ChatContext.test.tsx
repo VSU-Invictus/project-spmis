@@ -186,3 +186,4 @@ describe('ChatContext state machine (#156)', () => {
     expect(resetState).toEqual(initialChatState);
   });
 });
+
