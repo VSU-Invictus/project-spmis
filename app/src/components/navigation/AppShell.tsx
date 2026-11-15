@@ -89,7 +89,7 @@ export function AppShell({
           </div>
           <div className="header-right ui-dashboard-header-right" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <ThemeToggleButton />
-            <span className="status-badge ui-dashboard-status">
+            <span className="status-badge ui-dashboard-status" role="status" aria-live="polite">
               <span className="green-dot ui-dashboard-live-dot" aria-hidden="true" />
               System Live
             </span>

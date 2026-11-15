@@ -74,6 +74,15 @@ export function ReviewFormModal({
   } | null>(null);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const form = useForm<ReviewFormValues>({
     resolver: zodResolver(reviewSchema),
@@ -676,7 +685,14 @@ export function ReviewFormModal({
               autoComplete="off"
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => {
-                setTimeout(() => setShowSuggestions(false), 150);
+                if (blurTimeoutRef.current) {
+                  clearTimeout(blurTimeoutRef.current);
+                }
+                blurTimeoutRef.current = setTimeout(() => {
+                  if (typeof window !== 'undefined') {
+                    setShowSuggestions(false);
+                  }
+                }, 150);
               }}
               onChange={(e) => {
                 const val = e.target.value;
