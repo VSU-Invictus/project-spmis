@@ -17,7 +17,6 @@ import { ThemeProvider } from '../../context/ThemeContext';
 import { server } from '../../mocks/server';
 import { http, HttpResponse } from 'msw';
 import { __resetMocks } from '../../mocks/handlers';
-import { apiClient } from '../../lib/api';
 
 afterEach(() => {
   cleanup();
@@ -207,7 +206,7 @@ describe('FacultyChatPage (#156)', () => {
       updated_at: '2026-01-01T00:00:00Z',
     };
 
-    const { unmount } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
           <ProfileBootstrapper profile={profile}>
