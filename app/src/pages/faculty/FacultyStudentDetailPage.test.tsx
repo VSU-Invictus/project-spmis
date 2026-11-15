@@ -383,4 +383,49 @@ describe('FacultyStudentDetailPage (#155)', () => {
       await within(dialog).findByText(/Each tag must be 50 characters or fewer/i)
     ).toBeInTheDocument();
   });
+
+  it('renders AI Review Summary panel between basic info and review list, excluding hidden reviews (#156)', async () => {
+    server.use(
+      http.get('*/rest/v1/review_details', () =>
+        HttpResponse.json([
+          {
+            id: 'active-rev-1',
+            student_id: studentId,
+            owner_id: ownerId,
+            author_name: 'Alex Reyes',
+            author_department_name: 'Computer Science',
+            body_text: 'Active review praising algorithms mastery.',
+            status: 'active',
+            tags: ['algorithms'],
+            created_at: '2026-10-26T00:00:00.000Z',
+            updated_at: '2026-10-26T00:00:00.000Z',
+          },
+          {
+            id: 'hidden-rev-2',
+            student_id: studentId,
+            owner_id: ownerId,
+            author_name: 'Alex Reyes',
+            author_department_name: 'Computer Science',
+            body_text: 'Hidden review that should NOT contribute to AI summary.',
+            status: 'hidden',
+            tags: ['hidden-skill'],
+            created_at: '2026-10-26T00:00:00.000Z',
+            updated_at: '2026-10-26T00:00:00.000Z',
+          },
+        ])
+      )
+    );
+
+    renderStudentDetailPage();
+
+    expect(await screen.findByRole('heading', { name: /AI Review Summary/i })).toBeInTheDocument();
+    expect(screen.getByText(/AI-generated/i)).toBeInTheDocument();
+
+    // Summary counts only active reviews (1), excludes hidden review from AI synthesis
+    const aiSummarySection = screen.getByRole('heading', { name: /AI Review Summary/i }).closest('section')!;
+    const countElement = within(aiSummarySection).getByTestId('ai-review-count');
+    expect(countElement).toHaveTextContent('1');
+    expect(within(aiSummarySection).getByText(/highlighting algorithms/i)).toBeInTheDocument();
+    expect(within(aiSummarySection).queryByText(/hidden-skill/i)).not.toBeInTheDocument();
+  });
 });
