@@ -32,7 +32,7 @@ export function useCreateStudentDirect(
         ...[queryKeys.searchStudents(), queryKeys.auditLogs()].map(([operationId]) =>
           queryClient.invalidateQueries({ queryKey: [operationId], refetchType: 'all' }),
         ),
-        ...data.map(student => queryClient.invalidateQueries({
+        ...(Array.isArray(data) ? data : []).filter(student => typeof student?.id === 'string').map(student => queryClient.invalidateQueries({
           queryKey: queryKeys.studentById(student.id), exact: true, refetchType: 'all',
         })),
       ]);

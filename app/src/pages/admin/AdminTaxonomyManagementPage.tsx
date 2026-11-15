@@ -12,6 +12,7 @@ import {
   type Department,
 } from '../../hooks';
 import { ApiRequestError } from '../../lib/api';
+import { confirmsMutation } from '../../lib/api/confirmMutation';
 import { taxonomyProposalSchema, createTaxonomyProposalEditSchema, type TaxonomyProposalFormValues } from '../../lib/validation/taxonomyProposal';
 import './AdminTaxonomyManagementPage.css';
 
@@ -51,13 +52,15 @@ function TaxonomyDialog({ mode, selection, onClose, onSaved }: {
   const submit = form.handleSubmit(async (values) => {
     setRequestError(null);
     try {
-      if (selection.action === 'edit') {
-        await update.mutateAsync({ id: selection.record.id, name: values.payload.name });
-        saved('Updated');
-      } else {
-        await create.mutateAsync({ name: values.payload.name });
-        saved('Created');
+      const input = { name: values.payload.name };
+      const id = selection.action === 'edit' ? selection.record.id : undefined;
+      const result = id
+        ? await update.mutateAsync({ id, ...input })
+        : await create.mutateAsync(input);
+      if (!confirmsMutation(result, input, id)) {
+        throw new Error(`The server did not confirm the requested ${label.toLowerCase()} changes. Close this dialog and refresh the list before trying again.`);
       }
+      saved(id ? 'Updated' : 'Created');
     } catch (error) { setRequestError(error instanceof Error ? error : new Error('Unable to save record.')); }
   });
   if (selection.action === 'remove') {

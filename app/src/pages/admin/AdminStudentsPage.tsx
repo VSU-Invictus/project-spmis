@@ -13,6 +13,7 @@ import {
 } from '../../hooks';
 import { studentSchema } from '../../lib/validation/student';
 import { ApiRequestError } from '../../lib/api';
+import { confirmsMutation } from '../../lib/api/confirmMutation';
 import './AdminStudentsPage.css';
 
 type Selection = { action: 'create' } | { action: 'edit' | 'remove'; id: string };
@@ -66,8 +67,12 @@ function StudentForm({ student, programs, onClose, onSaved }: {
     }
     submitting.current = true;
     try {
-      if (student) await update.mutateAsync({ id: student.id, ...values });
-      else await create.mutateAsync(values);
+      const result = student
+        ? await update.mutateAsync({ id: student.id, ...values })
+        : await create.mutateAsync(values);
+      if (!confirmsMutation(result, values, student?.id)) {
+        throw new Error('The server did not confirm the requested student changes. Close this dialog and refresh the roster before trying again.');
+      }
       onSaved(`Student ${student ? 'Updated' : 'Created'} Successfully`);
       onClose();
     } catch (error) {
