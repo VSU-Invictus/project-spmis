@@ -28,13 +28,24 @@ export function usePrograms(
 
 /** Complete approved choices for forms, using the contract's bounded result pages. */
 export function useApprovedProgramOptions() {
+  return useProgramCollection(true);
+}
+
+/** Complete program list for management; preserves the approved-only form lookup. */
+export function useProgramOptions(options?: { enabled?: boolean }) {
+  return useProgramCollection(false, options?.enabled);
+}
+
+function useProgramCollection(approvedOnly: boolean, enabled?: boolean) {
+  const params = approvedOnly ? { status: 'eq.approved' as const } : undefined;
   return useQuery({
-    queryKey: [...queryKeys.programs({ status: 'eq.approved' }), 'all-options'],
+    enabled,
+    queryKey: [...queryKeys.programs(params), 'all-options'],
     queryFn: async (): Promise<Program[]> => {
       const programs: Program[] = [];
       for (let offset = 0; ; offset += 100) {
         const page = await request(apiClient.GET('/rest/v1/programs', {
-          params: { query: { status: 'eq.approved', limit: 100, offset, order: 'name.asc,id.asc' } },
+          params: { query: { ...params, limit: 100, offset, order: 'name.asc,id.asc' } },
         }));
         programs.push(...(page ?? []));
         if (!page || page.length < 100) return programs;

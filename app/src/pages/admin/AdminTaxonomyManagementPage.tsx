@@ -7,7 +7,7 @@ import { AdminEntityModal, RemoveConfirmationModal, Alert, Badge, Button, DataTa
 import { useQueueSearchParam } from '../../components/queue-modal';
 import { useSession } from '../../context/SessionContext';
 import {
-  useDepartments, usePrograms, useCreateDepartment, useUpdateDepartment, useDeleteDepartment,
+  useDepartmentOptions, useProgramOptions, useCreateDepartment, useUpdateDepartment, useDeleteDepartment,
   useCreateProgram, useUpdateProgram, useDeleteProgram, useApprovalQueueItems,
   type Department,
 } from '../../hooks';
@@ -95,8 +95,8 @@ function TaxonomyManagement({ mode }: { mode: Mode }) {
   const [selection, setSelection] = useState<Selection | null>(null);
   const [toast, setToast] = useState('');
   const { openQueue } = useQueueSearchParam();
-  const departments = useDepartments(undefined, { enabled: mode === 'departments' });
-  const programs = usePrograms(undefined, { enabled: mode === 'programs' });
+  const departments = useDepartmentOptions({ enabled: mode === 'departments' });
+  const programs = useProgramOptions({ enabled: mode === 'programs' });
   const list = mode === 'departments' ? departments : programs;
   const queue = useApprovalQueueItems({ type: `eq.${mode === 'departments' ? 'department_proposal' : 'program_proposal'}`, status: 'eq.pending' });
   const records = (list.data ?? []).filter(record => record.name.toLowerCase().includes(search.trim().toLowerCase()) && (status === 'all' || record.status === status));

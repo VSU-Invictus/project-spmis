@@ -27,8 +27,9 @@ export function useDepartments(
 }
 
 /** Full department choices/labels for management forms and filters. */
-export function useDepartmentOptions() {
+export function useDepartmentOptions(options?: { enabled?: boolean }) {
   return useQuery({
+    enabled: options?.enabled,
     queryKey: [...queryKeys.departments(), 'all-options'],
     queryFn: async (): Promise<Department[]> => {
       const departments: Department[] = [];
