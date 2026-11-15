@@ -379,7 +379,7 @@ export function FacultyStudentDetailPage() {
                   : `No active faculty reviews are currently available to synthesize for ${fullName}.`}
               </p>
               <p className="ai-summary-meta">
-                Generated from <span data-ai-review-count>{activeReviews.length}</span> active reviews. Hidden and deleted reviews are excluded.
+                Generated from <span data-ai-review-count data-testid="ai-review-count">{activeReviews.length}</span> active reviews. Hidden and deleted reviews are excluded.
               </p>
             </section>
 
