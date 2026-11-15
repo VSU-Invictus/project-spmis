@@ -76,6 +76,7 @@ select throws_ok($$delete from public.reviews$$,
 -- ===== 4. anon =====
 reset role;
 set local role anon;
+set local request.jwt.claim.sub = '';
 select throws_ok('select id from public.faculty_profiles', '42501', null, 'anon cannot read faculty_profiles');
 select throws_ok('select id from public.student_profiles', '42501', null, 'anon cannot read student_profiles');
 

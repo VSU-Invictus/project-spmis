@@ -60,6 +60,7 @@ select throws_ok($$insert into public.reviews (student_id, owner_id, body_text, 
 -- anon: no grant on either object
 reset role;
 set local role anon;
+set local request.jwt.claim.sub = '';
 select throws_ok('select id from public.reviews', '42501', null, 'anon cannot read reviews');
 select throws_ok('select id from public.review_details', '42501', null, 'anon cannot read review_details');
 
@@ -98,6 +99,7 @@ select is_empty($$select id from public.review_details where status = 'deleted'$
 -- ===== 3. review_embeddings unreadable by API roles =====
 reset role;
 set local role anon;
+set local request.jwt.claim.sub = '';
 select throws_ok('select review_id from public.review_embeddings', '42501', null, 'anon cannot read embeddings');
 reset role;
 set local role authenticated;
