@@ -6,109 +6,59 @@ import {
   Badge,
   Input,
 } from '../../components/ui';
-import { useAskChatbot, type ChatTurn } from '../../hooks/useAskChatbot';
-import { ApiRequestError } from '../../lib/api';
-
-interface UiMessage {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: string;
-}
+import { useChatContext } from '../../context/ChatContext';
+import { useSession } from '../../context/SessionContext';
 
 export function FacultyChatPage() {
+  const { profile } = useSession();
+  const isActiveFaculty = profile?.role === 'faculty' && profile?.status === 'active';
+
   const [inputMessage, setInputMessage] = useState('');
-  const [messages, setMessages] = useState<UiMessage[]>([
-    {
-      id: 'welcome-1',
-      role: 'assistant',
-      content:
-        'Hello! I am your AI Chat Assistant. I can synthesize visible faculty reviews across academic departments to help you identify student strengths and recommend candidates for opportunities.',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
-  ]);
-  const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
-  const [simulateRateLimit, setSimulateRateLimit] = useState(false);
-  const [rateLimitError, setRateLimitError] = useState<{
-    code: string;
-    message: string;
-    hint: string | null;
-  } | null>(null);
+  const {
+    state,
+    isPending,
+    sendMessage,
+    retryLastMessage,
+    dismissError,
+    setSimulateRateLimit,
+  } = useChatContext();
 
-  const askChatbotMutation = useAskChatbot({
-    onSuccess: (data) => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `assistant-${Date.now()}`,
-          role: 'assistant',
-          content: data.message,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        },
-      ]);
-      setRateLimitError(null);
-      setLastFailedMessage(null);
-    },
-    onError: (err: ApiRequestError | Error) => {
-      if (err instanceof ApiRequestError) {
-        setRateLimitError({
-          code: err.code,
-          message: err.message,
-          hint: err.hint,
-        });
-      } else {
-        setRateLimitError({
-          code: 'CLIENT_ERROR',
-          message: (err as Error).message,
-          hint: 'Check your mock server connection.',
-        });
-      }
-    },
-  });
+  const { messages, error: rateLimitError, simulateRateLimit } = state;
 
-  const handleSendMessage = (messageToSend?: string, forceSuccess = false) => {
-    const text = messageToSend || inputMessage.trim();
-    if (!text || askChatbotMutation.isPending) return;
-
-    if (!messageToSend) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `user-${Date.now()}`,
-          role: 'user',
-          content: text,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        },
-      ]);
-      setInputMessage('');
-    }
-
-    setLastFailedMessage(text);
-    setRateLimitError(null);
-
-    // Convert UI messages to contract ChatTurn format
-    const history: ChatTurn[] = messages.slice(1).map((m) => ({
-      role: m.role,
-      content: m.content,
-    }));
-
-    const isRateLimit = import.meta.env.DEV && (forceSuccess ? false : simulateRateLimit);
-    const headers = import.meta.env.DEV && isRateLimit ? { Prefer: 'code=429' } : undefined;
-
-    askChatbotMutation.mutate({
-      body: {
-        message: text,
-        history,
-      },
-      headers,
-    });
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputMessage.trim() || isPending) return;
+    sendMessage(inputMessage);
+    setInputMessage('');
   };
 
-  const handleRetry = () => {
-    if (lastFailedMessage) {
-      handleSendMessage(lastFailedMessage, true);
-    }
-  };
+  if (!isActiveFaculty) {
+    return (
+      <AppShell
+        role={profile?.role === 'admin' ? 'admin' : 'faculty'}
+        activeNavKey="chat"
+        breadcrumb="Faculty Portal / AI Chat Assistant"
+      >
+        <div style={{ padding: '24px 0', maxWidth: '640px' }}>
+          <div
+            role="alert"
+            style={{
+              padding: '20px 24px',
+              backgroundColor: 'var(--destructive-subtle, #fee2e2)',
+              border: '1px solid var(--destructive, #ef4444)',
+              borderRadius: 'var(--radius-md, 8px)',
+              color: 'var(--destructive, #b91c1c)',
+            }}
+          >
+            <h2 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 600 }}>Access Restricted</h2>
+            <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.5 }}>
+              The AI Chat Assistant is reserved exclusively for active, verified faculty members. Pending accounts and administrative users are restricted from querying the assistant.
+            </p>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell
@@ -130,18 +80,18 @@ export function FacultyChatPage() {
 
           {/* Demonstration Helper for Milestone 2 Gate A5 */}
           {import.meta.env.DEV && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Badge variant={simulateRateLimit ? 'danger' : 'neutral'}>
-              Mode: {simulateRateLimit ? '429 Rate Limit Simulation' : '200 Normal'}
-            </Badge>
-            <Button
-              size="sm"
-              variant={simulateRateLimit ? 'destructive' : 'outline'}
-              onClick={() => setSimulateRateLimit(!simulateRateLimit)}
-            >
-              {simulateRateLimit ? 'Disable 429 Simulator' : '⚡ Simulate 429 Rate Limit'}
-            </Button>
-          </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Badge variant={simulateRateLimit ? 'danger' : 'neutral'}>
+                Mode: {simulateRateLimit ? '429 Rate Limit Simulation' : '200 Normal'}
+              </Badge>
+              <Button
+                size="sm"
+                variant={simulateRateLimit ? 'destructive' : 'outline'}
+                onClick={() => setSimulateRateLimit(!simulateRateLimit)}
+              >
+                {simulateRateLimit ? 'Disable 429 Simulator' : '⚡ Simulate 429 Rate Limit'}
+              </Button>
+            </div>
           )}
         </div>
 
@@ -191,13 +141,13 @@ export function FacultyChatPage() {
             );
           })}
 
-          {askChatbotMutation.isPending && (
+          {isPending && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--muted-foreground)', fontSize: '13px' }}>
               <span className="animate-spin">⏳</span> Querying AI Assistant via Prism mock...
             </div>
           )}
 
-          {/* Graceful 429 Rate Limit Retry Box (Gate A5 Requirement) */}
+          {/* Graceful 429 Rate Limit / Error Retry Box (Gate A5 / M4 Requirement) */}
           {rateLimitError && (
             <div
               role="alert"
@@ -214,7 +164,7 @@ export function FacultyChatPage() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Badge variant="danger">
-                  {rateLimitError.code} (HTTP 429)
+                  {rateLimitError.code}
                 </Badge>
                 <span style={{ fontWeight: 700, color: 'var(--destructive, #b91c1c)' }}>
                   {rateLimitError.message}
@@ -226,10 +176,10 @@ export function FacultyChatPage() {
                 </div>
               )}
               <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
-                <Button size="sm" variant="primary" onClick={handleRetry}>
+                <Button size="sm" variant="primary" onClick={retryLastMessage} disabled={isPending}>
                   🔄 Retry Prompt
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => setRateLimitError(null)}>
+                <Button size="sm" variant="ghost" onClick={dismissError}>
                   Dismiss
                 </Button>
               </div>
@@ -239,23 +189,20 @@ export function FacultyChatPage() {
 
         {/* Input Bar */}
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSendMessage();
-          }}
+          onSubmit={handleSubmit}
           style={{ display: 'flex', gap: '10px' }}
         >
           <Input
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Ask about student skills, leadership, or recommendable candidates..."
-            disabled={askChatbotMutation.isPending}
+            disabled={isPending}
             style={{ flex: 1 }}
           />
           <Button
             type="submit"
             variant="primary"
-            disabled={!inputMessage.trim() || askChatbotMutation.isPending}
+            disabled={!inputMessage.trim() || isPending}
           >
             Send Message
           </Button>

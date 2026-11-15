@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **ChatContext State Machine, AI Review Summary & Faculty Student Directory Mining (#156):**
+  - Created `ChatContext.tsx` using `useReducer` to model deterministic chat state transitions (`idle` -> `sending` -> `succeeded` | `rate_limited` | `failed` -> `retrying`), mounted at the root provider tree so active conversations and retry state survive route navigation.
+  - Refactored `FacultyChatPage.tsx` to consume `ChatContext`, preserving message threads and 429 rate limit prompts across navigation, and enforcing verified active faculty authorization.
+  - Enhanced `FacultyStudentsPage.tsx` with structured review-aware multi-filter controls wired to `useSearchStudents`, `usePrograms`, `useDepartments`, and `useTags` (`query`, `program_id`, `owner_department_id`, `tag`, pagination, and cached results across route revisits).
+  - Added accessible `.ui-empty-state` component with a one-click filter reset action when search/filter combinations return empty results.
+  - Enhanced the AI Review Summary panel on `FacultyStudentDetailPage.tsx` positioned between student basic information and the review list, enforcing visibility rules so only active reviews contribute to AI synthesis (hidden and deleted reviews excluded).
+  - Added accessible `role="status"` and `aria-live="polite"` live notification indicator in `AppShell.tsx`.
+  - Added unit and integration test suites in `ChatContext.test.tsx`, `FacultyChatPage.test.tsx`, `FacultyStudentsPage.test.tsx`, and `FacultyStudentDetailPage.test.tsx`.
 - **CI Workflow, Contract Freeze (`v1.0.0`), and Pinned Tooling:**
   - Added GitHub Actions CI workflow (`.github/workflows/ci.yml`) running `contract:lint`, `contract:check`, `contract:docs` verification and artifact upload, `typecheck`, `test` (Vitest), and `build` on pushes and pull requests.
   - Marked `contract/openapi.yaml` as frozen at `v1.0.0` (effective `2026-10-30`) in `contract/README.md` with cross-team change-control rules, and extended `PreferReturnRepresentation` to support `return=representation, code=403` and `return=representation, code=409` for Prism mock simulation.

@@ -30,6 +30,7 @@ import { AdminAuditLogPage } from './pages/admin/AdminAuditLogPage';
 import { ThemeProvider } from './context/ThemeContext';
 import { SessionProvider } from './context/SessionContext';
 import { useSession } from './context/SessionContext';
+import { ChatProvider } from './context/ChatContext';
 
 function GuardLoading() {
   return <main className="contract-auth-page" aria-busy="true"><p>Checking your account…</p></main>;
@@ -234,7 +235,9 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <ThemeProvider>
-          <RouterProvider router={router} />
+          <ChatProvider>
+            <RouterProvider router={router} />
+          </ChatProvider>
         </ThemeProvider>
       </SessionProvider>
     </QueryClientProvider>
