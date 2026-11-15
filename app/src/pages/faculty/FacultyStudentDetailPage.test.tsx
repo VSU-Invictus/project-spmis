@@ -32,17 +32,23 @@ function ProfileBootstrapper({
   profile: FacultyProfile;
   children: ReactNode;
 }) {
-  const { profile: currentProfile, syncProfile } = useSession();
+  const { profile: currentProfile, loading, syncProfile } = useSession();
   useEffect(() => {
     if (
-      !currentProfile ||
-      currentProfile.id !== profile.id ||
-      currentProfile.role !== profile.role ||
-      currentProfile.status !== profile.status
+      !loading &&
+      (!currentProfile ||
+        currentProfile.id !== profile.id ||
+        currentProfile.role !== profile.role ||
+        currentProfile.status !== profile.status)
     ) {
       syncProfile(profile);
     }
-  }, [currentProfile, profile, syncProfile]);
+  }, [currentProfile, loading, profile, syncProfile]);
+
+  if (loading || !currentProfile || currentProfile.id !== profile.id) {
+    return null;
+  }
+
   return <>{children}</>;
 }
 
