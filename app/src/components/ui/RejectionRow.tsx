@@ -10,6 +10,8 @@ export interface RejectionRowProps {
   bulkCount?: number;
   initialReason?: string;
   className?: string;
+  pending?: boolean;
+  error?: React.ReactNode;
   onCancel: () => void;
   onConfirm: (reason: string) => void;
 }
@@ -21,10 +23,13 @@ export function RejectionRow({
   bulkCount,
   initialReason = '',
   className = '',
+  pending = false,
+  error,
   onCancel,
   onConfirm,
 }: RejectionRowProps) {
   const [reason, setReason] = useState(initialReason);
+  const [requiredError, setRequiredError] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const reasonId = useId();
 
@@ -34,8 +39,10 @@ export function RejectionRow({
   }, []);
 
   const handleSubmit = () => {
+    if (pending) return;
     const el = textareaRef.current;
     if (!reason.trim()) {
+      setRequiredError('Enter a reason for rejection.');
       el?.setCustomValidity('Enter a reason for rejection.');
       el?.reportValidity();
       return;
@@ -47,7 +54,7 @@ export function RejectionRow({
     if (e.key === 'Escape') {
       e.preventDefault();
       e.stopPropagation();
-      onCancel();
+      if (!pending) onCancel();
     }
   };
 
@@ -66,18 +73,23 @@ export function RejectionRow({
         className="ui-queue-rejection-textarea"
         placeholder="Enter reason here..."
         required
+        disabled={pending}
+        aria-invalid={Boolean(requiredError || error) || undefined}
         aria-required="true"
         value={reason}
         onChange={(e) => {
           e.target.setCustomValidity('');
+          setRequiredError('');
           setReason(e.target.value);
         }}
       />
+      {(requiredError || error) && <p className="ui-form-error" role="alert">{requiredError || error}</p>}
       <div className="ui-queue-rejection-actions">
         <Button
           variant="outline"
           className="ui-queue-cancel"
           onClick={onCancel}
+          disabled={pending}
         >
           Close
         </Button>
@@ -85,6 +97,7 @@ export function RejectionRow({
           variant="destructive"
           className="ui-queue-confirm-reject"
           onClick={handleSubmit}
+          disabled={pending}
         >
           Reject
         </Button>

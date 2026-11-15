@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { QUEUE_TITLES, type QueueType } from '../queue-modal/queues';
 import { QUEUE_COLUMNS, type QueueRow } from './queueBrowse';
 import { useLocation } from 'react-router-dom';
@@ -7,7 +7,9 @@ import { useAdminQueueBrowse, useQueueFacultyReferences } from '../../hooks/useA
 import { useDepartmentOptions } from '../../hooks/useDepartments';
 import { useApprovedProgramOptions } from '../../hooks/usePrograms';
 import { ApiRequestError } from '../../lib/api';
-import { Alert } from '../ui';
+import { Alert, RejectionRow, Toast } from '../ui';
+import { useDecideApplications } from '../../hooks/useDecideApplications';
+import { approvalDecisionSchema } from '../../lib/validation/approvalDecision';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { Checkbox } from '../ui/Checkbox';
@@ -161,6 +163,19 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const decision = useDecideApplications();
+  const submitting = useRef(false);
+  const rejectTrigger = useRef<HTMLButtonElement>(null);
+  const [rejectionIds, setRejectionIds] = useState<string[] | null>(null);
+  const [rejectionAnchor, setRejectionAnchor] = useState<string | null>(null);
+  const [decisionError, setDecisionError] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const pending = decision.isPending;
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 3000);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
   // Filtering & Sorting
   const filteredRows = useMemo(() => {
     let result = rows;
@@ -211,15 +226,20 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
 
   // Drop stale/hidden selections after filters or remote data change.
   useEffect(() => {
+    if (submitting.current) return;
     const visibleIds = new Set(filteredRows.map(row => row.id));
     setSelected(previous => {
       const next = new Set([...previous].filter(id => visibleIds.has(id)));
       return next.size === previous.size ? previous : next;
     });
-  }, [filteredRows]);
+    if (rejectionAnchor && !visibleIds.has(rejectionAnchor)) {
+      setRejectionIds(null);
+      setRejectionAnchor(null);
+    }
+  }, [filteredRows, pending, rejectionAnchor]);
 
   const toggleRow = (row: QueueRow) => {
-    if (!isActionable(row)) return;
+    if (submitting.current || rejectionIds || !isActionable(row)) return;
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(row.id)) next.delete(row.id);
@@ -229,6 +249,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
   };
 
   const toggleAllVisible = () => {
+    if (submitting.current || rejectionIds) return;
     if (allVisibleChecked) {
       setSelected((prev) => {
         const next = new Set(prev);
@@ -244,9 +265,45 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
     }
   };
 
+  const decide = async (action: 'approve' | 'reject', ids: string[], reason?: string) => {
+    if (submitting.current) return;
+    setDecisionError(null);
+    setToast(null);
+    const parsed = approvalDecisionSchema.safeParse(action === 'approve'
+      ? { decision: action, application_ids: ids }
+      : { decision: action, application_ids: ids, reason });
+    if (!parsed.success) { setDecisionError(parsed.error.issues[0].message); return; }
+    const current = new Set((applications.data ?? []).filter(item => item.status === 'pending').map(item => item.id));
+    if (applications.isError || ids.some(id => !current.has(id))) {
+      setDecisionError('Some selected applications are no longer available. Refresh the queue before deciding.');
+      return;
+    }
+    submitting.current = true;
+    try {
+      const result = await decision.mutateAsync(parsed.data);
+      const expected = action === 'approve' ? 'approved' : 'rejected';
+      if (!ids.every(id => result.some(item => item.id === id && item.status === expected))) {
+        throw new Error('The server did not confirm every requested decision. Refresh the queue before trying again.');
+      }
+      setSelected(new Set());
+      setRejectionIds(null);
+      setToast(`${ids.length} Application${ids.length === 1 ? '' : 's'} ${action === 'approve' ? 'Approved' : 'Rejected'}`);
+    } catch (error) {
+      setDecisionError(error instanceof ApiRequestError
+        ? [error.message, error.hint].filter(Boolean).join(' ')
+        : error instanceof Error ? error.message : 'Unable to decide applications.');
+    } finally { submitting.current = false; }
+  };
+  const closeRejection = () => {
+    if (submitting.current) return;
+    setRejectionIds(null); setDecisionError(null); rejectTrigger.current?.focus();
+  };
+
   return (
     <div className={`queue-container queue-${type} queue-embedded-workspace ${isModal ? 'is-modal' : ''}`}>
       <main className="section-container">
+        {decisionError && !rejectionIds && <Alert variant="warning" title="Decision could not be confirmed" description={decisionError} />}
+        {decisionError && <Button variant="outline" disabled={pending} onClick={() => void applications.refetch()}>Refresh queue</Button>}
         {applications.isPending && <p role="status">Loading applications…</p>}
         {applications.isError && <><Alert variant="warning" title={applications.error.message} description={applications.error instanceof ApiRequestError ? applications.error.hint ?? '' : ''} />
           <Button variant="outline" onClick={() => void applications.refetch()}>Retry applications</Button></>}
@@ -273,6 +330,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
               type="text"
               className="search-input"
               placeholder={searchMeta.placeholder}
+              disabled={pending || Boolean(rejectionIds)}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -288,6 +346,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
                 <Select
                   aria-label={typeFilterConfig.label}
                   className="dropdown-select"
+                  disabled={pending || Boolean(rejectionIds)}
                   value={typeFilter}
                   onChange={(e) => {
                     setTypeFilter(e.target.value);
@@ -317,6 +376,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
               <Select
                 aria-label="Sort by submission date"
                 className="dropdown-select"
+                disabled={pending || Boolean(rejectionIds)}
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as 'Oldest' | 'Newest')}
               >
@@ -348,7 +408,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
                     aria-label="Select all rows"
                     checked={allVisibleChecked}
                     indeterminate={someVisibleChecked}
-                    disabled={applications.isPending || applications.isError || !actionableVisibleRows.length}
+                    disabled={pending || Boolean(rejectionIds) || applications.isPending || applications.isError || !actionableVisibleRows.length}
                     onChange={toggleAllVisible}
                   />
                 </div>
@@ -383,7 +443,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
                             isRowCheckbox
                             aria-label={`Select application: ${row.cells.name || row.cells.program || row.cells.department || row.id}`}
                             checked={checked}
-                            disabled={!enabled}
+                            disabled={pending || Boolean(rejectionIds) || !enabled}
                             onChange={() => toggleRow(row)}
                           />
                         </div>
@@ -398,6 +458,9 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
                         ))}
                       </div>
 
+                      {rejectionIds && rejectionAnchor === row.id && <RejectionRow asTableRow={false} bulkCount={rejectionIds.length}
+                        pending={pending} error={decisionError} onCancel={closeRejection}
+                        onConfirm={reason => void decide('reject', rejectionIds, reason)} />}
                     </Fragment>
                   );
                 })}
@@ -420,8 +483,9 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
             totalPages={totalPages}
             totalEntries={totalEntries}
             pageSize={pageSize}
-            onPageChange={(page) => setCurrentPage(page)}
+            onPageChange={(page) => { if (!pending && !rejectionIds) setCurrentPage(page); }}
             onPageSizeChange={(size) => {
+              if (pending || rejectionIds) return;
               setRowsPerPage(size);
               setCurrentPage(1);
             }}
@@ -431,14 +495,21 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
                 <Button
                   variant="approve"
                   hasSelection={selected.size > 0}
-                  disabled title="Approval is not yet available."
+                  disabled={pending || Boolean(rejectionIds) || !selected.size || applications.isError}
+                  onClick={() => void decide('approve', [...selected])}
                 >
                   Approve
                 </Button>
                 <Button
                   variant="reject"
                   hasSelection={selected.size > 0}
-                  disabled title="Rejection is not yet available."
+                  ref={rejectTrigger}
+                  disabled={pending || Boolean(rejectionIds) || !selected.size || applications.isError}
+                  onClick={() => {
+                    const anchor = paginatedRows.find(row => selected.has(row.id));
+                    if (!anchor) { setDecisionError('Select an application on this page.'); return; }
+                    setDecisionError(null); setToast(null); setRejectionAnchor(anchor.id); setRejectionIds([...selected]);
+                  }}
                 >
                   Reject
                 </Button>
@@ -447,6 +518,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
           />
         </div>
       </main>
+      <Toast message={toast} />
     </div>
   );
 }
