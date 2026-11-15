@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FacultyStudentRegistration } from './FacultyStudentRegistration';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   TableContainer,
@@ -43,6 +44,7 @@ export function FacultyStudentsPage() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
+            <FacultyStudentRegistration onOpen={() => setSelectedStudent(null)} />
             <Button variant="secondary" onClick={() => refetch()}>
               Refresh Roster
             </Button>

@@ -196,12 +196,22 @@ export interface FacultyProposalDialogProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: (msg: string) => void;
+  title?: string;
+  subtitle?: string;
+  id?: string;
+  className?: string;
+  children?: ReactNode;
 }
 
 export function FacultyProposalDialog({
   open,
   onClose,
   onSuccess,
+  title = 'Propose a department',
+  subtitle = 'Your request will be pending until reviewed by an administrator.',
+  id = 'demoFacultyModal',
+  className = 'proposal-modal',
+  children,
 }: FacultyProposalDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [facultyDeptName, setFacultyDeptName] = useState('Department of Quantum Computing');
@@ -225,26 +235,27 @@ export function FacultyProposalDialog({
   return (
     <dialog
       ref={dialogRef}
-      id="demoFacultyModal"
-      className="proposal-modal"
-      aria-labelledby="demoFacultyTitle"
+      id={id}
+      className={className}
+      aria-labelledby={`${id}-title`}
       onClose={onClose}
+      onCancel={event => { event.preventDefault(); onClose(); }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div className="modal-header">
         <div className="modal-header-content">
-          <h2 className="modal-title" id="demoFacultyTitle">
-            Propose a department
+          <h2 className="modal-title" id={`${id}-title`}>
+            {title}
           </h2>
           <p className="modal-subtitle">
-            Your request will be pending until reviewed by an administrator.
+            {subtitle}
           </p>
         </div>
       </div>
       <div className="modal-body">
-        <form
+        {children ?? <form
           id="demoFacultyForm"
           className="modal-form"
           onSubmit={(e) => {
@@ -275,7 +286,7 @@ export function FacultyProposalDialog({
               Submit application
             </Button>
           </div>
-        </form>
+        </form>}
       </div>
     </dialog>
   );
