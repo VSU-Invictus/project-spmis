@@ -129,6 +129,7 @@ function TaxonomyManagement({ mode, profileId }: { mode: Mode; profileId: string
           <div className="dropdown-container status">
             <select className="dropdown-select" aria-label="Filter by status" value={status} onChange={event => setStatus(event.target.value)}>
               <option value="all">Status: All</option><option value="approved">Approved</option>
+              <option value="pending">Pending</option><option value="rejected">Rejected</option>
             </select>
             <svg className="dropdown-chevron" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="currentColor" strokeWidth="1.17" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </div>
@@ -141,7 +142,7 @@ function TaxonomyManagement({ mode, profileId }: { mode: Mode; profileId: string
           columns={[
             { key: 'name', label, colClass: 'col-taxonomy' },
             { key: 'status', label: 'Status', colClass: 'col-status text-center', headerClass: 'col-status text-center ui-table-heading-center', render: record =>
-              <Badge variant={record.status === 'approved' ? 'success' : 'warning'}>
+              <Badge variant={record.status === 'approved' ? 'success' : record.status === 'rejected' ? 'danger' : 'warning'}>
                 {record.status === 'approved' && <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>}
                 {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
               </Badge> },
