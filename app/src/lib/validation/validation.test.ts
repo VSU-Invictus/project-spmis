@@ -131,4 +131,34 @@ describe('shared form schemas', () => {
       tags: ['x'.repeat(51)],
     }).success).toBe(false);
   });
+
+  it('validates student registration fields', () => {
+    expect(studentSchema.safeParse({
+      student_id_number: '27-1-12345',
+      first_name: 'Maria',
+      last_name: 'Santos',
+      program_id: uuid,
+    }).success).toBe(true);
+
+    expect(studentSchema.safeParse({
+      student_id_number: ' ',
+      first_name: 'Maria',
+      last_name: 'Santos',
+      program_id: uuid,
+    }).success).toBe(false);
+
+    expect(studentSchema.safeParse({
+      student_id_number: 'x'.repeat(51),
+      first_name: 'Maria',
+      last_name: 'Santos',
+      program_id: uuid,
+    }).success).toBe(false);
+
+    expect(studentSchema.safeParse({
+      student_id_number: '27-1-12345',
+      first_name: 'Maria',
+      last_name: 'Santos',
+      program_id: 'not-a-uuid',
+    }).success).toBe(false);
+  });
 });
