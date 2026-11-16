@@ -212,4 +212,30 @@ describe('shared form schemas', () => {
       reason: '   ',
     }).success).toBe(false);
   });
+
+  it('validates chat message limits', () => {
+    expect(chatMessageSchema.safeParse({
+      message: 'Find recent reviews',
+    }).success).toBe(true);
+
+    expect(chatMessageSchema.safeParse({
+      message: '   ',
+    }).success).toBe(false);
+
+    expect(chatMessageSchema.safeParse({
+      message: 'x'.repeat(2000),
+    }).success).toBe(true);
+
+    expect(chatMessageSchema.safeParse({
+      message: 'x'.repeat(2001),
+    }).success).toBe(false);
+
+    expect(chatMessageSchema.safeParse({
+      message: 'Find reviews',
+      history: Array.from({ length: 21 }, () => ({
+        role: 'user',
+        content: 'Previous message',
+      })),
+    }).success).toBe(false);
+  });
 });
