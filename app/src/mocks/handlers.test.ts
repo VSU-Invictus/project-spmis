@@ -178,4 +178,143 @@ describe('contract MSW handlers', () => {
     const data = await response.json();
     expect(data).toEqual(expect.arrayContaining([{ tag: 'research' }]));
   });
+
+  it('gets and updates the authenticated faculty profile', async () => {
+    const profileResponse = await fetch(`${BASE}/rest/v1/rpc/get_own_profile`);
+    expect(profileResponse.status).toBe(200);
+    expect(await profileResponse.json()).toMatchObject({
+      id: 'e48adc9e-1b79-4b92-9848-aa12b25d63d7',
+      full_name: 'Alex Reyes',
+      role: 'faculty',
+      status: 'active',
+    });
+
+    const updateResponse = await fetch(`${BASE}/rest/v1/rpc/update_own_profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name: 'Alex Updated' }),
+    });
+
+    expect(updateResponse.status).toBe(200);
+    expect(await updateResponse.json()).toMatchObject([
+      { full_name: 'Alex Updated' },
+    ]);
+  });
+
+  it('performs department and program CRUD operations', async () => {
+    const departmentCreate = await fetch(`${BASE}/rest/v1/departments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Physics' }),
+    });
+    expect(departmentCreate.status).toBe(201);
+    const [department] = await departmentCreate.json();
+
+    const departmentUpdate = await fetch(
+      `${BASE}/rest/v1/departments?id=eq.${department.id}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: 'Applied Physics' }),
+      },
+    );
+    expect(departmentUpdate.status).toBe(200);
+    expect(await departmentUpdate.json()).toMatchObject([
+      { id: department.id, name: 'Applied Physics' },
+    ]);
+
+    const departmentDelete = await fetch(
+      `${BASE}/rest/v1/departments?id=eq.${department.id}`,
+      { method: 'DELETE' },
+    );
+    expect(departmentDelete.status).toBe(204);
+
+    const programCreate = await fetch(`${BASE}/rest/v1/programs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Bachelor of Physics' }),
+    });
+    expect(programCreate.status).toBe(201);
+  });
+
+  it('creates and updates student profiles', async () => {
+    const createResponse = await fetch(`${BASE}/rest/v1/student_profiles`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        student_id_number: '27-1-12348',
+        first_name: 'Ana',
+        last_name: 'Garcia',
+        middle_name: null,
+        program_id: '8ef76d5f-e6b2-49aa-a627-171dee1b8b65',
+      }),
+    });
+
+    expect(createResponse.status).toBe(201);
+    const [student] = await createResponse.json();
+
+    const updateResponse = await fetch(
+      `${BASE}/rest/v1/student_profiles?id=eq.${student.id}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ first_name: 'Anna' }),
+      },
+    );
+
+    expect(updateResponse.status).toBe(200);
+    expect(await updateResponse.json()).toMatchObject([
+      { id: student.id, first_name: 'Anna' },
+    ]);
+  });
+
+  it('lists and updates faculty profiles', async () => {
+    const listResponse = await fetch(`${BASE}/rest/v1/faculty_profiles`);
+    expect(listResponse.status).toBe(200);
+    expect(await listResponse.json()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ role: 'faculty' }),
+      ]),
+    );
+
+    const updateResponse = await fetch(
+      `${BASE}/rest/v1/faculty_profiles?id=eq.e48adc9e-1b79-4b92-9848-aa12b25d63d7`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name: 'Alex Faculty' }),
+      },
+    );
+
+    expect(updateResponse.status).toBe(200);
+    expect(await updateResponse.json()).toMatchObject([
+      { full_name: 'Alex Faculty' },
+    ]);
+  });
+
+  it('creates an approval queue item', async () => {
+    const response = await fetch(`${BASE}/rest/v1/approval_queue_items`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'student_registration',
+        payload: {
+          student_id_number: '27-1-12349',
+          first_name: 'Luis',
+          last_name: 'Reyes',
+          middle_name: null,
+          program_id: '8ef76d5f-e6b2-49aa-a627-171dee1b8b65',
+        },
+      }),
+    });
+
+    expect(response.status).toBe(201);
+    expect(await response.json()).toMatchObject([
+      {
+        type: 'student_registration',
+        status: 'pending',
+        submitted_by: 'e48adc9e-1b79-4b92-9848-aa12b25d63d7',
+      },
+    ]);
+  });
 });

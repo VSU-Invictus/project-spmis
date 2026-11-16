@@ -58,16 +58,25 @@ type MockReviewRevision = {
   tags_snapshot?: string[];
 };
 
+type ApprovalItemType =
+  | 'student_registration'
+  | 'program_proposal'
+  | 'department_proposal';
+
+type ApprovalPayload = {
+  student_id_number?: string;
+  first_name?: string;
+  last_name?: string;
+  middle_name?: string | null;
+  program_id?: string;
+  name?: string;
+  department_id?: string;
+};
+
 type ApprovalItem = {
   id: string;
-  type: 'student_registration';
-  payload: {
-    student_id_number: string;
-    first_name: string;
-    last_name: string;
-    middle_name: string | null;
-    program_id: string;
-  };
+  type: ApprovalItemType;
+  payload: ApprovalPayload;
   status: 'pending' | 'approved' | 'rejected';
   submitted_by: string;
   decided_by: string | null;
@@ -76,7 +85,21 @@ type ApprovalItem = {
   decided_at: string | null;
 };
 
-const students = [
+type MockStudentProfile = {
+  id: string;
+  student_id_number: string;
+  first_name: string;
+  middle_name: string | null;
+  last_name: string;
+  program_id: string;
+  program_name: string;
+  registration_source: string;
+  visible_review_tags: string[];
+  created_at: string;
+  updated_at: string;
+};
+
+const students: MockStudentProfile[] = [
   {
     id: studentId,
     student_id_number: '27-1-12345',
@@ -175,6 +198,50 @@ const programs = [
   { id: '9625620d-2d60-4bb2-ad06-d041e6023158', name: 'Bachelor of Science in Mathematics', status: 'approved', proposed_by: null, created_at: now, updated_at: now },
 ];
 
+type MockFacultyProfile = {
+  id: string;
+  email: string;
+  full_name: string;
+  department_id: string;
+  role: 'faculty' | 'admin';
+  status: 'pending' | 'active' | 'suspended';
+  created_at: string;
+  updated_at: string;
+};
+
+const facultyProfiles: MockFacultyProfile[] = [
+  {
+    id: ownerId,
+    email: 'alex.reyes@example.edu',
+    full_name: 'Alex Reyes',
+    department_id: departmentId,
+    role: 'faculty',
+    status: 'active',
+    created_at: now,
+    updated_at: now,
+  },
+  {
+    id: '98b5fca9-0d8c-4c0a-a10a-7aa10b9bb3a1',
+    email: 'pending.faculty@example.edu',
+    full_name: 'Pending Faculty',
+    department_id: departmentId,
+    role: 'faculty',
+    status: 'pending',
+    created_at: now,
+    updated_at: now,
+  },
+  {
+    id: 'b6f6d2fb-1536-4d80-8599-337eaa8ec3ab',
+    email: 'admin@example.edu',
+    full_name: 'SPMIS Administrator',
+    department_id: departmentId,
+    role: 'admin',
+    status: 'active',
+    created_at: now,
+    updated_at: now,
+  },
+];
+
 const auditLogs = [
   {
     id: '9e259155-705c-46fb-9530-c0f100cfca0f',
@@ -258,6 +325,50 @@ export const handlers = [
     return HttpResponse.json(result);
   }),
 
+  http.get('*/rest/v1/rpc/get_own_profile', async () => {
+    await delay(10);
+
+    return HttpResponse.json(
+      facultyProfiles.find((profile) => profile.id === ownerId) ?? null,
+    );
+  }),
+
+  http.post('*/rest/v1/rpc/update_own_profile', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+    const profile = facultyProfiles.find((item) => item.id === ownerId);
+
+    if (!profile) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'Your profile was not found.',
+          details: null,
+          hint: 'Refresh the page and try again.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (!isRecord(input) || typeof input.full_name !== 'string' || !input.full_name.trim()) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The profile update is invalid.',
+          details: 'A nonblank full_name is required.',
+          hint: 'Enter your full name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    profile.full_name = input.full_name.trim();
+    profile.updated_at = new Date().toISOString();
+
+    return HttpResponse.json([profile]);
+  }),
+
   http.get('*/rest/v1/rpc/get_student_by_id', async ({ request }) => {
     await delay(10);
     const url = new URL(request.url);
@@ -277,6 +388,83 @@ export const handlers = [
       created_at: found.created_at,
       updated_at: found.updated_at,
     });
+  }),
+
+  http.post('*/rest/v1/student_profiles', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+
+    if (!isRecord(input)) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The student profile is invalid.',
+          details: 'Expected a JSON object.',
+          hint: 'Correct the student details and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const timestamp = new Date().toISOString();
+    const program = programs.find((item) => item.id === input.program_id);
+
+    const student = {
+      id: `mock-student-${students.length + 1}`,
+      student_id_number: String(input.student_id_number ?? ''),
+      first_name: String(input.first_name ?? ''),
+      middle_name: typeof input.middle_name === 'string' ? input.middle_name : null,
+      last_name: String(input.last_name ?? ''),
+      program_id: String(input.program_id ?? ''),
+      program_name: program?.name ?? '',
+      registration_source: 'admin_direct',
+      visible_review_tags: [],
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    students.push(student);
+    return HttpResponse.json([student], { status: 201 });
+  }),
+
+  http.patch('*/rest/v1/student_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const input: unknown = await request.json().catch(() => null);
+    const student = students.find((item) => matches(item.id, idFilter));
+
+    if (!student) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The student profile was not found.',
+          details: null,
+          hint: 'Check the student identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (isRecord(input)) {
+      if (typeof input.student_id_number === 'string') {
+        student.student_id_number = input.student_id_number;
+      }
+      if (typeof input.first_name === 'string') student.first_name = input.first_name;
+      if (typeof input.last_name === 'string') student.last_name = input.last_name;
+      if (typeof input.middle_name === 'string' || input.middle_name === null) {
+        student.middle_name = input.middle_name;
+      }
+      if (typeof input.program_id === 'string') {
+        student.program_id = input.program_id;
+        student.program_name = programs.find((program) => program.id === input.program_id)?.name ?? '';
+      }
+    }
+
+    student.updated_at = new Date().toISOString();
+    return HttpResponse.json([student]);
   }),
 
   http.get('*/rest/v1/review_details', async ({ request }) => {
@@ -458,6 +646,104 @@ export const handlers = [
     return HttpResponse.json({ message: `Mock answer to: ${message}` });
   }),
 
+  http.get('*/rest/v1/faculty_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const departmentFilter = url.searchParams.get('department_id');
+    const roleFilter = url.searchParams.get('role');
+    const statusFilter = url.searchParams.get('status');
+
+    return HttpResponse.json(
+      facultyProfiles.filter((profile) =>
+        matches(profile.id, idFilter)
+        && matches(profile.department_id, departmentFilter)
+        && matches(profile.role, roleFilter)
+        && matches(profile.status, statusFilter),
+      ),
+    );
+  }),
+
+  http.patch('*/rest/v1/faculty_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const input: unknown = await request.json().catch(() => null);
+    const profile = facultyProfiles.find((item) => matches(item.id, idFilter));
+
+    if (!profile) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The faculty profile was not found.',
+          details: null,
+          hint: 'Check the faculty identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (!isRecord(input)) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The request contains invalid data.',
+          details: 'Expected a JSON object.',
+          hint: 'Correct the request and retry.',
+        },
+        { status: 422 },
+      );
+    }
+
+    if (typeof input.email === 'string') profile.email = input.email.trim();
+    if (typeof input.full_name === 'string') profile.full_name = input.full_name.trim();
+    if (typeof input.department_id === 'string') profile.department_id = input.department_id;
+    if (input.role === 'faculty' || input.role === 'admin') profile.role = input.role;
+    if (input.status === 'pending' || input.status === 'active' || input.status === 'suspended') {
+      profile.status = input.status;
+    }
+
+    profile.updated_at = new Date().toISOString();
+    return HttpResponse.json([profile]);
+  }),
+
+  http.post('*/rest/v1/approval_queue_items', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+
+    if (!isRecord(input) || !isRecord(input.payload)) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The application is invalid.',
+          details: 'Expected an application type and payload.',
+          hint: 'Correct the application and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const item: ApprovalItem = {
+      id: `mock-approval-${approvalQueue.length + 1}`,
+      type: input.type === 'program_proposal' || input.type === 'department_proposal'
+        ? input.type
+        : 'student_registration',
+      payload: input.payload as ApprovalPayload,
+      status: 'pending',
+      submitted_by: ownerId,
+      decided_by: null,
+      decision_reason: null,
+      created_at: new Date().toISOString(),
+      decided_at: null,
+    };
+
+    approvalQueue.push(item);
+    return HttpResponse.json([item], { status: 201 });
+  }),
+
   http.get('*/rest/v1/approval_queue_items', async ({ request }) => {
     await delay(10);
     const url = new URL(request.url);
@@ -509,6 +795,105 @@ export const handlers = [
     ));
   }),
 
+  http.post('*/rest/v1/departments', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+    const name = isRecord(input) && typeof input.name === 'string'
+      ? input.name.trim()
+      : '';
+
+    if (!name) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The department name is invalid.',
+          details: 'A nonblank name is required.',
+          hint: 'Enter a department name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const timestamp = new Date().toISOString();
+    const department = {
+      id: `mock-department-${departments.length + 1}`,
+      name,
+      status: 'approved' as const,
+      proposed_by: null,
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    departments.push(department);
+    return HttpResponse.json([department], { status: 201 });
+  }),
+
+  http.patch('*/rest/v1/departments', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const input: unknown = await request.json().catch(() => null);
+    const name = isRecord(input) && typeof input.name === 'string'
+      ? input.name.trim()
+      : '';
+
+    const department = departments.find((item) => matches(item.id, idFilter));
+
+    if (!department) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The department was not found.',
+          details: null,
+          hint: 'Check the department identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (!name) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The department name is invalid.',
+          details: 'A nonblank name is required.',
+          hint: 'Enter a department name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    department.name = name;
+    department.updated_at = new Date().toISOString();
+
+    return HttpResponse.json([department]);
+  }),
+
+  http.delete('*/rest/v1/departments', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const index = departments.findIndex((item) => matches(item.id, idFilter));
+
+    if (index === -1) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The department was not found.',
+          details: null,
+          hint: 'Check the department identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    departments.splice(index, 1);
+    return new HttpResponse(null, { status: 204 });
+  }),
+
   http.get('*/rest/v1/programs', async ({ request }) => {
     await delay(10);
     const url = new URL(request.url);
@@ -517,6 +902,105 @@ export const handlers = [
     return HttpResponse.json(programs.filter((item) =>
       matches(item.name, nameFilter) && matches(item.status, statusFilter),
     ));
+  }),
+
+  http.post('*/rest/v1/programs', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+    const name = isRecord(input) && typeof input.name === 'string'
+      ? input.name.trim()
+      : '';
+
+    if (!name) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The program name is invalid.',
+          details: 'A nonblank name is required.',
+          hint: 'Enter a program name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const timestamp = new Date().toISOString();
+    const program = {
+      id: `mock-program-${programs.length + 1}`,
+      name,
+      status: 'approved' as const,
+      proposed_by: null,
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    programs.push(program);
+    return HttpResponse.json([program], { status: 201 });
+  }),
+
+  http.patch('*/rest/v1/programs', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const input: unknown = await request.json().catch(() => null);
+    const name = isRecord(input) && typeof input.name === 'string'
+      ? input.name.trim()
+      : '';
+
+    const program = programs.find((item) => matches(item.id, idFilter));
+
+    if (!program) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The program was not found.',
+          details: null,
+          hint: 'Check the program identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (!name) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The program name is invalid.',
+          details: 'A nonblank name is required.',
+          hint: 'Enter a program name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    program.name = name;
+    program.updated_at = new Date().toISOString();
+
+    return HttpResponse.json([program]);
+  }),
+
+  http.delete('*/rest/v1/programs', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const index = programs.findIndex((item) => matches(item.id, idFilter));
+
+    if (index === -1) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The program was not found.',
+          details: null,
+          hint: 'Check the program identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    programs.splice(index, 1);
+    return new HttpResponse(null, { status: 204 });
   }),
 
   http.get('*/rest/v1/audit_log_entries', async ({ request }) => {
@@ -536,6 +1020,40 @@ export const __resetMocks = () => {
   nextRevisionId = 1;
   reviews.splice(0, reviews.length, structuredClone(initialReview));
   reviewRevisions.splice(0, reviewRevisions.length, structuredClone(initialRevision));
+    facultyProfiles.splice(
+    0,
+    facultyProfiles.length,
+    {
+      id: ownerId,
+      email: 'alex.reyes@example.edu',
+      full_name: 'Alex Reyes',
+      department_id: departmentId,
+      role: 'faculty',
+      status: 'active',
+      created_at: now,
+      updated_at: now,
+    },
+    {
+      id: '98b5fca9-0d8c-4c0a-a10a-7aa10b9bb3a1',
+      email: 'pending.faculty@example.edu',
+      full_name: 'Pending Faculty',
+      department_id: departmentId,
+      role: 'faculty',
+      status: 'pending',
+      created_at: now,
+      updated_at: now,
+    },
+    {
+      id: 'b6f6d2fb-1536-4d80-8599-337eaa8ec3ab',
+      email: 'admin@example.edu',
+      full_name: 'SPMIS Administrator',
+      department_id: departmentId,
+      role: 'admin',
+      status: 'active',
+      created_at: now,
+      updated_at: now,
+    },
+  );
   approvalQueue.forEach((item) => {
     item.status = 'pending';
     item.decided_by = null;
