@@ -77,6 +77,7 @@ export function mapDatabaseError(error: { code?: string; message?: string } | nu
   if (code === '42501') throw new FunctionError(403, 'FORBIDDEN', error?.message ?? 'Forbidden.');
   if (code === 'P0002') throw new FunctionError(404, 'NOT_FOUND', error?.message ?? 'The resource was not found.');
   if (code === '55000') throw new FunctionError(409, 'CONFLICT', error?.message ?? 'The requested state transition is invalid.');
+  if (code === '23505') throw new FunctionError(409, 'CONFLICT', error?.message ?? 'The resource already exists.');
   if (code === '23514' || code === '22023') {
     throw new FunctionError(422, 'VALIDATION_ERROR', error?.message ?? 'The request is invalid.');
   }
