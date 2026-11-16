@@ -23,12 +23,13 @@ export async function requireUser(request: Request): Promise<{
   client: SupabaseClient;
   id: string;
 }> {
+  const authorization = request.headers.get('Authorization') ?? '';
+  if (!/^Bearer\s+\S+$/i.test(authorization)) {
+    throw new FunctionError(401, 'UNAUTHORIZED', 'Authentication is required.');
+  }
   const client = callerClient(request);
   const { data, error } = await client.auth.getUser();
-  if (error) {
-    throw new FunctionError(500, 'AUTHENTICATION_ERROR', 'The authentication provider could not be reached.', error.message);
-  }
-  if (!data.user) {
+  if (error || !data.user) {
     throw new FunctionError(401, 'UNAUTHORIZED', 'Authentication is required.');
   }
   return { client, id: data.user.id };
