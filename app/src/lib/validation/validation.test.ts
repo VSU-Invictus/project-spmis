@@ -193,4 +193,23 @@ describe('shared form schemas', () => {
       payload: { name: 'Computer Science' },
     }).success).toBe(false);
   });
+
+  it('requires a rejection reason', () => {
+    expect(approvalDecisionSchema.safeParse({
+      decision: 'reject',
+      application_ids: [uuid],
+      reason: 'Incomplete application.',
+    }).success).toBe(true);
+
+    expect(approvalDecisionSchema.safeParse({
+      decision: 'reject',
+      application_ids: [uuid],
+    }).success).toBe(false);
+
+    expect(approvalDecisionSchema.safeParse({
+      decision: 'reject',
+      application_ids: [uuid],
+      reason: '   ',
+    }).success).toBe(false);
+  });
 });
