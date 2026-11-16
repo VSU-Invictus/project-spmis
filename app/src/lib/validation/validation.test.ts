@@ -76,4 +76,59 @@ describe('shared form schemas', () => {
     expect(chatMessageSchema.safeParse({ message: '   ' }).success).toBe(false);
     expect(chatMessageSchema.safeParse({ message: 'x'.repeat(2001) }).success).toBe(false);
   });
+
+  it('validates review body and tag limits', () => {
+    expect(reviewSchema.safeParse({
+      student_id: uuid,
+      body_document: {
+        blocks: [{ type: 'paragraph', content: [{ text: '   ' }] }],
+      },
+    }).success).toBe(false);
+
+    expect(reviewSchema.safeParse({
+      student_id: uuid,
+      body_document: {
+        blocks: [{ type: 'paragraph', content: [{ text: Array(500).fill('word').join(' ') }] }],
+      },
+    }).success).toBe(true);
+
+    expect(reviewSchema.safeParse({
+      student_id: uuid,
+      body_document: {
+        blocks: [{ type: 'paragraph', content: [{ text: Array(501).fill('word').join(' ') }] }],
+      },
+    }).success).toBe(false);
+
+    expect(reviewSchema.safeParse({
+      student_id: uuid,
+      body_document: {
+        blocks: [{ type: 'paragraph', content: [{ text: 'Useful feedback.' }] }],
+      },
+      tags: Array.from({ length: 30 }, (_, index) => `tag${index}`),
+    }).success).toBe(true);
+
+    expect(reviewSchema.safeParse({
+      student_id: uuid,
+      body_document: {
+        blocks: [{ type: 'paragraph', content: [{ text: 'Useful feedback.' }] }],
+      },
+      tags: Array.from({ length: 31 }, (_, index) => `tag${index}`),
+    }).success).toBe(false);
+
+    expect(reviewSchema.safeParse({
+      student_id: uuid,
+      body_document: {
+        blocks: [{ type: 'paragraph', content: [{ text: 'Useful feedback.' }] }],
+      },
+      tags: ['x'.repeat(50)],
+    }).success).toBe(true);
+
+    expect(reviewSchema.safeParse({
+      student_id: uuid,
+      body_document: {
+        blocks: [{ type: 'paragraph', content: [{ text: 'Useful feedback.' }] }],
+      },
+      tags: ['x'.repeat(51)],
+    }).success).toBe(false);
+  });
 });
