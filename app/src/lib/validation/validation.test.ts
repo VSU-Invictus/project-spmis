@@ -4,6 +4,7 @@ import { chatMessageSchema } from './chatMessage';
 import { reviewSchema } from './review';
 import { studentSchema } from './student';
 import { createTaxonomyProposalEditSchema, taxonomyProposalSchema } from './taxonomyProposal';
+import { facultyEditSchema } from './faculty';
 
 const uuid = '45b54332-e470-4c21-a839-7428c4f6bf42';
 
@@ -236,6 +237,29 @@ describe('shared form schemas', () => {
         role: 'user',
         content: 'Previous message',
       })),
+    }).success).toBe(false);
+  });
+
+  it('validates faculty edit fields', () => {
+    expect(facultyEditSchema.safeParse({
+      full_name: 'Alex Reyes',
+      email: 'alex.reyes@example.edu',
+      department_id: uuid,
+      role: 'faculty',
+    }).success).toBe(true);
+
+    expect(facultyEditSchema.safeParse({
+      full_name: 'A'.repeat(201),
+      email: 'alex.reyes@example.edu',
+      department_id: uuid,
+      role: 'faculty',
+    }).success).toBe(false);
+
+    expect(facultyEditSchema.safeParse({
+      full_name: 'Alex Reyes',
+      email: 'invalid-email',
+      department_id: uuid,
+      role: 'faculty',
     }).success).toBe(false);
   });
 });
