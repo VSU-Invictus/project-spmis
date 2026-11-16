@@ -61,9 +61,10 @@ export function reidentifyText(
   students: StudentNameRecord[],
 ): string {
   const names = new Map(students.map((student) => [
-    `{{STUDENT:${student.id}}}`,
+    `{{STUDENT:${student.id.toLowerCase()}}}`,
     [clean(student.first_name), clean(student.middle_name), clean(student.last_name)]
       .filter(Boolean).join(' '),
   ]));
-  return text.replace(/\{\{STUDENT:([0-9a-f-]+)\}\}/gi, (token) => names.get(token) ?? token);
+  return text.replace(/\{\{STUDENT:([0-9a-f-]+)\}\}/gi, (token, id: string) =>
+    names.get(`{{STUDENT:${id.toLowerCase()}}}`) ?? token);
 }

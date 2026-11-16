@@ -16,9 +16,9 @@ Deno.test('deidentifies full and partial student name variants case-insensitivel
 Deno.test('reverse substitution restores known tokens and preserves unknown tokens', () => {
   assertEquals(
     reidentifyText(
-      '{{STUDENT:40000000-0000-4000-8000-000000000001}} helped {{STUDENT:unknown}}.',
+      '{{STUDENT:40000000-0000-4000-8000-000000000001}} helped {{student:40000000-0000-4000-8000-000000000001}} and {{STUDENT:unknown}}.',
       students,
     ),
-    'Maria Dela Cruz Santos helped {{STUDENT:unknown}}.',
+    'Maria Dela Cruz Santos helped Maria Dela Cruz Santos and {{STUDENT:unknown}}.',
   );
 });
