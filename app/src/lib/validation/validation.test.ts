@@ -161,4 +161,36 @@ describe('shared form schemas', () => {
       program_id: 'not-a-uuid',
     }).success).toBe(false);
   });
+
+  it('validates department and program name limits', () => {
+    expect(taxonomyProposalSchema.safeParse({
+      type: 'department_proposal',
+      payload: { name: 'D' },
+    }).success).toBe(true);
+
+    expect(taxonomyProposalSchema.safeParse({
+      type: 'program_proposal',
+      payload: { name: 'P' },
+    }).success).toBe(true);
+
+    expect(taxonomyProposalSchema.safeParse({
+      type: 'department_proposal',
+      payload: { name: 'D'.repeat(200) },
+    }).success).toBe(true);
+
+    expect(taxonomyProposalSchema.safeParse({
+      type: 'program_proposal',
+      payload: { name: 'P'.repeat(201) },
+    }).success).toBe(false);
+
+    expect(taxonomyProposalSchema.safeParse({
+      type: 'department_proposal',
+      payload: { name: '   ' },
+    }).success).toBe(false);
+
+    expect(createTaxonomyProposalEditSchema('Computer Science').safeParse({
+      type: 'department_proposal',
+      payload: { name: 'Computer Science' },
+    }).success).toBe(false);
+  });
 });
