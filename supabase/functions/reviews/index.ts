@@ -12,6 +12,11 @@ async function readReview(reviewId: string): Promise<Record<string, unknown>> {
     client.from('review_tags').select('tag').eq('review_id', reviewId).order('tag'),
     client.from('faculty_profiles').select('full_name,department_id').eq('id', review.owner_id).single(),
   ]);
+  const { data: attachments } = await client.from('review_attachments')
+    .select('id,review_id,mime_type,size_bytes,created_at')
+    .eq('review_id', reviewId)
+    .order('created_at')
+    .order('id');
   const { data: department } = await client.from('departments')
     .select('name').eq('id', author?.department_id ?? '').maybeSingle();
   const { deidentified_text: _deidentifiedText, ...publicReview } = review;
@@ -20,7 +25,7 @@ async function readReview(reviewId: string): Promise<Record<string, unknown>> {
     tags: (tags ?? []).map((tag) => tag.tag),
     author_name: author?.full_name ?? '',
     author_department_name: department?.name ?? '',
-    attachments: [],
+    attachments: attachments ?? [],
   };
 }
 
@@ -50,7 +55,7 @@ async function create(request: Request): Promise<Response> {
 }
 
 async function update(request: Request, reviewId: string): Promise<Response> {
-  const { client, role } = await getProfile(request);
+  const { client, id, role } = await getProfile(request);
   if (role !== 'faculty') throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can edit reviews.');
   if (!isUuid(reviewId)) throw new FunctionError(422, 'INVALID_REVIEW_ID', 'The review id must be a UUID.');
   const body = await readJson(request);
@@ -59,8 +64,14 @@ async function update(request: Request, reviewId: string): Promise<Response> {
   const tags = tagsProvided ? normalizeTags(body.tags) : [];
   const db = adminClient();
   const { data: existing, error: existingError } = await db.from('reviews')
-    .select('student_id,status').eq('id', reviewId).single();
+    .select('student_id,status,owner_id').eq('id', reviewId).single();
   if (existingError || !existing) throw new FunctionError(404, 'NOT_FOUND', 'Review was not found.');
+  if (existing.owner_id !== id) {
+    throw new FunctionError(403, 'FORBIDDEN', 'The caller does not own this review.');
+  }
+  if (existing.status === 'deleted') {
+    throw new FunctionError(409, 'CONFLICT', 'Deleted reviews cannot be edited.');
+  }
   const { data: student, error: studentError } = await db.from('student_profiles')
     .select('id,first_name,middle_name,last_name').eq('id', existing.student_id).single();
   if (studentError || !student) throw new FunctionError(404, 'NOT_FOUND', 'Student was not found.');
@@ -80,18 +91,29 @@ async function update(request: Request, reviewId: string): Promise<Response> {
 }
 
 async function setStatus(request: Request, reviewId: string): Promise<Response> {
-  const { client, role } = await getProfile(request);
+  const { client, id, role } = await getProfile(request);
   if (role !== 'faculty') throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can change review status.');
   if (!isUuid(reviewId)) throw new FunctionError(422, 'INVALID_REVIEW_ID', 'The review id must be a UUID.');
   const body = await readJson(request);
   if (!['hide', 'unhide', 'delete'].includes(body.action as string)) {
     throw new FunctionError(422, 'INVALID_ACTION', 'action must be hide, unhide, or delete.');
   }
+  const db = adminClient();
+  const { data: review, error: reviewError } = await db.from('reviews')
+    .select('owner_id,status,deidentified_text').eq('id', reviewId).single();
+  if (reviewError || !review) throw new FunctionError(404, 'NOT_FOUND', 'Review was not found.');
+  if (review.owner_id !== id) {
+    throw new FunctionError(403, 'FORBIDDEN', 'The caller does not own this review.');
+  }
+  const validTransition =
+    (body.action === 'hide' && review.status === 'active') ||
+    (body.action === 'unhide' && review.status === 'hidden') ||
+    (body.action === 'delete' && ['active', 'hidden'].includes(review.status));
+  if (!validTransition) {
+    throw new FunctionError(409, 'CONFLICT', 'The requested review status transition is invalid.');
+  }
   let embedding: string | null = null;
   if (body.action === 'unhide') {
-    const db = adminClient();
-    const { data: review } = await db.from('reviews').select('student_id,deidentified_text').eq('id', reviewId).single();
-    if (!review) throw new FunctionError(404, 'NOT_FOUND', 'Review was not found.');
     embedding = await embedText(review.deidentified_text);
   }
   const { data: status, error } = await client.rpc('set_review_status_transaction', {
