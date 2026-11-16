@@ -103,11 +103,14 @@ declare
 begin
   select * into current_review
   from public.reviews
-  where id = p_review_id and owner_id = caller
+  where id = p_review_id
   for update;
 
   if not found then
     raise exception using errcode = 'P0002', message = 'Review was not found.';
+  end if;
+  if current_review.owner_id <> caller then
+    raise exception using errcode = '42501', message = 'The caller does not own this review.';
   end if;
   if current_review.status = 'deleted' then
     raise exception using errcode = '55000', message = 'Deleted reviews cannot be edited.';
@@ -155,17 +158,22 @@ set search_path = ''
 as $$
 declare
   caller uuid := private.require_actor('faculty');
+  current_review public.reviews%rowtype;
   current_status text;
   next_status text;
 begin
-  select status into current_status
+  select * into current_review
   from public.reviews
-  where id = p_review_id and owner_id = caller
+  where id = p_review_id
   for update;
 
   if not found then
     raise exception using errcode = 'P0002', message = 'Review was not found.';
   end if;
+  if current_review.owner_id <> caller then
+    raise exception using errcode = '42501', message = 'The caller does not own this review.';
+  end if;
+  current_status := current_review.status;
 
   next_status := case
     when p_action = 'hide' and current_status = 'active' then 'hidden'
@@ -231,12 +239,46 @@ declare
   payload jsonb;
   target_department_id uuid;
   program_id uuid;
+  department_id uuid;
+  assignment jsonb;
 begin
   if decision not in ('approve', 'reject') then
     raise exception using errcode = '22023', message = 'The application decision is invalid.';
   end if;
+  if coalesce(jsonb_typeof(p_request->'application_ids'), '') <> 'array'
+    or jsonb_array_length(p_request->'application_ids') < 1
+    or jsonb_array_length(p_request->'application_ids') > 100 then
+    raise exception using errcode = '22023', message = 'application_ids must contain 1 to 100 items.';
+  end if;
+  if (select count(*) from jsonb_array_elements_text(p_request->'application_ids'))
+    <> (select count(distinct value) from jsonb_array_elements_text(p_request->'application_ids')) then
+    raise exception using errcode = '22023', message = 'application_ids must not contain duplicates.';
+  end if;
   if decision = 'reject' and reason is null then
     raise exception using errcode = '22023', message = 'A rejection reason is required.';
+  end if;
+  if p_request ? 'department_assignments' then
+    if decision = 'reject' or jsonb_typeof(p_request->'department_assignments') <> 'array' then
+      raise exception using errcode = '22023', message = 'department_assignments are only valid for approvals.';
+    end if;
+    if (select count(*) from jsonb_array_elements(p_request->'department_assignments'))
+      <> (select count(distinct entry->>'application_id')
+          from jsonb_array_elements(p_request->'department_assignments') entry) then
+      raise exception using errcode = '22023', message = 'department_assignments must not contain duplicates.';
+    end if;
+    for assignment in select value from jsonb_array_elements(p_request->'department_assignments')
+    loop
+      if jsonb_typeof(assignment) <> 'object'
+        or nullif(assignment->>'application_id', '') is null
+        or nullif(assignment->>'department_id', '') is null
+        or not exists (
+          select 1
+          from jsonb_array_elements_text(p_request->'application_ids') selected
+          where selected.value = assignment->>'application_id'
+        ) then
+        raise exception using errcode = '22023', message = 'Each department assignment must target a selected application.';
+      end if;
+    end loop;
   end if;
 
   for application_id in
@@ -291,13 +333,16 @@ begin
             select (entry->>'department_id')::uuid into target_department_id
             from jsonb_array_elements(p_request->'department_assignments') entry
             where (entry->>'application_id')::uuid = item.id;
-            if target_department_id is not null and not exists (
-              select 1 from public.departments
-              where id = target_department_id and status = 'approved'
-            ) then
-              raise exception using errcode = '22023', message = 'The assigned department is invalid.';
+            if found then
+              if not exists (
+                select 1 from public.departments
+                where id = target_department_id and status = 'approved'
+              ) then
+                raise exception using errcode = '22023', message = 'The assigned department is invalid.';
+              end if;
             end if;
-          elsif target_department_id is null and nullif(btrim(payload->>'proposed_department_name'), '') is not null then
+          end if;
+          if target_department_id is null and nullif(btrim(payload->>'proposed_department_name'), '') is not null then
             insert into public.departments (name, status, proposed_by)
             values (payload->>'proposed_department_name', 'approved', item.submitted_by)
             returning id into target_department_id;
