@@ -242,6 +242,16 @@ const facultyProfiles: MockFacultyProfile[] = [
   },
 ];
 
+const initialStudents = structuredClone(students);
+const initialApprovalQueue = structuredClone(approvalQueue);
+const initialDepartments = structuredClone(departments);
+const initialPrograms = structuredClone(programs);
+const initialFacultyProfiles = structuredClone(facultyProfiles);
+
+const restore = <T>(target: T[], initial: T[]) => {
+  target.splice(0, target.length, ...structuredClone(initial));
+};
+
 const auditLogs = [
   {
     id: '9e259155-705c-46fb-9530-c0f100cfca0f',
@@ -1018,46 +1028,12 @@ export const __resetMocks = () => {
   chatbotCallCount = 0;
   nextReviewId = 1;
   nextRevisionId = 1;
-  reviews.splice(0, reviews.length, structuredClone(initialReview));
-  reviewRevisions.splice(0, reviewRevisions.length, structuredClone(initialRevision));
-    facultyProfiles.splice(
-    0,
-    facultyProfiles.length,
-    {
-      id: ownerId,
-      email: 'alex.reyes@example.edu',
-      full_name: 'Alex Reyes',
-      department_id: departmentId,
-      role: 'faculty',
-      status: 'active',
-      created_at: now,
-      updated_at: now,
-    },
-    {
-      id: '98b5fca9-0d8c-4c0a-a10a-7aa10b9bb3a1',
-      email: 'pending.faculty@example.edu',
-      full_name: 'Pending Faculty',
-      department_id: departmentId,
-      role: 'faculty',
-      status: 'pending',
-      created_at: now,
-      updated_at: now,
-    },
-    {
-      id: 'b6f6d2fb-1536-4d80-8599-337eaa8ec3ab',
-      email: 'admin@example.edu',
-      full_name: 'SPMIS Administrator',
-      department_id: departmentId,
-      role: 'admin',
-      status: 'active',
-      created_at: now,
-      updated_at: now,
-    },
-  );
-  approvalQueue.forEach((item) => {
-    item.status = 'pending';
-    item.decided_by = null;
-    item.decision_reason = null;
-    item.decided_at = null;
-  });
+
+  restore(students, initialStudents);
+  restore(approvalQueue, initialApprovalQueue);
+  restore(departments, initialDepartments);
+  restore(programs, initialPrograms);
+  restore(facultyProfiles, initialFacultyProfiles);
+  restore(reviews, [initialReview]);
+  restore(reviewRevisions, [initialRevision]);
 };
