@@ -39,7 +39,7 @@ function GuardLoading() {
   return <main className="contract-auth-page" aria-busy="true"><p>Checking your account…</p></main>;
 }
 
-function RequireAuth() {
+export function RequireAuth() {
   const { session, profile, mockRole, loading, error } = useSession();
   const location = useLocation();
 
@@ -58,7 +58,7 @@ function RequireAuth() {
   return <Outlet />;
 }
 
-function RequireRole({ role }: { role: 'faculty' | 'admin' }) {
+export function RequireRole({ role }: { role: 'faculty' | 'admin' }) {
   const { profile } = useSession();
 
   if (!profile) return <Navigate to="/pending-verification" replace />;
