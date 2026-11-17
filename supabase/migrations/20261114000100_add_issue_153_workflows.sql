@@ -334,6 +334,7 @@ begin
             from jsonb_array_elements(p_request->'department_assignments') entry
             where (entry->>'application_id')::uuid = item.id;
             if found then
+              target_department_id := department_id;
               if not exists (
                 select 1 from public.departments
                 where id = target_department_id and status = 'approved'
