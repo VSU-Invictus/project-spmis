@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #153 Edge Functions:** Added transactional review lifecycle and
+  application-decision RPCs, server-side student-name de-identification,
+  Gemini embedding/chat helpers, vector retrieval, approval notifications, and
+  contract-shaped error handling under `supabase/functions/`.
 - **Milestone 3 database foundation (#152):** Added Supabase schema migrations, row-level security, contract-backed database functions and views, synthetic seed data, and pgTAP tests.
 - **Milestone 3 Gate - pgTAP RLS, embedding lifecycle, and constraint suites (#158):** Added three pgTAP suites in `supabase/tests/`. `01_rls_reviews_and_embeddings` proves `reviews.body_text` cannot be inserted or updated by any role, checks review visibility by status (active, hidden, deleted) across `anon`, pending faculty, owner, non-owner, and admin, and verifies that `review_embeddings` rows are removed when a review becomes hidden or deleted. `02_rls_profiles_and_taxonomy` covers profile access for pending and active faculty, admin access to profiles, departments, programs, and the audit log, and admin denial on `reviews`. `03_constraints` verifies the `CHECK` and `UNIQUE` rules for department and program names and student ID numbers. All fixtures are synthetic.
 - **CI Workflow, Contract Freeze (`v1.0.0`), and Pinned Tooling:**
