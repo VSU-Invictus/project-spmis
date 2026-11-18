@@ -30,3 +30,30 @@ Deno.test('reverse substitution restores known tokens and preserves unknown toke
     'Maria Dela Cruz Santos (TEST-001, Example Computer Science) helped Maria Dela Cruz Santos (TEST-001, Example Computer Science) and {{STUDENT:unknown}}.',
   );
 });
+
+Deno.test('deidentifies and restores names for multiple students in one response', () => {
+  const secondStudent = {
+    id: '40000000-0000-4000-8000-000000000002',
+    first_name: 'Alex',
+    middle_name: null,
+    last_name: 'Rivera',
+    student_id_number: 'TEST-002',
+    program_name: 'Example Mathematics',
+  };
+  const allStudents = [...students, secondStudent];
+  const deidentified = deidentifyText(
+    'Maria Santos collaborated with Rivera, Alex.',
+    allStudents,
+  ).text;
+
+  assertEquals(
+    deidentified,
+    '{{STUDENT:40000000-0000-4000-8000-000000000001}} collaborated with {{STUDENT:40000000-0000-4000-8000-000000000002}}.',
+  );
+  const restored = reidentifyText(deidentified, allStudents);
+  assertEquals(
+    restored,
+    'Maria Dela Cruz Santos (TEST-001, Example Computer Science) collaborated with Alex Rivera (TEST-002, Example Mathematics).',
+  );
+  assertEquals(restored.includes('{{STUDENT:'), false);
+});

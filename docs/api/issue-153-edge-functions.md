@@ -43,9 +43,10 @@ npm --prefix app run contract:lint
 npm --prefix app run typecheck
 npm --prefix app test
 supabase db lint
-deno test --allow-env --allow-net supabase/functions/**/*.test.ts
+deno cache --lock=deno.lock supabase/functions/**/*.test.ts
+deno test --cached-only --lock=deno.lock --allow-env --deny-net supabase/functions/**/*.test.ts
 ```
 
 `supabase db lint` and the Deno tests require the local Supabase/Deno tooling.
-The Gemini tests in this repository are pure helper tests and do not call the
-Google API.
+The Gemini tests use mocked responses. The test command runs cached-only with
+network access denied, so it cannot call the Google API.

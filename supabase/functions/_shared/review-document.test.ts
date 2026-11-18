@@ -1,4 +1,5 @@
 import { assertEquals, assertThrows } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { errorResponse } from './errors.ts';
 import { extractReviewText, normalizeTags } from './review-document.ts';
 import { deidentifyText } from './deidentify.ts';
 
@@ -26,6 +27,46 @@ Deno.test('rejects empty and over-limit reviews', () => {
     Error,
     'Review text cannot exceed 500 words.',
   );
+});
+
+Deno.test('review validation returns the expected 422 contract error envelopes', async () => {
+  const invalidCases = [
+    {
+      input: { blocks: [{ type: 'paragraph', content: [{ text: ' ' }] }] },
+      code: 'REVIEW_BODY_REQUIRED',
+      message: 'Review text is required.',
+    },
+    {
+      input: {
+        blocks: [{
+          type: 'paragraph',
+          content: [{ text: Array(501).fill('word').join(' ') }],
+        }],
+      },
+      code: 'REVIEW_WORD_LIMIT',
+      message: 'Review text cannot exceed 500 words.',
+    },
+  ];
+
+  for (const invalidCase of invalidCases) {
+    let response: Response;
+    try {
+      extractReviewText(invalidCase.input);
+      throw new Error('Expected review validation to fail.');
+    } catch (error) {
+      response = errorResponse(error);
+    }
+
+    assertEquals(response.status, 422);
+    assertEquals(await response.json(), {
+      code: invalidCase.code,
+      message: invalidCase.message,
+      details: null,
+      hint: invalidCase.code === 'REVIEW_WORD_LIMIT'
+        ? 'Shorten the review to 500 words or fewer.'
+        : 'Add review text before saving.',
+    });
+  }
 });
 
 Deno.test('plain-text extraction removes markup before de-identification', () => {
