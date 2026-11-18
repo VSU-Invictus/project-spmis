@@ -1,3 +1,4 @@
+import { deidentifyText, type StudentNameRecord } from './deidentify.ts';
 import { FunctionError } from './errors.ts';
 
 type RichTextRun = { text: string; bold?: boolean; italic?: boolean };
@@ -64,6 +65,18 @@ export function extractReviewText(value: unknown): { document: ReviewDocument; t
     throw new FunctionError(422, 'REVIEW_BODY_TOO_LONG', 'Review text cannot exceed 10,000 characters.');
   }
   return { document: { blocks }, text };
+}
+
+export function prepareReviewForEmbedding(
+  value: unknown,
+  students: StudentNameRecord[],
+): { document: ReviewDocument; text: string; deidentifiedText: string } {
+  const { document, text } = extractReviewText(value);
+  return {
+    document,
+    text,
+    deidentifiedText: deidentifyText(text, students).text,
+  };
 }
 
 export function normalizeTags(value: unknown): string[] {
