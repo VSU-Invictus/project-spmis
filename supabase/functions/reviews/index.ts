@@ -1,7 +1,7 @@
 import { errorResponse, FunctionError, handleOptions, isUuid, jsonResponse, mapDatabaseError, readJson, requireMethod } from '../_shared/errors.ts';
-import { deidentifyText } from '../_shared/deidentify.ts';
 import { embedText } from '../_shared/gemini.ts';
-import { extractReviewText, normalizeTags } from '../_shared/review-document.ts';
+import { normalizeTags, prepareReviewForEmbedding } from '../_shared/review-document.ts';
+import { embeddingAfterStatusChange, nextReviewStatus } from '../_shared/review-lifecycle.ts';
 import { adminClient, getProfile } from '../_shared/supabase.ts';
 
 async function readReview(reviewId: string): Promise<Record<string, unknown>> {
@@ -34,13 +34,15 @@ async function create(request: Request): Promise<Response> {
   if (role !== 'faculty') throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can create reviews.');
   const body = await readJson(request);
   if (!isUuid(body.student_id)) throw new FunctionError(422, 'INVALID_STUDENT_ID', 'student_id must be a UUID.');
-  const { document, text } = extractReviewText(body.body_document);
   const tags = normalizeTags(body.tags);
   const db = adminClient();
   const { data: student, error: studentError } = await db.from('student_profiles')
     .select('id,first_name,middle_name,last_name').eq('id', body.student_id).single();
   if (studentError || !student) throw new FunctionError(404, 'NOT_FOUND', 'Student was not found.');
-  const deidentified = deidentifyText(text, [student]).text;
+  const { document, text, deidentifiedText: deidentified } = prepareReviewForEmbedding(
+    body.body_document,
+    [student],
+  );
   const embedding = await embedText(deidentified);
   const { data: reviewId, error } = await client.rpc('create_review_transaction', {
     p_student_id: body.student_id,
@@ -59,7 +61,6 @@ async function update(request: Request, reviewId: string): Promise<Response> {
   if (role !== 'faculty') throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can edit reviews.');
   if (!isUuid(reviewId)) throw new FunctionError(422, 'INVALID_REVIEW_ID', 'The review id must be a UUID.');
   const body = await readJson(request);
-  const { document, text } = extractReviewText(body.body_document);
   const tagsProvided = Object.prototype.hasOwnProperty.call(body, 'tags');
   const tags = tagsProvided ? normalizeTags(body.tags) : [];
   const db = adminClient();
@@ -75,7 +76,10 @@ async function update(request: Request, reviewId: string): Promise<Response> {
   const { data: student, error: studentError } = await db.from('student_profiles')
     .select('id,first_name,middle_name,last_name').eq('id', existing.student_id).single();
   if (studentError || !student) throw new FunctionError(404, 'NOT_FOUND', 'Student was not found.');
-  const deidentified = deidentifyText(text, [student]).text;
+  const { document, text, deidentifiedText: deidentified } = prepareReviewForEmbedding(
+    body.body_document,
+    [student],
+  );
   const embedding = existing.status === 'active' ? await embedText(deidentified) : null;
   const { data: updatedId, error } = await client.rpc('update_review_transaction', {
     p_review_id: reviewId,
@@ -95,7 +99,8 @@ async function setStatus(request: Request, reviewId: string): Promise<Response> 
   if (role !== 'faculty') throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can change review status.');
   if (!isUuid(reviewId)) throw new FunctionError(422, 'INVALID_REVIEW_ID', 'The review id must be a UUID.');
   const body = await readJson(request);
-  if (!['hide', 'unhide', 'delete'].includes(body.action as string)) {
+  const action = body.action;
+  if (action !== 'hide' && action !== 'unhide' && action !== 'delete') {
     throw new FunctionError(422, 'INVALID_ACTION', 'action must be hide, unhide, or delete.');
   }
   const db = adminClient();
@@ -105,20 +110,17 @@ async function setStatus(request: Request, reviewId: string): Promise<Response> 
   if (review.owner_id !== id) {
     throw new FunctionError(403, 'FORBIDDEN', 'The caller does not own this review.');
   }
-  const validTransition =
-    (body.action === 'hide' && review.status === 'active') ||
-    (body.action === 'unhide' && review.status === 'hidden') ||
-    (body.action === 'delete' && ['active', 'hidden'].includes(review.status));
-  if (!validTransition) {
+  const nextStatus = nextReviewStatus(action, review.status);
+  if (nextStatus === null) {
     throw new FunctionError(409, 'CONFLICT', 'The requested review status transition is invalid.');
   }
   let embedding: string | null = null;
-  if (body.action === 'unhide') {
+  if (embeddingAfterStatusChange(action) === 'embed') {
     embedding = await embedText(review.deidentified_text);
   }
   const { data: status, error } = await client.rpc('set_review_status_transaction', {
     p_review_id: reviewId,
-    p_action: body.action,
+    p_action: action,
     p_embedding: embedding,
   });
   if (error) mapDatabaseError(error);

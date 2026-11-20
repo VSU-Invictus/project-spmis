@@ -46,7 +46,7 @@ async function handler(request: Request): Promise<Response> {
     const history = validateHistory(body.history);
     const db = adminClient();
     const { data: students, error: studentsError } = await db.from('student_profiles')
-      .select('id,first_name,middle_name,last_name');
+      .select('id,first_name,middle_name,last_name,student_id_number,program:program_id(name)');
     if (studentsError) throw new FunctionError(500, 'DATABASE_ERROR', 'Student names could not be loaded.');
     const records = (students ?? []) as StudentNameRecord[];
     const deidentify = (text: string) => deidentifyText(text, records).text;

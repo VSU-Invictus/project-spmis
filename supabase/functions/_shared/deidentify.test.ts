@@ -6,11 +6,19 @@ const students = [{
   first_name: 'Maria',
   middle_name: 'Dela Cruz',
   last_name: 'Santos',
+  student_id_number: 'TEST-001',
+  program_name: 'Example Computer Science',
 }];
 
 Deno.test('deidentifies full and partial student name variants case-insensitively', () => {
-  const result = deidentifyText('Maria Dela Cruz Santos and SANTOS Maria showed initiative.', students);
-  assertEquals(result.text, '{{STUDENT:40000000-0000-4000-8000-000000000001}} and {{STUDENT:40000000-0000-4000-8000-000000000001}} showed initiative.');
+  const result = deidentifyText(
+    'Maria Dela Cruz Santos / Maria Santos / SANTOS Maria / Santos, Maria / Maria / Dela Cruz / Santos / TEST-001',
+    students,
+  );
+  assertEquals(
+    result.text,
+    '{{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / TEST-001',
+  );
 });
 
 Deno.test('reverse substitution restores known tokens and preserves unknown tokens', () => {
@@ -19,6 +27,33 @@ Deno.test('reverse substitution restores known tokens and preserves unknown toke
       '{{STUDENT:40000000-0000-4000-8000-000000000001}} helped {{student:40000000-0000-4000-8000-000000000001}} and {{STUDENT:unknown}}.',
       students,
     ),
-    'Maria Dela Cruz Santos helped Maria Dela Cruz Santos and {{STUDENT:unknown}}.',
+    'Maria Dela Cruz Santos (TEST-001, Example Computer Science) helped Maria Dela Cruz Santos (TEST-001, Example Computer Science) and {{STUDENT:unknown}}.',
   );
+});
+
+Deno.test('deidentifies and restores names for multiple students in one response', () => {
+  const secondStudent = {
+    id: '40000000-0000-4000-8000-000000000002',
+    first_name: 'Alex',
+    middle_name: null,
+    last_name: 'Rivera',
+    student_id_number: 'TEST-002',
+    program_name: 'Example Mathematics',
+  };
+  const allStudents = [...students, secondStudent];
+  const deidentified = deidentifyText(
+    'Maria Santos collaborated with Rivera, Alex.',
+    allStudents,
+  ).text;
+
+  assertEquals(
+    deidentified,
+    '{{STUDENT:40000000-0000-4000-8000-000000000001}} collaborated with {{STUDENT:40000000-0000-4000-8000-000000000002}}.',
+  );
+  const restored = reidentifyText(deidentified, allStudents);
+  assertEquals(
+    restored,
+    'Maria Dela Cruz Santos (TEST-001, Example Computer Science) collaborated with Alex Rivera (TEST-002, Example Mathematics).',
+  );
+  assertEquals(restored.includes('{{STUDENT:'), false);
 });

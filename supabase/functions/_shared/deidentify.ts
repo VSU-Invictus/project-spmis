@@ -3,6 +3,9 @@ export interface StudentNameRecord {
   first_name: string;
   middle_name: string | null;
   last_name: string;
+  student_id_number?: string | null;
+  program_name?: string | null;
+  program?: { name: string } | Array<{ name: string }> | null;
 }
 
 interface Replacement {
@@ -14,7 +17,7 @@ function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function clean(value: string | null): string {
+function clean(value: string | null | undefined): string {
   return (value ?? '').trim().replace(/\s+/g, ' ');
 }
 
@@ -26,10 +29,23 @@ function variants(student: StudentNameRecord): string[] {
     [first, middle, last].filter(Boolean).join(' '),
     [first, last].filter(Boolean).join(' '),
     [last, first].filter(Boolean).join(' '),
+    [last, middle, first].filter(Boolean).join(', '),
+    [last, first].filter(Boolean).join(', '),
     first,
     middle,
     last,
   ].filter((value) => value.length > 1))];
+}
+
+function reidentifiedValue(student: StudentNameRecord): string {
+  const name = [clean(student.first_name), clean(student.middle_name), clean(student.last_name)]
+    .filter(Boolean).join(' ');
+  const details = [
+    clean(student.student_id_number),
+    clean(student.program_name) ||
+      (Array.isArray(student.program) ? clean(student.program[0]?.name ?? null) : clean(student.program?.name ?? null)),
+  ].filter(Boolean);
+  return details.length ? `${name} (${details.join(', ')})` : name;
 }
 
 export function deidentifyText(
@@ -62,8 +78,7 @@ export function reidentifyText(
 ): string {
   const names = new Map(students.map((student) => [
     `{{STUDENT:${student.id.toLowerCase()}}}`,
-    [clean(student.first_name), clean(student.middle_name), clean(student.last_name)]
-      .filter(Boolean).join(' '),
+    reidentifiedValue(student),
   ]));
   return text.replace(/\{\{STUDENT:([0-9a-f-]+)\}\}/gi, (token, id: string) =>
     names.get(`{{STUDENT:${id.toLowerCase()}}}`) ?? token);
