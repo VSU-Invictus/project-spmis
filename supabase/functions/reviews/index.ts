@@ -1,6 +1,7 @@
 import { errorResponse, FunctionError, handleOptions, isUuid, jsonResponse, mapDatabaseError, readJson, requireMethod } from '../_shared/errors.ts';
 import { embedText } from '../_shared/gemini.ts';
 import { normalizeTags, prepareReviewForEmbedding } from '../_shared/review-document.ts';
+import { embeddingAfterStatusChange, nextReviewStatus } from '../_shared/review-lifecycle.ts';
 import { adminClient, getProfile } from '../_shared/supabase.ts';
 
 async function readReview(reviewId: string): Promise<Record<string, unknown>> {
@@ -98,7 +99,8 @@ async function setStatus(request: Request, reviewId: string): Promise<Response> 
   if (role !== 'faculty') throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can change review status.');
   if (!isUuid(reviewId)) throw new FunctionError(422, 'INVALID_REVIEW_ID', 'The review id must be a UUID.');
   const body = await readJson(request);
-  if (!['hide', 'unhide', 'delete'].includes(body.action as string)) {
+  const action = body.action;
+  if (action !== 'hide' && action !== 'unhide' && action !== 'delete') {
     throw new FunctionError(422, 'INVALID_ACTION', 'action must be hide, unhide, or delete.');
   }
   const db = adminClient();
@@ -108,20 +110,17 @@ async function setStatus(request: Request, reviewId: string): Promise<Response> 
   if (review.owner_id !== id) {
     throw new FunctionError(403, 'FORBIDDEN', 'The caller does not own this review.');
   }
-  const validTransition =
-    (body.action === 'hide' && review.status === 'active') ||
-    (body.action === 'unhide' && review.status === 'hidden') ||
-    (body.action === 'delete' && ['active', 'hidden'].includes(review.status));
-  if (!validTransition) {
+  const nextStatus = nextReviewStatus(action, review.status);
+  if (nextStatus === null) {
     throw new FunctionError(409, 'CONFLICT', 'The requested review status transition is invalid.');
   }
   let embedding: string | null = null;
-  if (body.action === 'unhide') {
+  if (embeddingAfterStatusChange(action) === 'embed') {
     embedding = await embedText(review.deidentified_text);
   }
   const { data: status, error } = await client.rpc('set_review_status_transaction', {
     p_review_id: reviewId,
-    p_action: body.action,
+    p_action: action,
     p_embedding: embedding,
   });
   if (error) mapDatabaseError(error);
