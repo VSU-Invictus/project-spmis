@@ -57,8 +57,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <main className="signin-page">
-      <div className="signin-grid" aria-hidden="true" />
+    <main className="signin-page auth-bg-grid">
       <div className="signin-layout">
         <section className="signin-brand" aria-label="About SPMIS">
           <img className="signin-logo" src={logo} alt="SPMIS — Student Profiling Management Information System" />

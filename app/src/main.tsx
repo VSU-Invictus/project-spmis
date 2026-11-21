@@ -4,6 +4,8 @@ import { createBrowserRouter, RouterProvider, Navigate, Outlet, useLocation } fr
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
 import './pages/auth/signin.css';
+import './pages/auth/backgrounds/grid.css';
+import './pages/auth/backgrounds/pixel.css';
 import DocsPage from './routes/docs/DocsPage';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
