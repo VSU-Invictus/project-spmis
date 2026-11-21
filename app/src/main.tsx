@@ -3,10 +3,11 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
-import App from './App';
+import './pages/auth/signin.css';
 import DocsPage from './routes/docs/DocsPage';
-import SignInPage from './pages/SignInPage';
-import PendingVerificationPage from './pages/PendingVerificationPage';
+import SignInPage from './pages/auth/SignInPage';
+import SignUpPage from './pages/auth/SignUpPage';
+import PendingVerificationPage from './pages/auth/PendingVerificationPage';
 import StyleguidePage from './pages/StyleguidePage';
 import {
   ButtonsClassifiedPage,
@@ -74,15 +75,9 @@ if (typeof window !== 'undefined') {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual';
   }
-  if (window.location.hash) {
-    window.history.replaceState(null, '', window.location.pathname + window.location.search);
-  }
   window.scrollTo(0, 0);
 
   window.addEventListener('beforeunload', () => {
-    if (window.location.hash) {
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
-    }
     window.scrollTo(0, 0);
   });
 }
@@ -93,9 +88,6 @@ function ScrollToTop() {
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
-    }
-    if (window.location.hash) {
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
     }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     document.documentElement.scrollTop = 0;
@@ -124,11 +116,13 @@ function ScrollToTop() {
 
 function RootLayout() {
   const { mockRole, setMockRole } = useSession();
+  const location = useLocation();
+  const showMockRole = !['/', '/signin', '/login', '/signup'].includes(location.pathname);
   return (
     <>
       <ScrollToTop />
       <Outlet />
-      {mockRole !== null && (
+      {mockRole !== null && showMockRole && (
         <label style={{ position: 'fixed', right: 16, bottom: 16, zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
           <span style={{ fontSize: 12 }}>Mock role</span>
           <select aria-label="Mock role" value={mockRole} onChange={(event) => setMockRole(event.target.value as 'active' | 'pending' | 'admin')}>
@@ -158,10 +152,11 @@ const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: '/', element: <App /> },
+      { path: '/', element: <SignInPage /> },
       { path: '/docs', element: <DocsPage /> },
       { path: '/signin', element: <SignInPage /> },
       { path: '/login', element: <SignInPage /> },
+      { path: '/signup', element: <SignUpPage /> },
       { path: '/pending-verification', element: <PendingVerificationPage /> },
       { path: '/styleguide', element: <StyleguidePage /> },
       { path: '/design-system', element: <Navigate to="/styleguide" replace /> },

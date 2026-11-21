@@ -1,7 +1,7 @@
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Button, Card, CardContent, TypographyHeading, TypographyText } from '../components/ui';
-import { useSession } from '../context/SessionContext';
-import { supabase } from '../lib/supabase';
+import { Button, Card, CardContent, TypographyHeading, TypographyText } from '../../components/ui';
+import { useSession } from '../../context/SessionContext';
+import { supabase } from '../../lib/supabase';
 
 export default function PendingVerificationPage() {
   const { session, profile, mockRole, loading } = useSession();
