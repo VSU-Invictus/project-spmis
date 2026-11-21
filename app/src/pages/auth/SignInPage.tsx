@@ -35,7 +35,7 @@ export default function SignInPage() {
     return () => { active = false; };
   }, []);
 
-  if (hasSession) return <Navigate to={redirectPath} replace viewTransition />;
+  if (hasSession) return <Navigate to={redirectPath} replace />;
 
   function clearFieldError(field: 'email' | 'password') {
     setFieldErrors((current) => {
