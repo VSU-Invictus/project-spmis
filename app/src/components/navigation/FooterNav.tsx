@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export interface FooterNavProps extends React.HTMLAttributes<HTMLElement> {
   aboutHref?: string;
@@ -15,11 +16,11 @@ export function FooterNav({
 }: FooterNavProps) {
   return (
     <nav className={`footer-nav ${className}`.trim()} aria-label="Footer navigation" {...props}>
-      <a href={aboutHref}>About</a>
-      <span className="dot" aria-hidden="true">•</span>
-      <a href={termsHref}>Terms</a>
-      <span className="dot" aria-hidden="true">•</span>
-      <a href={privacyHref}>Privacy Policy</a>
+      <Link to={aboutHref} viewTransition>About</Link>
+      <span className="dot" aria-hidden="true">·</span>
+      <Link to={termsHref} viewTransition>Terms</Link>
+      <span className="dot" aria-hidden="true">·</span>
+      <Link to={privacyHref} viewTransition>Privacy Policy</Link>
     </nav>
   );
 }

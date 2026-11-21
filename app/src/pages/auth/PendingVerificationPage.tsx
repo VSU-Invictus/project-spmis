@@ -21,7 +21,7 @@ export default function PendingVerificationPage() {
 
   async function signOut() {
     if (supabase) await supabase.auth.signOut();
-    navigate('/signin', { replace: true });
+    navigate('/signin', { replace: true, viewTransition: true });
   }
 
   return (

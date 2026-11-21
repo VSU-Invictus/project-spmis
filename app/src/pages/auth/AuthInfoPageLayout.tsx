@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { FooterNav } from '../../components/navigation/FooterNav';
 import logo from '../../../../mockup/assets/icons/SPMIS.png';
 
 export default function AuthInfoPageLayout({ title, children }: { title: string; children: ReactNode }) {
@@ -8,16 +9,12 @@ export default function AuthInfoPageLayout({ title, children }: { title: string;
       <div className="auth-info-container">
         <header className="auth-info-header">
           <h1>{title}</h1>
-          <Link className="auth-info-logo" to="/signin" aria-label="Back to sign in">
+          <Link className="auth-info-logo" to="/signin" viewTransition aria-label="Back to sign in">
             <img src={logo} alt="SPMIS" />
           </Link>
         </header>
         <article className="auth-info-content">{children}</article>
-        <nav className="footer-nav auth-info-footer" aria-label="Footer navigation">
-          <Link to="/about">About</Link><span className="dot" aria-hidden="true">•</span>
-          <Link to="/terms">Terms</Link><span className="dot" aria-hidden="true">•</span>
-          <Link to="/privacy-policy">Privacy Policy</Link>
-        </nav>
+        <FooterNav className="auth-info-footer" />
       </div>
     </main>
   );
