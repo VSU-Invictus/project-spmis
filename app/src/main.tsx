@@ -6,10 +6,14 @@ import './index.css';
 import './pages/auth/signin.css';
 import './pages/auth/backgrounds/grid.css';
 import './pages/auth/backgrounds/pixel.css';
+import './pages/auth/info.css';
 import DocsPage from './routes/docs/DocsPage';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import PendingVerificationPage from './pages/auth/PendingVerificationPage';
+import AboutPage from './pages/auth/AboutPage';
+import TermsPage from './pages/auth/TermsPage';
+import PrivacyPolicyPage from './pages/auth/PrivacyPolicyPage';
 import StyleguidePage from './pages/StyleguidePage';
 import {
   ButtonsClassifiedPage,
@@ -160,6 +164,10 @@ const router = createBrowserRouter([
       { path: '/login', element: <SignInPage /> },
       { path: '/signup', element: <SignUpPage /> },
       { path: '/pending-verification', element: <PendingVerificationPage /> },
+      { path: '/about', element: <AboutPage /> },
+      { path: '/terms', element: <TermsPage /> },
+      { path: '/privacy-policy', element: <PrivacyPolicyPage /> },
+      { path: '/privacy', element: <Navigate to="/privacy-policy" replace /> },
       { path: '/styleguide', element: <StyleguidePage /> },
       { path: '/design-system', element: <Navigate to="/styleguide" replace /> },
       // Faculty Portal Routes

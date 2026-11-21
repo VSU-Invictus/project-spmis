@@ -89,7 +89,7 @@ export default function SignUpPage() {
           <div className="signin-signup"><Link to="/signin">Already have an account? Sign In <span aria-hidden="true">→</span></Link></div>
         </section>
       </div>
-      <footer className="signin-legal"><Link to="/styleguide">About</Link><span>·</span><a href="/terms" onClick={(event) => event.preventDefault()}>Terms</a><span>·</span><a href="/privacy" onClick={(event) => event.preventDefault()}>Privacy Policy</a></footer>
+      <footer className="signin-legal"><Link to="/about">About</Link><span>·</span><Link to="/terms">Terms</Link><span>·</span><Link to="/privacy-policy">Privacy Policy</Link></footer>
     </main>
   );
 }
