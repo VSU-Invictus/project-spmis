@@ -91,3 +91,32 @@ npx newman run contract/collection/spmis-contract.postman_collection.json -e con
 - Authenticated requests use `{{apiKey}}` and `{{accessToken}}`; `[401]` requests omit `Authorization` and keep `apikey`.
 - Never put real JWTs, Supabase keys or student data in the collection or environment files. All names and UUIDs in the collection are fictional.
 - This suite verifies the contract (status codes and error envelopes) against Prism only; it does not test backend behavior.
+
+## Local Supabase Instructor Demos
+
+The live database and Edge Function demonstrations are kept in a companion collection so the Prism contract runner remains unchanged:
+
+- `collection/spmis-instructor-demos.postman_collection.json` contains the Lesson 3.3 RLS enforcement and Lesson 4.4 two-layer validation bypass requests.
+- `collection/spmis-supabase-local.postman_environment.json` sets `baseUrl = http://127.0.0.1:54321`, contains safe placeholders for the local anon key and role JWTs, and uses the synthetic fixture IDs from `supabase/seed.sql`.
+
+### Setup and run
+
+1. Start the local stack and load the repository fixtures:
+
+   ```powershell
+   npx supabase start
+   npx supabase db reset
+   ```
+
+2. Obtain the local anon key with `npx supabase status`. The seeded Auth users have no shared test passwords: set local-only passwords for them through the local Auth admin interface/API, then sign each one in against `POST /auth/v1/token?grant_type=password` with the anon key to obtain its `access_token`. Use `owner@example.test` for `facultyToken`, `faculty@example.test` for `nonOwnerFacultyToken`, `pending@example.test` for `pendingToken`, and `admin@example.test` for `adminToken`. The matching database identities and role/status fixtures are in `supabase/seed.sql`.
+3. Import the demo collection and local environment into Postman. Replace the four JWT placeholders and the anon-key placeholder in the selected environment; keep the key and tokens local and do not export or commit populated credentials.
+4. Start the Edge Functions when running the function requests:
+
+   ```powershell
+   npx supabase functions serve --env-file supabase/.env
+   ```
+
+   `supabase/.env` must be a local, untracked copy of `supabase/.env.example`. The invalid review request is rejected before embedding; a Gemini key is not needed for this particular validation case.
+5. Run the demo collection with **SPMIS Supabase (local)** selected. The RLS reads should return `200` with `[]`; the direct review PATCH should return `403`; and invalid review, department, and approval writes should return `400` or `422` as asserted.
+
+Run the original 27-operation collection separately with **SPMIS Prism (local mock)** as described above. Prism validates and simulates the frozen API contract; it does not execute Supabase RLS, database constraints, or Edge Function logic, so the instructor demo collection is intentionally for the local Supabase environment only.
