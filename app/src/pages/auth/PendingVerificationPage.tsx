@@ -1,5 +1,5 @@
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Button, Card, CardContent, TypographyHeading, TypographyText } from '../../components/ui';
+import { FooterNav } from '../../components/navigation/FooterNav';
 import { useSession } from '../../context/SessionContext';
 import { supabase } from '../../lib/supabase';
 
@@ -8,7 +8,7 @@ export default function PendingVerificationPage() {
   const navigate = useNavigate();
 
   if (loading) {
-    return <main className="contract-auth-page" aria-busy="true"><TypographyText>Checking your account…</TypographyText></main>;
+    return <main className="verification-page auth-bg-pixel" aria-busy="true"><p>Checking your account…</p></main>;
   }
 
   if (!session && !(mockRole && profile)) {
@@ -19,24 +19,34 @@ export default function PendingVerificationPage() {
     return <Navigate to={profile.role === 'admin' ? '/admin/dashboard' : '/faculty/dashboard'} replace />;
   }
 
-  async function signOut() {
+  async function backToSignIn() {
     if (supabase) await supabase.auth.signOut();
     navigate('/signin', { replace: true, viewTransition: true });
   }
 
   return (
-    <main className="contract-auth-page">
-      <Card className="contract-auth-card">
-        <CardContent>
-          <TypographyHeading level={1}>Account verification pending</TypographyHeading>
-          <TypographyText variant="muted">
-            {profile
-              ? `Your faculty account for ${profile.email} is awaiting administrator verification.`
-              : 'Your account is signed in, but a faculty profile has not been provisioned yet. Please contact an administrator.'}
-          </TypographyText>
-          <Button onClick={() => void signOut()}>Sign out</Button>
-        </CardContent>
-      </Card>
+    <main className="verification-page auth-bg-pixel">
+      <section className="verification-wrapper" aria-labelledby="verification-title">
+        <svg className="icon-clock" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="2.5" />
+          <path d="M32 16V32L42 38" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+
+        <h1 id="verification-title" className="verification-title">Account Pending Verification</h1>
+        <p className="verification-desc-main">
+          {profile
+            ? `Your faculty account${profile.email ? ` (${profile.email})` : ''} has been successfully submitted and is awaiting approval from the system administrator.`
+            : 'Your account has been submitted and is awaiting approval from the system administrator.'}
+        </p>
+        <p className="verification-desc-sub">
+          Check your email and verify your account by clicking the “Verify Email” link.
+        </p>
+        <button className="verification-back-button" type="button" onClick={() => void backToSignIn()}>
+          Back to Sign In
+        </button>
+      </section>
+
+      <FooterNav className="verification-footer" />
     </main>
   );
 }
