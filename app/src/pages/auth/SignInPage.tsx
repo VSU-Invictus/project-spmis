@@ -70,8 +70,9 @@ export default function SignInPage() {
     if (!supabase) { setError('Authentication is not configured.'); return; }
     setBusy(true);
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+      const { data, error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (authError) setError(authError.message);
+      else if (data.session) setHasSession(true);
     } catch { setError('Unable to sign in. Please try again.'); }
     finally { setBusy(false); }
   }
