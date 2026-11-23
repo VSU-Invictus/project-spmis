@@ -1,0 +1,390 @@
+{
+  "info": {
+    "_postman_id": "spmis-instructor-demos",
+    "name": "SPMIS Instructor Demos (Supabase Local)",
+    "description": "Runnable live demos for Supabase local RLS enforcement and server-side validation. Import with spmis-supabase-local.postman_environment.json. Synthetic IDs match supabase/seed.sql; provide local JWTs before running.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Lesson 3.3 — RLS Enforcement Demo",
+      "description": "Shows row-level visibility and blocks direct review writes. Requires local seed data and valid local faculty/pending tokens.",
+      "item": [
+        {
+          "name": "[200 + []] Non-owner cannot read another faculty profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"RLS hides the other faculty profile\", function () { pm.expect(pm.response.json()).to.be.an(\"array\").that.is.empty; });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anonKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{nonOwnerFacultyToken}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/rest/v1/faculty_profiles?select=id&id=eq.{{targetFacultyId}}",
+            "description": "The caller is a different active faculty fixture. RLS returns an empty array, not the target profile."
+          },
+          "response": []
+        },
+        {
+          "name": "[200 + []] Pending faculty cannot read review details",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"RLS hides the review from pending faculty\", function () { pm.expect(pm.response.json()).to.be.an(\"array\").that.is.empty; });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anonKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{pendingToken}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/rest/v1/review_details?select=id&id=eq.{{activeReviewId}}",
+            "description": "The pending faculty fixture cannot read even an active review; the RLS-filtered query succeeds with no rows."
+          },
+          "response": []
+        },
+        {
+          "name": "[200 + []] Non-owner cannot read another faculty's hidden review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"RLS hides the non-owned hidden review\", function () { pm.expect(pm.response.json()).to.be.an(\"array\").that.is.empty; });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anonKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{nonOwnerFacultyToken}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{baseUrl}}/rest/v1/review_details?select=id,status&id=eq.{{hiddenReviewId}}",
+            "description": "The seeded hidden review belongs to another faculty profile. A non-owner sees no row."
+          },
+          "response": []
+        },
+        {
+          "name": "[403] Direct body_text PATCH bypasses the Edge Function",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Direct table write is forbidden\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anonKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{facultyToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"body_text\":\"This direct edit must be rejected; edits must use the review Edge Function.\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/rest/v1/reviews?id=eq.{{activeReviewId}}",
+            "description": "Even the review owner cannot PATCH reviews directly through PostgREST; the API grants no direct update permission."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lesson 4.4 — Two-Layer Validation Bypass Demo",
+      "description": "Sends invalid payloads directly to the server, bypassing React Hook Form and Zod. Each request must be rejected by an Edge Function or database constraint.",
+      "item": [
+        {
+          "name": "[422] Review with 501 words",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const words = Array(502).join(\"word \").trim();",
+                  "pm.variables.set(\"overLimitReviewBody\", JSON.stringify({",
+                  "  student_id: pm.environment.get(\"studentId\"),",
+                  "  body_document: { blocks: [{ type: \"paragraph\", content: [{ text: words }] }] }",
+                  "}));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Server rejects text over the 500-word limit\", function () { pm.response.to.have.status(422); });",
+                  "pm.test(\"Error identifies the review word limit\", function () { pm.expect(pm.response.json().code).to.eql(\"REVIEW_WORD_LIMIT\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anonKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{facultyToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{overLimitReviewBody}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/functions/v1/reviews",
+            "description": "The pre-request script builds exactly 501 words in a valid review document so the server's word-count validation is exercised."
+          },
+          "response": []
+        },
+        {
+          "name": "[400/422] Department name is blank",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Database rejects a blank department name\", function () { pm.expect([400, 422]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anonKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"   \"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/rest/v1/departments",
+            "description": "Uses the admin token so the request reaches the server-side database name constraint rather than being stopped by the admin-only RLS policy."
+          },
+          "response": []
+        },
+        {
+          "name": "[400/422] Department name exceeds 200 characters",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.variables.set(\"overlongDepartmentName\", Array(202).join(\"x\"));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Database rejects a 201-character department name\", function () { pm.expect([400, 422]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anonKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"{{overlongDepartmentName}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/rest/v1/departments",
+            "description": "The pre-request script substitutes a 201-character name, one character beyond the database limit."
+          },
+          "response": []
+        },
+        {
+          "name": "[422] Reject application without reason",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Server requires a rejection reason\", function () { pm.response.to.have.status(422); });",
+                  "pm.test(\"Error identifies the missing rejection reason\", function () { pm.expect(pm.response.json().code).to.eql(\"REJECTION_REASON_REQUIRED\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{anonKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"application_ids\":[\"{{applicationId}}\"],\"decision\":\"reject\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/functions/v1/approvals",
+            "description": "Uses a syntactically valid UUID; the Edge Function must reject the missing reason before looking up the application."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
