@@ -8,6 +8,7 @@ import './pages/auth/backgrounds/grid.css';
 import './pages/auth/backgrounds/pixel.css';
 import './pages/auth/info.css';
 import './pages/auth/pending-verification.css';
+import './pages/auth/signup-terms.css';
 import DocsPage from './routes/docs/DocsPage';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';

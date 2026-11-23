@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { FooterNav } from '../../components/navigation/FooterNav';
 import { useSession } from '../../context/SessionContext';
 import { supabase } from '../../lib/supabase';
@@ -6,12 +6,15 @@ import { supabase } from '../../lib/supabase';
 export default function PendingVerificationPage() {
   const { session, profile, mockRole, loading } = useSession();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const signupPending = searchParams.get('source') === 'signup';
+  const emailCooldown = searchParams.get('emailCooldown') === '1';
 
   if (loading) {
     return <main className="verification-page auth-bg-pixel" aria-busy="true"><p>Checking your account…</p></main>;
   }
 
-  if (!session && !(mockRole && profile)) {
+  if (!session && !(mockRole && profile) && !signupPending) {
     return <Navigate to="/signin?redirect=%2Fpending-verification" replace />;
   }
 
@@ -36,10 +39,14 @@ export default function PendingVerificationPage() {
         <p className="verification-desc-main">
           {profile
             ? `Your faculty account${profile.email ? ` (${profile.email})` : ''} has been successfully submitted and is awaiting approval from the system administrator.`
-            : 'Your account has been submitted and is awaiting approval from the system administrator.'}
+            : signupPending
+              ? 'Your sign-up request has been received. Verify your email address to continue with account review.'
+              : 'Your account has been submitted and is awaiting approval from the system administrator.'}
         </p>
         <p className="verification-desc-sub">
-          Check your email and verify your account by clicking the “Verify Email” link.
+          {emailCooldown
+            ? 'A verification email was recently requested. Check your inbox and spam folder; wait for the email cooldown to end before trying again.'
+            : 'Check your email and verify your account by clicking the “Verify Email” link.'}
         </p>
         <button className="verification-back-button" type="button" onClick={() => void backToSignIn()}>
           Back to Sign In

@@ -1,8 +1,9 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { startGoogleOAuth, supabase } from '../../lib/supabase';
 import { FooterNav } from '../../components/navigation/FooterNav';
+import { termsSections } from './TermsPage';
 import logo from '../../../../mockup/assets/icons/SPMIS.png';
 
 const googleIcon = <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c-2.08-1.92-3.28-4.74-3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>;
@@ -19,6 +20,11 @@ export default function SignUpPage() {
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
   const [hasSession, setHasSession] = useState<boolean>();
+  const [termsOpen, setTermsOpen] = useState(false);
+  const [termsRead, setTermsRead] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [signupMethod, setSignupMethod] = useState<'email' | 'google' | null>(null);
+  const termsScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!supabase) { setHasSession(false); return; }
@@ -26,6 +32,26 @@ export default function SignUpPage() {
     void supabase.auth.getSession().then(({ data }) => { if (active) setHasSession(Boolean(data.session)); });
     return () => { active = false; };
   }, []);
+
+  function checkTermsScroll() {
+    const element = termsScrollRef.current;
+    if (!element) return;
+    const atBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 16;
+    if (atBottom) setTermsRead(true);
+  }
+
+  function openTerms(method: 'email' | 'google') {
+    setSignupMethod(method);
+    setTermsRead(false);
+    setTermsAccepted(false);
+    setTermsOpen(true);
+  }
+
+  useEffect(() => {
+    if (!termsOpen) return;
+    const frame = window.requestAnimationFrame(checkTermsScroll);
+    return () => window.cancelAnimationFrame(frame);
+  }, [termsOpen]);
 
   if (hasSession) return <Navigate to="/pending-verification" replace />;
 
@@ -38,13 +64,43 @@ export default function SignUpPage() {
     });
   }
 
-  async function signUpWithGoogle() {
-    setError(''); setBusy(true);
+  function signUpWithGoogle() {
+    setError('');
+    openTerms('google');
+  }
+
+  async function continueSignupAfterTerms() {
+    if (!termsRead || !termsAccepted || !signupMethod) return;
+    const method = signupMethod;
+    setTermsOpen(false);
+    setSignupMethod(null);
+    setError('');
+    setNotice('');
+    setBusy(true);
     try {
-      const authError = await startGoogleOAuth(`${window.location.origin}/pending-verification?source=signup`);
-      if (authError) setError(authError);
-    } catch { setError('Unable to continue with Google. Please try again.'); }
-    finally { setBusy(false); }
+      if (method === 'google') {
+        const authError = await startGoogleOAuth(`${window.location.origin}/pending-verification?source=signup`);
+        if (authError) setError(authError);
+        return;
+      }
+
+      if (!supabase) { setError('Authentication is not configured.'); return; }
+      const { data, error: authError } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/pending-verification` },
+      });
+      if (authError && /(security purposes|after \d+ seconds|rate limit|too many requests)/i.test(authError.message)) {
+        navigate('/pending-verification?source=signup&emailCooldown=1', { replace: true, viewTransition: true });
+      } else if (authError) setError(authError.message);
+      else if (data.session) navigate('/pending-verification', { replace: true, viewTransition: true });
+      else if (data.user) navigate('/pending-verification?source=signup', { replace: true, viewTransition: true });
+      else setNotice('Check your email for a confirmation link to finish signing up.');
+    } catch {
+      setError(method === 'google' ? 'Unable to continue with Google. Please try again.' : 'Unable to create your account. Please try again.');
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -62,20 +118,7 @@ export default function SignUpPage() {
       document.getElementById(`signup-${firstInvalidField === 'confirmPassword' ? 'confirm-password' : firstInvalidField}`)?.focus();
       return;
     }
-    if (!supabase) { setError('Authentication is not configured.'); return; }
-
-    setBusy(true);
-    try {
-      const { data, error: authError } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: { emailRedirectTo: `${window.location.origin}/pending-verification` },
-      });
-      if (authError) setError(authError.message);
-      else if (data.session) navigate('/pending-verification', { replace: true, viewTransition: true });
-      else setNotice('Account created. Check your email for a confirmation link to finish signing up.');
-    } catch { setError('Unable to create your account. Please try again.'); }
-    finally { setBusy(false); }
+    openTerms('email');
   }
 
   return (
@@ -95,7 +138,7 @@ export default function SignUpPage() {
           <div className="signin-card-body">
             <h2 id="signup-title">Create Account</h2>
             <p className="signin-subtitle">Join SPMIS to manage your academic journey.</p>
-            <button className="signin-google" type="button" onClick={() => void signUpWithGoogle()} disabled={busy}>{googleIcon}<span>Continue with Google</span></button>
+            <button className="signin-google" type="button" onClick={signUpWithGoogle} disabled={busy}>{googleIcon}<span>Continue with Google</span></button>
             <div className="signin-divider"><span>or continue with email</span></div>
             <form noValidate onSubmit={(event) => void submit(event)}>
               <label className="signin-label" htmlFor="signup-email">Email</label>
@@ -112,6 +155,38 @@ export default function SignUpPage() {
         </section>
       </div>
       <FooterNav className="signin-legal" />
+      {termsOpen && (
+        <div className="signup-terms-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) { setTermsOpen(false); setSignupMethod(null); } }}>
+          <section className="signup-terms-dialog" role="dialog" aria-modal="true" aria-labelledby="signup-terms-title">
+            <img className="signup-terms-logo" src={logo} alt="SPMIS" />
+            <h2 id="signup-terms-title">Terms &amp; Conditions</h2>
+            <p className="signup-terms-intro">Please read and accept the terms to continue to SPMIS.</p>
+            <div className="signup-terms-scroll" ref={termsScrollRef} onScroll={checkTermsScroll}>
+              <p><strong>SPMIS TERMS &amp; CONDITIONS</strong></p>
+              <p>Please read the following terms carefully. You must accept these terms before your SPMIS account can be activated.</p>
+              {termsSections.map((section) => (
+                <section key={section.title}>
+                  <h3>{section.title}</h3>
+                  <p>{section.text}</p>
+                </section>
+              ))}
+            </div>
+            <p className={`signup-terms-hint${termsRead ? ' is-read' : ''}`} aria-live="polite">
+              {termsRead ? 'You may now check the box to agree.' : 'Please scroll to the bottom of the terms to agree.'}
+            </p>
+            <label className={`signup-terms-agreement${!termsRead ? ' is-locked' : ''}`}>
+              <input type="checkbox" checked={termsAccepted} disabled={!termsRead} onChange={(event) => setTermsAccepted(event.target.checked)} />
+              <span>I have read and agree to the SPMIS Terms &amp; Conditions.</span>
+            </label>
+            <div className="signup-terms-actions">
+              <button className="signup-terms-back" type="button" onClick={() => { setTermsOpen(false); setSignupMethod(null); }}>Back</button>
+              <button className="signup-terms-continue" type="button" disabled={!termsRead || !termsAccepted || busy} onClick={() => void continueSignupAfterTerms()}>
+                {busy ? 'Please wait…' : 'Agree & Continue'}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </main>
   );
 }

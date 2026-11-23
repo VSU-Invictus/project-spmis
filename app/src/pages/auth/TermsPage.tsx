@@ -1,6 +1,6 @@
 import AuthInfoPageLayout from './AuthInfoPageLayout';
 
-const terms = [
+export const termsSections = [
   {
     title: '1. PURPOSE OF SPMIS',
     text: 'The Student Profiling Management Information System (SPMIS) is a university-wide system that allows faculty members to contribute review-style information about students they have taught, advised, coached, or otherwise worked with. The information in SPMIS is intended to support faculty in making decisions outside the system, including student selection, recommendation, and vetting for activities, competitions, events, tasks, and similar opportunities. SPMIS does not manage activities or opportunities themselves and is not a student-facing system.',
@@ -49,7 +49,7 @@ export default function TermsPage() {
       <section className="auth-info-copy">
         <h2 className="auth-info-section-title first">SPMIS TERMS &amp; CONDITIONS</h2>
         <p>Please read the following terms carefully. You must accept these terms before your SPMIS account can be activated.</p>
-        {terms.map((section) => <section key={section.title}><h2 className="auth-info-section-title">{section.title}</h2><p>{section.text}</p></section>)}
+        {termsSections.map((section) => <section key={section.title}><h2 className="auth-info-section-title">{section.title}</h2><p>{section.text}</p></section>)}
       </section>
     </AuthInfoPageLayout>
   );
