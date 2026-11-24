@@ -218,3 +218,16 @@ atomic database transactions, Storage visibility, or AI de-identification.
 The current contract:check validates lint and generated-type freshness only.
 Live PostgREST drift comparison must be implemented once migrations/backend
 exist; the command explicitly reports that it is not checking live drift.
+
+## Contract `v1.1.0` additive extension — Admin Direct CRUD
+
+To align the Admin Portal (`/admin/students` and `/admin/faculty`) with the
+approved Milestone 1 mockups while keeping existing `v1.0.0` operations
+unchanged, `v1.1.0` adds three Admin-only PostgREST operations (bringing the
+contract from 27 to 30 operations):
+
+| Operation | Method and path | Behavior & integrity guard |
+| --- | --- | --- |
+| `deleteStudent` | `DELETE /rest/v1/student_profiles?id=eq.<uuid>` | Admin only. Deletes unreferenced students (`204`); returns `409 Conflict` (`23503`) if reviews reference the student. |
+| `createFacultyByAdmin` | `POST /rest/v1/faculty_profiles` | Admin only (`FacultyCreateInput`). Validates an approved `department_id`, defaults `status` to `active` when omitted by an active admin, and links or provisions the backing `auth.users` row by email in a `BEFORE INSERT` trigger. |
+| `deleteFaculty` | `DELETE /rest/v1/faculty_profiles?id=eq.<uuid>` | Admin only. Blocks self-deletion (`id <> auth.uid()`) via RLS and returns `409 Conflict` (`23503`) if reviews, revisions, proposals, or approval records reference the profile. |

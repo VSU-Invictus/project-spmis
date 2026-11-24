@@ -2,10 +2,10 @@
 
 `openapi.yaml` is the single source of truth for the SPMIS API. `generated/schema.d.ts` is generated from it and must never be edited by hand. See [`../docs/contract-decisions.md`](../docs/contract-decisions.md) for architectural proposals and scope decisions.
 
-## Contract Freeze (`v1.0.0` — Frozen 2026-10-30)
+## Contract Freeze & Versioning (`v1.0.0` → `v1.1.0`)
 
-- **Status:** **FROZEN** (`v1.0.0`, tagged as `contract-v1.0.0`, effective **2026-10-30**).
-- **Purpose:** Locks the 27-operation request/response boundary so **Milestone 3 (Backend — DB, RLS & Edge Functions)** and **Milestone 4 (Frontend — React SPA on Mock)** can proceed in parallel without blocking or surprising each other.
+- **Status:** Originally **FROZEN** at `v1.0.0` (tagged as `contract-v1.0.0`, effective **2026-10-30**, 27 operations), and extended additively in **`v1.1.0`** (30 operations) to add Admin direct student deletion (`deleteStudent`) and Admin direct faculty creation/deletion (`createFacultyByAdmin`, `deleteFaculty`).
+- **Purpose:** Locks the curated request/response boundary so **Milestone 3 (Backend — DB, RLS & Edge Functions)** and **Milestone 4 (Frontend — React SPA on Mock)** can proceed in parallel without blocking or surprising each other.
 - **Change Control Policy:**
   1. Neither Frontend nor Backend may unilaterally add, rename, or remove endpoints, parameters, or schema fields.
   2. Any required contract change after the freeze must be proposed in a dedicated PR editing `contract/openapi.yaml`, regenerating `contract/generated/schema.d.ts` (`npm --prefix app run contract:gen`) and `app/public/docs/index.html` (`npm --prefix app run contract:docs`), and updating `docs/contract-decisions.md`.
@@ -15,12 +15,12 @@
 
 ## Scope & Operations
 
-This contract covers the 27 curated PostgREST, RPC, and Edge Function operations required by SPMIS:
-- **Profiles & Auth:** `getOwnProfile`, `updateOwnProfile`, `listFaculty`
-- **Student Directory & Search:** `searchStudents`, `getStudentById`, `createStudent`, `updateStudent`
+This contract covers the 30 curated PostgREST, RPC, and Edge Function operations required by SPMIS:
+- **Profiles & Auth:** `getOwnProfile`, `updateOwnProfile`, `listFaculty`, `createFacultyByAdmin`, `updateFacultyByAdmin`, `deleteFaculty`
+- **Student Directory & Search:** `searchStudents`, `getStudentById`, `createStudentDirect`, `updateStudent`, `deleteStudent`
 - **Academic Taxonomy:** `listDepartments`, `createDepartment`, `updateDepartment`, `deleteDepartment`, `listPrograms`, `createProgram`, `updateProgram`, `deleteProgram`
-- **Reviews, Tags & History:** `listStudentReviews`, `createReview`, `updateReview`, `setReviewStatus`, `listReviewVersions`, `listTags`, `suggestReviewTags`
-- **Approval Queues:** `listApprovalQueueItems`, `createApprovalRequest`, `decideApplications`
+- **Reviews, Tags & History:** `listStudentReviews`, `createReview`, `updateReview`, `setReviewStatus`, `listReviewRevisions`, `listTags`, `suggestReviewTags`
+- **Approval Queues:** `listApprovalQueueItems`, `submitApplication`, `decideApplications`
 - **AI Chat Assistant & Audit:** `askChatbot`, `listAuditLogs`
 
 Detail reads have dedicated operation IDs: `getStudentById` calls `GET /rest/v1/rpc/get_student_by_id` with `p_student_id=<uuid>`, and `getOwnProfile` calls `GET /rest/v1/rpc/get_own_profile` without identity input. Each returns one object or JSON `null`; table list reads return arrays.
