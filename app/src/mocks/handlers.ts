@@ -295,6 +295,11 @@ const matches = (value: string, filter: string | null): boolean => {
   return value.toLowerCase().includes(filter.toLowerCase());
 };
 
+const uuidFilterPattern = /^eq\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const parseEqUuidFilter = (filter: string | null): string | null =>
+  filter && uuidFilterPattern.test(filter) ? filter.slice(3) : null;
+
 const reviewValidationError = (code: 'REVIEW_BODY_REQUIRED' | 'REVIEW_WORD_LIMIT', details: string) =>
   HttpResponse.json(
     {
@@ -421,7 +426,7 @@ export const handlers = [
     const program = programs.find((item) => item.id === input.program_id);
 
     const student = {
-      id: `mock-student-${students.length + 1}`,
+      id: crypto.randomUUID(),
       student_id_number: String(input.student_id_number ?? ''),
       first_name: String(input.first_name ?? ''),
       middle_name: typeof input.middle_name === 'string' ? input.middle_name : null,
@@ -475,6 +480,54 @@ export const handlers = [
 
     student.updated_at = new Date().toISOString();
     return HttpResponse.json([student]);
+  }),
+
+  http.delete('*/rest/v1/student_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const targetId = parseEqUuidFilter(url.searchParams.get('id'));
+    if (!targetId) {
+      return HttpResponse.json(
+        {
+          code: 'PGRST100',
+          message: 'A valid id=eq.<uuid> filter is required.',
+          details: 'Provide an equality filter matching a valid UUID.',
+          hint: 'Pass ?id=eq.<uuid> in the request query string.',
+        },
+        { status: 400 },
+      );
+    }
+
+    const index = students.findIndex((item) => item.id === targetId);
+
+    if (index === -1) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The student profile was not found.',
+          details: null,
+          hint: 'Check the student identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    const target = students[index];
+    if (reviews.some((review) => review.student_id === target.id)) {
+      return HttpResponse.json(
+        {
+          code: '23503',
+          message: 'Cannot delete a student profile that still has reviews.',
+          details: 'Key is still referenced from table "reviews".',
+          hint: 'Delete or reassign dependent reviews before removing this student.',
+        },
+        { status: 409 },
+      );
+    }
+
+    students.splice(index, 1);
+    return new HttpResponse(null, { status: 204 });
   }),
 
   http.get('*/rest/v1/review_details', async ({ request }) => {
@@ -675,6 +728,61 @@ export const handlers = [
     );
   }),
 
+  http.post('*/rest/v1/faculty_profiles', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+    if (
+      !isRecord(input)
+      || typeof input.email !== 'string'
+      || !input.email.trim()
+      || typeof input.full_name !== 'string'
+      || !input.full_name.trim()
+      || typeof input.department_id !== 'string'
+      || !input.department_id.trim()
+      || (input.role !== 'faculty' && input.role !== 'admin')
+      || (input.status !== undefined && input.status !== 'pending' && input.status !== 'active' && input.status !== 'suspended')
+    ) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The faculty profile is invalid.',
+          details: 'Expected email, full_name, department_id, and role (faculty or admin).',
+          hint: 'Correct the faculty details and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const normalizedEmail = input.email.trim().toLowerCase();
+    if (facultyProfiles.some((item) => item.email.toLowerCase() === normalizedEmail)) {
+      return HttpResponse.json(
+        {
+          code: '23505',
+          message: 'A faculty profile with that email address already exists.',
+          details: `Key (email)=(${normalizedEmail}) already exists.`,
+          hint: 'Use a different email address.',
+        },
+        { status: 409 },
+      );
+    }
+
+    const timestamp = new Date().toISOString();
+    const profile: MockFacultyProfile = {
+      id: crypto.randomUUID(),
+      email: normalizedEmail,
+      full_name: input.full_name.trim(),
+      department_id: input.department_id,
+      role: input.role,
+      status: input.status ?? 'active',
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    facultyProfiles.push(profile);
+    return HttpResponse.json([profile], { status: 201 });
+  }),
+
   http.patch('*/rest/v1/faculty_profiles', async ({ request }) => {
     await delay(10);
 
@@ -717,6 +825,54 @@ export const handlers = [
 
     profile.updated_at = new Date().toISOString();
     return HttpResponse.json([profile]);
+  }),
+
+  http.delete('*/rest/v1/faculty_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const targetId = parseEqUuidFilter(url.searchParams.get('id'));
+    if (!targetId) {
+      return HttpResponse.json(
+        {
+          code: 'PGRST100',
+          message: 'A valid id=eq.<uuid> filter is required.',
+          details: 'Provide an equality filter matching a valid UUID.',
+          hint: 'Pass ?id=eq.<uuid> in the request query string.',
+        },
+        { status: 400 },
+      );
+    }
+
+    const index = facultyProfiles.findIndex((item) => item.id === targetId);
+
+    if (index === -1) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The faculty profile was not found.',
+          details: null,
+          hint: 'Check the faculty identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    const target = facultyProfiles[index];
+    if (reviews.some((review) => review.owner_id === target.id)) {
+      return HttpResponse.json(
+        {
+          code: '23503',
+          message: 'Cannot delete a faculty profile that still owns reviews.',
+          details: 'Key is still referenced from table "reviews".',
+          hint: 'Remove dependent reviews before removing this faculty account.',
+        },
+        { status: 409 },
+      );
+    }
+
+    facultyProfiles.splice(index, 1);
+    return new HttpResponse(null, { status: 204 });
   }),
 
   http.post('*/rest/v1/approval_queue_items', async ({ request }) => {
