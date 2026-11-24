@@ -2,9 +2,24 @@
 -- Note: student_profiles_admin_delete, faculty_profiles_admin_insert, and
 -- faculty_profiles_admin_delete were initially created in 20261112000600_align_issue_152_permissions.sql.
 
--- 1. Prevent an admin from deleting their own currently signed-in profile.
-alter policy faculty_profiles_admin_delete on public.faculty_profiles
-  using ((select private.actor_kind()) = 'admin' and id <> (select auth.uid()));
+-- 1. Prevent an admin from deleting their own currently signed-in profile with 409 Conflict (23503),
+--    while faculty_profiles_admin_delete RLS policy continues to restrict DELETE to active admins.
+create function private.prevent_faculty_self_delete()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  if old.id = auth.uid() then
+    raise exception using errcode = '23503', message = 'Administrators cannot delete their own active profile.';
+  end if;
+  return old;
+end;
+$$;
+
+create trigger faculty_profiles_prevent_self_delete
+  before delete on public.faculty_profiles
+  for each row execute function private.prevent_faculty_self_delete();
 
 -- 2. Drop static 'pending' default so the BEFORE INSERT trigger can default
 --    admin-direct additions to 'active' while non-admin inserts still default to 'pending'.
@@ -117,5 +132,6 @@ create trigger faculty_profiles_check_update
   before update of email, department_id on public.faculty_profiles
   for each row execute function private.check_faculty_profile_update();
 
+revoke all on function private.prevent_faculty_self_delete() from public;
 revoke all on function private.prepare_faculty_profile_insert() from public;
 revoke all on function private.check_faculty_profile_update() from public;
