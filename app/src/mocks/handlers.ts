@@ -295,6 +295,11 @@ const matches = (value: string, filter: string | null): boolean => {
   return value.toLowerCase().includes(filter.toLowerCase());
 };
 
+const uuidFilterPattern = /^eq\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const parseEqUuidFilter = (filter: string | null): string | null =>
+  filter && uuidFilterPattern.test(filter) ? filter.slice(3) : null;
+
 const reviewValidationError = (code: 'REVIEW_BODY_REQUIRED' | 'REVIEW_WORD_LIMIT', details: string) =>
   HttpResponse.json(
     {
@@ -421,7 +426,7 @@ export const handlers = [
     const program = programs.find((item) => item.id === input.program_id);
 
     const student = {
-      id: `mock-student-${students.length + 1}`,
+      id: crypto.randomUUID(),
       student_id_number: String(input.student_id_number ?? ''),
       first_name: String(input.first_name ?? ''),
       middle_name: typeof input.middle_name === 'string' ? input.middle_name : null,
@@ -481,8 +486,20 @@ export const handlers = [
     await delay(10);
 
     const url = new URL(request.url);
-    const idFilter = url.searchParams.get('id');
-    const index = students.findIndex((item) => matches(item.id, idFilter));
+    const targetId = parseEqUuidFilter(url.searchParams.get('id'));
+    if (!targetId) {
+      return HttpResponse.json(
+        {
+          code: 'PGRST100',
+          message: 'A valid id=eq.<uuid> filter is required.',
+          details: 'Provide an equality filter matching a valid UUID.',
+          hint: 'Pass ?id=eq.<uuid> in the request query string.',
+        },
+        { status: 400 },
+      );
+    }
+
+    const index = students.findIndex((item) => item.id === targetId);
 
     if (index === -1) {
       return HttpResponse.json(
@@ -814,8 +831,20 @@ export const handlers = [
     await delay(10);
 
     const url = new URL(request.url);
-    const idFilter = url.searchParams.get('id');
-    const index = facultyProfiles.findIndex((item) => matches(item.id, idFilter));
+    const targetId = parseEqUuidFilter(url.searchParams.get('id'));
+    if (!targetId) {
+      return HttpResponse.json(
+        {
+          code: 'PGRST100',
+          message: 'A valid id=eq.<uuid> filter is required.',
+          details: 'Provide an equality filter matching a valid UUID.',
+          hint: 'Pass ?id=eq.<uuid> in the request query string.',
+        },
+        { status: 400 },
+      );
+    }
+
+    const index = facultyProfiles.findIndex((item) => item.id === targetId);
 
     if (index === -1) {
       return HttpResponse.json(

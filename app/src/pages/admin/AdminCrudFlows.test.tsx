@@ -6,11 +6,13 @@ import { cleanup, render, screen, waitFor, within } from '@testing-library/react
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
+import { http, HttpResponse } from 'msw';
 import { AdminStudentsPage } from './AdminStudentsPage';
 import { AdminFacultyPage } from './AdminFacultyPage';
 import { SessionProvider, useSession, type FacultyProfile } from '../../context/SessionContext';
 import { ThemeProvider } from '../../context/ThemeContext';
 import { __resetMocks } from '../../mocks/handlers';
+import { server } from '../../mocks/server';
 
 const ADMIN_ID = 'b6f6d2fb-1536-4d80-8599-337eaa8ec3ab';
 const CS_DEPARTMENT_ID = '5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb';
@@ -107,6 +109,29 @@ describe('AdminStudentsPage delete flow (v1.1.0)', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
+
+  it('keeps the modal open and shows an error if DELETE returns 204 without removing the student', async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.delete('*/rest/v1/student_profiles', () => new HttpResponse(null, { status: 204 })),
+    );
+    renderAdminPage(<AdminStudentsPage />, '/admin/students');
+
+    const juanCell = await screen.findByText('Juan');
+    const juanRow = juanCell.closest('[role="row"]');
+    expect(juanRow).not.toBeNull();
+
+    await user.click(within(juanRow as HTMLElement).getByRole('button', { name: 'Remove' }));
+
+    const dialog = await screen.findByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Confirm' }));
+
+    expect(
+      await within(dialog).findByText(/The student record could not be removed/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.queryByText('Student Removed Successfully')).not.toBeInTheDocument();
+  });
 });
 
 describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
@@ -117,9 +142,10 @@ describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
     expect(await screen.findByText('Alex Reyes')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Add Faculty' }));
-    const dialog = await screen.findByRole('dialog');
+    const fullNameInput = await screen.findByLabelText('Full Name');
+    const dialog = screen.getByRole('dialog');
 
-    await user.type(within(dialog).getByLabelText('Full Name'), 'Dr. Jane Doe');
+    await user.type(fullNameInput, 'Dr. Jane Doe');
     await user.type(within(dialog).getByLabelText('Email Address'), 'Jane.Doe@Example.Edu');
     await user.selectOptions(within(dialog).getByLabelText('Department'), CS_DEPARTMENT_ID);
     await user.selectOptions(within(dialog).getByLabelText('Role'), 'faculty');
@@ -141,9 +167,10 @@ describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
     expect(await screen.findByText('Alex Reyes')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Add Faculty' }));
-    const dialog = await screen.findByRole('dialog');
+    const fullNameInput = await screen.findByLabelText('Full Name');
+    const dialog = screen.getByRole('dialog');
 
-    await user.type(within(dialog).getByLabelText('Full Name'), 'Duplicate Alex');
+    await user.type(fullNameInput, 'Duplicate Alex');
     await user.type(within(dialog).getByLabelText('Email Address'), 'alex.reyes@example.edu');
     await user.selectOptions(within(dialog).getByLabelText('Department'), CS_DEPARTMENT_ID);
     await user.click(within(dialog).getByRole('button', { name: 'Add Faculty' }));
@@ -202,5 +229,80 @@ describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
     expect(
       await within(dialog).findByText(/Cannot delete a faculty profile that still owns reviews/i),
     ).toBeInTheDocument();
+  });
+
+  it('keeps the modal open and shows an error if DELETE returns 204 without removing the faculty', async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.delete('*/rest/v1/faculty_profiles', () => new HttpResponse(null, { status: 204 })),
+    );
+    renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+
+    const pendingCell = await screen.findByText('Pending Faculty');
+    const pendingRow = pendingCell.closest('[role="row"]');
+    expect(pendingRow).not.toBeNull();
+
+    await user.click(within(pendingRow as HTMLElement).getByRole('button', { name: 'Remove' }));
+    const dialog = await screen.findByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Confirm' }));
+
+    expect(
+      await within(dialog).findByText(/The faculty record could not be removed/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.queryByText('Faculty Removed Successfully')).not.toBeInTheDocument();
+  });
+
+  it('restricts Faculty creation department choices to approved departments and handles empty approved lists', async () => {
+    const user = userEvent.setup();
+    const mixedDepartments = [
+      { id: CS_DEPARTMENT_ID, name: 'Computer Science', status: 'approved', proposed_by: null, created_at: '2026-10-26T00:00:00.000Z', updated_at: '2026-10-26T00:00:00.000Z' },
+      { id: '11111111-1111-4111-8111-111111111112', name: 'Pending Robotics', status: 'pending', proposed_by: null, created_at: '2026-10-26T00:00:00.000Z', updated_at: '2026-10-26T00:00:00.000Z' },
+      { id: '11111111-1111-4111-8111-111111111113', name: 'Rejected Alchemy', status: 'rejected', proposed_by: null, created_at: '2026-10-26T00:00:00.000Z', updated_at: '2026-10-26T00:00:00.000Z' },
+    ];
+    server.use(
+      http.get('*/rest/v1/departments', ({ request }) => {
+        const statusFilter = new URL(request.url).searchParams.get('status');
+        return HttpResponse.json(
+          statusFilter === 'eq.approved'
+            ? mixedDepartments.filter((department) => department.status === 'approved')
+            : mixedDepartments,
+        );
+      }),
+    );
+
+    renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+    expect(await screen.findByText('Alex Reyes')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Add Faculty' }));
+    const deptSelect = await screen.findByLabelText('Department');
+    const dialog = screen.getByRole('dialog');
+    expect(within(deptSelect).getByRole('option', { name: 'Computer Science' })).toBeInTheDocument();
+    expect(within(deptSelect).queryByRole('option', { name: 'Pending Robotics' })).not.toBeInTheDocument();
+    expect(within(deptSelect).queryByRole('option', { name: 'Rejected Alchemy' })).not.toBeInTheDocument();
+
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    cleanup();
+
+    server.use(
+      http.get('*/rest/v1/departments', ({ request }) => {
+        const statusFilter = new URL(request.url).searchParams.get('status');
+        return HttpResponse.json(
+          statusFilter === 'eq.approved'
+            ? []
+            : mixedDepartments.filter((department) => department.status !== 'approved'),
+        );
+      }),
+    );
+
+    renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+    expect(await screen.findByText('Alex Reyes')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Add Faculty' }));
+    const emptyDialog = await screen.findByRole('dialog');
+    expect(
+      await within(emptyDialog).findByText(/No approved departments available/i),
+    ).toBeInTheDocument();
+    expect(within(emptyDialog).getByRole('button', { name: 'Add Faculty' })).toBeDisabled();
   });
 });
