@@ -35,6 +35,7 @@ export interface AppShellProps {
   breadcrumb?: string;
   academicYear?: string;
   showHeaderThemeToggle?: boolean;
+  mobileNavigation?: React.ReactElement;
   children: React.ReactNode;
 }
 
@@ -45,6 +46,7 @@ export function AppShell({
   breadcrumb,
   academicYear = 'AY 2026-2027',
   showHeaderThemeToggle = true,
+  mobileNavigation,
   children,
 }: AppShellProps) {
   const navigate = useNavigate();
@@ -69,6 +71,7 @@ export function AppShell({
     <div className="app-canvas ui-dashboard-app" style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}>
       {role === 'admin' ? (
         <AdminSidebar
+          className={mobileNavigation ? 'ui-dashboard-sidebar' : undefined}
           activeKey={activeNavKey as AdminNavKey}
           onSelectNav={handleSelectNav}
           onLogoutClick={() => setLogoutOpen(true)}
@@ -99,6 +102,7 @@ export function AppShell({
           </div>
         </div>
 
+        {mobileNavigation}
         <div className="ui-dashboard-content" style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
           {children}
         </div>

@@ -74,6 +74,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **Mobile Admin dashboard (#183):** At 700px and below, the overview uses the M1 horizontal Admin pages navigation and releases the desktop sidebar's width for dashboard content.
 - **Admin queue filters (#183):** In light mode, only the selected queue filter uses the primary fill. Inactive filters use a transparent background and a neutral hover color.
 - **Faculty proposal row (#183):** Prism serves the existing pending faculty application example for approval queue list responses, including its applicant details, linked profile and department, and submission date.
 - **Admin dashboard (#183):** Restored the overview at `/admin/dashboard` with pending counts, a queue preview linking to the existing review dialogs, and recent audit events. The full approval workspace remains available at `/admin/applications`.

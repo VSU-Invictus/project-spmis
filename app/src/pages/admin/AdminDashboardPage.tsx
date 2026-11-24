@@ -1,6 +1,7 @@
 import { BookOpen, Landmark, UserRound, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
+import { ADMIN_NAV_ITEMS } from '../../components/navigation/AdminSidebar';
 import { Badge, Table, TableContainer } from '../../components/ui';
 import { useSession } from '../../context/SessionContext';
 import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
@@ -66,7 +67,15 @@ function DashboardOverview({ profileId }: { profileId: string }) {
   const loading = queues.some(({ result }) => result.isPending);
   const failed = queues.some(({ result }) => result.isError);
 
-  return <AppShell role="admin" activeNavKey="dashboard" showHeaderThemeToggle={false}>
+  return <AppShell role="admin" activeNavKey="dashboard" showHeaderThemeToggle={false} mobileNavigation={
+    <nav className="ui-dashboard-mobile-nav" aria-label="Admin pages">
+      {ADMIN_NAV_ITEMS.map(({ key, href, label }) => (
+        <Link key={key} to={href} aria-current={key === 'dashboard' ? 'page' : undefined}>
+          {key === 'dashboard' ? 'Overview' : key === 'audit-log' ? 'Logs' : label}
+        </Link>
+      ))}
+    </nav>
+  }>
     <header className="ui-dashboard-intro">
       <h1>Dashboard</h1><p>System-wide metrics and real-time pending queue summaries.</p>
     </header>
