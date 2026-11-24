@@ -261,5 +261,12 @@ describe('shared form schemas', () => {
       department_id: uuid,
       role: 'faculty',
     }).success).toBe(false);
+
+    expect(facultyEditSchema.safeParse({
+      full_name: 'Alex Reyes',
+      email: `${'a'.repeat(310)}@example.edu`,
+      department_id: uuid,
+      role: 'faculty',
+    }).success).toBe(false);
   });
 });
