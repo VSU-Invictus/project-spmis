@@ -215,12 +215,12 @@ security definer
 set search_path = ''
 as $$
   select r.id, r.deidentified_text,
-    (e.embedding <=> p_embedding::extensions.vector)::real
+    (e.embedding operator(extensions.<=>) p_embedding::extensions.vector)::real
   from public.review_embeddings e
   join public.reviews r on r.id = e.review_id
   where r.status = 'active'
     and private.actor_kind() in ('faculty', 'admin')
-  order by e.embedding <=> p_embedding::extensions.vector
+  order by e.embedding operator(extensions.<=>) p_embedding::extensions.vector
   limit greatest(1, least(coalesce(p_limit, 8), 20));
 $$;
 

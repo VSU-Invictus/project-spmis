@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Contract `v1.1.0` & M3 Admin Direct CRUD (`feat/m3-admin-crud-contract`):**
+  - Extended `contract/openapi.yaml` additively to `v1.1.0` (30 operations) with `deleteStudent` (`DELETE /rest/v1/student_profiles`), `createFacultyByAdmin` (`POST /rest/v1/faculty_profiles`, `FacultyCreateInput`), and `deleteFaculty` (`DELETE /rest/v1/faculty_profiles`), regenerated `contract/generated/schema.d.ts` and `app/public/docs/index.html`, and updated `docs/contract-decisions.md` and `contract/README.md`.
+  - Added migration `supabase/migrations/20261124000100_add_admin_student_faculty_crud.sql` preventing admin self-deletion with `23503` (`409 Conflict`), validating approved `department_id` on insert/update, defaulting admin-direct inserts to `status = 'active'`, and linking/provisioning backing `auth.users` rows by email in `private.prepare_faculty_profile_insert()`.
+  - Added pgTAP test suite `supabase/tests/04_admin_direct_crud.test.sql` (34 assertions) covering Admin student deletion, Admin faculty creation/deletion, linking existing `auth.users`, self-deletion `23503` conflict, email/department validation on insert/update, FK conflict preservation (`23503`), and non-admin/pending/`anon` denial.
 - **Issue #153 Edge Functions:** Added transactional review lifecycle and
   application-decision RPCs, server-side student-name de-identification,
   Gemini embedding/chat helpers, vector retrieval, approval notifications, and
