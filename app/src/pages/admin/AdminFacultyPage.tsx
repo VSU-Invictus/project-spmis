@@ -8,7 +8,8 @@ import { useQueueSearchParam } from '../../components/queue-modal';
 import { useSession } from '../../context/SessionContext';
 import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
 import {
-  useFacultyList, useFacultyPage, useCreateFacultyByAdmin, useUpdateFacultyByAdmin, useDeleteFaculty, useDepartmentOptions,
+  useFacultyList, useFacultyPage, useCreateFacultyByAdmin, useUpdateFacultyByAdmin, useDeleteFaculty,
+  useApprovedDepartmentOptions, useDepartmentOptions,
   type FacultyListItem, type UpdateFacultyByAdminInput, type Department,
 } from '../../hooks';
 import { facultyEditSchema, type FacultyEditValues } from '../../lib/validation/faculty';
@@ -45,14 +46,15 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
     department_id: faculty?.department_id ?? '', role: faculty?.role ?? 'faculty',
   };
   const form = useForm<FacultyEditValues>({ resolver: zodResolver(facultyEditSchema), defaultValues: initial });
+  const selectableDepartments = faculty ? departments : departments.filter(department => department.status === 'approved');
   const pending = form.formState.isSubmitting || create.isPending || update.isPending;
   const close = () => { if (!submitting.current) onClose(); };
   const submit = form.handleSubmit(async values => {
     if (submitting.current) return;
     setRequestError(null);
     if (!faculty) {
-      if (!departments.some(department => department.id === values.department_id)) {
-        form.setError('department_id', { message: 'Select a department from the available list.' });
+      if (!selectableDepartments.some(department => department.id === values.department_id && department.status === 'approved')) {
+        form.setError('department_id', { message: 'Select an approved department.' });
         return;
       }
       const payload = {
@@ -121,9 +123,9 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
           aria-invalid={Boolean(errors.department_id) || undefined}
           aria-describedby={errors.department_id ? 'facultyDepartment-error' : undefined} {...form.register('department_id')}>
           <option value="" disabled>Select Department</option>
-          {faculty && !departments.some(department => department.id === faculty.department_id) &&
+          {faculty && !selectableDepartments.some(department => department.id === faculty.department_id) &&
             <option value={faculty.department_id}>Current department unavailable</option>}
-          {departments.map(department => <option key={department.id} value={department.id}>{department.name}</option>)}
+          {selectableDepartments.map(department => <option key={department.id} value={department.id}>{department.name}</option>)}
         </select>
         <Chevron className="modal-select-chevron" />
       </div>
@@ -140,20 +142,22 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
       </div>
       {errors.role && <Alert variant="warning" title="Invalid role" description="Select Faculty or Admin." />}
     </div>
-    {!faculty && departments.length === 0 && <Alert variant="warning" title="No departments available"
-      description="A faculty member must belong to a department. Add a department before saving." />}
+    {!faculty && selectableDepartments.length === 0 && <Alert variant="warning" title="No approved departments available"
+      description="A faculty member must belong to an approved department. Add or approve a department before saving." />}
     {errors.root && <Alert variant="warning" title="No changes to save" description={errors.root.message ?? ''} />}
     {requestError && <RequestError error={requestError} />}
     <div className="modal-actions">
       <Button variant="outline" className="modal-btn-cancel" disabled={pending} onClick={close}>Cancel</Button>
-      <Button type="submit" className="modal-submit" disabled={pending || (!faculty && departments.length === 0)}>{faculty ? 'Update' : 'Add Faculty'}</Button>
+      <Button type="submit" className="modal-submit" disabled={pending || (!faculty && selectableDepartments.length === 0)}>{faculty ? 'Update' : 'Add Faculty'}</Button>
     </div>
   </AdminEntityModal>;
 }
 
 function FacultyEditor({ id, onClose, onSaved }: { id?: string; onClose: () => void; onSaved: (message: string) => void }) {
   const detail = useFacultyList(id ? { id: `eq.${id}` } : undefined, { enabled: Boolean(id) });
-  const departments = useDepartmentOptions();
+  const approvedDepartments = useApprovedDepartmentOptions({ enabled: !id });
+  const allDepartments = useDepartmentOptions({ enabled: Boolean(id) });
+  const departments = id ? allDepartments : approvedDepartments;
   const loading = departments.isPending || Boolean(id && detail.isPending);
   const error = departments.error ?? (id ? detail.error : null);
   const faculty = id ? detail.data?.find(item => item.id === id) : undefined;
