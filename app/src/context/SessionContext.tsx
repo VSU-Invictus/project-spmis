@@ -10,7 +10,7 @@ import {
 import type { Session } from '@supabase/supabase-js';
 import type { components } from '../../../contract/generated/schema';
 import { apiClient, configureApiAuth, DEFAULT_MOCK_DEV_TOKEN, request } from '../lib/api';
-import { supabase } from '../lib/supabase';
+import { isLocalMockAuth, supabase } from '../lib/supabase';
 
 export type FacultyProfile = components['schemas']['FacultyProfile'];
 export type MockRole = 'active' | 'pending' | 'admin';
@@ -28,20 +28,7 @@ export interface SessionContextValue {
   syncProfile: (profile: FacultyProfile) => void;
 }
 
-function isPrismUrl(value: string | undefined): boolean {
-  try {
-    const url = new URL(value ?? 'http://localhost:4010');
-    return url.protocol === 'http:' &&
-      (url.hostname === 'localhost' || url.hostname === '127.0.0.1') &&
-      url.port === '4010';
-  } catch {
-    return false;
-  }
-}
-
-const MOCK_ENABLED = import.meta.env.DEV &&
-  import.meta.env.VITE_USE_MOCK_AUTH === 'true' &&
-  isPrismUrl(import.meta.env.VITE_SUPABASE_URL);
+const MOCK_ENABLED = isLocalMockAuth;
 const MOCK_ROLE_STORAGE_KEY = 'spmis-mock-role';
 const MOCK_ROLES: MockRole[] = ['active', 'pending', 'admin'];
 

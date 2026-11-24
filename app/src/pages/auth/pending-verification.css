@@ -1,0 +1,96 @@
+.verification-page {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  padding: 32px 20px 88px;
+  background: var(--background, #141413);
+  color: var(--foreground, #faf9f5);
+  font-family: var(--font-sans, sans-serif);
+}
+
+.verification-wrapper {
+  display: flex;
+  width: min(550px, 100%);
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.verification-wrapper .icon-clock {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  margin-bottom: 24px;
+  color: var(--primary, #d97757);
+}
+
+.verification-title {
+  margin: 0 0 16px;
+  color: var(--foreground, #faf9f5);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: .5px;
+  line-height: 1.25;
+}
+
+.verification-desc-main {
+  margin: 0 0 12px;
+  color: var(--muted-foreground, #e0e0e0);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.verification-desc-sub {
+  margin: 0 0 28px;
+  color: var(--muted-foreground, #888);
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+.verification-back-button {
+  min-height: 44px;
+  padding: 10px 24px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--primary, #d97757);
+  color: var(--primary-foreground, #171615);
+  font: 600 .9rem/1 var(--font-sans, sans-serif);
+  cursor: pointer;
+  transition: background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+.verification-back-button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+.verification-back-button:active { transform: translateY(0); }
+.verification-back-button:focus-visible { outline: 2px solid var(--ring, #d97757); outline-offset: 3px; }
+
+.verification-footer {
+  position: absolute;
+  right: 16px;
+  bottom: 28px;
+  left: 16px;
+  margin-top: 0;
+}
+
+@media (max-width: 520px) {
+  .verification-page { padding: 24px 12px 76px; }
+  .verification-wrapper { padding: 20px 12px; }
+  .verification-title { font-size: 1.4rem; }
+  .verification-footer { bottom: 20px; }
+}
+
+@media (max-height: 520px) {
+  .verification-page { justify-content: flex-start; }
+  .verification-wrapper { margin: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .verification-back-button { transition: none; }
+  .verification-back-button:hover, .verification-back-button:active { transform: none; }
+}
