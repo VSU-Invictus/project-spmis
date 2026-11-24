@@ -2,11 +2,14 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(29);
+select plan(34);
 
--- Seed a pending department as superuser so we can verify department approval checks.
+-- Seed a pending department and an unlinked auth.users row as superuser.
 insert into public.departments (id, name, status)
 values ('10000000-0000-4000-8000-000000000099', 'Example Pending Department', 'pending');
+
+insert into auth.users (id, aud, role, email, email_confirmed_at)
+values ('30000000-0000-4000-8000-000000000099', 'authenticated', 'authenticated', 'existing.auth@example.test', now());
 
 -- ===== 1. Admin direct faculty create/delete & student delete (30...0004) =====
 set local role authenticated;
@@ -113,8 +116,21 @@ select throws_ok(
 );
 
 select lives_ok(
+  $$insert into public.faculty_profiles (email, full_name, department_id, role)
+    values ('Existing.Auth@example.test', 'Example Linked Auth Faculty', '10000000-0000-4000-8000-000000000001', 'faculty')$$,
+  'admin can create a faculty profile matching a pre-existing auth.users email'
+);
+
+select is(
+  (select id from public.faculty_profiles where email = 'existing.auth@example.test'),
+  '30000000-0000-4000-8000-000000000099'::uuid,
+  'faculty profile links to the existing auth.users row instead of creating a new one'
+);
+
+select throws_ok(
   $$delete from public.faculty_profiles where id = auth.uid()$$,
-  'admin self-deletion attempt raises no error'
+  '23503', 'Administrators cannot delete their own active profile.',
+  'admin self-deletion attempt raises 23503 conflict'
 );
 
 select is(
@@ -165,13 +181,23 @@ select lives_ok(
   'active faculty delete on student_profiles is filtered by RLS'
 );
 
--- ===== 3. Pending faculty cannot create faculty =====
+-- ===== 3. Pending faculty cannot create or delete faculty or delete students =====
 set local request.jwt.claim.sub = '30000000-0000-4000-8000-000000000003';
 
 select throws_ok(
   $$insert into public.faculty_profiles (email, full_name, department_id, role)
     values ('pending.attempt@example.test', 'Pending Attempt', '10000000-0000-4000-8000-000000000001', 'faculty')$$,
   '42501', null, 'pending faculty cannot directly insert into faculty_profiles'
+);
+
+select lives_ok(
+  $$delete from public.faculty_profiles where id = '30000000-0000-4000-8000-000000000002'$$,
+  'pending faculty delete on faculty_profiles is filtered by RLS'
+);
+
+select lives_ok(
+  $$delete from public.student_profiles where student_id_number = 'TEST-001'$$,
+  'pending faculty delete on student_profiles is filtered by RLS'
 );
 
 -- ===== 4. Confirm non-admin deletes left rows untouched =====
@@ -198,6 +224,11 @@ select throws_ok(
   $$insert into public.faculty_profiles (email, full_name, department_id, role)
     values ('anon.attempt@example.test', 'Anon Attempt', '10000000-0000-4000-8000-000000000001', 'faculty')$$,
   '42501', null, 'anon cannot insert into faculty_profiles'
+);
+
+select throws_ok(
+  $$delete from public.faculty_profiles where id = '30000000-0000-4000-8000-000000000002'$$,
+  '42501', null, 'anon cannot delete from faculty_profiles'
 );
 
 select throws_ok(
