@@ -74,6 +74,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **Admin dashboard (#183):** Restored the overview at `/admin/dashboard` with pending counts, a queue preview linking to the existing review dialogs, and recent audit events. The full approval workspace remains available at `/admin/applications`.
 - **Admin roster counts without exposed headers (#157):** Student and Faculty counted queries preserve server totals when available; otherwise they load bounded, filtered collection pages to derive an actual total and requested slice. Repeated/overlapping pages and request failures remain errors instead of misleading counts. This fallback requires the server/mock to honor pagination and may issue additional reads.
 - **Taxonomy status presentation (#157):** Added Pending and Rejected filters alongside All/Approved; rejected records use the established danger badge variant.
 - **Queue reference loading (#157):** Program, Department, role and submitter cells distinguish pending lookups from missing records while preserving resolved labels and reference-error/retry handling. Temporary focused verification passed for these fixes. Review confirmed that static Prism examples must not bypass write confirmation and that LIKE escaping and PostgREST operand quoting are separate required layers; those safeguards remain unchanged.

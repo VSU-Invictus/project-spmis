@@ -33,6 +33,7 @@ import { FacultyStudentDetailPage } from './pages/faculty/FacultyStudentDetailPa
 import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
 import { FacultyChatPage } from './pages/faculty/FacultyChatPage';
 import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminTaxonomyManagementPage } from './pages/admin/AdminTaxonomyManagementPage';
 import { FacultyApplicationsPage } from './pages/faculty/FacultyApplicationsPage';
 import { FacultyTaxonomyPage } from './pages/faculty/FacultyTaxonomyPage';
@@ -205,7 +206,7 @@ const router = createBrowserRouter([
           element: <RequireRole role="admin" />,
           children: [
             { index: true, element: <Navigate to="/admin/dashboard" replace /> },
-            { path: 'dashboard', element: <AdminApprovalQueuePage /> },
+            { path: 'dashboard', element: <AdminDashboardPage /> },
             { path: 'applications', element: <AdminApprovalQueuePage /> },
             { path: 'students', element: <AdminStudentsPage /> },
             { path: 'departments', element: <AdminTaxonomyManagementPage mode="departments" /> },

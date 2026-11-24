@@ -15,9 +15,7 @@ const QUEUE_TABS: { key: QueueType; label: string }[] = [
   { key: 'department', label: 'Departments' },
 ];
 
-/** Compatibility shell for both existing routes; decisions live only in ApplicationQueue.
- * This deliberately does not claim parity with the M1 dashboard summary layout.
- */
+/** Standalone approval workspace. Decisions are handled by ApplicationQueue. */
 export function AdminApprovalQueuePage() {
   const { role, loading } = useSession();
   const { pathname } = useLocation();

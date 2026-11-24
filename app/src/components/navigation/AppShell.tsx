@@ -34,6 +34,7 @@ export interface AppShellProps {
   onSelectNav?: (key: string) => void;
   breadcrumb?: string;
   academicYear?: string;
+  showHeaderThemeToggle?: boolean;
   children: React.ReactNode;
 }
 
@@ -43,6 +44,7 @@ export function AppShell({
   onSelectNav,
   breadcrumb,
   academicYear = 'AY 2026-2027',
+  showHeaderThemeToggle = true,
   children,
 }: AppShellProps) {
   const navigate = useNavigate();
@@ -88,7 +90,7 @@ export function AppShell({
             </span>
           </div>
           <div className="header-right ui-dashboard-header-right" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <ThemeToggleButton />
+            {showHeaderThemeToggle && <ThemeToggleButton />}
             <span className="status-badge ui-dashboard-status" role="status" aria-live="polite">
               <span className="green-dot ui-dashboard-live-dot" aria-hidden="true" />
               System Live
