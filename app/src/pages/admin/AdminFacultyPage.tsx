@@ -8,16 +8,16 @@ import { useQueueSearchParam } from '../../components/queue-modal';
 import { useSession } from '../../context/SessionContext';
 import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
 import {
-  useFacultyList, useFacultyPage, useUpdateFacultyByAdmin, useDepartmentOptions,
+  useFacultyList, useFacultyPage, useCreateFacultyByAdmin, useUpdateFacultyByAdmin, useDeleteFaculty, useDepartmentOptions,
   type FacultyListItem, type UpdateFacultyByAdminInput, type Department,
 } from '../../hooks';
 import { facultyEditSchema, type FacultyEditValues } from '../../lib/validation/faculty';
 import { ApiRequestError } from '../../lib/api';
+import { confirmsMutation } from '../../lib/api/confirmMutation';
 import './AdminFacultyPage.css';
 
 type Selection = { action: 'create' } | { action: 'edit' | 'remove'; id: string };
-const CREATION_UNAVAILABLE = 'Faculty creation is not yet available because the current API contract does not include this operation. No account will be created.';
-const DELETION_UNAVAILABLE = 'Faculty deletion is not yet available because the current API contract does not include this operation. No account will be removed.';
+const SELF_DELETION_UNAVAILABLE = 'You cannot remove your own active administrator account.';
 
 function RequestError({ error, retry }: { error: Error; retry?: () => void }) {
   return <>
@@ -36,20 +36,45 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
   faculty?: FacultyListItem; departments: Department[]; onClose: () => void; onSaved: (message: string) => void;
 }) {
   const { profile, syncProfile } = useSession();
+  const create = useCreateFacultyByAdmin();
   const update = useUpdateFacultyByAdmin();
   const submitting = useRef(false);
   const [requestError, setRequestError] = useState<Error | null>(null);
-  const unavailable = !faculty;
   const initial: FacultyEditValues = {
     full_name: faculty?.full_name ?? '', email: faculty?.email ?? '',
     department_id: faculty?.department_id ?? '', role: faculty?.role ?? 'faculty',
   };
   const form = useForm<FacultyEditValues>({ resolver: zodResolver(facultyEditSchema), defaultValues: initial });
-  const pending = form.formState.isSubmitting || update.isPending;
+  const pending = form.formState.isSubmitting || create.isPending || update.isPending;
   const close = () => { if (!submitting.current) onClose(); };
   const submit = form.handleSubmit(async values => {
-    if (!faculty || submitting.current) return;
+    if (submitting.current) return;
     setRequestError(null);
+    if (!faculty) {
+      if (!departments.some(department => department.id === values.department_id)) {
+        form.setError('department_id', { message: 'Select a department from the available list.' });
+        return;
+      }
+      const payload = {
+        full_name: values.full_name,
+        email: values.email.toLowerCase(),
+        department_id: values.department_id,
+        role: values.role,
+        status: 'active' as const,
+      };
+      submitting.current = true;
+      try {
+        const result = await create.mutateAsync(payload);
+        if (!confirmsMutation(result, payload)) {
+          throw new Error('The server did not confirm the requested faculty creation. Close this dialog and refresh the roster before trying again.');
+        }
+        onSaved('Faculty Created Successfully');
+        onClose();
+      } catch (error) {
+        setRequestError(error instanceof Error ? error : new Error('Unable to create faculty.'));
+      } finally { submitting.current = false; }
+      return;
+    }
     // Send only changed, approved form fields; never overwrite account status.
     const changes: Omit<UpdateFacultyByAdminInput, 'id'> = {};
     if (values.full_name !== initial.full_name.trim()) changes.full_name = values.full_name;
@@ -77,21 +102,22 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
       setRequestError(error instanceof Error ? error : new Error('Unable to update faculty.'));
     } finally { submitting.current = false; }
   });
-  const disabled = unavailable || pending;
   const errors = form.formState.errors;
-  return <AdminEntityModal open onClose={close} title={unavailable ? 'Add Faculty' : 'Edit Faculty'}
+  return <AdminEntityModal open onClose={close} title={faculty ? 'Edit Faculty' : 'Add Faculty'}
     subtitle="Enter faculty credentials and assignment details." cardClassName="faculty" noValidate
-    onSubmit={unavailable ? event => event.preventDefault() : submit}>
-    {unavailable ? <Alert variant="warning" title="Not yet available" description={CREATION_UNAVAILABLE} /> :
-      <Alert variant="info" title="Confirm Update" description="You are about to update this faculty record. Review the details below before saving your changes." />}
+    onSubmit={submit}>
+    <Alert variant="info" title={faculty ? 'Confirm Update' : 'Confirm Addition'}
+      description={faculty
+        ? 'You are about to update this faculty record. Review the details below before saving your changes.'
+        : 'You are about to add this faculty record. Review the details below before proceeding.'} />
     <Input id="facultyName" label="Full Name" aria-required="true" placeholder="e.g. Dr. Jane Doe"
-      disabled={disabled} {...form.register('full_name')} error={errors.full_name?.message} />
+      disabled={pending} {...form.register('full_name')} error={errors.full_name?.message} />
     <Input id="facultyEmail" label="Email Address" type="email" aria-required="true" placeholder="e.g. jdoe@university.edu"
-      disabled={disabled} {...form.register('email')} error={errors.email?.message} />
+      disabled={pending} {...form.register('email')} error={errors.email?.message} />
     <div className="ui-form-group">
       <label htmlFor="facultyDepartment" className="ui-form-label">Department</label>
       <div className="modal-select-wrapper">
-        <select id="facultyDepartment" className="ui-input" aria-required="true" disabled={disabled}
+        <select id="facultyDepartment" className="ui-input" aria-required="true" disabled={pending}
           aria-invalid={Boolean(errors.department_id) || undefined}
           aria-describedby={errors.department_id ? 'facultyDepartment-error' : undefined} {...form.register('department_id')}>
           <option value="" disabled>Select Department</option>
@@ -107,38 +133,65 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
     <div className="ui-form-group">
       <label htmlFor="facultyRole" className="ui-form-label">Role</label>
       <div className="modal-select-wrapper">
-        <select id="facultyRole" className="ui-input" aria-required="true" disabled={disabled} {...form.register('role')}>
+        <select id="facultyRole" className="ui-input" aria-required="true" disabled={pending} {...form.register('role')}>
           <option value="faculty">Faculty</option><option value="admin">Admin</option>
         </select>
         <Chevron className="modal-select-chevron" />
       </div>
       {errors.role && <Alert variant="warning" title="Invalid role" description="Select Faculty or Admin." />}
     </div>
+    {!faculty && departments.length === 0 && <Alert variant="warning" title="No departments available"
+      description="A faculty member must belong to a department. Add a department before saving." />}
     {errors.root && <Alert variant="warning" title="No changes to save" description={errors.root.message ?? ''} />}
     {requestError && <RequestError error={requestError} />}
     <div className="modal-actions">
       <Button variant="outline" className="modal-btn-cancel" disabled={pending} onClick={close}>Cancel</Button>
-      <Button type="submit" className="modal-submit" disabled={disabled}>{unavailable ? 'Add Faculty' : 'Update'}</Button>
+      <Button type="submit" className="modal-submit" disabled={pending || (!faculty && departments.length === 0)}>{faculty ? 'Update' : 'Add Faculty'}</Button>
     </div>
   </AdminEntityModal>;
 }
 
-function FacultyEditor({ id, onClose, onSaved }: { id: string; onClose: () => void; onSaved: (message: string) => void }) {
-  const detail = useFacultyList({ id: `eq.${id}` });
+function FacultyEditor({ id, onClose, onSaved }: { id?: string; onClose: () => void; onSaved: (message: string) => void }) {
+  const detail = useFacultyList(id ? { id: `eq.${id}` } : undefined, { enabled: Boolean(id) });
   const departments = useDepartmentOptions();
-  const loading = detail.isPending || departments.isPending;
-  const error = detail.error ?? departments.error;
-  const faculty = detail.data?.find(item => item.id === id);
-  if (loading || error || !faculty) {
-    return <AdminEntityModal open onClose={onClose} title="Edit Faculty"
+  const loading = departments.isPending || Boolean(id && detail.isPending);
+  const error = departments.error ?? (id ? detail.error : null);
+  const faculty = id ? detail.data?.find(item => item.id === id) : undefined;
+  if (loading || error || (id && !faculty)) {
+    return <AdminEntityModal open onClose={onClose} title={id ? 'Edit Faculty' : 'Add Faculty'}
       subtitle="Enter faculty credentials and assignment details." cardClassName="faculty" onSubmit={event => event.preventDefault()}>
       {loading ? <p role="status">Loading faculty form…</p> : error ?
-        <RequestError error={error} retry={() => { void detail.refetch(); void departments.refetch(); }} /> :
+        <RequestError error={error} retry={() => { void departments.refetch(); if (id) void detail.refetch(); }} /> :
         <Alert variant="warning" title="Faculty not found" description="This faculty record is no longer available. Close this dialog and refresh the roster." />}
       <div className="modal-actions"><Button variant="outline" className="modal-btn-cancel" onClick={onClose}>Cancel</Button></div>
     </AdminEntityModal>;
   }
   return <FacultyForm faculty={faculty} departments={departments.data ?? []} onClose={onClose} onSaved={onSaved} />;
+}
+
+function FacultyRemoveDialog({ id, isSelf, onClose, onSaved }: {
+  id: string; isSelf: boolean; onClose: () => void; onSaved: (message: string) => void;
+}) {
+  const remove = useDeleteFaculty();
+  const submitting = useRef(false);
+  const [requestError, setRequestError] = useState<Error | null>(null);
+  const close = () => { if (!submitting.current) onClose(); };
+  const confirm = async () => {
+    if (isSelf || submitting.current) return;
+    setRequestError(null);
+    submitting.current = true;
+    try {
+      await remove.mutateAsync(id);
+      onSaved('Faculty Removed Successfully');
+      onClose();
+    } catch (error) {
+      setRequestError(error instanceof Error ? error : new Error('Unable to remove faculty.'));
+    } finally { submitting.current = false; }
+  };
+  return <RemoveConfirmationModal open onClose={close} entityLabel="Faculty"
+    unavailableReason={isSelf ? SELF_DELETION_UNAVAILABLE : undefined}
+    closeOnConfirm={false} pending={remove.isPending}
+    error={requestError && <RequestError error={requestError} />} onConfirm={() => void confirm()} />;
 }
 
 function FacultyManagement({ profileId }: { profileId: string }) {
@@ -173,7 +226,7 @@ function FacultyManagement({ profileId }: { profileId: string }) {
     <div className="admin-faculty-management">
       <div className="header-container">
         <div className="heading-wrapper"><h1 className="heading-title">Faculty</h1></div>
-        <Button variant="add" title="Faculty creation is not yet available" onClick={() => setSelection({ action: 'create' })}>Add Faculty</Button>
+        <Button variant="add" onClick={() => setSelection({ action: 'create' })}>Add Faculty</Button>
       </div>
       <div className="controls-container">
         <div className="search-wrapper">
@@ -212,13 +265,13 @@ function FacultyManagement({ profileId }: { profileId: string }) {
             { key: 'actions', label: 'Actions', colClass: 'col-action text-right', headerClass: 'col-action text-center ui-table-heading-center', render: row =>
               <div className="action-group">
                 <button type="button" className="pill-btn edit-btn" onClick={() => setSelection({ action: 'edit', id: row.id })}>Edit</button>
-                <button type="button" className="pill-btn remove-btn" title="Faculty deletion is not yet available" onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</button>
+                <button type="button" className="pill-btn remove-btn" title={row.id === profileId ? SELF_DELETION_UNAVAILABLE : undefined} onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</button>
               </div> },
           ]} />}
-      {selection?.action === 'create' && <FacultyForm departments={departments.data ?? []} onClose={() => setSelection(null)} onSaved={setToast} />}
-      {selection?.action === 'remove' && <RemoveConfirmationModal open onClose={() => setSelection(null)} entityLabel="Faculty" unavailableReason={DELETION_UNAVAILABLE} />}
-      {selection?.action === 'edit' && <FacultyEditor id={selection.id} onClose={() => setSelection(null)}
-        onSaved={message => { setToast(message); setPage(1); }} />}
+      {selection?.action === 'remove' && <FacultyRemoveDialog id={selection.id} isSelf={selection.id === profileId}
+        onClose={() => setSelection(null)} onSaved={setToast} />}
+      {selection && selection.action !== 'remove' && <FacultyEditor id={selection.action === 'edit' ? selection.id : undefined}
+        onClose={() => setSelection(null)} onSaved={message => { setToast(message); setPage(1); }} />}
       <div className={`toast ${toast ? 'show' : ''}`} role="status">{toast}</div>
     </div>
   </AppShell>;

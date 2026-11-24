@@ -9,7 +9,7 @@ import { useQueueSearchParam } from '../../components/queue-modal';
 import { useSession } from '../../context/SessionContext';
 import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
 import {
-  useStudentSearchPage, useStudentById, useCreateStudentDirect, useUpdateStudent,
+  useStudentSearchPage, useStudentById, useCreateStudentDirect, useUpdateStudent, useDeleteStudent,
   useApprovedProgramOptions, type StudentProfile, type Program,
 } from '../../hooks';
 import { studentSchema } from '../../lib/validation/student';
@@ -18,7 +18,6 @@ import { confirmsMutation } from '../../lib/api/confirmMutation';
 import './AdminStudentsPage.css';
 
 type Selection = { action: 'create' } | { action: 'edit' | 'remove'; id: string };
-const DELETION_UNAVAILABLE = 'Student deletion is not yet available because the current API contract does not include this operation. No student record will be removed.';
 
 function RequestError({ error, retry }: { error: Error; retry?: () => void }) {
   return <>
@@ -139,6 +138,28 @@ function StudentEditor({ id, onClose, onSaved }: { id?: string; onClose: () => v
   return <StudentForm student={id ? detail.data ?? undefined : undefined} programs={programs.data ?? []} onClose={onClose} onSaved={onSaved} />;
 }
 
+function StudentRemoveDialog({ id, onClose, onSaved }: { id: string; onClose: () => void; onSaved: (message: string) => void }) {
+  const remove = useDeleteStudent();
+  const submitting = useRef(false);
+  const [requestError, setRequestError] = useState<Error | null>(null);
+  const close = () => { if (!submitting.current) onClose(); };
+  const confirm = async () => {
+    if (submitting.current) return;
+    setRequestError(null);
+    submitting.current = true;
+    try {
+      await remove.mutateAsync(id);
+      onSaved('Student Removed Successfully');
+      onClose();
+    } catch (error) {
+      setRequestError(error instanceof Error ? error : new Error('Unable to remove student.'));
+    } finally { submitting.current = false; }
+  };
+  return <RemoveConfirmationModal open onClose={close} entityLabel="Student"
+    closeOnConfirm={false} pending={remove.isPending}
+    error={requestError && <RequestError error={requestError} />} onConfirm={() => void confirm()} />;
+}
+
 function StudentManagement({ profileId }: { profileId: string }) {
   const [search, setSearch] = useState('');
   const [programId, setProgramId] = useState('');
@@ -204,10 +225,10 @@ function StudentManagement({ profileId }: { profileId: string }) {
             { key: 'program_name', label: 'Program', colClass: 'col-program' },
             { key: 'actions', label: 'Actions', colClass: 'col-action', headerClass: 'col-action text-center ui-table-heading-center', render: row => <>
               <button type="button" className="pill-btn-sm edit" onClick={() => setSelection({ action: 'edit', id: row.id })}>Edit</button>
-              <button type="button" className="pill-btn-sm remove" title="Student deletion is not yet available" onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</button>
+              <button type="button" className="pill-btn-sm remove" onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</button>
             </> },
           ]} />}
-      {selection?.action === 'remove' && <RemoveConfirmationModal open onClose={() => setSelection(null)} entityLabel="Student" unavailableReason={DELETION_UNAVAILABLE} />}
+      {selection?.action === 'remove' && <StudentRemoveDialog id={selection.id} onClose={() => setSelection(null)} onSaved={setToast} />}
       {selection && selection.action !== 'remove' && <StudentEditor id={selection.action === 'edit' ? selection.id : undefined}
         onClose={() => setSelection(null)} onSaved={message => { setToast(message); setPage(1); }} />}
       <div className={`toast ${toast ? 'show' : ''}`} role="status">{toast}</div>
