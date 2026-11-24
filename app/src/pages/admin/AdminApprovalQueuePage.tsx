@@ -48,7 +48,7 @@ function ApprovalQueueWorkspace() {
             </Button>
           </div>
         </div>
-        <div role="group" aria-label="Application queues" style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--border)', paddingBottom: '8px', flexWrap: 'wrap' }}>
+        <div className="admin-queue-filters" role="group" aria-label="Application queues" style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--border)', paddingBottom: '8px', flexWrap: 'wrap' }}>
           {QUEUE_TABS.map(tab => (
             <Button key={tab.key} variant={queueType === tab.key ? 'primary' : 'ghost'} size="sm"
               aria-pressed={queueType === tab.key} onClick={() => setQueueType(tab.key)}>
