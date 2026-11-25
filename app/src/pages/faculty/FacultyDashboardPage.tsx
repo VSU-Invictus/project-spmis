@@ -83,19 +83,19 @@ export function FacultyDashboardPage() {
           <h2 id="dashboard-quick-links-title">Quick links</h2>
           <div className="quick-links">
             <Link to="/faculty/students" className="quick-link-item ui-card-interactive">
-              <h3>Browse students <span className="arrow" aria-hidden="true">â†’</span></h3>
+              <h3>Browse students <span className="arrow" aria-hidden="true">&rarr;</span></h3>
               <p>Search records and active reviews.</p>
             </Link>
             <Link to="/faculty/students" className="quick-link-item ui-card-interactive">
-              <h3>Write a review <span className="arrow" aria-hidden="true">â†’</span></h3>
+              <h3>Write a review <span className="arrow" aria-hidden="true">&rarr;</span></h3>
               <p>Select a student to add text and tags.</p>
             </Link>
             <Link to="/faculty/chat" className="quick-link-item ui-card-interactive">
-              <h3>Open Chats <span className="arrow" aria-hidden="true">â†’</span></h3>
+              <h3>Open Chats <span className="arrow" aria-hidden="true">&rarr;</span></h3>
               <p>Explore reviews across students.</p>
             </Link>
             <Link to="/faculty/students?register=true" className="quick-link-item ui-card-interactive">
-              <h3>Register a student <span className="arrow" aria-hidden="true">â†’</span></h3>
+              <h3>Register a student <span className="arrow" aria-hidden="true">&rarr;</span></h3>
               <p>Submit a registration application.</p>
             </Link>
           </div>
@@ -121,7 +121,7 @@ export function FacultyDashboardPage() {
           <div className="between">
             <h2 id="dashboard-reviews-title">Recent active reviews</h2>
             <Link className="ui-link-neutral" to="/faculty/students">
-              Browse all students <span className="arrow" aria-hidden="true">→</span>
+              Browse all students <span className="arrow" aria-hidden="true">&rarr;</span>
             </Link>
           </div>
           <div className="review-feed">
