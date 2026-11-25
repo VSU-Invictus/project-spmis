@@ -1651,3 +1651,79 @@ html:not(.dark) :is(.ui-toast, .toast) {
   color: inherit;
 }
 
+/* ==========================================================================
+   TABLE SKELETON LOADING ROWS (<DataTable />, <TableRowSkeleton />, <ApplicationQueue />)
+   Preserves multi-column flex widths and column alignment during loading.
+   ========================================================================== */
+.table-row.skeleton-row .td-cell:not(:only-child) {
+  width: auto !important;
+  flex: 1 1 0%;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+.admin-student-management .table-row.skeleton-row .td-cell.col-id { flex: 130 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-fname { flex: 150 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-mname { flex: 120 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-lname { flex: 120 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-program { flex: 250 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-action { flex: 160 1 0 !important; justify-content: flex-end !important; }
+
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-name { flex: 210 1 0 !important; }
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-email { flex: 220 1 0 !important; }
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-dept { flex: 290 1 0 !important; }
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-role { flex: 100 1 0 !important; justify-content: center !important; }
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-action { flex: 180 1 0 !important; justify-content: flex-end !important; }
+
+.admin-taxonomy-management .table-row.skeleton-row .td-cell.col-taxonomy { flex: 620 1 0 !important; }
+.admin-taxonomy-management .table-row.skeleton-row .td-cell.col-status { flex: 180 1 0 !important; justify-content: center !important; }
+.admin-taxonomy-management .table-row.skeleton-row .td-cell.col-action { flex: 200 1 0 !important; justify-content: flex-end !important; }
+
+/* Approval Queue column geometry for both live rows and skeleton rows */
+.queue-container.queue-student :is(.th-cell, .td-cell).col-id { flex: 140 1 0 !important; }
+.queue-container.queue-student :is(.th-cell, .td-cell).col-name { flex: 220 1 0 !important; }
+.queue-container.queue-student :is(.th-cell, .td-cell).col-program { flex: 320 1 0 !important; }
+.queue-container.queue-student :is(.th-cell, .td-cell).col-date { flex: 140 1 0 !important; }
+
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-name { flex: 190 1 0 !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-email { flex: 220 1 0 !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-dept { flex: 250 1 0 !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-role { flex: 100 1 0 !important; justify-content: center !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-status { flex: 110 1 0 !important; justify-content: center !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-date { flex: 130 1 0 !important; }
+
+.queue-container:is(.queue-department, .queue-program) :is(.th-cell, .td-cell).col-program { flex: 340 1 0 !important; }
+.queue-container:is(.queue-department, .queue-program) :is(.th-cell, .td-cell).col-proposed { flex: 220 1 0 !important; }
+.queue-container:is(.queue-department, .queue-program) :is(.th-cell, .td-cell).col-type { flex: 140 1 0 !important; justify-content: center !important; }
+.queue-container:is(.queue-department, .queue-program) :is(.th-cell, .td-cell).col-date { flex: 140 1 0 !important; }
+
+.table-row.skeleton-row .td-cell.checkbox-cell {
+  flex: 0 0 48px !important;
+  width: 48px !important;
+  justify-content: center !important;
+}
+
+.table-row.skeleton-row .td-cell.text-center {
+  justify-content: center !important;
+}
+
+.table-row.skeleton-row .td-cell.text-right {
+  justify-content: flex-end !important;
+}
+
+:is(tr.skeleton-row .skeleton, .table-row.skeleton-row .skeleton) {
+  height: 18px !important;
+  border-radius: 6px !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+
+:is(tr.skeleton-row .skeleton.skeleton-checkbox, .table-row.skeleton-row .skeleton.skeleton-checkbox) {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 4px !important;
+}
+
+
