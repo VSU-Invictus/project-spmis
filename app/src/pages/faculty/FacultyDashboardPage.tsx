@@ -62,6 +62,20 @@ export function FacultyDashboardPage() {
           </div>
         </div>
 
+        {/* Dashboard statistics */}
+        <div className="stats">
+          <section className="ui-card stat" aria-label="Students statistic">
+            <span className="muted">Students</span>
+            <strong>20</strong>
+            <small>Approved sample roster</small>
+          </section>
+          <section className="ui-card stat" aria-label="Your reviews statistic">
+            <span className="muted">Your reviews</span>
+            <strong>3</strong>
+            <small>Active and hidden</small>
+          </section>
+        </div>
+
         {/* Global Error Banner */}
         {isError && (
           <div
