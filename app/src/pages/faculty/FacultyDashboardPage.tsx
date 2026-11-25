@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
+﻿import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   Button,
-  Card,
   Badge,
   EmptyState,
   CardSkeleton,
   Toast,
 } from '../../components/ui';
-import { ReviewDocumentView, ReviewFormModal, getTagBadgeVariant } from '../../components/reviews';
+import { ReviewDocumentView, ReviewFormModal } from '../../components/reviews';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
+import { useSearchStudents } from '../../hooks/useSearchStudents';
 import { useSession } from '../../context/SessionContext';
 
 export function FacultyDashboardPage() {
@@ -35,6 +35,8 @@ export function FacultyDashboardPage() {
     status: 'eq.active',
     order: 'created_at.desc,id.asc',
   });
+  const { data: students, isPending: isStudentsPending } = useSearchStudents();
+  const studentsById = new Map((students ?? []).map((student) => [student.id, student]));
 
   return (
     <AppShell
@@ -81,19 +83,19 @@ export function FacultyDashboardPage() {
           <h2 id="dashboard-quick-links-title">Quick links</h2>
           <div className="quick-links">
             <Link to="/faculty/students" className="quick-link-item ui-card-interactive">
-              <h3>Browse students <span className="arrow" aria-hidden="true">→</span></h3>
+              <h3>Browse students <span className="arrow" aria-hidden="true">â†’</span></h3>
               <p>Search records and active reviews.</p>
             </Link>
             <Link to="/faculty/students" className="quick-link-item ui-card-interactive">
-              <h3>Write a review <span className="arrow" aria-hidden="true">→</span></h3>
+              <h3>Write a review <span className="arrow" aria-hidden="true">â†’</span></h3>
               <p>Select a student to add text and tags.</p>
             </Link>
             <Link to="/faculty/chat" className="quick-link-item ui-card-interactive">
-              <h3>Open Chats <span className="arrow" aria-hidden="true">→</span></h3>
+              <h3>Open Chats <span className="arrow" aria-hidden="true">â†’</span></h3>
               <p>Explore reviews across students.</p>
             </Link>
             <Link to="/faculty/students?register=true" className="quick-link-item ui-card-interactive">
-              <h3>Register a student <span className="arrow" aria-hidden="true">→</span></h3>
+              <h3>Register a student <span className="arrow" aria-hidden="true">â†’</span></h3>
               <p>Submit a registration application.</p>
             </Link>
           </div>
@@ -115,74 +117,67 @@ export function FacultyDashboardPage() {
             <strong>Prism Mock Error:</strong> {reviewsError?.message}
           </div>
         )}
+        <section className="ui-card dashboard-reviews" aria-labelledby="dashboard-reviews-title">
+          <div className="between">
+            <h2 id="dashboard-reviews-title">Recent active reviews</h2>
+            <Link className="ui-link-neutral" to="/faculty/students">
+              Browse all students <span className="arrow" aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <div className="review-feed">
+            {(isPending || isStudentsPending) && (
+              <>
+                <CardSkeleton />
+                <CardSkeleton />
+              </>
+            )}
 
-        {/* Feed List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {isPending && (
-            <>
-              <CardSkeleton />
-              <CardSkeleton />
-              <CardSkeleton />
-            </>
-          )}
+            {!isPending && !isStudentsPending && (!reviews || reviews.length === 0) && (
+              <EmptyState title="No recent active reviews" description="Active reviews will appear here." />
+            )}
 
-          {!isPending && (!reviews || reviews.length === 0) && (
-            <EmptyState
-              title="No recent reviews in feed"
-              description="Click 'Write Student Review' to create your first attributed review."
-            />
-          )}
+            {!isPending && !isStudentsPending && reviews?.map((review) => {
+              const student = studentsById.get(review.student_id);
+              const studentName = student
+                ? [student.first_name, student.middle_name, student.last_name].filter(Boolean).join(' ')
+                : 'Student';
+              const isOwnReview = review.owner_id === profile?.id;
 
-          {!isPending &&
-            reviews?.map((review) => (
-              <Card
-                key={review.id}
-                style={{
-                  padding: '20px',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius-lg, 12px)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
-                  backgroundColor: 'var(--card)',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
-                  <div>
-                    <span style={{ fontWeight: 700, fontSize: '15px' }}>
-                      {review.author_name}
-                    </span>
-                    <span style={{ fontSize: '13px', color: 'var(--muted-foreground)', marginLeft: '8px' }}>
-                      · {review.author_department_name}
-                    </span>
+              return (
+                <article className="review-feed-item" key={review.id}>
+                  <div className="review-feed-head">
+                    <div className="review-feed-meta">
+                      <span className="review-feed-contributor">
+                        {review.author_name}
+                        {isOwnReview && <span className="review-feed-you"> · You</span>}
+                      </span>
+                      <span className="review-feed-sub">
+                        Reviewing{' '}
+                        {student ? (
+                          <Link className="review-feed-student" to={`/faculty/students/${student.id}`}>
+                            {studentName}
+                          </Link>
+                        ) : studentName}
+                        {' · '}{student?.program_name || 'Program unavailable'}{' · '}{review.created_at.slice(0, 10)}
+                      </span>
+                    </div>
+                    <Badge variant="success">Active</Badge>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Badge variant={review.status === 'active' ? 'success' : 'muted'}>
-                      {review.status}
-                    </Badge>
-                    <span style={{ fontSize: '12px', color: 'var(--muted-foreground)' }}>
-                      {new Date(review.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
 
-                <ReviewDocumentView
-                  document={review.body_document}
-                  fallbackText={review.body_text}
-                />
-
-                {review.tags && review.tags.length > 0 && (
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
-                    {review.tags.map((tag, idx) => (
-                      <Badge key={idx} variant={getTagBadgeVariant(tag)}>
-                        #{tag}
-                      </Badge>
-                    ))}
+                  <div className="review-feed-body">
+                    <ReviewDocumentView document={review.body_document} fallbackText={review.body_text} />
                   </div>
-                )}
-              </Card>
-            ))}
-        </div>
+
+                  {review.tags.length > 0 && (
+                    <div className="review-feed-tags">
+                      {review.tags.map((tag) => <Badge key={tag} variant="muted">{tag}</Badge>)}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
       </div>
 
       <ReviewFormModal
