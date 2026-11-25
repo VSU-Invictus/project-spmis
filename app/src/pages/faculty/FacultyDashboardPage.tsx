@@ -5,13 +5,24 @@ import {
   Button,
   Badge,
   EmptyState,
-  CardSkeleton,
+  Skeleton,
   Toast,
 } from '../../components/ui';
 import { ReviewDocumentView, ReviewFormModal, getTagBadgeVariant } from '../../components/reviews';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
 import { useSearchStudents } from '../../hooks/useSearchStudents';
 import { useSession } from '../../context/SessionContext';
+
+function ReviewCardSkeleton() {
+  return (
+    <article className="review-feed-item" aria-hidden="true">
+      <Skeleton className="skeleton" width="28%" height="16px" style={{ margin: 0 }} />
+      <Skeleton className="skeleton" width="42%" height="13px" style={{ margin: 0 }} />
+      <Skeleton className="skeleton" width="64%" height="16px" style={{ margin: 0 }} />
+      <Skeleton className="skeleton" width="84px" height="26px" borderRadius="9999px" style={{ margin: 0 }} />
+    </article>
+  );
+}
 
 export function FacultyDashboardPage() {
   const { profile } = useSession();
@@ -27,7 +38,8 @@ export function FacultyDashboardPage() {
 
   const {
     data: reviews,
-    isPending,
+    isPending: isReviewsPending,
+    isFetching: isReviewsFetching,
     isError,
     error: reviewsError,
     refetch,
@@ -35,8 +47,24 @@ export function FacultyDashboardPage() {
     status: 'eq.active',
     order: 'created_at.desc,id.asc',
   });
-  const { data: students, isPending: isStudentsPending } = useSearchStudents();
+  const {
+    data: students,
+    isPending: isStudentsPending,
+    isFetching: isStudentsFetching,
+  } = useSearchStudents();
   const studentsById = new Map((students ?? []).map((student) => [student.id, student]));
+  const isDashboardFetching = isReviewsFetching || isStudentsFetching;
+  const [showRefreshSkeleton, setShowRefreshSkeleton] = useState(false);
+
+  useEffect(() => {
+    if (isDashboardFetching) {
+      setShowRefreshSkeleton(true);
+      return;
+    }
+
+    const timer = window.setTimeout(() => setShowRefreshSkeleton(false), 500);
+    return () => window.clearTimeout(timer);
+  }, [isDashboardFetching]);
 
   return (
     <AppShell
@@ -45,6 +73,12 @@ export function FacultyDashboardPage() {
       breadcrumb="Faculty Portal / Overview"
     >
       <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {showRefreshSkeleton && (
+          <div className="dashboard-refresh-status" role="status" aria-live="polite" aria-busy={isDashboardFetching}>
+            <span>{isReviewsPending || isStudentsPending ? 'Loading dashboard…' : 'Refreshing dashboard…'}</span>
+            <Skeleton className="skeleton" height="4px" style={{ margin: 0 }} />
+          </div>
+        )}
         {/* Header with Title and Create Action */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
@@ -56,7 +90,13 @@ export function FacultyDashboardPage() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <Button variant="secondary" onClick={() => refetch()}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowRefreshSkeleton(true);
+                void refetch();
+              }}
+            >
               Refresh Feed
             </Button>
             <Button variant="primary" onClick={() => setIsCreateOpen(true)}>
@@ -124,19 +164,20 @@ export function FacultyDashboardPage() {
               Browse all students <span className="arrow" aria-hidden="true">&rarr;</span>
             </Link>
           </div>
-          <div className="review-feed">
-            {(isPending || isStudentsPending) && (
+          <div className="review-feed" aria-busy={isDashboardFetching}>
+            {showRefreshSkeleton && (
               <>
-                <CardSkeleton />
-                <CardSkeleton />
+                <ReviewCardSkeleton />
+                <ReviewCardSkeleton />
+                <ReviewCardSkeleton />
               </>
             )}
 
-            {!isPending && !isStudentsPending && (!reviews || reviews.length === 0) && (
+            {!showRefreshSkeleton && (!reviews || reviews.length === 0) && (
               <EmptyState title="No recent active reviews" description="Active reviews will appear here." />
             )}
 
-            {!isPending && !isStudentsPending && reviews?.map((review) => {
+            {!showRefreshSkeleton && reviews?.map((review) => {
               const student = studentsById.get(review.student_id);
               const studentName = student
                 ? [student.first_name, student.middle_name, student.last_name].filter(Boolean).join(' ')
