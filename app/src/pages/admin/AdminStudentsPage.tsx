@@ -184,7 +184,7 @@ function StudentManagement({ profileId }: { profileId: string }) {
     if (allowedSize !== pageSize) { setPageSize(allowedSize); setPage(1); }
     else if (page > Math.max(1, Math.ceil(total / pageSize))) setPage(Math.max(1, Math.ceil(total / pageSize)));
   }, [students.data, page, pageSize]);
-  return <AppShell role="admin" activeNavKey="students" breadcrumb="Admin Portal / Student Roster">
+  return <AppShell role="admin" activeNavKey="students" breadcrumb="Admin Portal / Student Roster" showFooterLinks={false}>
     <div className="admin-student-management">
       <div className="header-container">
         <div className="heading-wrapper"><h2 className="heading-title">Student Roster</h2></div>

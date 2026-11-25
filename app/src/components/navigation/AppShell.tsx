@@ -34,6 +34,7 @@ export interface AppShellProps {
   onSelectNav?: (key: string) => void;
   breadcrumb?: string;
   academicYear?: string;
+  showFooterLinks?: boolean;
   children: React.ReactNode;
 }
 
@@ -43,6 +44,7 @@ export function AppShell({
   onSelectNav,
   breadcrumb,
   academicYear = 'AY 2026-2027',
+  showFooterLinks = true,
   children,
 }: AppShellProps) {
   const navigate = useNavigate();
@@ -103,7 +105,7 @@ export function AppShell({
 
         <PortalFooter
           portalName={role === 'admin' ? 'Admin Portal' : 'Faculty Portal'}
-          showLinks
+          showLinks={showFooterLinks}
         />
       </main>
 
