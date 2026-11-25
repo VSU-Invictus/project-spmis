@@ -295,6 +295,65 @@ const matches = (value: string, filter: string | null): boolean => {
   return value.toLowerCase().includes(filter.toLowerCase());
 };
 
+function rosterPage<T extends { id: string; created_at: string }>(
+  request: Request,
+  records: T[],
+  compareByName: (left: T, right: T) => number,
+) {
+  const params = new URL(request.url).searchParams;
+  const order = params.get('order');
+  const limit = Number(params.get('limit') ?? 20);
+  const offset = Number(params.get('offset') ?? 0);
+  const total = records.length;
+  const exactCount = request.headers.get('Prefer')?.split(',').some(value => value.trim() === 'count=exact');
+  const reportedTotal = exactCount ? total : '*';
+
+  if (offset > 0 && offset >= total) {
+    return HttpResponse.json({
+      code: 'PGRST103',
+      message: 'Requested range not satisfiable',
+      details: `An offset of ${offset} was requested, but there are only ${total} rows.`,
+      hint: null,
+    }, { status: 416, headers: { 'Content-Range': `*/${reportedTotal}` } });
+  }
+
+  // Both callers pass a filtered copy, so sorting leaves the mutation fixtures in place.
+  records.sort((left, right) => {
+    const byDate = left.created_at.localeCompare(right.created_at);
+    const primary = order === 'created_at.asc,id.asc' ? byDate
+      : !order || order === 'created_at.desc,id.asc' ? -byDate
+      : compareByName(left, right);
+    return primary || left.id.localeCompare(right.id);
+  });
+  const page = records.slice(offset, offset + limit);
+  const range = page.length ? `${offset}-${offset + page.length - 1}` : '*';
+  return HttpResponse.json(page, {
+    status: exactCount && page.length < total ? 206 : 200,
+    headers: { 'Content-Range': `${range}/${reportedTotal}` },
+  });
+}
+
+function facultySearch(expression: string | null): (profile: MockFacultyProfile) => boolean {
+  if (!expression) return () => true;
+
+  // Accept the documented OR filters and the quoted operands sent by the Faculty roster.
+  const filters = Array.from(
+    expression.matchAll(/(?:\(|,)(full_name|email)\.ilike\.("(?:\\.|[^"\\])*"|[^,()]+)(?=,|\)$)/g),
+    ([, column, operand]) => {
+      const pattern = operand.startsWith('"')
+        ? operand.slice(1, -1).replace(/\\(["\\])/g, '$1')
+        : operand;
+      const source = pattern.replace(/\\(.)|./gs, (token, literal: string | undefined) => {
+        if (literal === undefined && (token === '%' || token === '*')) return '.*';
+        if (literal === undefined && token === '_') return '.';
+        return (literal ?? token).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      });
+      return { column: column as 'full_name' | 'email', pattern: new RegExp(`^${source}$`, 'is') };
+    },
+  );
+  return profile => filters.some(({ column, pattern }) => pattern.test(profile[column]));
+}
+
 const uuidFilterPattern = /^eq\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const parseEqUuidFilter = (filter: string | null): string | null =>
@@ -337,7 +396,9 @@ export const handlers = [
         && (!query || text.includes(query) || matchingFilteredReviews.some((review) => review.body_text.toLowerCase().includes(query)))
         && (!hasReviewFilter || matchingFilteredReviews.length > 0);
     });
-    return HttpResponse.json(result);
+    return rosterPage(request, result, (left, right) =>
+      left.last_name.localeCompare(right.last_name) || left.first_name.localeCompare(right.first_name),
+    );
   }),
 
   http.get('*/rest/v1/rpc/get_own_profile', async () => {
@@ -717,15 +778,16 @@ export const handlers = [
     const departmentFilter = url.searchParams.get('department_id');
     const roleFilter = url.searchParams.get('role');
     const statusFilter = url.searchParams.get('status');
+    const matchesSearch = facultySearch(url.searchParams.get('or'));
 
-    return HttpResponse.json(
-      facultyProfiles.filter((profile) =>
-        matches(profile.id, idFilter)
-        && matches(profile.department_id, departmentFilter)
-        && matches(profile.role, roleFilter)
-        && matches(profile.status, statusFilter),
-      ),
+    const result = facultyProfiles.filter((profile) =>
+      matches(profile.id, idFilter)
+      && matches(profile.department_id, departmentFilter)
+      && matches(profile.role, roleFilter)
+      && matches(profile.status, statusFilter)
+      && matchesSearch(profile),
     );
+    return rosterPage(request, result, (left, right) => left.full_name.localeCompare(right.full_name));
   }),
 
   http.post('*/rest/v1/faculty_profiles', async ({ request }) => {

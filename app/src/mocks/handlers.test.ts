@@ -14,6 +14,78 @@ describe('contract MSW handlers', () => {
     expect(data[0]).toMatchObject({ id: studentId, first_name: 'Maria', program_name: expect.any(String) });
   });
 
+  it.each([
+    { endpoint: 'rpc/search_students', total: 2, firstId: '27b5cc8d-1679-4e44-9e42-7b4cac5ae119', lastId: studentId },
+    { endpoint: 'faculty_profiles', total: 3, firstId: '98b5fca9-0d8c-4c0a-a10a-7aa10b9bb3a1', lastId: 'e48adc9e-1b79-4b92-9848-aa12b25d63d7' },
+  ])('returns stable pages and exact totals for $endpoint', async ({ endpoint, total, firstId, lastId }) => {
+    const url = `${BASE}/rest/v1/${endpoint}`;
+    const headers = { Prefer: 'count=exact' };
+    const [first, last, withoutCount, outOfRange] = await Promise.all([
+      fetch(`${url}?limit=1&offset=0`, { headers }),
+      fetch(`${url}?limit=1&offset=${total - 1}`, { headers }),
+      fetch(`${url}?limit=1`),
+      fetch(`${url}?limit=1&offset=${total}`, { headers }),
+    ]);
+
+    expect(first.status).toBe(206);
+    expect(first.headers.get('Content-Range')).toBe(`0-0/${total}`);
+    expect(await first.json()).toMatchObject([{ id: firstId }]);
+    expect(last.status).toBe(206);
+    expect(last.headers.get('Content-Range')).toBe(`${total - 1}-${total - 1}/${total}`);
+    expect(await last.json()).toMatchObject([{ id: lastId }]);
+    expect(withoutCount.status).toBe(200);
+    expect(withoutCount.headers.get('Content-Range')).toBe('0-0/*');
+    expect(await withoutCount.json()).toMatchObject([{ id: firstId }]);
+    expect(outOfRange.status).toBe(416);
+    expect(outOfRange.headers.get('Content-Range')).toBe(`*/${total}`);
+    expect(await outOfRange.json()).toMatchObject({ code: 'PGRST103', hint: null });
+  });
+
+  it('counts filtered students before slicing and returns an empty first page for no matches', async () => {
+    const url = `${BASE}/rest/v1/rpc/search_students`;
+    const headers = { Prefer: 'count=exact' };
+    const [single, empty] = await Promise.all([
+      fetch(`${url}?query=Maria&limit=1&order=last_name.asc,first_name.asc,id.asc`, { headers }),
+      fetch(`${url}?query=no-matching-student`, { headers }),
+    ]);
+
+    expect(single.status).toBe(200);
+    expect(single.headers.get('Content-Range')).toBe('0-0/1');
+    expect(await single.json()).toMatchObject([{ id: studentId }]);
+    expect(empty.status).toBe(200);
+    expect(empty.headers.get('Content-Range')).toBe('*/0');
+    expect(await empty.json()).toEqual([]);
+  });
+
+  it('filters and sorts Faculty roster results by name before applying the limit', async () => {
+    const url = new URL(`${BASE}/rest/v1/faculty_profiles`);
+    url.search = new URLSearchParams({
+      or: '(full_name.ilike."%faculty%",email.ilike."%ALEX.REYES%")',
+      department_id: 'eq.5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb',
+      order: 'full_name.asc,id.asc',
+      limit: '1',
+    }).toString();
+    const response = await fetch(url, { headers: { Prefer: 'count=exact' } });
+
+    expect(response.status).toBe(206);
+    expect(response.headers.get('Content-Range')).toBe('0-0/2');
+    expect(await response.json()).toMatchObject([{ full_name: 'Alex Reyes' }]);
+  });
+
+  it('updates the exact Student roster count after deleting an existing fixture record', async () => {
+    const headers = { Prefer: 'count=exact' };
+    const deleteResponse = await fetch(
+      `${BASE}/rest/v1/student_profiles?id=eq.27b5cc8d-1679-4e44-9e42-7b4cac5ae119`,
+      { method: 'DELETE' },
+    );
+    const response = await fetch(`${BASE}/rest/v1/rpc/search_students?limit=1`, { headers });
+
+    expect(deleteResponse.status).toBe(204);
+    expect(response.status).toBe(200);
+    expect(response.headers.get('Content-Range')).toBe('0-0/1');
+    expect(await response.json()).toMatchObject([{ id: studentId }]);
+  });
+
   it('lists a student’s attributed reviews as an array', async () => {
     const response = await fetch(`${BASE}/rest/v1/review_details?student_id=eq.${studentId}`);
     const data = await response.json();
