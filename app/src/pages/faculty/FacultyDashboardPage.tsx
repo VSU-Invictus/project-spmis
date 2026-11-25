@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   Button,
@@ -75,6 +76,28 @@ export function FacultyDashboardPage() {
             <small>Active and hidden</small>
           </section>
         </div>
+
+        <section className="ui-card dashboard-quick-links" aria-labelledby="dashboard-quick-links-title">
+          <h2 id="dashboard-quick-links-title">Quick links</h2>
+          <div className="quick-links">
+            <Link to="/faculty/students" className="quick-link-item ui-card-interactive">
+              <h3>Browse students <span className="arrow" aria-hidden="true">→</span></h3>
+              <p>Search records and active reviews.</p>
+            </Link>
+            <Link to="/faculty/students" className="quick-link-item ui-card-interactive">
+              <h3>Write a review <span className="arrow" aria-hidden="true">→</span></h3>
+              <p>Select a student to add text and tags.</p>
+            </Link>
+            <Link to="/faculty/chat" className="quick-link-item ui-card-interactive">
+              <h3>Open Chats <span className="arrow" aria-hidden="true">→</span></h3>
+              <p>Explore reviews across students.</p>
+            </Link>
+            <Link to="/faculty/students?register=true" className="quick-link-item ui-card-interactive">
+              <h3>Register a student <span className="arrow" aria-hidden="true">→</span></h3>
+              <p>Submit a registration application.</p>
+            </Link>
+          </div>
+        </section>
 
         {/* Global Error Banner */}
         {isError && (
