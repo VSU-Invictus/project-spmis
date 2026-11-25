@@ -6,6 +6,7 @@ import {
   Badge,
   EmptyState,
   CardSkeleton,
+  useMinimumLoadingDuration,
   Toast,
 } from '../../components/ui';
 import { ReviewDocumentView, ReviewFormModal, getTagBadgeVariant } from '../../components/reviews';
@@ -26,7 +27,8 @@ export function FacultyDashboardPage() {
 
   const {
     data: reviews,
-    isPending,
+    isPending: rawIsPending,
+    isFetching,
     isError,
     error: reviewsError,
     refetch,
@@ -34,6 +36,7 @@ export function FacultyDashboardPage() {
     status: 'eq.active',
     order: 'created_at.desc,id.asc',
   });
+  const isPending = useMinimumLoadingDuration(rawIsPending || isFetching);
 
   return (
     <AppShell
