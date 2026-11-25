@@ -8,7 +8,7 @@ import {
   CardSkeleton,
   Toast,
 } from '../../components/ui';
-import { ReviewDocumentView, ReviewFormModal } from '../../components/reviews';
+import { ReviewDocumentView, ReviewFormModal, getTagBadgeVariant } from '../../components/reviews';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
 import { useSearchStudents } from '../../hooks/useSearchStudents';
 import { useSession } from '../../context/SessionContext';
@@ -170,7 +170,9 @@ export function FacultyDashboardPage() {
 
                   {review.tags.length > 0 && (
                     <div className="review-feed-tags">
-                      {review.tags.map((tag) => <Badge key={tag} variant="muted">{tag}</Badge>)}
+                      {review.tags.map((tag) => (
+                        <Badge key={tag} variant={getTagBadgeVariant(tag)}>{tag}</Badge>
+                      ))}
                     </div>
                   )}
                 </article>
