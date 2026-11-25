@@ -57,8 +57,16 @@ export interface paths {
          */
         get: operations["listFaculty"];
         put?: never;
-        post?: never;
-        delete?: never;
+        /**
+         * Directly add a faculty profile
+         * @description Admin only. Directly provision a faculty or admin profile with an approved department. When status is omitted by an active admin, the backend defaults it to active and links or provisions the backing auth.users identity by email. Every mutation is audited in the same database transaction.
+         */
+        post: operations["createFacultyByAdmin"];
+        /**
+         * Remove a faculty profile
+         * @description Admin only. Removes an unreferenced faculty profile other than the caller's own account. Return 409 when reviews, review revisions, taxonomy proposals, or approval records reference this profile; do not cascade-delete historical attribution.
+         */
+        delete: operations["deleteFaculty"];
         options?: never;
         head?: never;
         /**
@@ -122,7 +130,11 @@ export interface paths {
          * @description Admin only. Create the student immediately with registration_source=admin_direct set by the backend, without an approval application. The referenced program must be approved. Create an audit event in the same database transaction. Faculty use submitApplication.
          */
         post: operations["createStudentDirect"];
-        delete?: never;
+        /**
+         * Remove a student
+         * @description Admin only. Removes an unreferenced student profile selected by the required equality ID filter and audits the mutation in the same transaction. Return 409 when existing reviews reference this student; do not cascade-delete review history.
+         */
+        delete: operations["deleteStudent"];
         options?: never;
         head?: never;
         /**
@@ -446,6 +458,33 @@ export interface components {
             created_at: string;
             /** Format: date-time */
             updated_at: string;
+        };
+        /**
+         * @description Admin-only payload for directly provisioning a faculty or admin profile.
+         * @example {
+         *       "email": "jamie.rivera@example.edu",
+         *       "full_name": "Jamie Rivera",
+         *       "department_id": "5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb",
+         *       "role": "faculty",
+         *       "status": "active"
+         *     }
+         */
+        FacultyCreateInput: {
+            /** Format: email */
+            email: string;
+            full_name: string;
+            /** Format: uuid */
+            department_id: string;
+            /**
+             * @default faculty
+             * @enum {string}
+             */
+            role?: "faculty" | "admin";
+            /**
+             * @default active
+             * @enum {string}
+             */
+            status?: "pending" | "active";
         };
         /** @description Admin-only editable fields. This schema does not authorize a faculty caller to change protected fields. */
         FacultyUpdate: {
@@ -1381,6 +1420,62 @@ export interface operations {
             416: components["responses"]["RangeNotSatisfiable"];
         };
     };
+    createFacultyByAdmin: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Requests that PostgREST return the affected record representation. During Prism mock testing, `return=representation, code=403` and `return=representation, code=409` may be supplied to simulate documented error responses. */
+                Prefer: components["parameters"]["PreferReturnRepresentation"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FacultyCreateInput"];
+            };
+        };
+        responses: {
+            /** @description Faculty profile created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FacultyProfile"][];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    deleteFaculty: {
+        parameters: {
+            query: {
+                /** @description Required PostgREST equality filter, formatted as `eq.<uuid>`. */
+                id: components["parameters"]["RequiredIdFilter"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Faculty profile removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+        };
+    };
     updateFacultyByAdmin: {
         parameters: {
             query: {
@@ -1541,6 +1636,31 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentProfile"][];
                 };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    deleteStudent: {
+        parameters: {
+            query: {
+                /** @description Required PostgREST equality filter, formatted as `eq.<uuid>`. */
+                id: components["parameters"]["RequiredIdFilter"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Student removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];

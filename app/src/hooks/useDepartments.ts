@@ -26,16 +26,26 @@ export function useDepartments(
   });
 }
 
+/** Complete approved department choices for creation forms, using bounded result pages. */
+export function useApprovedDepartmentOptions(options?: { enabled?: boolean }) {
+  return useDepartmentCollection(true, options?.enabled);
+}
+
 /** Full department choices/labels for management forms and filters. */
 export function useDepartmentOptions(options?: { enabled?: boolean }) {
+  return useDepartmentCollection(false, options?.enabled);
+}
+
+function useDepartmentCollection(approvedOnly: boolean, enabled?: boolean) {
+  const params = approvedOnly ? { status: 'eq.approved' as const } : undefined;
   return useQuery({
-    enabled: options?.enabled,
-    queryKey: [...queryKeys.departments(), 'all-options'],
+    enabled,
+    queryKey: [...queryKeys.departments(params), 'all-options'],
     queryFn: async (): Promise<Department[]> => {
       const departments: Department[] = [];
       for (let offset = 0; ; offset += 100) {
         const page = await request(apiClient.GET('/rest/v1/departments', {
-          params: { query: { limit: 100, offset, order: 'name.asc,id.asc' } },
+          params: { query: { ...params, limit: 100, offset, order: 'name.asc,id.asc' } },
         }));
         departments.push(...(page ?? []));
         if (!page || page.length < 100) return departments;

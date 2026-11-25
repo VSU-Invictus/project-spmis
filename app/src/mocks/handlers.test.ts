@@ -266,9 +266,21 @@ describe('contract MSW handlers', () => {
     expect(await updateResponse.json()).toMatchObject([
       { id: student.id, first_name: 'Anna' },
     ]);
+
+    const deleteConflict = await fetch(
+      `${BASE}/rest/v1/student_profiles?id=eq.${studentId}`,
+      { method: 'DELETE' },
+    );
+    expect(deleteConflict.status).toBe(409);
+
+    const deleteResponse = await fetch(
+      `${BASE}/rest/v1/student_profiles?id=eq.${student.id}`,
+      { method: 'DELETE' },
+    );
+    expect(deleteResponse.status).toBe(204);
   });
 
-  it('lists and updates faculty profiles', async () => {
+  it('lists, creates, updates, and deletes faculty profiles', async () => {
     const listResponse = await fetch(`${BASE}/rest/v1/faculty_profiles`);
     expect(listResponse.status).toBe(200);
     expect(await listResponse.json()).toEqual(
@@ -276,6 +288,38 @@ describe('contract MSW handlers', () => {
         expect.objectContaining({ role: 'faculty' }),
       ]),
     );
+
+    const createResponse = await fetch(`${BASE}/rest/v1/faculty_profiles`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'Jane.Doe@Example.Edu',
+        full_name: 'Dr. Jane Doe',
+        department_id: '5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb',
+        role: 'faculty',
+        status: 'active',
+      }),
+    });
+    expect(createResponse.status).toBe(201);
+    const [created] = await createResponse.json();
+    expect(created).toMatchObject({
+      email: 'jane.doe@example.edu',
+      full_name: 'Dr. Jane Doe',
+      role: 'faculty',
+      status: 'active',
+    });
+
+    const duplicateResponse = await fetch(`${BASE}/rest/v1/faculty_profiles`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'jane.doe@example.edu',
+        full_name: 'Duplicate Faculty',
+        department_id: '5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb',
+        role: 'faculty',
+      }),
+    });
+    expect(duplicateResponse.status).toBe(409);
 
     const updateResponse = await fetch(
       `${BASE}/rest/v1/faculty_profiles?id=eq.e48adc9e-1b79-4b92-9848-aa12b25d63d7`,
@@ -290,6 +334,46 @@ describe('contract MSW handlers', () => {
     expect(await updateResponse.json()).toMatchObject([
       { full_name: 'Alex Faculty' },
     ]);
+
+    const deleteConflict = await fetch(
+      `${BASE}/rest/v1/faculty_profiles?id=eq.e48adc9e-1b79-4b92-9848-aa12b25d63d7`,
+      { method: 'DELETE' },
+    );
+    expect(deleteConflict.status).toBe(409);
+
+    const deleteResponse = await fetch(
+      `${BASE}/rest/v1/faculty_profiles?id=eq.${created.id}`,
+      { method: 'DELETE' },
+    );
+    expect(deleteResponse.status).toBe(204);
+  });
+
+  it('rejects missing or malformed id filters on student and faculty DELETE without mutating rosters', async () => {
+    const initialStudents = await (await fetch(`${BASE}/rest/v1/rpc/search_students`)).json();
+    const initialFaculty = await (await fetch(`${BASE}/rest/v1/faculty_profiles`)).json();
+
+    for (const url of [
+      `${BASE}/rest/v1/student_profiles`,
+      `${BASE}/rest/v1/student_profiles?id=${studentId}`,
+      `${BASE}/rest/v1/student_profiles?id=eq.not-a-uuid`,
+    ]) {
+      const response = await fetch(url, { method: 'DELETE' });
+      expect(response.status).toBe(400);
+    }
+
+    for (const url of [
+      `${BASE}/rest/v1/faculty_profiles`,
+      `${BASE}/rest/v1/faculty_profiles?id=98b5fca9-0d8c-4c0a-a10a-7aa10b9bb3a1`,
+      `${BASE}/rest/v1/faculty_profiles?id=eq.not-a-uuid`,
+    ]) {
+      const response = await fetch(url, { method: 'DELETE' });
+      expect(response.status).toBe(400);
+    }
+
+    const remainingStudents = await (await fetch(`${BASE}/rest/v1/rpc/search_students`)).json();
+    const remainingFaculty = await (await fetch(`${BASE}/rest/v1/faculty_profiles`)).json();
+    expect(remainingStudents).toHaveLength(initialStudents.length);
+    expect(remainingFaculty).toHaveLength(initialFaculty.length);
   });
 
   it('creates an approval queue item', async () => {

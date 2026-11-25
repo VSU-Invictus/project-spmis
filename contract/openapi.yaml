@@ -1,11 +1,13 @@
 openapi: 3.1.0
 info:
   title: SPMIS API
-  version: 1.0.0
+  version: 1.1.0
   description: >-
     Contract-first API for the Student Profiling Management Information System. This curated
-    contract documents only the operations available to the frontend. Frozen at v1.0.0 (2026-10-30)
-    for Milestone 3 (Backend) and Milestone 4 (Frontend) parallel implementation.
+    contract documents only the operations available to the frontend. Originally frozen at v1.0.0
+    (2026-10-30) with 27 operations and extended additively in v1.1.0 (30 operations) to add
+    Admin direct student removal (`deleteStudent`) and faculty creation/removal
+    (`createFacultyByAdmin`, `deleteFaculty`).
     Proposed backend views and functions are described before implementation; scope decisions are
     recorded in docs/contract-decisions.md. Data API calls require a public project apikey and the
     caller JWT. OAuth and refresh use Supabase Auth through its SDK. An RLS-filtered read or update
@@ -201,6 +203,41 @@ paths:
         Admins may list profiles. Other faculty cannot retrieve private profile emails. Native or
         search supports full_name and email. Contributor attribution is returned through
         review_details.
+    post:
+      tags:
+        - Admin
+      operationId: createFacultyByAdmin
+      summary: Directly add a faculty profile
+      description: >-
+        Admin only. Directly provision a faculty or admin profile with an approved department.
+        When status is omitted by an active admin, the backend defaults it to active and links or
+        provisions the backing auth.users identity by email. Every mutation is audited in the same
+        database transaction.
+      parameters:
+        - $ref: '#/components/parameters/PreferReturnRepresentation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyCreateInput'
+      responses:
+        '201':
+          description: Faculty profile created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacultyProfile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
     patch:
       tags:
         - Admin
@@ -236,6 +273,28 @@ paths:
         Admin only. Faculty use updateOwnProfile instead. RLS selects rows; database column grants
         or a guarded function/trigger must independently prevent non-admin changes to role, status,
         email and department. Every mutation is audited.
+    delete:
+      tags:
+        - Admin
+      operationId: deleteFaculty
+      summary: Remove a faculty profile
+      description: >-
+        Admin only. Removes an unreferenced faculty profile other than the caller's own account.
+        Return 409 when reviews, review revisions, taxonomy proposals, or approval records reference
+        this profile; do not cascade-delete historical attribution.
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+      responses:
+        '204':
+          description: Faculty profile removed
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
   /rest/v1/rpc/suggest_review_tags:
     get:
       tags:
@@ -448,6 +507,28 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StudentProfile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags:
+        - Admin
+      operationId: deleteStudent
+      summary: Remove a student
+      description: >-
+        Admin only. Removes an unreferenced student profile selected by the required equality ID
+        filter and audits the mutation in the same transaction. Return 409 when existing reviews
+        reference this student; do not cascade-delete review history.
+      parameters:
+        - $ref: '#/components/parameters/RequiredIdFilter'
+      responses:
+        '204':
+          description: Student removed
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1702,6 +1783,46 @@ components:
         status: active
         created_at: '2026-10-26T00:00:00Z'
         updated_at: '2026-10-26T00:00:00Z'
+    FacultyCreateInput:
+      type: object
+      required:
+        - email
+        - full_name
+        - department_id
+      description: >-
+        Admin-only payload for directly provisioning a faculty or admin profile.
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 320
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        department_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+            - faculty
+            - admin
+          default: faculty
+        status:
+          type: string
+          enum:
+            - pending
+            - active
+          default: active
+      additionalProperties: false
+      example:
+        email: jamie.rivera@example.edu
+        full_name: Jamie Rivera
+        department_id: 5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb
+        role: faculty
+        status: active
     FacultyUpdate:
       type: object
       minProperties: 1
