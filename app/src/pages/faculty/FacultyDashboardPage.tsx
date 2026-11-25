@@ -46,10 +46,10 @@ export function FacultyDashboardPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <h1 className="ui-page-title" style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 6px 0' }}>
-              Faculty Intelligence Feed
+              Good day, {profile?.full_name || 'Faculty Member'}
             </h1>
             <p className="ui-page-subtitle" style={{ margin: 0, color: 'var(--muted-foreground, #64748b)', fontSize: '14px' }}>
-              Recent peer reviews across academic departments powered by Prism mock API.
+              Your reviews, student research, and application updates in one place.
             </p>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
