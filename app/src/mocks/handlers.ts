@@ -272,6 +272,13 @@ let nextRevisionId = 1;
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+export function isStudentRegistrationDecision(input: unknown): boolean {
+  if (!isRecord(input) || !Array.isArray(input.application_ids) || input.application_ids.length === 0) return false;
+  return input.application_ids.every(id =>
+    approvalQueue.some(item => item.type === 'student_registration' && item.id === id),
+  );
+}
+
 const extractReviewText = (document: ReviewDocument | undefined): string =>
   (document?.blocks ?? [])
     .map((block) =>
@@ -955,7 +962,7 @@ export const handlers = [
     }
 
     const item: ApprovalItem = {
-      id: `mock-approval-${approvalQueue.length + 1}`,
+      id: input.type === 'student_registration' ? crypto.randomUUID() : `mock-approval-${approvalQueue.length + 1}`,
       type: input.type === 'program_proposal' || input.type === 'department_proposal'
         ? input.type
         : 'student_registration',

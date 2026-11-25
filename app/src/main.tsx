@@ -43,6 +43,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { SessionProvider } from './context/SessionContext';
 import { useSession } from './context/SessionContext';
 import { ChatProvider } from './context/ChatContext';
+import { isLocalMockAuth } from './lib/supabase';
 
 function GuardLoading() {
   return <main className="contract-auth-page" aria-busy="true"><p>Checking your account…</p></main>;
@@ -230,16 +231,33 @@ const router = createBrowserRouter([
   },
 ]);
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <SessionProvider>
-        <ThemeProvider>
-          <ChatProvider>
-            <RouterProvider router={router} />
-          </ChatProvider>
-        </ThemeProvider>
-      </SessionProvider>
-    </QueryClientProvider>
-  </StrictMode>
-);
+async function startApp() {
+  const root = document.getElementById('root')!;
+  if (import.meta.env.DEV && isLocalMockAuth &&
+      ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
+    try {
+      const { startRosterMocks } = await import('./mocks/browser');
+      await startRosterMocks();
+    } catch (error) {
+      console.error('Unable to start local API mocks.', error);
+      root.textContent = 'Unable to start local API mocks. Check service worker permissions and reload.';
+      return;
+    }
+  }
+
+  createRoot(root).render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider>
+          <ThemeProvider>
+            <ChatProvider>
+              <RouterProvider router={router} />
+            </ChatProvider>
+          </ThemeProvider>
+        </SessionProvider>
+      </QueryClientProvider>
+    </StrictMode>
+  );
+}
+
+void startApp();

@@ -1,6 +1,7 @@
 import { defineConfig, type Connect, type Plugin } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { createReadStream, existsSync, statSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -34,8 +35,24 @@ function serveMockup(): Plugin {
   };
 }
 
+/** Serve the worker that ships with the installed MSW version, only in Vite dev. */
+function serveMockWorker(): Plugin {
+  return {
+    name: 'serve-mock-worker',
+    configureServer(server) {
+      const workerPath = createRequire(import.meta.url).resolve('msw/mockServiceWorker.js');
+      server.middlewares.use((req, res, next) => {
+        if (req.method !== 'GET' || req.url !== '/mockServiceWorker.js') return next();
+        res.setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-cache');
+        createReadStream(workerPath).pipe(res);
+      });
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), serveMockup()],
+  plugins: [react(), serveMockup(), serveMockWorker()],
   test: {
     environment: 'node',
     setupFiles: ['./src/mocks/setupTests.ts'],
