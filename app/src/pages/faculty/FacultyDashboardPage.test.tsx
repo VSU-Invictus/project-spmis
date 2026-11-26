@@ -40,7 +40,7 @@ vi.mock('../../hooks/useStudentById', () => ({
   useStudentsByIds: () => [{ data: { id: 'student-1', first_name: 'Maria', middle_name: null, last_name: 'Santos', program_id: 'program-1' }, isPending: false }],
 }));
 vi.mock('../../hooks/usePrograms', () => ({
-  usePrograms: () => ({ data: [{ id: 'program-1', name: 'Bachelor of Science in Computer Science' }] }),
+  useApprovedProgramOptions: () => ({ data: [{ id: 'program-1', name: 'Bachelor of Science in Computer Science' }] }),
 }));
 
 const activeProfile: FacultyProfile = {
