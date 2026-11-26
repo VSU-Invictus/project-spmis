@@ -67,7 +67,7 @@ function DashboardOverview({ profileId }: { profileId: string }) {
   const loading = queues.some(({ result }) => result.isPending);
   const failed = queues.some(({ result }) => result.isError);
 
-  return <AppShell role="admin" activeNavKey="dashboard" showHeaderThemeToggle={false} mobileNavigation={
+  return <AppShell role="admin" activeNavKey="dashboard" mobileNavigation={
     <nav className="ui-dashboard-mobile-nav" aria-label="Admin pages">
       {ADMIN_NAV_ITEMS.map(({ key, href, label }) => (
         <Link key={key} to={href} aria-current={key === 'dashboard' ? 'page' : undefined}>
