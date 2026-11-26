@@ -48,7 +48,7 @@ export function AppShell({
   breadcrumb,
   academicYear = 'AY 2026-2027',
   showHeaderThemeToggle = true,
-  showFooterLinks = true,
+  showFooterLinks = role === 'admin',
   mainClassName = '',
   mobileNavigation,
   children,
@@ -72,7 +72,7 @@ export function AppShell({
   };
 
   return (
-    <div className="app-canvas ui-dashboard-app" style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+    <div className={`app-canvas ui-dashboard-app ui-dashboard-app--${role}`} style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}>
       {role === 'admin' ? (
         <AdminSidebar
           className={mobileNavigation ? 'ui-dashboard-sidebar' : undefined}

@@ -33,7 +33,10 @@ export interface StudentSearchPage {
 }
 
 /** Counted variant for server-paginated rosters; keeps the existing Faculty hook unchanged. */
-export function useStudentSearchPage(params: SearchStudentsParams) {
+export function useStudentSearchPage(
+  params: SearchStudentsParams,
+  options?: Omit<UseQueryOptions<StudentSearchPage, Error>, 'queryKey' | 'queryFn'>
+) {
   return useQuery({
     queryKey: [...queryKeys.searchStudents(params as Record<string, unknown>), 'counted-page'],
     queryFn: async (): Promise<StudentSearchPage> => {
@@ -50,5 +53,6 @@ export function useStudentSearchPage(params: SearchStudentsParams) {
         }))) ?? []);
       return { students: page.records, total: page.total };
     },
+    ...options,
   });
 }

@@ -572,9 +572,11 @@ export const handlers = [
     const url = new URL(request.url);
     const studentFilter = url.searchParams.get('student_id');
     const statusFilter = url.searchParams.get('status');
+    const ownerFilter = url.searchParams.get('owner_id');
     const result = reviews.filter((review) =>
       matches(review.student_id, studentFilter)
       && (!statusFilter || statusFilter === `eq.${review.status}`)
+      && matches(review.owner_id, ownerFilter)
       && (review.status === 'active' || review.owner_id === ownerId),
     );
     return HttpResponse.json(result);

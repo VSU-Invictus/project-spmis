@@ -164,7 +164,7 @@ body[data-page="dashboard"] .stats,
   box-sizing: border-box !important;
   margin: 0 !important;
   min-height: 64px !important;
-  transition: box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease, background-color var(--transition-fast) !important;
+  transition: box-shadow 160ms ease, transform 160ms ease !important;
 }
 
 .quick-links a:hover,
@@ -203,7 +203,6 @@ body[data-page="dashboard"] .stats,
   color: #FFFFFF !important;
   margin: 0 0 4px 0 !important;
   line-height: 1.3 !important;
-  transition: color 150ms ease !important;
 }
 
 .quick-links a:hover :is(h3, .ui-card-title),
@@ -215,7 +214,7 @@ body[data-page="dashboard"] .stats,
 
 .quick-links .arrow {
   display: inline-block;
-  transition: transform 0.25s ease, color 150ms ease;
+  transition: transform 0.25s ease;
   margin-left: 2px;
   color: inherit !important;
 }
