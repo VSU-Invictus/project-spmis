@@ -103,7 +103,7 @@ export function AppShell({
 
         <PortalFooter
           portalName={role === 'admin' ? 'Admin Portal' : 'Faculty Portal'}
-          showLinks
+          showLinks={role === 'admin'}
         />
       </main>
 

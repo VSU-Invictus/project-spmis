@@ -1270,6 +1270,15 @@ html:not(.dark) :is(.app-sidebar, .sidebar) [aria-current="page"] span {
 
 html:not(.dark) :is(.app-sidebar, .sidebar) .sidebar-divider {
   background-color: #E2DDD4 !important;
+  border-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .ui-dashboard-app--faculty .ui-dashboard-footer {
+  border-top-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .ui-dashboard-app--faculty .review-feed-contributor {
+  color: #141413 !important;
 }
 
 html:not(.dark) :is(.app-sidebar, .sidebar) .sidebar-account-card {
