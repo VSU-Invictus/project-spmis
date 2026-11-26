@@ -1,15 +1,16 @@
-﻿import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
-  Button,
   Badge,
   EmptyState,
-  Skeleton
+  Skeleton,
 } from '../../components/ui';
 import { ReviewDocumentView, getTagBadgeVariant } from '../../components/reviews';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
-import { useSearchStudents } from '../../hooks/useSearchStudents';
+import { useStudentSearchPage } from '../../hooks/useSearchStudents';
+import { useStudentsByIds } from '../../hooks/useStudentById';
+import { usePrograms } from '../../hooks/usePrograms';
+import { ApiRequestError } from '../../lib/api';
 import { useSession } from '../../context/SessionContext';
 
 function ReviewCardSkeleton() {
@@ -25,35 +26,48 @@ function ReviewCardSkeleton() {
 
 export function FacultyDashboardPage() {
   const { profile } = useSession();
+  const isActiveFaculty = profile?.role === 'faculty' && profile?.status === 'active';
   const {
-    data: reviews,
-    isPending: isReviewsPending,
-    isFetching: isReviewsFetching,
-    isError,
-    error: reviewsError,
-    refetch,
+    data: recentReviews,
+    isPending: isRecentReviewsPending,
+    isError: isRecentReviewsError,
+    error: recentReviewsError,
   } = useStudentReviews({
     status: 'eq.active',
     order: 'created_at.desc,id.asc',
+    limit: 5,
+  }, {
+    enabled: isActiveFaculty,
   });
-  const {
-    data: students,
-    isPending: isStudentsPending,
-    isFetching: isStudentsFetching,
-  } = useSearchStudents();
-  const studentsById = new Map((students ?? []).map((student) => [student.id, student]));
-  const isDashboardFetching = isReviewsFetching || isStudentsFetching;
-  const [showRefreshSkeleton, setShowRefreshSkeleton] = useState(false);
+  const { data: ownReviews, isPending: isOwnReviewsPending } = useStudentReviews({
+    owner_id: profile?.id ? `eq.${profile.id}` : undefined,
+  }, {
+    enabled: isActiveFaculty && Boolean(profile?.id),
+  });
+  const { data: studentPage, isPending: isStudentCountPending } = useStudentSearchPage({
+    limit: 1,
+    offset: 0,
+    order: 'created_at.desc,id.asc',
+  }, { enabled: isActiveFaculty });
+  const { data: programs } = usePrograms(undefined, { enabled: isActiveFaculty });
+  const studentIds = [...new Set((recentReviews ?? []).map((review) => review.student_id))];
+  const studentQueries = useStudentsByIds(studentIds, isActiveFaculty);
+  const studentsById = new Map(studentIds.map((id, index) => [id, studentQueries[index]?.data]));
+  const programsById = new Map((programs ?? []).map((program) => [program.id, program.name]));
+  const isRecentContentPending = isRecentReviewsPending || studentQueries.some((query) => query.isPending);
 
-  useEffect(() => {
-    if (isDashboardFetching) {
-      setShowRefreshSkeleton(true);
-      return;
-    }
-
-    const timer = window.setTimeout(() => setShowRefreshSkeleton(false), 500);
-    return () => window.clearTimeout(timer);
-  }, [isDashboardFetching]);
+  if (!isActiveFaculty) {
+    return (
+      <AppShell role={profile?.role === 'admin' ? 'admin' : 'faculty'} activeNavKey="dashboard" breadcrumb="Faculty Portal / Overview">
+        <div style={{ padding: '24px 0', maxWidth: '640px' }}>
+          <div role="alert" style={{ padding: '20px 24px', backgroundColor: 'var(--destructive-subtle, #fee2e2)', border: '1px solid var(--destructive, #ef4444)', borderRadius: 'var(--radius-md, 8px)', color: 'var(--destructive, #b91c1c)' }}>
+            <h2 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 600 }}>Access Restricted</h2>
+            <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.5 }}>The faculty dashboard is available only to active, verified faculty members.</p>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell
@@ -62,12 +76,6 @@ export function FacultyDashboardPage() {
       breadcrumb="Faculty Portal / Overview"
     >
       <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        {showRefreshSkeleton && (
-          <div className="dashboard-refresh-status" role="status" aria-live="polite" aria-busy={isDashboardFetching}>
-            <span>{isReviewsPending || isStudentsPending ? 'Loading dashboard…' : 'Refreshing dashboard…'}</span>
-            <Skeleton className="skeleton" height="4px" style={{ margin: 0 }} />
-          </div>
-        )}
         {/* Header with Title and Create Action */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
@@ -78,27 +86,18 @@ export function FacultyDashboardPage() {
               Your reviews, student research, and application updates in one place.
             </p>
           </div>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setShowRefreshSkeleton(true);
-              void refetch();
-            }}
-          >
-            Refresh Feed
-          </Button>
         </div>
 
         {/* Dashboard statistics */}
         <div className="stats">
           <section className="ui-card stat" aria-label="Students statistic">
             <span className="muted">Students</span>
-            <strong>20</strong>
+            <strong>{isStudentCountPending ? '—' : studentPage?.total ?? 0}</strong>
             <small>Approved sample roster</small>
           </section>
           <section className="ui-card stat" aria-label="Your reviews statistic">
             <span className="muted">Your reviews</span>
-            <strong>3</strong>
+            <strong>{isOwnReviewsPending ? '—' : ownReviews?.length ?? 0}</strong>
             <small>Active and hidden</small>
           </section>
         </div>
@@ -125,8 +124,7 @@ export function FacultyDashboardPage() {
           </div>
         </section>
 
-        {/* Global Error Banner */}
-        {isError && (
+        {isRecentReviewsError && (
           <div
             role="alert"
             style={{
@@ -138,7 +136,10 @@ export function FacultyDashboardPage() {
               fontSize: '14px',
             }}
           >
-            <strong>Prism Mock Error:</strong> {reviewsError?.message}
+            <strong>Unable to load recent reviews.</strong>{' '}
+            {recentReviewsError instanceof ApiRequestError
+              ? <>{recentReviewsError.message}{recentReviewsError.hint ? ` ${recentReviewsError.hint}` : ''}</>
+              : 'Please try again in a moment.'}
           </div>
         )}
         <section className="ui-card dashboard-reviews" aria-labelledby="dashboard-reviews-title">
@@ -148,8 +149,8 @@ export function FacultyDashboardPage() {
               Browse all students <span className="arrow" aria-hidden="true">&rarr;</span>
             </Link>
           </div>
-          <div className="review-feed" aria-busy={isDashboardFetching}>
-            {showRefreshSkeleton && (
+          <div className="review-feed" aria-busy={isRecentContentPending}>
+            {isRecentContentPending && (
               <>
                 <ReviewCardSkeleton />
                 <ReviewCardSkeleton />
@@ -157,15 +158,16 @@ export function FacultyDashboardPage() {
               </>
             )}
 
-            {!showRefreshSkeleton && (!reviews || reviews.length === 0) && (
+            {!isRecentContentPending && !isRecentReviewsError && (!recentReviews || recentReviews.length === 0) && (
               <EmptyState title="No recent active reviews" description="Active reviews will appear here." />
             )}
 
-            {!showRefreshSkeleton && reviews?.map((review) => {
+            {!isRecentContentPending && recentReviews?.map((review) => {
               const student = studentsById.get(review.student_id);
               const studentName = student
                 ? [student.first_name, student.middle_name, student.last_name].filter(Boolean).join(' ')
                 : 'Student';
+              const programName = student ? programsById.get(student.program_id) : undefined;
               const isOwnReview = review.owner_id === profile?.id;
 
               return (
@@ -183,7 +185,7 @@ export function FacultyDashboardPage() {
                             {studentName}
                           </Link>
                         ) : studentName}
-                        {' · '}{student?.program_name || 'Program unavailable'}{' · '}{review.created_at.slice(0, 10)}
+                        {' · '}{programName || 'Program unavailable'}{' · '}{review.created_at.slice(0, 10)}
                       </span>
                     </div>
                     <Badge variant="success">Active</Badge>
