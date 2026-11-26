@@ -105,3 +105,39 @@ Deno.test('embedText rejects mocked Gemini invalid embedding values', async () =
     else Deno.env.set('GEMINI_API_KEY', originalApiKey);
   }
 });
+
+Deno.test('geminiRequest sends API key in x-goog-api-key header and omits raw provider details on 502', async () => {
+  const originalApiKey = Deno.env.get('GEMINI_API_KEY');
+  Deno.env.set('GEMINI_API_KEY', 'secret-header-key');
+  let capturedUrl = '';
+  let capturedHeader: string | null = null;
+  globalThis.fetch = (input: string | URL | Request, init?: RequestInit) => {
+    capturedUrl = String(input);
+    capturedHeader = new Headers(init?.headers).get('x-goog-api-key');
+    return Promise.resolve(new Response('raw upstream stacktrace with internal details', { status: 500 }));
+  };
+
+  try {
+    let error: unknown;
+    try {
+      await generateAnswer('prompt');
+    } catch (caught) {
+      error = caught;
+    }
+    assertEquals(capturedUrl.includes('key='), false);
+    assertEquals(capturedHeader, 'secret-header-key');
+    assertEquals(error instanceof FunctionError, true);
+    const response = errorResponse(error);
+    assertEquals(response.status, 502);
+    assertEquals(await response.json(), {
+      code: 'AI_PROVIDER_ERROR',
+      message: 'The AI provider request failed.',
+      details: null,
+      hint: null,
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalApiKey === undefined) Deno.env.delete('GEMINI_API_KEY');
+    else Deno.env.set('GEMINI_API_KEY', originalApiKey);
+  }
+});
