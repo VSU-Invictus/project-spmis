@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #211 — redaction matching:** Matched full names across whitespace variations and aligned Unicode case-folded token lookup with regex matching, including collision regression coverage.
 - **Issue #211 — redaction review:** Covered last-first-middle names and prevented malformed student markers from shielding names or IDs from redaction.
 - **Issue #211 — reproducible database CI:** Pinned Supabase CLI to `3.4.0`, the version used for local migration and pgTAP verification.
 - **Issue #211 — audit attribution:** Set the verified service-role RPC actor transaction-locally and used it in audit triggers with a JWT fallback; added coverage for side effects across all four approval types.

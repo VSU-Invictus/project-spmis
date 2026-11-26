@@ -88,6 +88,22 @@ Deno.test('chat redacts last-first-middle full names without matching partial na
   );
 });
 
+Deno.test('chat redacts full names across repeated spaces, tabs and line breaks', () => {
+  const token = `{{STUDENT:${students[0].id}}}`;
+  assertEquals(
+    deidentifyText('Maria  Santos / Maria\tSantos / Maria\nSantos / Santos, Maria\tDela\nCruz', students).text,
+    `${token} / ${token} / ${token} / ${token}`,
+  );
+});
+
+Deno.test('Unicode case-folded name matches resolve safely and preserve ambiguous ownership', () => {
+  const token = `{{STUDENT:${students[0].id}}}`;
+  assertEquals(deidentifyText('Maria \u017fantos', students).text, token);
+  const other = { ...students[0], id: '40000000-0000-4000-8000-000000000006',
+    last_name: '\u017fantos', student_id_number: 'TEST-006' };
+  assertEquals(deidentifyText('Maria Santos', [...students, other]).text, '{{STUDENT:REDACTED}}');
+});
+
 Deno.test('reverse substitution restores known tokens and preserves unknown tokens', () => {
   assertEquals(
     reidentifyText(

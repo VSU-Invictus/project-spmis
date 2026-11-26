@@ -21,6 +21,15 @@ function clean(value: string | null | undefined): string {
   return (value ?? '').trim().replace(/\s+/g, ' ');
 }
 
+function variantKey(value: string): string {
+  // Unicode /iu matching treats long s as s; lowercasing alone does not.
+  return clean(value).toLowerCase().replace(/\u017f/g, 's');
+}
+
+function variantPattern(value: string): string {
+  return escapeRegex(value).replace(/ /g, '\\s+');
+}
+
 function variants(student: StudentNameRecord, includePartialNames: boolean): string[] {
   const first = clean(student.first_name);
   const middle = clean(student.middle_name);
@@ -62,7 +71,7 @@ export function deidentifyText(
   const variantOwners = new Map<string, { name: string; studentIds: Set<string> }>();
   for (const student of students) {
     for (const name of variants(student, student.id === targetStudentId)) {
-      const key = name.toLowerCase();
+      const key = variantKey(name);
       const entry = variantOwners.get(key) ?? { name, studentIds: new Set<string>() };
       entry.studentIds.add(student.id);
       variantOwners.set(key, entry);
@@ -80,14 +89,14 @@ export function deidentifyText(
 
   // Replace in one pass so a later name/ID cannot match inside a generated token.
   if (candidates.length) {
-    const byName = new Map(candidates.map((candidate) => [candidate.name.toLowerCase(), candidate]));
+    const byName = new Map(candidates.map((candidate) => [variantKey(candidate.name), candidate]));
     const expression = new RegExp(
-      `\\{\\{STUDENT:(?:REDACTED|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\\}\\}|(?<![\\p{L}\\p{N}])(?:${candidates.map((candidate) => escapeRegex(candidate.name)).join('|')})(?![\\p{L}\\p{N}])`,
+      `\\{\\{STUDENT:(?:REDACTED|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\\}\\}|(?<![\\p{L}\\p{N}])(?:${candidates.map((candidate) => variantPattern(candidate.name)).join('|')})(?![\\p{L}\\p{N}])`,
       'giu',
     );
     output = output.replace(expression, (match) => {
       if (/^\{\{STUDENT:/i.test(match)) return match;
-      const candidate = byName.get(match.toLowerCase())!;
+      const candidate = byName.get(variantKey(match))!;
       replacements.push(candidate);
       return candidate.token;
     });
