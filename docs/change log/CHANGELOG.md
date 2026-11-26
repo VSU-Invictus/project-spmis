@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #211 — redaction review:** Covered last-first-middle names and prevented malformed student markers from shielding names or IDs from redaction.
 - **Issue #211 — reproducible database CI:** Pinned Supabase CLI to `3.4.0`, the version used for local migration and pgTAP verification.
 - **Issue #211 — audit attribution:** Set the verified service-role RPC actor transaction-locally and used it in audit triggers with a JWT fallback; added coverage for side effects across all four approval types.
 - **Issue #211 — self-deletion signal:** Added the `FACULTY_SELF_DELETE_FORBIDDEN` hint to the existing self-delete trigger while preserving `23503` / HTTP 409 and historical foreign keys; corrected the decision log and added hint regression checks.

@@ -31,6 +31,7 @@ function variants(student: StudentNameRecord, includePartialNames: boolean): str
     [first, middle, last].filter(Boolean).join(' '),
     [first, last].filter(Boolean).join(' '),
     [last, first].filter(Boolean).join(' '),
+    [last, [first, middle].filter(Boolean).join(' ')].filter(Boolean).join(', '),
     [last, middle, first].filter(Boolean).join(', '),
     [last, first].filter(Boolean).join(', '),
     ...(includePartialNames ? [first, middle, last] : []),
@@ -81,7 +82,7 @@ export function deidentifyText(
   if (candidates.length) {
     const byName = new Map(candidates.map((candidate) => [candidate.name.toLowerCase(), candidate]));
     const expression = new RegExp(
-      `\\{\\{STUDENT:[^}]+\\}\\}|(?<![\\p{L}\\p{N}])(?:${candidates.map((candidate) => escapeRegex(candidate.name)).join('|')})(?![\\p{L}\\p{N}])`,
+      `\\{\\{STUDENT:(?:REDACTED|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\\}\\}|(?<![\\p{L}\\p{N}])(?:${candidates.map((candidate) => escapeRegex(candidate.name)).join('|')})(?![\\p{L}\\p{N}])`,
       'giu',
     );
     output = output.replace(expression, (match) => {

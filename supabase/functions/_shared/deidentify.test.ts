@@ -75,6 +75,19 @@ Deno.test('generated and existing student tokens are not matched again as names'
   assertEquals(deidentifyText(`TEST-001 ${token}`, [students[0], other]).text, `${token} ${token}`);
 });
 
+Deno.test('malformed student markers cannot shield names or student IDs from redaction', () => {
+  const result = deidentifyText('{{STUDENT:Maria Santos}} and {{STUDENT:TEST-001}}', students).text;
+  assertEquals(result.includes('Maria Santos'), false);
+  assertEquals(result.includes('TEST-001'), false);
+});
+
+Deno.test('chat redacts last-first-middle full names without matching partial names', () => {
+  assertEquals(
+    deidentifyText('Santos, Maria Dela Cruz led the group. Maria may follow up.', students).text,
+    '{{STUDENT:40000000-0000-4000-8000-000000000001}} led the group. Maria may follow up.',
+  );
+});
+
 Deno.test('reverse substitution restores known tokens and preserves unknown tokens', () => {
   assertEquals(
     reidentifyText(
