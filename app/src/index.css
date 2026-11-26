@@ -19,6 +19,21 @@
 @import '../../mockup/assets/css/pages/faculty/new-review.css';
 @import '../../mockup/assets/css/pages/design-system.css';
 
+html:not(.dark) .admin-queue-filters [aria-pressed="false"] {
+  background: transparent;
+  color: var(--foreground);
+}
+
+html:not(.dark) .admin-queue-filters [aria-pressed="false"]:hover {
+  background: var(--secondary);
+}
+
+@media (max-width: 700px) {
+  .app-sidebar.ui-dashboard-sidebar {
+    display: none !important;
+  }
+}
+
 /* --- 3. CLAUDE+ DESIGN SYSTEM ROOT TOKENS (LIGHT DEFAULTS) --- */
 .contract-auth-page {
   min-height: 100vh;

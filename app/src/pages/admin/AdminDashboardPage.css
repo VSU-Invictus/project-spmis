@@ -1,0 +1,18 @@
+.admin-dashboard-overview .ui-dashboard-top-header {
+  margin-bottom: 0 !important;
+}
+
+.admin-dashboard-overview .ui-dashboard-metric .ui-dashboard-metric-action {
+  color: var(--primary) !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-dashboard-overview .ui-card.ui-dashboard-panel {
+  padding: calc(var(--spacing) * 4);
+}
+
+.admin-dashboard-overview .ui-dashboard-activity-footer a {
+  margin-inline-start: auto;
+  font-size: 0.75rem;
+}

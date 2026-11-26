@@ -33,7 +33,6 @@ html:not(.dark) .modal-overlay.queue-modal-overlay {
   flex-direction: column !important;
   border: 1px solid var(--border, var(--color-border-main, #3E3D39)) !important;
   border-radius: var(--radius-xl, 16px) !important;
-  background: var(--card, var(--color-card, #1A1918)) !important;
   color: var(--foreground, var(--color-text-main, #FFFFFF)) !important;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72) !important;
   overflow: hidden !important;
@@ -53,7 +52,11 @@ html:not(.dark) .modal-container.queue-modal-container {
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  background: var(--background, var(--color-canvas, #141413)) !important;
+}
+
+.queue-modal-overlay .modal-container.queue-modal-container,
+.queue-modal-body {
+  background-color: var(--color-canvas, var(--background)) !important;
 }
 
 .queue-modal-sr-title {
@@ -111,6 +114,10 @@ html:not(.dark) .modal-container.queue-modal-container {
 }
 
 /* --- 3. EMBEDDED QUEUE WORKSPACE OVERRIDES --- */
+.queue-modal-body > .queue-embedded-workspace {
+  background: transparent !important;
+}
+
 .queue-embedded-workspace .section-container,
 .queue-modal-body .section-container {
   position: static !important;
@@ -178,6 +185,14 @@ html:not(.dark) .modal-container.queue-modal-container {
   color: var(--foreground, #FAF9F5) !important;
 }
 
+.queue-modal-body .controls-container .search-input {
+  background-color: var(--color-card, var(--card)) !important;
+}
+
+.queue-modal-body .controls-container .search-input:not(:focus) {
+  border-color: var(--color-border-main, var(--border)) !important;
+}
+
 .queue-embedded-workspace .search-input::placeholder,
 .queue-modal-body .search-input::placeholder {
   color: var(--muted-foreground, #8A837A) !important;
@@ -234,6 +249,14 @@ html:not(.dark) .modal-container.queue-modal-container {
   box-sizing: border-box !important;
   white-space: nowrap !important;
   border: none !important;
+}
+
+/* Match the embedded M1 header, including the Student ID column. */
+.queue-modal-body .is-modal .table-header-row .th-cell {
+  height: auto !important;
+  font: 700 0.75rem/1.2 var(--font-sans) !important;
+  letter-spacing: 0.05em !important;
+  color: var(--color-text-muted, var(--muted-foreground)) !important;
 }
 
 .queue-embedded-workspace .table-body .table-row,
@@ -460,6 +483,11 @@ html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox, .ro
   padding: 0 !important;
 }
 
+.queue-modal-body .pagination-controls-group {
+  max-width: 100%;
+  flex-wrap: wrap !important;
+}
+
 .queue-embedded-workspace .action-btn-group,
 .queue-modal-body .action-btn-group {
   display: inline-flex !important;
@@ -592,6 +620,10 @@ html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox, .ro
 }
 .queue-container.queue-student :is(.th-cell, .td-cell).col-id {
   flex: 159 1 0 !important;
+}
+
+.queue-container.queue-student .td-cell.col-id,
+.queue-container.queue-student:where(:not(.is-modal)) .th-cell.col-id {
   font-family: var(--font-sans, 'Inter', sans-serif) !important;
   font-size: 0.8125rem !important;
   letter-spacing: -0.01em !important;
@@ -624,6 +656,18 @@ html:not(.dark) .queue-container :is(.custom-checkbox, .select-all-checkbox, .ro
 .queue-container.queue-faculty :is(.th-cell, .td-cell).col-name { flex: 200 1 0 !important; }
 .queue-container.queue-faculty :is(.th-cell, .td-cell).col-email { flex: 210 1 0 !important; }
 .queue-container.queue-faculty :is(.th-cell, .td-cell).col-dept { flex: 230 1 0 !important; }
+
+.queue-modal-body .queue-faculty .table-body .table-row {
+  height: auto !important;
+  min-height: 55px !important;
+}
+
+.queue-modal-body .queue-faculty .table-body .td-cell.col-dept {
+  min-width: 0;
+  padding-block: calc(var(--spacing) * 2) !important;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .queue-container.queue-faculty :is(.th-cell, .td-cell).col-role {
   flex: 0 0 120px !important;
   width: 120px !important;
