@@ -7,7 +7,7 @@ import { useAdminQueueBrowse, useQueueFacultyReferences } from '../../hooks/useA
 import { useDepartmentOptions } from '../../hooks/useDepartments';
 import { useApprovedProgramOptions } from '../../hooks/usePrograms';
 import { ApiRequestError } from '../../lib/api';
-import { Alert, RejectionRow, Toast } from '../ui';
+import { Alert, RejectionRow, Toast, useMinimumLoadingDuration } from '../ui';
 import { useDecideApplications } from '../../hooks/useDecideApplications';
 import { approvalDecisionSchema } from '../../lib/validation/approvalDecision';
 import { Badge } from '../ui/Badge';
@@ -133,6 +133,17 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
   const faculty = useQueueFacultyReferences(profileId);
   const departments = useDepartmentOptions();
   const programs = useApprovedProgramOptions();
+  const hasPendingApplications = (applications.data?.length ?? 0) > 0;
+  const isReferenceLoading =
+    hasPendingApplications &&
+    (type === 'student'
+      ? programs.isPending || programs.isFetching
+      : type === 'faculty'
+      ? departments.isPending || departments.isFetching || faculty.isPending || faculty.isFetching
+      : faculty.isPending || faculty.isFetching);
+  const isLoading = useMinimumLoadingDuration(
+    applications.isPending || applications.isFetching || isReferenceLoading
+  );
   const rows = useMemo<QueueRow[]>(() => (applications.data ?? []).map(item => {
     const person = faculty.data?.find(entry => entry.id === item.submitted_by);
     const date = item.created_at;
@@ -303,8 +314,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
     <div className={`queue-container queue-${type} queue-embedded-workspace ${isModal ? 'is-modal' : ''}`}>
       <main className="section-container">
         {decisionError && !rejectionIds && <Alert variant="warning" title="Decision could not be confirmed" description={decisionError} />}
-        {decisionError && <Button variant="outline" disabled={pending} onClick={() => void applications.refetch()}>Refresh queue</Button>}
-        {applications.isPending && <p role="status">Loading applications…</p>}
+        {decisionError && <Button variant="outline" disabled={pending || isLoading} onClick={() => void applications.refetch()}>Refresh queue</Button>}
         {applications.isError && <><Alert variant="warning" title={applications.error.message} description={applications.error instanceof ApiRequestError ? applications.error.hint ?? '' : ''} />
           <Button variant="outline" onClick={() => void applications.refetch()}>Retry applications</Button></>}
         {referenceError && <><Alert variant="warning" title="Some reference details are unavailable" description={referenceError.message} />
@@ -408,7 +418,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
                     aria-label="Select all rows"
                     checked={allVisibleChecked}
                     indeterminate={someVisibleChecked}
-                    disabled={pending || Boolean(rejectionIds) || applications.isPending || applications.isError || !actionableVisibleRows.length}
+                    disabled={pending || Boolean(rejectionIds) || isLoading || applications.isError || !actionableVisibleRows.length}
                     onChange={toggleAllVisible}
                   />
                 </div>
@@ -424,8 +434,28 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
               </div>
 
               {/* Table Body */}
-              <div className="table-body" role="rowgroup">
-                {!applications.isPending && !applications.isError && paginatedRows.map((row) => {
+              <div className="table-body" role="rowgroup" aria-busy={isLoading || undefined}>
+                {isLoading &&
+                  [0, 1, 2, 3, 4].map((skeletonIdx) => (
+                    <div key={`skeleton-${skeletonIdx}`} className="table-row skeleton-row" role="row">
+                      <div className="td-cell checkbox-cell" role="cell">
+                        <div className="skeleton skeleton-checkbox" />
+                      </div>
+                      {columns.map((col, colIdx) => (
+                        <div
+                          key={col.key}
+                          className={`td-cell ${col.colClass || ''}`}
+                          role="cell"
+                        >
+                          <div
+                            className="skeleton"
+                            style={{ width: colIdx === 0 ? '72%' : colIdx === columns.length - 1 ? '55%' : '82%' }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                {!isLoading && !applications.isError && paginatedRows.map((row) => {
                   const enabled = isActionable(row);
                   const checked = selected.has(row.id);
                   return (
@@ -469,7 +499,7 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
             </div>
 
             {/* Empty State */}
-            {!applications.isPending && !applications.isError && filteredRows.length === 0 && (
+            {!isLoading && !applications.isError && filteredRows.length === 0 && (
               <EmptyState
                 title={`No pending ${type} applications`}
                 description={`${type.charAt(0).toUpperCase() + type.slice(1)} applications awaiting review will appear here.`}
@@ -483,28 +513,29 @@ function QueueBrowse({ type, isModal = false, profileId }: ApplicationQueueProps
             totalPages={totalPages}
             totalEntries={totalEntries}
             pageSize={pageSize}
-            onPageChange={(page) => { if (!pending && !rejectionIds) setCurrentPage(page); }}
+            isLoading={isLoading}
+            onPageChange={(page) => { if (!pending && !rejectionIds && !isLoading) setCurrentPage(page); }}
             onPageSizeChange={(size) => {
-              if (pending || rejectionIds) return;
+              if (pending || rejectionIds || isLoading) return;
               setRowsPerPage(size);
               setCurrentPage(1);
             }}
-            selectionText={selected.size > 0 ? `${selected.size} selected` : ''}
+            selectionText={!isLoading && selected.size > 0 ? `${selected.size} selected` : ''}
             bulkActions={
               <>
                 <Button
                   variant="approve"
-                  hasSelection={selected.size > 0}
-                  disabled={pending || Boolean(rejectionIds) || !selected.size || applications.isError}
+                  hasSelection={!isLoading && selected.size > 0}
+                  disabled={pending || isLoading || Boolean(rejectionIds) || !selected.size || applications.isError}
                   onClick={() => void decide('approve', [...selected])}
                 >
                   Approve
                 </Button>
                 <Button
                   variant="reject"
-                  hasSelection={selected.size > 0}
+                  hasSelection={!isLoading && selected.size > 0}
                   ref={rejectTrigger}
-                  disabled={pending || Boolean(rejectionIds) || !selected.size || applications.isError}
+                  disabled={pending || isLoading || Boolean(rejectionIds) || !selected.size || applications.isError}
                   onClick={() => {
                     const anchor = paginatedRows.find(row => selected.has(row.id));
                     if (!anchor) { setDecisionError('Select an application on this page.'); return; }

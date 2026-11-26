@@ -26,6 +26,7 @@ export interface SessionContextValue {
   mockRole: MockRole | null;
   setMockRole: (role: MockRole) => void;
   syncProfile: (profile: FacultyProfile) => void;
+  signOut: () => Promise<void>;
 }
 
 const MOCK_ENABLED = isLocalMockAuth;
@@ -83,6 +84,21 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
   const syncProfile = useCallback((nextProfile: FacultyProfile) => {
     setProfile(nextProfile);
+  }, []);
+  const signOut = useCallback(async () => {
+    if (MOCK_ENABLED) {
+      setProfile(null);
+      setSession(null);
+      return;
+    }
+    if (supabase) {
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) throw signOutError;
+    }
+    configureApiAuth({ accessToken: undefined });
+    setSession(null);
+    setProfile(null);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -155,7 +171,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     mockRole: MOCK_ENABLED ? mockRole : null,
     setMockRole,
     syncProfile,
-  }), [session, profile, loading, error, mockRole, setMockRole, syncProfile]);
+    signOut,
+  }), [session, profile, loading, error, mockRole, setMockRole, syncProfile, signOut]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

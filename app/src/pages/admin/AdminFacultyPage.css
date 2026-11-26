@@ -3,6 +3,12 @@
   min-width: 960px;
 }
 
+/* Keep this fixed-page roster free of a nested vertical scrollbar. */
+.admin-faculty-management .table-container,
+.admin-faculty-management .table-scroll {
+  overflow-y: hidden !important;
+}
+
 .admin-faculty-management .th-cell.col-name, .admin-faculty-management .td-cell.col-name {
   flex: 210 1 0;
   padding-left: var(--space-9, 24px);

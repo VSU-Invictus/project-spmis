@@ -1,9 +1,10 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   Badge,
   EmptyState,
   Skeleton,
+  useMinimumLoadingDuration,
 } from '../../components/ui';
 import { ReviewDocumentView, getTagBadgeVariant } from '../../components/reviews';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
@@ -54,7 +55,9 @@ export function FacultyDashboardPage() {
   const studentQueries = useStudentsByIds(studentIds, isActiveFaculty);
   const studentsById = new Map(studentIds.map((id, index) => [id, studentQueries[index]?.data]));
   const programsById = new Map((programs ?? []).map((program) => [program.id, program.name]));
-  const isRecentContentPending = isRecentReviewsPending || studentQueries.some((query) => query.isPending);
+  const isRecentContentPending = useMinimumLoadingDuration(
+    isRecentReviewsPending || studentQueries.some((query) => query.isPending)
+  );
 
   if (!isActiveFaculty) {
     return (

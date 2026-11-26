@@ -59,11 +59,14 @@ type MockReviewRevision = {
 };
 
 type ApprovalItemType =
+  | 'faculty_account'
   | 'student_registration'
   | 'program_proposal'
   | 'department_proposal';
 
 type ApprovalPayload = {
+  full_name?: string;
+  email?: string;
   student_id_number?: string;
   first_name?: string;
   last_name?: string;
@@ -186,6 +189,22 @@ const approvalQueue: ApprovalItem[] = [
     created_at: now,
     decided_at: null,
   },
+  ...[
+    ['07e42297-6b44-4b35-ab2f-d216d547bdc8', 'Example Faculty Applicant Two', 'faculty.two@example.test', departmentId],
+    ['07e42297-6b44-4b35-ab2f-d216d547bdc9', 'Example Faculty Applicant Three', 'faculty.three@example.test', '98a12d0b-73c2-4e02-b7c9-aebc20e823de'],
+    ['07e42297-6b44-4b35-ab2f-d216d547bda0', 'Example Faculty Applicant Four', 'faculty.four@example.test', departmentId],
+    ['07e42297-6b44-4b35-ab2f-d216d547bda1', 'Example Faculty Applicant Five', 'faculty.five@example.test', '98a12d0b-73c2-4e02-b7c9-aebc20e823de'],
+  ].map(([id, full_name, email, department_id]) => ({
+    id,
+    type: 'faculty_account' as const,
+    payload: { full_name, email, department_id },
+    status: 'pending' as const,
+    submitted_by: '98b5fca9-0d8c-4c0a-a10a-7aa10b9bb3a1',
+    decided_by: null,
+    decision_reason: null,
+    created_at: now,
+    decided_at: null,
+  })),
 ];
 
 const departments = [

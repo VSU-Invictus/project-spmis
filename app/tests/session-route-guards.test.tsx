@@ -53,6 +53,7 @@ const unauthenticatedSession: SessionContextValue = {
   mockRole: null,
   setMockRole: () => undefined,
   syncProfile: () => undefined,
+  signOut: async () => undefined,
 };
 
 describe('route protection guards', () => {
