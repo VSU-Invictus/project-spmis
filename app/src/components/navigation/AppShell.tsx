@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
+import { useSession } from '../../context/SessionContext';
 import { QueueModalHost } from '../queue-modal/QueueModalHost';
 import { AdminSidebar, type AdminNavKey } from './AdminSidebar';
 import { FacultySidebar, type FacultyNavKey } from './FacultySidebar';
@@ -44,10 +45,11 @@ export function AppShell({
   onSelectNav,
   breadcrumb,
   academicYear = 'AY 2026-2027',
-  showFooterLinks = role === 'admin',
+  showFooterLinks,
   children,
 }: AppShellProps) {
   const navigate = useNavigate();
+  const { signOut } = useSession();
   const [logoutOpen, setLogoutOpen] = useState(false);
 
   const defaultBreadcrumb =
@@ -114,9 +116,10 @@ export function AppShell({
         syncWithUrl
         role={role}
         onCancel={() => setLogoutOpen(false)}
-        onConfirm={() => {
+        onConfirm={async () => {
+          await signOut();
           setLogoutOpen(false);
-          navigate('/');
+          navigate('/signin', { replace: true });
         }}
       />
 

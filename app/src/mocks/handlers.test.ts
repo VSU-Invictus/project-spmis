@@ -138,7 +138,7 @@ describe('contract MSW handlers', () => {
   });
 
   it('lists and decides approval queue items using the bulk contract shape', async () => {
-    const queue = await fetch(`${BASE}/rest/v1/approval_queue_items?status=eq.pending`);
+    const queue = await fetch(`${BASE}/rest/v1/approval_queue_items?type=eq.student_registration&status=eq.pending`);
     const items = await queue.json();
     expect(queue.status).toBe(200);
     expect(items).toHaveLength(1);

@@ -255,7 +255,7 @@ function FacultyManagement({ profileId }: { profileId: string }) {
       {departments.isError && <RequestError error={departments.error} retry={() => void departments.refetch()} />}
       {faculty.isError ? <RequestError error={faculty.error} retry={() => { if (page > 1) setPage(1); else void faculty.refetch(); }} /> :
         <DataTable layoutMode="flex" ariaLabel="Faculty roster" data={faculty.data?.faculty ?? []} getRowId={row => row.id}
-          isLoading={faculty.isFetching} emptyTitle={search || departmentId ? 'No matching faculty' : 'No faculty yet'}
+          isLoading={faculty.isPending || faculty.isFetching} emptyTitle={search || departmentId ? 'No matching faculty' : 'No faculty yet'}
           emptyDescription={search || departmentId ? 'Try adjusting your search or filters.' : 'Faculty records will appear here when they are added.'}
           pagination={{ page, pageSize, totalEntries: faculty.data?.total ?? 0, onPageChange: setPage,
             onPageSizeChange: size => { setPageSize(size); setPage(1); } }}
