@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #211 — audit attribution:** Set the verified service-role RPC actor transaction-locally and used it in audit triggers with a JWT fallback; added coverage for side effects across all four approval types.
 - **Issue #211 — self-deletion signal:** Added the `FACULTY_SELF_DELETE_FORBIDDEN` hint to the existing self-delete trigger while preserving `23503` / HTTP 409 and historical foreign keys; corrected the decision log and added hint regression checks.
 - **Issue #211 — admin AI chat:** Allowed active admins through chat and server-only vector retrieval, retained direct-review RLS restrictions and RPC grants, and recorded the PM's resolved access decision.
 - **Issue #211 — Gemini configuration:** Replaced retired model defaults, documented server-side model overrides and re-embedding requirements, and enforced 768-dimensional finite embedding responses with mocked regression coverage.
