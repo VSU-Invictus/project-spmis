@@ -9,6 +9,7 @@ import type { ApprovalQueueItem } from '../../hooks/useApprovalQueueItems';
 import { useAuditLogs } from '../../hooks/useAuditLogs';
 import { useDepartmentOptions } from '../../hooks/useDepartments';
 import { useProgramOptions } from '../../hooks/usePrograms';
+import './AdminDashboardPage.css';
 
 const categories = {
   student_registration: { queue: 'student', title: 'Students', label: 'Student', badge: 'warning', Icon: Users },
@@ -16,6 +17,23 @@ const categories = {
   program_proposal: { queue: 'program', title: 'Programs', label: 'Program', badge: 'cyan', Icon: BookOpen },
   faculty_account: { queue: 'faculty', title: 'Faculty', label: 'Faculty', badge: 'info', Icon: UserRound },
 } as const;
+
+function ActivityTimestamp({ timestamp }: { timestamp?: string | null }) {
+  const date = new Date(timestamp ?? '');
+  if (!Number.isFinite(date.getTime())) {
+    return <span className="ui-dashboard-time">Time unavailable</span>;
+  }
+
+  const minutes = Math.floor((Date.now() - date.getTime()) / 60_000);
+  const fullTime = date.toLocaleString();
+  let label = fullTime;
+  if (minutes >= 1440) label = `${Math.floor(minutes / 1440)}d ago`;
+  else if (minutes >= 60) label = `${Math.floor(minutes / 60)}h ago`;
+  else if (minutes >= 1) label = `${minutes}m ago`;
+  else if (minutes === 0) label = 'Just now';
+
+  return <time className="ui-dashboard-time" dateTime={date.toISOString()} title={fullTime}>{label}</time>;
+}
 
 function QueuePreviewRow({ item, departments, programs }: {
   item: ApprovalQueueItem;
@@ -64,10 +82,11 @@ function DashboardOverview({ profileId }: { profileId: string }) {
   const departments = useDepartmentOptions({ enabled: pending.some(item => item.type === 'faculty_account' && Boolean(item.payload.department_id)) });
   const programs = useProgramOptions({ enabled: pending.some(item => item.type === 'student_registration') });
   const audits = useAuditLogs({ limit: 3, order: 'created_at.desc,id.asc' });
+  const shownAudits = audits.data?.slice(0, 3) ?? [];
   const loading = queues.some(({ result }) => result.isPending);
   const failed = queues.some(({ result }) => result.isError);
 
-  return <AppShell role="admin" activeNavKey="dashboard" mobileNavigation={
+  return <AppShell role="admin" activeNavKey="dashboard" mainClassName="admin-dashboard-overview" showFooterLinks={false} mobileNavigation={
     <nav className="ui-dashboard-mobile-nav" aria-label="Admin pages">
       {ADMIN_NAV_ITEMS.map(({ key, href, label }) => (
         <Link key={key} to={href} aria-current={key === 'dashboard' ? 'page' : undefined}>
@@ -89,7 +108,7 @@ function DashboardOverview({ profileId }: { profileId: string }) {
             </span>
             <span className="ui-dashboard-metric-bottom">
               <strong>{result.isError ? '—' : result.data?.length ?? '…'}</strong>
-              <span className="ui-text-muted ui-dashboard-metric-action">Requires review →</span>
+              <span className="ui-dashboard-metric-action">Requires review →</span>
             </span>
           </Link>)}
       </div>
@@ -118,12 +137,15 @@ function DashboardOverview({ profileId }: { profileId: string }) {
           {audits.isPending && <p role="status">Loading audit events…</p>}
           {audits.isError && <p role="alert">Audit events could not be loaded.</p>}
           {audits.isSuccess && !audits.data.length && <p>No recent audit events.</p>}
-          {audits.data?.slice(0, 3).map(event => <article key={event.id} className="ui-dashboard-activity-item">
-            <div><h3>{event.action}</h3><time className="ui-dashboard-time" dateTime={event.created_at}>{new Date(event.created_at).toLocaleString()}</time></div>
+          {shownAudits.map(event => <article key={event.id} className="ui-dashboard-activity-item">
+            <div><h3>{event.action}</h3><ActivityTimestamp timestamp={event.created_at} /></div>
             <p>{event.actor_role} · {event.entity_type}</p>
           </article>)}
         </div>
-        <div className="ui-dashboard-activity-footer"><Link className="ui-link-neutral" to="/admin/audit-log">View All Logs →</Link></div>
+        <div className="ui-dashboard-activity-footer">
+          {audits.isSuccess && <span>Showing {shownAudits.length} {shownAudits.length === 1 ? 'log' : 'logs'}</span>}
+          <Link className="ui-link-neutral" to="/admin/audit-log">View All Logs →</Link>
+        </div>
       </aside>
     </div>
   </AppShell>;

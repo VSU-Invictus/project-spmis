@@ -35,6 +35,8 @@ export interface AppShellProps {
   breadcrumb?: string;
   academicYear?: string;
   showHeaderThemeToggle?: boolean;
+  showFooterLinks?: boolean;
+  mainClassName?: string;
   mobileNavigation?: React.ReactElement;
   children: React.ReactNode;
 }
@@ -46,6 +48,8 @@ export function AppShell({
   breadcrumb,
   academicYear = 'AY 2026-2027',
   showHeaderThemeToggle = true,
+  showFooterLinks = true,
+  mainClassName = '',
   mobileNavigation,
   children,
 }: AppShellProps) {
@@ -84,7 +88,7 @@ export function AppShell({
         />
       )}
 
-      <main className="section-container ui-dashboard-main" style={{ flex: 1, minWidth: 0, height: '100vh', display: 'flex', flexDirection: 'column', padding: '16px 24px', boxSizing: 'border-box' }}>
+      <main className={`section-container ui-dashboard-main ${mainClassName}`.trim()} style={{ flex: 1, minWidth: 0, height: '100vh', display: 'flex', flexDirection: 'column', padding: '16px 24px', boxSizing: 'border-box' }}>
         <div className="admin-top-header ui-dashboard-top-header">
           <div className="header-left ui-dashboard-header-left">
             <span className="red-dot ui-dashboard-header-dot" aria-hidden="true" />
@@ -109,7 +113,7 @@ export function AppShell({
 
         <PortalFooter
           portalName={role === 'admin' ? 'Admin Portal' : 'Faculty Portal'}
-          showLinks
+          showLinks={showFooterLinks}
         />
       </main>
 
