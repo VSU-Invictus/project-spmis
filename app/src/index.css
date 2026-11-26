@@ -1277,6 +1277,15 @@ html:not(.dark) :is(.app-sidebar, .sidebar) .sidebar-divider {
   border-color: #E2DDD4 !important;
 }
 
+html:not(.dark) [data-component="sidebar-admin"] .sidebar-divider {
+  background-color: var(--color-border-subtle) !important;
+  border-bottom-color: var(--color-border-subtle) !important;
+}
+
+html:not(.dark) .ui-dashboard-app--admin .ui-dashboard-footer {
+  border-top-color: var(--color-border-subtle) !important;
+}
+
 html:not(.dark) .ui-dashboard-app--faculty .ui-dashboard-footer {
   border-top-color: #E2DDD4 !important;
 }
