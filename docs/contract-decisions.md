@@ -155,11 +155,16 @@ issue. Including metadata does not add or approve those Storage workflows.
 
 ### Admin review access conflict
 
-README §1 says admins never access review content, whereas §6 allows admin mining
-and other wording discusses shared review visibility. This is not resolved by
-OpenAPI tags. The draft preserves explicitly required admin search/chat mining
-but excludes raw review/history reads pending the PM's decision. The final role
-policy must be consistent across mining, direct reads and RLS.
+Resolved by the PM in PR #203 (Issue #211): active admins may use
+`searchStudents`, including review-text matching, and `askChatbot` over active
+reviews. Admins cannot directly read `reviews`, `review_revisions`, or
+`review_details`; those RLS restrictions remain in force.
+
+`match_review_embeddings` remains executable only by `service_role`. The chat
+Edge Function verifies an active faculty/admin caller and passes that identity
+to the RPC for an independent actor check. Retrieved review context stays on the
+server; the client receives only the chatbot answer, never raw or de-identified
+review rows. The existing Faculty + Admin contract tags remain unchanged.
 
 ### Supabase gateway errors
 

@@ -37,10 +37,8 @@ async function handler(request: Request): Promise<Response> {
     if (request.method !== 'POST') {
       throw new FunctionError(405, 'METHOD_NOT_ALLOWED', 'The HTTP method is not supported.');
     }
-    const { id, role } = await getProfile(request);
-    if (role !== 'faculty') {
-      throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can use the AI Chat Assistant.');
-    }
+    // getProfile verifies authentication and an active faculty/admin profile.
+    const { id } = await getProfile(request);
     enforceRateLimit(id);
     const body = await readJson(request);
     if (typeof body.message !== 'string' || body.message.length > 2000 || !/\S/u.test(body.message)) {

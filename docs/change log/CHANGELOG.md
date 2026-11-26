@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #211 — admin AI chat:** Allowed active admins through chat and server-only vector retrieval, retained direct-review RLS restrictions and RPC grants, and recorded the PM's resolved access decision.
 - **Issue #211 — Gemini configuration:** Replaced retired model defaults, documented server-side model overrides and re-embedding requirements, and enforced 768-dimensional finite embedding responses with mocked regression coverage.
 - **Issue #211 — name redaction:** Limited partial-name matching to the review target, preserved common words in chat and other students' mentions, rendered ambiguous redactions as "a student", and added regression coverage including student-ID redaction.
 - **M3 Backend Review Hardening (`fix/m3-review-hardening`):**
