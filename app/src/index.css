@@ -1359,7 +1359,7 @@ html:not(.dark) :is(.app-sidebar, .sidebar) .sidebar-logout-btn:hover {
   min-height: 64px !important;
   cursor: pointer !important;
   text-align: left !important;
-  transition: box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease, background-color var(--transition-fast) !important;
+  transition: box-shadow 160ms ease, transform 160ms ease !important;
 }
 
 .ui-chat-prompts .ui-chat-prompt-card:hover,
