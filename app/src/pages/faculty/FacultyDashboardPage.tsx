@@ -1,14 +1,13 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   Button,
   Badge,
   EmptyState,
-  Skeleton,
-  Toast,
+  Skeleton
 } from '../../components/ui';
-import { ReviewDocumentView, ReviewFormModal, getTagBadgeVariant } from '../../components/reviews';
+import { ReviewDocumentView, getTagBadgeVariant } from '../../components/reviews';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
 import { useSearchStudents } from '../../hooks/useSearchStudents';
 import { useSession } from '../../context/SessionContext';
@@ -26,16 +25,6 @@ function ReviewCardSkeleton() {
 
 export function FacultyDashboardPage() {
   const { profile } = useSession();
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const handleCloseCreateModal = useCallback(() => setIsCreateOpen(false), []);
-
-  useEffect(() => {
-    if (!toastMessage) return;
-    const timer = setTimeout(() => setToastMessage(null), 4000);
-    return () => clearTimeout(timer);
-  }, [toastMessage]);
-
   const {
     data: reviews,
     isPending: isReviewsPending,
@@ -89,20 +78,15 @@ export function FacultyDashboardPage() {
               Your reviews, student research, and application updates in one place.
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setShowRefreshSkeleton(true);
-                void refetch();
-              }}
-            >
-              Refresh Feed
-            </Button>
-            <Button variant="primary" onClick={() => setIsCreateOpen(true)}>
-              + Write Student Review
-            </Button>
-          </div>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowRefreshSkeleton(true);
+              void refetch();
+            }}
+          >
+            Refresh Feed
+          </Button>
         </div>
 
         {/* Dashboard statistics */}
@@ -222,19 +206,6 @@ export function FacultyDashboardPage() {
           </div>
         </section>
       </div>
-
-      <ReviewFormModal
-        isOpen={isCreateOpen}
-        onClose={handleCloseCreateModal}
-        mode="create"
-        studentId="45b54332-e470-4c21-a839-7428c4f6bf42"
-        allowStudentIdEdit
-        enableDevFailureSimulator
-        contributorName={profile?.full_name || 'Faculty Member'}
-        onSuccess={(msg) => setToastMessage(msg)}
-      />
-
-      <Toast id="dashboard-review-toast" message={toastMessage} />
     </AppShell>
   );
 }

@@ -22,6 +22,11 @@
   box-sizing: border-box !important;
 }
 
+/* Keep the orange frame as an Admin portal identifier in the shared React shell. */
+.app-canvas.ui-dashboard-app:not(.ui-dashboard-app--admin) {
+  border: none !important;
+}
+
 .sidebar-frame,
 iframe.sidebar-frame,
 iframe#sidebar-frame {
