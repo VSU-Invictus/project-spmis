@@ -9,7 +9,7 @@ import { ReviewDocumentView, getTagBadgeVariant } from '../../components/reviews
 import { useStudentReviews } from '../../hooks/useStudentReviews';
 import { useStudentSearchPage } from '../../hooks/useSearchStudents';
 import { useStudentsByIds } from '../../hooks/useStudentById';
-import { usePrograms } from '../../hooks/usePrograms';
+import { useApprovedProgramOptions } from '../../hooks/usePrograms';
 import { ApiRequestError } from '../../lib/api';
 import { useSession } from '../../context/SessionContext';
 
@@ -49,7 +49,7 @@ export function FacultyDashboardPage() {
     offset: 0,
     order: 'created_at.desc,id.asc',
   }, { enabled: isActiveFaculty });
-  const { data: programs } = usePrograms(undefined, { enabled: isActiveFaculty });
+  const { data: programs } = useApprovedProgramOptions({ enabled: isActiveFaculty });
   const studentIds = [...new Set((recentReviews ?? []).map((review) => review.student_id))];
   const studentQueries = useStudentsByIds(studentIds, isActiveFaculty);
   const studentsById = new Map(studentIds.map((id, index) => [id, studentQueries[index]?.data]));

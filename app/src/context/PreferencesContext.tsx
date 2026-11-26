@@ -96,6 +96,14 @@ export function PreferencesProvider({ children, defaultTheme }: PreferencesProvi
     }
   }, [preferences]);
 
+  useEffect(() => () => {
+    if (themeSwitchTimeout.current !== undefined) {
+      window.clearTimeout(themeSwitchTimeout.current);
+      themeSwitchTimeout.current = undefined;
+    }
+    document.documentElement.removeAttribute('data-theme-switching');
+  }, []);
+
   const suppressThemeTransitions = useCallback(() => {
     const root = document.documentElement;
     root.setAttribute('data-theme-switching', '');
