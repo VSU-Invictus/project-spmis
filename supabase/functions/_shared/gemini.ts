@@ -1,30 +1,35 @@
 import { FunctionError } from './errors.ts';
 
 const apiKey = () => Deno.env.get('GEMINI_API_KEY');
-const embeddingModel = 'text-embedding-004';
-const generationModel = 'gemini-2.0-flash';
+const embeddingModel = () => Deno.env.get('GEMINI_EMBEDDING_MODEL') || 'text-embedding-004';
+const generationModel = () => Deno.env.get('GEMINI_GENERATION_MODEL') || 'gemini-2.0-flash';
 
 async function geminiRequest(path: string, body: unknown): Promise<Record<string, unknown>> {
   const key = apiKey();
   if (!key) throw new FunctionError(500, 'AI_NOT_CONFIGURED', 'The AI provider is not configured.');
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/${path}?key=${encodeURIComponent(key)}`, {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/${path}`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: {
+      'content-type': 'application/json',
+      'x-goog-api-key': key,
+    },
     body: JSON.stringify(body),
   });
   if (response.status === 429) {
     throw new FunctionError(429, 'RATE_LIMITED', 'The AI Chat Assistant is temporarily unavailable.', null, 'Try again later.');
   }
   if (!response.ok) {
-    const detail = await response.text();
-    throw new FunctionError(502, 'AI_PROVIDER_ERROR', 'The AI provider request failed.', detail);
+    const providerBody = await response.text();
+    console.error(`Gemini API request failed (${response.status}):`, providerBody.slice(0, 500));
+    throw new FunctionError(502, 'AI_PROVIDER_ERROR', 'The AI provider request failed.');
   }
   return await response.json() as Record<string, unknown>;
 }
 
 export async function embedText(text: string): Promise<string> {
-  const result = await geminiRequest(`models/${embeddingModel}:embedContent`, {
-    model: `models/${embeddingModel}`,
+  const model = embeddingModel();
+  const result = await geminiRequest(`models/${model}:embedContent`, {
+    model: `models/${model}`,
     content: { parts: [{ text }] },
   });
   const values = (result.embedding as { values?: unknown } | undefined)?.values;
@@ -35,7 +40,8 @@ export async function embedText(text: string): Promise<string> {
 }
 
 export async function generateAnswer(prompt: string): Promise<string> {
-  const result = await geminiRequest(`models/${generationModel}:generateContent`, {
+  const model = generationModel();
+  const result = await geminiRequest(`models/${model}:generateContent`, {
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     generationConfig: { temperature: 0.2 },
   });

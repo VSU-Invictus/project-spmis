@@ -25,7 +25,9 @@ function variants(student: StudentNameRecord): string[] {
   const first = clean(student.first_name);
   const middle = clean(student.middle_name);
   const last = clean(student.last_name);
+  const studentIdNumber = clean(student.student_id_number);
   return [...new Set([
+    studentIdNumber,
     [first, middle, last].filter(Boolean).join(' '),
     [first, last].filter(Boolean).join(' '),
     [last, first].filter(Boolean).join(' '),
@@ -54,14 +56,29 @@ export function deidentifyText(
 ): { text: string; replacements: Replacement[] } {
   const replacements: Replacement[] = [];
   let output = text;
-  const names = students
-    .flatMap((student) => variants(student).map((name) => ({
+
+  // Track which students own each normalized variant so colliding single names
+  // (e.g. two students named "Maria") never map back to the wrong student.
+  const variantOwners = new Map<string, { name: string; studentIds: Set<string> }>();
+  for (const student of students) {
+    for (const name of variants(student)) {
+      const key = name.toLowerCase();
+      const entry = variantOwners.get(key) ?? { name, studentIds: new Set<string>() };
+      entry.studentIds.add(student.id);
+      variantOwners.set(key, entry);
+    }
+  }
+
+  const candidates = [...variantOwners.values()]
+    .map(({ name, studentIds }) => ({
       name,
-      token: `{{STUDENT:${student.id}}}`,
-    })))
+      token: studentIds.size === 1
+        ? `{{STUDENT:${[...studentIds][0]}}}`
+        : '{{STUDENT:REDACTED}}',
+    }))
     .sort((left, right) => right.name.length - left.name.length);
 
-  for (const candidate of names) {
+  for (const candidate of candidates) {
     const expression = new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(candidate.name)}(?![\\p{L}\\p{N}])`, 'giu');
     if (expression.test(output)) {
       output = output.replace(expression, candidate.token);
