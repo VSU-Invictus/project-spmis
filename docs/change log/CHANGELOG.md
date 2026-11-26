@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #211 — name redaction:** Limited partial-name matching to the review target, preserved common words in chat and other students' mentions, rendered ambiguous redactions as "a student", and added regression coverage including student-ID redaction.
 - **M3 Backend Review Hardening (`fix/m3-review-hardening`):**
   - Locked `create_review_transaction`, `update_review_transaction`, `set_review_status_transaction`, `match_review_embeddings`, and `decide_applications_transaction` to `service_role` only via migration `20261126000100_lock_transactional_rpcs_to_service_role.sql` with explicit `p_actor_id` verification (blocking admins from `match_review_embeddings`).
   - Updated `reviews`, `chat`, and `approvals` Edge Functions to invoke transactional RPCs via `adminClient()`, enforced faculty-only access on `chat`, removed dead `UNAUTHORIZED` catch branch, and fixed `readReview` error wording.

@@ -52,6 +52,7 @@ async function handler(request: Request): Promise<Response> {
       .select('id,first_name,middle_name,last_name,student_id_number,program:program_id(name)');
     if (studentsError) throw new FunctionError(500, 'DATABASE_ERROR', 'Student names could not be loaded.');
     const records = (students ?? []) as StudentNameRecord[];
+    // Chat has no review target: match full names and IDs, never partial names.
     const deidentify = (text: string) => deidentifyText(text, records).text;
     const safeMessage = deidentify(body.message);
     const safeHistory = history.map((turn) => ({ ...turn, content: deidentify(turn.content) }));

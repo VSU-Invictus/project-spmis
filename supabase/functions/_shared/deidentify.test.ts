@@ -14,6 +14,7 @@ Deno.test('deidentifies full, partial, and student ID variants case-insensitivel
   const result = deidentifyText(
     'Maria Dela Cruz Santos / Maria Santos / SANTOS Maria / Santos, Maria / Maria / Dela Cruz / Santos / TEST-001',
     students,
+    students[0].id,
   );
   assertEquals(
     result.text,
@@ -21,32 +22,57 @@ Deno.test('deidentifies full, partial, and student ID variants case-insensitivel
   );
 });
 
-Deno.test('redacts colliding single-name variants without binding to the wrong student', () => {
+Deno.test('redacts ambiguous full names without binding to the wrong student', () => {
   const collidingStudents = [
     ...students,
     {
       id: '40000000-0000-4000-8000-000000000003',
       first_name: 'Maria',
       middle_name: null,
-      last_name: 'Reyes',
+      last_name: 'Santos',
       student_id_number: 'TEST-003',
       program_name: 'Example Mathematics',
     },
   ];
   const deidentified = deidentifyText(
-    'Maria Santos and Maria Reyes both excelled, though Maria led the lab.',
+    'Maria Santos led the lab.',
     collidingStudents,
   ).text;
 
   assertEquals(
     deidentified,
-    '{{STUDENT:40000000-0000-4000-8000-000000000001}} and {{STUDENT:40000000-0000-4000-8000-000000000003}} both excelled, though {{STUDENT:REDACTED}} led the lab.',
+    '{{STUDENT:REDACTED}} led the lab.',
   );
   const restored = reidentifyText(deidentified, collidingStudents);
   assertEquals(
     restored,
-    'Maria Dela Cruz Santos (TEST-001, Example Computer Science) and Maria Reyes (TEST-003, Example Mathematics) both excelled, though {{STUDENT:REDACTED}} led the lab.',
+    'a student led the lab.',
   );
+});
+
+Deno.test('review target partial names are redacted while other students common words remain intact', () => {
+  const other = {
+    id: '40000000-0000-4000-8000-000000000004',
+    first_name: 'May', middle_name: 'Hope', last_name: 'Grace',
+    student_id_number: 'TEST-004',
+  };
+  assertEquals(
+    deidentifyText(
+      'Maria may lead with grace and hope alongside May Grace (TEST-004).',
+      [...students, other], students[0].id,
+    ).text,
+    '{{STUDENT:40000000-0000-4000-8000-000000000001}} may lead with grace and hope alongside {{STUDENT:40000000-0000-4000-8000-000000000004}} ({{STUDENT:40000000-0000-4000-8000-000000000004}}).',
+  );
+  assertEquals(
+    deidentifyText('Which students may need support? May Grace (TEST-004).', [other]).text,
+    'Which students may need support? {{STUDENT:40000000-0000-4000-8000-000000000004}} ({{STUDENT:40000000-0000-4000-8000-000000000004}}).',
+  );
+});
+
+Deno.test('generated and existing student tokens are not matched again as names', () => {
+  const other = { ...students[0], id: '40000000-0000-4000-8000-000000000005', student_id_number: '40000000' };
+  const token = `{{STUDENT:${students[0].id}}}`;
+  assertEquals(deidentifyText(`TEST-001 ${token}`, [students[0], other]).text, `${token} ${token}`);
 });
 
 Deno.test('reverse substitution restores known tokens and preserves unknown tokens', () => {
