@@ -13,6 +13,7 @@
 @import '../../mockup/assets/css/logout-confirmation.css';
 @import '../../mockup/assets/css/pages/admin/admin-common.css';
 @import '../../mockup/assets/css/pages/admin/dashboard.css';
+@import '../../mockup/assets/css/pages/faculty/dashboard.css';
 @import '../../mockup/assets/css/pages/faculty/chat.css';
 @import '../../mockup/assets/css/pages/faculty/student-detail.css';
 @import '../../mockup/assets/css/pages/faculty/new-review.css';
@@ -485,6 +486,10 @@ button {
   padding: var(--space-0, 0);
   color: inherit;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+html[data-theme-switching] button {
+  transition: none !important;
 }
 
 button:disabled {
@@ -1269,6 +1274,15 @@ html:not(.dark) :is(.app-sidebar, .sidebar) [aria-current="page"] span {
 
 html:not(.dark) :is(.app-sidebar, .sidebar) .sidebar-divider {
   background-color: #E2DDD4 !important;
+  border-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .ui-dashboard-app--faculty .ui-dashboard-footer {
+  border-top-color: #E2DDD4 !important;
+}
+
+html:not(.dark) .ui-dashboard-app--faculty .review-feed-contributor {
+  color: #141413 !important;
 }
 
 html:not(.dark) :is(.app-sidebar, .sidebar) .sidebar-account-card {
@@ -1349,7 +1363,7 @@ html:not(.dark) :is(.app-sidebar, .sidebar) .sidebar-logout-btn:hover {
   min-height: 64px !important;
   cursor: pointer !important;
   text-align: left !important;
-  transition: box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease, background-color var(--transition-fast) !important;
+  transition: box-shadow 160ms ease, transform 160ms ease !important;
 }
 
 .ui-chat-prompts .ui-chat-prompt-card:hover,
@@ -1651,6 +1665,13 @@ html:not(.dark) :is(.ui-toast, .toast) {
   color: inherit;
 }
 
+.dashboard-refresh-status {
+  display: grid;
+  gap: 6px;
+  color: var(--muted-foreground, #a0988e);
+  font-size: 12px;
+}
+
 /* ==========================================================================
    TABLE SKELETON LOADING ROWS (<DataTable />, <TableRowSkeleton />, <ApplicationQueue />)
    Preserves multi-column flex widths and column alignment during loading.
@@ -1725,5 +1746,4 @@ html:not(.dark) :is(.ui-toast, .toast) {
   height: 16px !important;
   border-radius: 4px !important;
 }
-
 
