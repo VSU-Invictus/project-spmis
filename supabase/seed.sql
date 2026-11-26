@@ -57,13 +57,13 @@ insert into public.approval_queue_items (type, submitted_by, payload) values
 
 -- Five synthetic pending faculty applications keep the roster Queue badge representative.
 insert into public.approval_queue_items (type, submitted_by, payload) values
-  ('faculty_account', '30000000-0000-4000-8000-000000000003',
+  ('faculty_account', '30000000-0000-4000-8000-000000000002',
    '{"full_name":"Example Faculty Applicant Two","email":"faculty.two@example.test","department_id":"10000000-0000-4000-8000-000000000001"}'),
-  ('faculty_account', '30000000-0000-4000-8000-000000000003',
+  ('faculty_account', '30000000-0000-4000-8000-000000000002',
    '{"full_name":"Example Faculty Applicant Three","email":"faculty.three@example.test","department_id":"10000000-0000-4000-8000-000000000002"}'),
-  ('faculty_account', '30000000-0000-4000-8000-000000000003',
+  ('faculty_account', '30000000-0000-4000-8000-000000000002',
    '{"full_name":"Example Faculty Applicant Four","email":"faculty.four@example.test","department_id":"10000000-0000-4000-8000-000000000001"}'),
-  ('faculty_account', '30000000-0000-4000-8000-000000000003',
+  ('faculty_account', '30000000-0000-4000-8000-000000000002',
    '{"full_name":"Example Faculty Applicant Five","email":"faculty.five@example.test","department_id":"10000000-0000-4000-8000-000000000002"}');
 
 insert into public.approval_queue_items (type, submitted_by, payload, status, decided_by, decided_at, decision_reason)
