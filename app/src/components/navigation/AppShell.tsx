@@ -44,7 +44,7 @@ export function AppShell({
   onSelectNav,
   breadcrumb,
   academicYear = 'AY 2026-2027',
-  showFooterLinks = true,
+  showFooterLinks = role === 'admin',
   children,
 }: AppShellProps) {
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ export function AppShell({
   };
 
   return (
-    <div className="app-canvas ui-dashboard-app" style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+    <div className={`app-canvas ui-dashboard-app ui-dashboard-app--${role}`} style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}>
       {role === 'admin' ? (
         <AdminSidebar
           activeKey={activeNavKey as AdminNavKey}
