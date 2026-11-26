@@ -1,0 +1,170 @@
+/* Faculty Students Page Layout & Table Styles (#188) */
+
+#roster-results .table-margin-container {
+  margin: 0;
+}
+
+#roster-results .table-container,
+#roster-results .ui-table-wrap {
+  border-radius: 12px !important;
+  border: 1px solid var(--border, #2E2D2A) !important;
+  background: var(--card, #1A1918) !important;
+  overflow: visible !important;
+  box-shadow: none !important;
+  margin-bottom: 20px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#roster-results .table-scroll {
+  overflow: visible !important;
+  width: 100% !important;
+}
+
+#roster-results table,
+#roster-results .ui-table {
+  width: 100% !important;
+  min-width: 0 !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  background: transparent !important;
+}
+
+#roster-results thead,
+#roster-results thead tr,
+#roster-results th {
+  background: transparent !important;
+}
+
+#roster-results thead tr th:first-child {
+  border-top-left-radius: 12px !important;
+}
+
+#roster-results thead tr th:last-child {
+  border-top-right-radius: 12px !important;
+}
+
+#roster-results tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px !important;
+}
+
+#roster-results tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px !important;
+}
+
+#roster-results th:nth-child(1),
+#roster-results td:nth-child(1) {
+  width: 140px !important;
+  white-space: nowrap !important;
+  font-family: var(--font-number) !important;
+  padding-left: var(--space-9, 24px) !important;
+  padding-right: var(--space-7, 16px) !important;
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+  vertical-align: middle !important;
+}
+
+#roster-results th:nth-child(2),
+#roster-results td:nth-child(2) {
+  width: calc((100% - 280px - 26%) / 2) !important;
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+  vertical-align: middle !important;
+}
+
+#roster-results th:nth-child(3),
+#roster-results td:nth-child(3) {
+  width: calc((100% - 280px - 26%) / 2) !important;
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+  vertical-align: middle !important;
+}
+
+#roster-results th:nth-child(4),
+#roster-results td:nth-child(4) {
+  width: 26% !important;
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+  vertical-align: middle !important;
+}
+
+#roster-results th:nth-child(5),
+#roster-results td:nth-child(5) {
+  width: 140px !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  padding-left: var(--space-7, 16px) !important;
+  padding-right: var(--space-9, 24px) !important;
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+  vertical-align: middle !important;
+}
+
+#roster-results td:nth-child(5) a {
+  white-space: nowrap !important;
+}
+
+/* Colored Tag Pills inside #roster-results (matching .table-wrap .ui-tags-cluster) */
+#roster-results .ui-tags-cluster {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important;
+}
+
+#roster-results .ui-tags-cluster .ui-badge,
+#roster-results .ui-badge {
+  border-radius: 9999px !important;
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+#roster-results .ui-badge--purple {
+  background: rgba(139, 92, 246, 0.15) !important;
+  border: 1px solid rgba(139, 92, 246, 0.35) !important;
+  color: #A78BFA !important;
+}
+
+#roster-results .ui-badge--amber {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: #FBBF24 !important;
+}
+
+#roster-results .ui-badge--rose {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border: 1px solid rgba(239, 68, 68, 0.35) !important;
+  color: #F87171 !important;
+}
+
+#roster-results .ui-badge--cyan {
+  background: rgba(6, 182, 212, 0.15) !important;
+  border: 1px solid rgba(6, 182, 212, 0.35) !important;
+  color: #22D3EE !important;
+}
+
+#roster-results .ui-badge--neutral {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #A0988E !important;
+}
+
+html:not(.dark) #roster-results .table-container,
+html:not(.dark) #roster-results .ui-table-wrap {
+  background: #FAF9F6 !important;
+  border-color: #E2DDD4 !important;
+}
+
+html:not(.dark) #roster-results .ui-badge--neutral {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #706B65 !important;
+}

@@ -157,7 +157,7 @@ export function TagCluster({ tags, maxVisible = 2 }: TagClusterProps) {
             +{extraTags.length}
           </Badge>
           <div className="ui-tags-popover" role="tooltip">
-            <div className="ui-tags-popover-title">Additional Tags ({extraTags.length})</div>
+            <div className="ui-tags-popover-title">More Tags (+{extraTags.length})</div>
             <div className="ui-tags-popover-list">
               {extraTags.map((t, idx) => (
                 <Badge key={idx} variant={t.variant || 'neutral'}>
