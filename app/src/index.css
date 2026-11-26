@@ -488,6 +488,10 @@ button {
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
 }
 
+html[data-theme-switching] button {
+  transition: none !important;
+}
+
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
