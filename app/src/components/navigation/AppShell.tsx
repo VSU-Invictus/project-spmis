@@ -64,7 +64,7 @@ export function AppShell({
   };
 
   return (
-    <div className="app-canvas ui-dashboard-app" style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+    <div className={`app-canvas ui-dashboard-app ui-dashboard-app--${role}`} style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}>
       {role === 'admin' ? (
         <AdminSidebar
           activeKey={activeNavKey as AdminNavKey}
@@ -103,7 +103,7 @@ export function AppShell({
 
         <PortalFooter
           portalName={role === 'admin' ? 'Admin Portal' : 'Faculty Portal'}
-          showLinks
+          showLinks={role === 'admin'}
         />
       </main>
 

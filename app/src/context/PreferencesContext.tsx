@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -71,6 +72,7 @@ export interface PreferencesProviderProps {
 export function PreferencesProvider({ children, defaultTheme }: PreferencesProviderProps) {
   const [theme, setThemeState] = useState<Theme>(() => defaultTheme ?? readTheme());
   const [preferences, setPreferences] = useState<StoredPreferences>(readPreferences);
+  const themeSwitchTimeout = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -94,10 +96,34 @@ export function PreferencesProvider({ children, defaultTheme }: PreferencesProvi
     }
   }, [preferences]);
 
-  const setTheme = useCallback((nextTheme: Theme) => setThemeState(nextTheme), []);
-  const toggleTheme = useCallback(() => {
-    setThemeState((current) => (current === 'dark' ? 'light' : 'dark'));
+  useEffect(() => () => {
+    if (themeSwitchTimeout.current !== undefined) {
+      window.clearTimeout(themeSwitchTimeout.current);
+      themeSwitchTimeout.current = undefined;
+    }
+    document.documentElement.removeAttribute('data-theme-switching');
   }, []);
+
+  const suppressThemeTransitions = useCallback(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-theme-switching', '');
+    if (themeSwitchTimeout.current !== undefined) {
+      window.clearTimeout(themeSwitchTimeout.current);
+    }
+    themeSwitchTimeout.current = window.setTimeout(() => {
+      root.removeAttribute('data-theme-switching');
+      themeSwitchTimeout.current = undefined;
+    }, 200);
+  }, []);
+
+  const setTheme = useCallback((nextTheme: Theme) => {
+    suppressThemeTransitions();
+    setThemeState(nextTheme);
+  }, [suppressThemeTransitions]);
+  const toggleTheme = useCallback(() => {
+    suppressThemeTransitions();
+    setThemeState((current) => (current === 'dark' ? 'light' : 'dark'));
+  }, [suppressThemeTransitions]);
   const setDensity = useCallback((density: UiDensity) => {
     setPreferences((current) => ({ ...current, density }));
   }, []);

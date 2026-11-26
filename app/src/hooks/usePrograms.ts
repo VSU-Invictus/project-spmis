@@ -27,8 +27,8 @@ export function usePrograms(
 }
 
 /** Complete approved choices for forms, using the contract's bounded result pages. */
-export function useApprovedProgramOptions() {
-  return useProgramCollection(true);
+export function useApprovedProgramOptions(options?: { enabled?: boolean }) {
+  return useProgramCollection(true, options?.enabled);
 }
 
 /** Complete program list for management; preserves the approved-only form lookup. */
