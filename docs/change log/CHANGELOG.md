@@ -7,6 +7,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #211 — audit review follow-up:** Preferred the verified JWT identity over `app.actor_id`, retaining the service-role actor fallback and testing conflicting actor settings.
+- **Issue #211 — redaction matching:** Matched full names across whitespace variations and aligned Unicode case-folded token lookup with regex matching, including collision regression coverage.
+- **Issue #211 — redaction review:** Covered last-first-middle names and prevented malformed student markers from shielding names or IDs from redaction.
+- **Issue #211 — reproducible database CI:** Pinned Supabase CLI to `3.4.0`, the version used for local migration and pgTAP verification.
+- **Issue #211 — audit attribution:** Set the verified service-role RPC actor transaction-locally and used it in audit triggers with a JWT fallback; added coverage for side effects across all four approval types.
+- **Issue #211 — self-deletion signal:** Added the `FACULTY_SELF_DELETE_FORBIDDEN` hint to the existing self-delete trigger while preserving `23503` / HTTP 409 and historical foreign keys; corrected the decision log and added hint regression checks.
+- **Issue #211 — admin AI chat:** Allowed active admins through chat and server-only vector retrieval, retained direct-review RLS restrictions and RPC grants, and recorded the PM's resolved access decision.
+- **Issue #211 — Gemini configuration:** Replaced retired model defaults, documented server-side model overrides and re-embedding requirements, and enforced 768-dimensional finite embedding responses with mocked regression coverage.
+- **Issue #211 — name redaction:** Limited partial-name matching to the review target, preserved common words in chat and other students' mentions, rendered ambiguous redactions as "a student", and added regression coverage including student-ID redaction.
 - **M3 Backend Review Hardening (`fix/m3-review-hardening`):**
   - Locked `create_review_transaction`, `update_review_transaction`, `set_review_status_transaction`, `match_review_embeddings`, and `decide_applications_transaction` to `service_role` only via migration `20261126000100_lock_transactional_rpcs_to_service_role.sql` with explicit `p_actor_id` verification (blocking admins from `match_review_embeddings`).
   - Updated `reviews`, `chat`, and `approvals` Edge Functions to invoke transactional RPCs via `adminClient()`, enforced faculty-only access on `chat`, removed dead `UNAUTHORIZED` catch branch, and fixed `readReview` error wording.

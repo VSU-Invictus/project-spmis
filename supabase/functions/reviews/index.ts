@@ -46,6 +46,7 @@ async function create(request: Request): Promise<Response> {
   const { document, text, deidentifiedText: deidentified } = prepareReviewForEmbedding(
     body.body_document,
     allStudents,
+    body.student_id,
   );
   const embedding = await embedText(deidentified);
   const { data: reviewId, error } = await db.rpc('create_review_transaction', {
@@ -88,6 +89,7 @@ async function update(request: Request, reviewId: string): Promise<Response> {
   const { document, text, deidentifiedText: deidentified } = prepareReviewForEmbedding(
     body.body_document,
     allStudents,
+    existing.student_id,
   );
   const embedding = existing.status === 'active' ? await embedText(deidentified) : null;
   const { data: updatedId, error } = await db.rpc('update_review_transaction', {

@@ -2,7 +2,23 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(34);
+select plan(36);
+
+-- Capture exception hints without bypassing the caller's grants or RLS.
+create function pg_temp.faculty_delete_error(profile_id uuid)
+returns jsonb
+language plpgsql
+as $$
+declare
+  error_hint text;
+begin
+  delete from public.faculty_profiles where id = profile_id;
+  return null;
+exception when foreign_key_violation then
+  get stacked diagnostics error_hint = pg_exception_hint;
+  return jsonb_build_object('code', sqlstate, 'hint', error_hint);
+end;
+$$;
 
 -- Seed a pending department and an unlinked auth.users row as superuser.
 insert into public.departments (id, name, status)
@@ -131,6 +147,18 @@ select throws_ok(
   $$delete from public.faculty_profiles where id = auth.uid()$$,
   '23503', 'Administrators cannot delete their own active profile.',
   'admin self-deletion attempt raises 23503 conflict'
+);
+
+select is(
+  pg_temp.faculty_delete_error('30000000-0000-4000-8000-000000000004'),
+  '{"code":"23503","hint":"FACULTY_SELF_DELETE_FORBIDDEN"}'::jsonb,
+  'self-deletion retains conflict status and supplies a distinct machine-readable hint'
+);
+
+select isnt(
+  pg_temp.faculty_delete_error('30000000-0000-4000-8000-000000000001')->>'hint',
+  'FACULTY_SELF_DELETE_FORBIDDEN',
+  'normal referenced-faculty FK conflicts do not carry the self-delete hint'
 );
 
 select is(

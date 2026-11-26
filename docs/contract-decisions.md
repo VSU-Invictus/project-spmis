@@ -155,11 +155,16 @@ issue. Including metadata does not add or approve those Storage workflows.
 
 ### Admin review access conflict
 
-README §1 says admins never access review content, whereas §6 allows admin mining
-and other wording discusses shared review visibility. This is not resolved by
-OpenAPI tags. The draft preserves explicitly required admin search/chat mining
-but excludes raw review/history reads pending the PM's decision. The final role
-policy must be consistent across mining, direct reads and RLS.
+Resolved by the PM in PR #203 (Issue #211): active admins may use
+`searchStudents`, including review-text matching, and `askChatbot` over active
+reviews. Admins cannot directly read `reviews`, `review_revisions`, or
+`review_details`; those RLS restrictions remain in force.
+
+`match_review_embeddings` remains executable only by `service_role`. The chat
+Edge Function verifies an active faculty/admin caller and passes that identity
+to the RPC for an independent actor check. Retrieved review context stays on the
+server; the client receives only the chatbot answer, never raw or de-identified
+review rows. The existing Faculty + Admin contract tags remain unchanged.
 
 ### Supabase gateway errors
 
@@ -230,4 +235,4 @@ contract from 27 to 30 operations):
 | --- | --- | --- |
 | `deleteStudent` | `DELETE /rest/v1/student_profiles?id=eq.<uuid>` | Admin only. Deletes unreferenced students (`204`); returns `409 Conflict` (`23503`) if reviews reference the student. |
 | `createFacultyByAdmin` | `POST /rest/v1/faculty_profiles` | Admin only (`FacultyCreateInput`). Validates an approved `department_id`, defaults `status` to `active` when omitted by an active admin, and links or provisions the backing `auth.users` row by email in a `BEFORE INSERT` trigger. |
-| `deleteFaculty` | `DELETE /rest/v1/faculty_profiles?id=eq.<uuid>` | Admin only. Blocks self-deletion (`id <> auth.uid()`) via RLS and returns `409 Conflict` (`23503`) if reviews, revisions, proposals, or approval records reference the profile. |
+| `deleteFaculty` | `DELETE /rest/v1/faculty_profiles?id=eq.<uuid>` | Admin only via RLS. Self-deletion is blocked by the `BEFORE DELETE` trigger `private.prevent_faculty_self_delete`, returning `409 Conflict` (`23503`) with hint `FACULTY_SELF_DELETE_FORBIDDEN`. Other referenced-profile deletions retain ordinary FK conflicts (`23503`); historical attribution is never cascade-deleted or nulled. |

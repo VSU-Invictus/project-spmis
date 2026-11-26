@@ -70,12 +70,13 @@ export function extractReviewText(value: unknown): { document: ReviewDocument; t
 export function prepareReviewForEmbedding(
   value: unknown,
   students: StudentNameRecord[],
+  targetStudentId?: string,
 ): { document: ReviewDocument; text: string; deidentifiedText: string } {
   const { document, text } = extractReviewText(value);
   return {
     document,
     text,
-    deidentifiedText: deidentifyText(text, students).text,
+    deidentifiedText: deidentifyText(text, students, targetStudentId).text,
   };
 }
 
