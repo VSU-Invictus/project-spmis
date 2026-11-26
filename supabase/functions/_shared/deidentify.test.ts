@@ -10,14 +10,42 @@ const students = [{
   program_name: 'Example Computer Science',
 }];
 
-Deno.test('deidentifies full and partial student name variants case-insensitively', () => {
+Deno.test('deidentifies full, partial, and student ID variants case-insensitively', () => {
   const result = deidentifyText(
     'Maria Dela Cruz Santos / Maria Santos / SANTOS Maria / Santos, Maria / Maria / Dela Cruz / Santos / TEST-001',
     students,
   );
   assertEquals(
     result.text,
-    '{{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / TEST-001',
+    '{{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}} / {{STUDENT:40000000-0000-4000-8000-000000000001}}',
+  );
+});
+
+Deno.test('redacts colliding single-name variants without binding to the wrong student', () => {
+  const collidingStudents = [
+    ...students,
+    {
+      id: '40000000-0000-4000-8000-000000000003',
+      first_name: 'Maria',
+      middle_name: null,
+      last_name: 'Reyes',
+      student_id_number: 'TEST-003',
+      program_name: 'Example Mathematics',
+    },
+  ];
+  const deidentified = deidentifyText(
+    'Maria Santos and Maria Reyes both excelled, though Maria led the lab.',
+    collidingStudents,
+  ).text;
+
+  assertEquals(
+    deidentified,
+    '{{STUDENT:40000000-0000-4000-8000-000000000001}} and {{STUDENT:40000000-0000-4000-8000-000000000003}} both excelled, though {{STUDENT:REDACTED}} led the lab.',
+  );
+  const restored = reidentifyText(deidentified, collidingStudents);
+  assertEquals(
+    restored,
+    'Maria Dela Cruz Santos (TEST-001, Example Computer Science) and Maria Reyes (TEST-003, Example Mathematics) both excelled, though {{STUDENT:REDACTED}} led the lab.',
   );
 });
 

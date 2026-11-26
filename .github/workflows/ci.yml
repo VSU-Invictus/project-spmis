@@ -39,6 +39,28 @@ jobs:
       - name: Run Edge Function tests without network access
         run: deno test --cached-only --lock=deno.lock --allow-env --deny-net supabase/functions/**/*.test.ts
 
+  database:
+    name: Database Migrations & pgTAP Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase database
+        run: supabase start --exclude studio,mailpit,imgproxy,edge-runtime,logflare,vector,supavisor,storage-api,realtime
+
+      - name: Run pgTAP database & RLS tests
+        run: supabase test db
+
+      - name: Stop local Supabase database
+        if: always()
+        run: supabase stop --no-backup
+
   contract:
     name: Contract Lint, Check & Docs
     runs-on: ubuntu-latest

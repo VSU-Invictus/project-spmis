@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **M3 Backend Review Hardening (`fix/m3-review-hardening`):**
+  - Locked `create_review_transaction`, `update_review_transaction`, `set_review_status_transaction`, `match_review_embeddings`, and `decide_applications_transaction` to `service_role` only via migration `20261126000100_lock_transactional_rpcs_to_service_role.sql` with explicit `p_actor_id` verification (blocking admins from `match_review_embeddings`).
+  - Updated `reviews`, `chat`, and `approvals` Edge Functions to invoke transactional RPCs via `adminClient()`, enforced faculty-only access on `chat`, removed dead `UNAUTHORIZED` catch branch, and fixed `readReview` error wording.
+  - Hardened `_shared/deidentify.ts` to redact `student_id_number` and prevent single-name collisions (`{{STUDENT:REDACTED}}`), and updated `reviews` to de-identify all students mentioned in review text.
+  - Hardened `_shared/gemini.ts` to send `GEMINI_API_KEY` via `x-goog-api-key` header, support model env overrides, and omit raw provider error bodies from client responses.
+  - Added `supabase/tests/05_service_role_rpcs.test.sql` (14 pgTAP assertions) and a `database` job in `.github/workflows/ci.yml` running `supabase start` + `supabase test db`.
 - **Contract `v1.1.0` & M3 Admin Direct CRUD (`feat/m3-admin-crud-contract`):**
   - Extended `contract/openapi.yaml` additively to `v1.1.0` (30 operations) with `deleteStudent` (`DELETE /rest/v1/student_profiles`), `createFacultyByAdmin` (`POST /rest/v1/faculty_profiles`, `FacultyCreateInput`), and `deleteFaculty` (`DELETE /rest/v1/faculty_profiles`), regenerated `contract/generated/schema.d.ts` and `app/public/docs/index.html`, and updated `docs/contract-decisions.md` and `contract/README.md`.
   - Added migration `supabase/migrations/20261124000100_add_admin_student_faculty_crud.sql` preventing admin self-deletion with `23503` (`409 Conflict`), validating approved `department_id` on insert/update, defaulting admin-direct inserts to `status = 'active'`, and linking/provisioning backing `auth.users` rows by email in `private.prepare_faculty_profile_insert()`.
