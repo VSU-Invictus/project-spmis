@@ -1,3 +1,8 @@
+/* The shell gap already separates the portal header from the roster. */
+.ui-dashboard-main:has(> .ui-dashboard-content > .admin-student-management) > .ui-dashboard-top-header {
+  margin-bottom: 0 !important;
+}
+
 /* Admin Students Specific Column Widths */
 .admin-student-management .table-scroll :is(.table-header-row, .table-row) {
   min-width: 900px;
