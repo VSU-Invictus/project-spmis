@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   CardSkeleton,
+  useMinimumLoadingDuration,
   EmptyState,
   Modal,
   Toast,
@@ -125,16 +126,17 @@ export function FacultyStudentDetailPage() {
 
   const {
     data: student,
-    isPending: isStudentPending,
+    isPending: rawIsStudentPending,
     isError: isStudentError,
     error: studentError,
   } = useStudentById(id);
+  const isStudentPending = useMinimumLoadingDuration(rawIsStudentPending);
 
   const { data: programs, isPending: isProgramsPending } = usePrograms();
 
   const {
     data: reviews,
-    isPending: isReviewsPending,
+    isPending: rawIsReviewsPending,
     isError: isReviewsError,
     error: reviewsError,
   } = useStudentReviews(
@@ -148,6 +150,7 @@ export function FacultyStudentDetailPage() {
       enabled: Boolean(id),
     }
   );
+  const isReviewsPending = useMinimumLoadingDuration(rawIsReviewsPending);
 
   const setReviewStatusMutation = useSetReviewStatus({
     onSuccess: (result) => {
