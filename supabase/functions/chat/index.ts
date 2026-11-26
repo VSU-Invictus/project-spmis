@@ -37,7 +37,10 @@ async function handler(request: Request): Promise<Response> {
     if (request.method !== 'POST') {
       throw new FunctionError(405, 'METHOD_NOT_ALLOWED', 'The HTTP method is not supported.');
     }
-    const { client, id } = await getProfile(request);
+    const { id, role } = await getProfile(request);
+    if (role !== 'faculty') {
+      throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can use the AI Chat Assistant.');
+    }
     enforceRateLimit(id);
     const body = await readJson(request);
     if (typeof body.message !== 'string' || body.message.length > 2000 || !/\S/u.test(body.message)) {
@@ -54,7 +57,8 @@ async function handler(request: Request): Promise<Response> {
     const safeHistory = history.map((turn) => ({ ...turn, content: deidentify(turn.content) }));
     const queryText = [safeMessage, ...safeHistory.map((turn) => turn.content)].join('\n');
     const embedding = await embedText(queryText);
-    const { data: matches, error: matchError } = await client.rpc('match_review_embeddings', {
+    const { data: matches, error: matchError } = await db.rpc('match_review_embeddings', {
+      p_actor_id: id,
       p_embedding: embedding,
       p_limit: 8,
     });

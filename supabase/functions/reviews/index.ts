@@ -7,7 +7,7 @@ import { adminClient, getProfile } from '../_shared/supabase.ts';
 async function readReview(reviewId: string): Promise<Record<string, unknown>> {
   const client = adminClient();
   const { data: review, error } = await client.from('reviews').select('*').eq('id', reviewId).single();
-  if (error || !review) throw new FunctionError(500, 'DATABASE_ERROR', 'The created review could not be loaded.');
+  if (error || !review) throw new FunctionError(500, 'DATABASE_ERROR', 'The review could not be loaded.');
   const [{ data: tags }, { data: author }] = await Promise.all([
     client.from('review_tags').select('tag').eq('review_id', reviewId).order('tag'),
     client.from('faculty_profiles').select('full_name,department_id').eq('id', review.owner_id).single(),
@@ -30,21 +30,26 @@ async function readReview(reviewId: string): Promise<Record<string, unknown>> {
 }
 
 async function create(request: Request): Promise<Response> {
-  const { client, role } = await getProfile(request);
+  const { id, role } = await getProfile(request);
   if (role !== 'faculty') throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can create reviews.');
   const body = await readJson(request);
   if (!isUuid(body.student_id)) throw new FunctionError(422, 'INVALID_STUDENT_ID', 'student_id must be a UUID.');
   const tags = normalizeTags(body.tags);
   const db = adminClient();
-  const { data: student, error: studentError } = await db.from('student_profiles')
-    .select('id,first_name,middle_name,last_name').eq('id', body.student_id).single();
-  if (studentError || !student) throw new FunctionError(404, 'NOT_FOUND', 'Student was not found.');
+  const { data: students, error: studentError } = await db.from('student_profiles')
+    .select('id,first_name,middle_name,last_name,student_id_number');
+  if (studentError) throw new FunctionError(500, 'DATABASE_ERROR', 'Student profiles could not be loaded.');
+  const allStudents = students ?? [];
+  if (!allStudents.some((student) => student.id === body.student_id)) {
+    throw new FunctionError(404, 'NOT_FOUND', 'Student was not found.');
+  }
   const { document, text, deidentifiedText: deidentified } = prepareReviewForEmbedding(
     body.body_document,
-    [student],
+    allStudents,
   );
   const embedding = await embedText(deidentified);
-  const { data: reviewId, error } = await client.rpc('create_review_transaction', {
+  const { data: reviewId, error } = await db.rpc('create_review_transaction', {
+    p_actor_id: id,
     p_student_id: body.student_id,
     p_body_text: text,
     p_body_document: document,
@@ -57,7 +62,7 @@ async function create(request: Request): Promise<Response> {
 }
 
 async function update(request: Request, reviewId: string): Promise<Response> {
-  const { client, id, role } = await getProfile(request);
+  const { id, role } = await getProfile(request);
   if (role !== 'faculty') throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can edit reviews.');
   if (!isUuid(reviewId)) throw new FunctionError(422, 'INVALID_REVIEW_ID', 'The review id must be a UUID.');
   const body = await readJson(request);
@@ -73,15 +78,20 @@ async function update(request: Request, reviewId: string): Promise<Response> {
   if (existing.status === 'deleted') {
     throw new FunctionError(409, 'CONFLICT', 'Deleted reviews cannot be edited.');
   }
-  const { data: student, error: studentError } = await db.from('student_profiles')
-    .select('id,first_name,middle_name,last_name').eq('id', existing.student_id).single();
-  if (studentError || !student) throw new FunctionError(404, 'NOT_FOUND', 'Student was not found.');
+  const { data: students, error: studentError } = await db.from('student_profiles')
+    .select('id,first_name,middle_name,last_name,student_id_number');
+  if (studentError) throw new FunctionError(500, 'DATABASE_ERROR', 'Student profiles could not be loaded.');
+  const allStudents = students ?? [];
+  if (!allStudents.some((student) => student.id === existing.student_id)) {
+    throw new FunctionError(404, 'NOT_FOUND', 'Student was not found.');
+  }
   const { document, text, deidentifiedText: deidentified } = prepareReviewForEmbedding(
     body.body_document,
-    [student],
+    allStudents,
   );
   const embedding = existing.status === 'active' ? await embedText(deidentified) : null;
-  const { data: updatedId, error } = await client.rpc('update_review_transaction', {
+  const { data: updatedId, error } = await db.rpc('update_review_transaction', {
+    p_actor_id: id,
     p_review_id: reviewId,
     p_body_text: text,
     p_body_document: document,
@@ -95,7 +105,7 @@ async function update(request: Request, reviewId: string): Promise<Response> {
 }
 
 async function setStatus(request: Request, reviewId: string): Promise<Response> {
-  const { client, id, role } = await getProfile(request);
+  const { id, role } = await getProfile(request);
   if (role !== 'faculty') throw new FunctionError(403, 'FORBIDDEN', 'Only active faculty can change review status.');
   if (!isUuid(reviewId)) throw new FunctionError(422, 'INVALID_REVIEW_ID', 'The review id must be a UUID.');
   const body = await readJson(request);
@@ -118,7 +128,8 @@ async function setStatus(request: Request, reviewId: string): Promise<Response> 
   if (embeddingAfterStatusChange(action) === 'embed') {
     embedding = await embedText(review.deidentified_text);
   }
-  const { data: status, error } = await client.rpc('set_review_status_transaction', {
+  const { data: status, error } = await db.rpc('set_review_status_transaction', {
+    p_actor_id: id,
     p_review_id: reviewId,
     p_action: action,
     p_embedding: embedding,
@@ -142,9 +153,6 @@ async function handler(request: Request): Promise<Response> {
     requireMethod(request, 'POST');
     throw new FunctionError(404, 'NOT_FOUND', 'The endpoint was not found.');
   } catch (error) {
-    if (error instanceof Error && error.message === 'UNAUTHORIZED') {
-      return errorResponse(new FunctionError(401, 'UNAUTHORIZED', 'Authentication is required.'));
-    }
     return errorResponse(error);
   }
 }

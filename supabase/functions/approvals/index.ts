@@ -1,5 +1,5 @@
 import { errorResponse, FunctionError, handleOptions, isUuid, jsonResponse, mapDatabaseError, readJson } from '../_shared/errors.ts';
-import { getProfile } from '../_shared/supabase.ts';
+import { adminClient, getProfile } from '../_shared/supabase.ts';
 
 async function handler(request: Request): Promise<Response> {
   if (request.method === 'OPTIONS') return handleOptions();
@@ -7,7 +7,7 @@ async function handler(request: Request): Promise<Response> {
     if (request.method !== 'POST') {
       throw new FunctionError(405, 'METHOD_NOT_ALLOWED', 'The HTTP method is not supported.');
     }
-    const { client, role } = await getProfile(request);
+    const { id, role } = await getProfile(request);
     if (role !== 'admin') throw new FunctionError(403, 'FORBIDDEN', 'Only administrators can decide applications.');
     const body = await readJson(request);
     if (!Array.isArray(body.application_ids) || body.application_ids.length < 1 ||
@@ -41,7 +41,8 @@ async function handler(request: Request): Promise<Response> {
         assignmentIds.add(candidate.application_id);
       }
     }
-    const { data, error } = await client.rpc('decide_applications_transaction', {
+    const { data, error } = await adminClient().rpc('decide_applications_transaction', {
+      p_actor_id: id,
       p_request: body,
     });
     if (error) mapDatabaseError(error);
