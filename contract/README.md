@@ -2,10 +2,10 @@
 
 `openapi.yaml` is the single source of truth for the SPMIS API. `generated/schema.d.ts` is generated from it and must never be edited by hand. See [`../docs/contract-decisions.md`](../docs/contract-decisions.md) for architectural proposals and scope decisions.
 
-## Contract Freeze (`v1.0.0` — Frozen 2026-10-30)
+## Contract Freeze & Versioning (`v1.0.0` → `v1.1.0`)
 
-- **Status:** **FROZEN** (`v1.0.0`, tagged as `contract-v1.0.0`, effective **2026-10-30**).
-- **Purpose:** Locks the 27-operation request/response boundary so **Milestone 3 (Backend — DB, RLS & Edge Functions)** and **Milestone 4 (Frontend — React SPA on Mock)** can proceed in parallel without blocking or surprising each other.
+- **Status:** Originally **FROZEN** at `v1.0.0` (tagged as `contract-v1.0.0`, effective **2026-10-30**, 27 operations), and extended additively in **`v1.1.0`** (30 operations) to add Admin direct student deletion (`deleteStudent`) and Admin direct faculty creation/deletion (`createFacultyByAdmin`, `deleteFaculty`).
+- **Purpose:** Locks the curated request/response boundary so **Milestone 3 (Backend — DB, RLS & Edge Functions)** and **Milestone 4 (Frontend — React SPA on Mock)** can proceed in parallel without blocking or surprising each other.
 - **Change Control Policy:**
   1. Neither Frontend nor Backend may unilaterally add, rename, or remove endpoints, parameters, or schema fields.
   2. Any required contract change after the freeze must be proposed in a dedicated PR editing `contract/openapi.yaml`, regenerating `contract/generated/schema.d.ts` (`npm --prefix app run contract:gen`) and `app/public/docs/index.html` (`npm --prefix app run contract:docs`), and updating `docs/contract-decisions.md`.
@@ -15,12 +15,12 @@
 
 ## Scope & Operations
 
-This contract covers the 27 curated PostgREST, RPC, and Edge Function operations required by SPMIS:
-- **Profiles & Auth:** `getOwnProfile`, `updateOwnProfile`, `listFaculty`
-- **Student Directory & Search:** `searchStudents`, `getStudentById`, `createStudent`, `updateStudent`
+This contract covers the 30 curated PostgREST, RPC, and Edge Function operations required by SPMIS:
+- **Profiles & Auth:** `getOwnProfile`, `updateOwnProfile`, `listFaculty`, `createFacultyByAdmin`, `updateFacultyByAdmin`, `deleteFaculty`
+- **Student Directory & Search:** `searchStudents`, `getStudentById`, `createStudentDirect`, `updateStudent`, `deleteStudent`
 - **Academic Taxonomy:** `listDepartments`, `createDepartment`, `updateDepartment`, `deleteDepartment`, `listPrograms`, `createProgram`, `updateProgram`, `deleteProgram`
-- **Reviews, Tags & History:** `listStudentReviews`, `createReview`, `updateReview`, `setReviewStatus`, `listReviewVersions`, `listTags`, `suggestReviewTags`
-- **Approval Queues:** `listApprovalQueueItems`, `createApprovalRequest`, `decideApplications`
+- **Reviews, Tags & History:** `listStudentReviews`, `createReview`, `updateReview`, `setReviewStatus`, `listReviewRevisions`, `listTags`, `suggestReviewTags`
+- **Approval Queues:** `listApprovalQueueItems`, `submitApplication`, `decideApplications`
 - **AI Chat Assistant & Audit:** `askChatbot`, `listAuditLogs`
 
 Detail reads have dedicated operation IDs: `getStudentById` calls `GET /rest/v1/rpc/get_student_by_id` with `p_student_id=<uuid>`, and `getOwnProfile` calls `GET /rest/v1/rpc/get_own_profile` without identity input. Each returns one object or JSON `null`; table list reads return arrays.
@@ -91,3 +91,32 @@ npx newman run contract/collection/spmis-contract.postman_collection.json -e con
 - Authenticated requests use `{{apiKey}}` and `{{accessToken}}`; `[401]` requests omit `Authorization` and keep `apikey`.
 - Never put real JWTs, Supabase keys or student data in the collection or environment files. All names and UUIDs in the collection are fictional.
 - This suite verifies the contract (status codes and error envelopes) against Prism only; it does not test backend behavior.
+
+## Local Supabase Instructor Demos
+
+The live database and Edge Function demonstrations are kept in a companion collection so the Prism contract runner remains unchanged:
+
+- `collection/spmis-instructor-demos.postman_collection.json` contains the Lesson 3.3 RLS enforcement and Lesson 4.4 two-layer validation bypass requests.
+- `collection/spmis-supabase-local.postman_environment.json` sets `baseUrl = http://127.0.0.1:54321`, contains safe placeholders for the local anon key and role JWTs, and uses the synthetic fixture IDs from `supabase/seed.sql`.
+
+### Setup and run
+
+1. Start the local stack and load the repository fixtures:
+
+   ```powershell
+   npx supabase start
+   npx supabase db reset
+   ```
+
+2. Obtain the local anon key with `npx supabase status`. The seeded Auth users have no shared test passwords: set local-only passwords for them through the local Auth admin interface/API, then sign each one in against `POST /auth/v1/token?grant_type=password` with the anon key to obtain its `access_token`. Use `owner@example.test` for `facultyToken`, `faculty@example.test` for `nonOwnerFacultyToken`, `pending@example.test` for `pendingToken`, and `admin@example.test` for `adminToken`. The matching database identities and role/status fixtures are in `supabase/seed.sql`.
+3. Import the demo collection and local environment into Postman. Replace the four JWT placeholders and the anon-key placeholder in the selected environment; keep the key and tokens local and do not export or commit populated credentials.
+4. Start the Edge Functions when running the function requests:
+
+   ```powershell
+   npx supabase functions serve --env-file supabase/.env
+   ```
+
+   `supabase/.env` must be a local, untracked copy of `supabase/.env.example`. The invalid review request is rejected before embedding; a Gemini key is not needed for this particular validation case.
+5. Run the demo collection with **SPMIS Supabase (local)** selected. The RLS reads should return `200` with `[]`; the direct review PATCH should return `403`; and invalid review, department, and approval writes should return `400` or `422` as asserted.
+
+Run the original 27-operation collection separately with **SPMIS Prism (local mock)** as described above. Prism validates and simulates the frozen API contract; it does not execute Supabase RLS, database constraints, or Edge Function logic, so the instructor demo collection is intentionally for the local Supabase environment only.

@@ -17,6 +17,7 @@
     "mock:server": "prism mock ../contract/openapi.yaml --port 4010 --cors"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
     "@supabase/supabase-js": "^2.57.0",
     "@tanstack/react-query": "^5.104.2",
     "clsx": "^2.1.1",
@@ -24,6 +25,7 @@
     "openapi-fetch": "^0.14.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.90.0",
     "react-router-dom": "^7.0.0",
     "tailwind-merge": "^3.7.0",
     "zod": "^4.6.7"
@@ -32,10 +34,14 @@
     "@redocly/cli": "2.71.0",
     "@stoplight/prism-cli": "5.16.0",
     "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
     "@types/node": "^22.20.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
+    "jsdom": "^29.1.1",
     "msw": "2.15.0",
     "openapi-typescript": "7.13.0",
     "tailwindcss": "^4.3.3",

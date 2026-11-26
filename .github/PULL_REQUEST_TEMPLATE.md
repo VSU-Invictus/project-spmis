@@ -5,7 +5,7 @@
 
 ## Linked Issues
 <!-- Reference the issue(s) this PR addresses (e.g., "Closes #12")[cite: 2]. -->
-Closes #
+Issues: #
 
 ## Type of Change
 <!-- Check the appropriate box using [x] -->
