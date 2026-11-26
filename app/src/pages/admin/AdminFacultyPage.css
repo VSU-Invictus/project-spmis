@@ -3,6 +3,12 @@
   margin-bottom: 0 !important;
 }
 
+@media (max-width: 560px) {
+  .admin-faculty-mock-role {
+    --faculty-mock-role-bottom: 7.5rem;
+  }
+}
+
 /* Approved M1 Faculty column geometry, scoped to this roster. */
 .admin-faculty-management .table-scroll :is(.table-header-row, .table-row) {
   min-width: 960px;

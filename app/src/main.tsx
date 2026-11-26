@@ -127,14 +127,16 @@ function RootLayout() {
   const { mockRole, setMockRole } = useSession();
   const location = useLocation();
   const showMockRole = !['/', '/signin', '/login', '/signup'].includes(location.pathname);
-  // Keep the mock-role control above the Student Roster's bottom-right version label.
-  const mockRoleBottom = matchPath('/admin/students', location.pathname) ? 56 : 16;
+  // Keep the mock-role control above the rosters' bottom-right version label.
+  const isAdminFaculty = Boolean(matchPath('/admin/faculty', location.pathname));
+  const mockRoleBottom = isAdminFaculty ? 'var(--faculty-mock-role-bottom, 56px)' :
+    matchPath('/admin/students', location.pathname) ? 56 : 16;
   return (
     <>
       <ScrollToTop />
       <Outlet />
       {mockRole !== null && showMockRole && (
-        <label style={{ position: 'fixed', right: 16, bottom: mockRoleBottom, zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
+        <label className={isAdminFaculty ? 'admin-faculty-mock-role' : undefined} style={{ position: 'fixed', right: 16, bottom: mockRoleBottom, zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
           <span style={{ fontSize: 12 }}>Mock role</span>
           <select aria-label="Mock role" value={mockRole} onChange={(event) => setMockRole(event.target.value as 'active' | 'pending' | 'admin')}>
             <option value="active">Active Faculty</option>

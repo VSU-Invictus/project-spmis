@@ -78,11 +78,13 @@ describe('Admin roster footers', () => {
     expect(footer.queryByRole('navigation', { name: 'Footer navigation' })).not.toBeInTheDocument();
   });
 
-  it('keeps the default footer links on the Faculty Roster', async () => {
-    renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
-    const navigation = await screen.findByRole('navigation', { name: 'Footer navigation' });
-    expect(within(navigation).getAllByRole('link').map(link => link.textContent))
-      .toEqual(['About', 'Terms', 'Privacy Policy']);
+  it('shows the M1 version label without legal links on the Faculty Roster', async () => {
+    const { container } = renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+    await screen.findByText('System Version 0.1.0');
+    const footer = within(container.querySelector('footer')!);
+    expect(footer.getByText('© 2026 Admin Portal. All rights reserved.')).toBeVisible();
+    expect(footer.getByText('System Version 0.1.0')).toBeVisible();
+    expect(footer.queryByRole('navigation', { name: 'Footer navigation' })).not.toBeInTheDocument();
   });
 });
 

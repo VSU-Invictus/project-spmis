@@ -226,7 +226,7 @@ function FacultyManagement({ profileId }: { profileId: string }) {
     if (allowedSize !== pageSize) { setPageSize(allowedSize); setPage(1); }
     else if (page > Math.max(1, Math.ceil(total / pageSize))) setPage(Math.max(1, Math.ceil(total / pageSize)));
   }, [faculty.data, page, pageSize]);
-  return <AppShell role="admin" activeNavKey="faculty" breadcrumb="Admin Portal / Faculty Roster">
+  return <AppShell role="admin" activeNavKey="faculty" breadcrumb="Admin Portal / Faculty Roster" showFooterLinks={false}>
     <div className="admin-faculty-management">
       <div className="header-container">
         <div className="heading-wrapper"><h1 className="heading-title">Faculty</h1></div>
