@@ -3,6 +3,7 @@ import { Button } from './Button';
 import { Checkbox } from './Checkbox';
 import { EmptyState } from './EmptyState';
 import { RejectionRow } from './RejectionRow';
+import { useMinimumLoadingDuration } from './Skeleton';
 import { useOptionalPreferences } from '../../context/PreferencesContext';
 
 export interface DataTableColumn<T> {
@@ -64,7 +65,7 @@ export function DataTable<T>({
   pagination,
   preferenceKey,
   dynamicPageSizeOptions = true,
-  isLoading = false,
+  isLoading: rawIsLoading = false,
   emptyTitle = 'No pending applications',
   emptyDescription = 'Items awaiting review or matching your filters will appear here.',
   layoutMode = 'table',
@@ -75,6 +76,7 @@ export function DataTable<T>({
   className = '',
   ariaLabel = 'Data table',
 }: DataTableProps<T>) {
+  const isLoading = useMinimumLoadingDuration(rawIsLoading);
   const preferences = useOptionalPreferences();
   const rowsPerPageSelectId = useId();
   const [uncontrolledSelected, setUncontrolledSelected] = useState<Set<string>>(
@@ -226,13 +228,23 @@ export function DataTable<T>({
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody aria-busy={isLoading || undefined}>
                 {isLoading
-                  ? [0, 1, 2].map((skeletonIdx) => (
+                  ? [0, 1, 2, 3, 4].map((skeletonIdx) => (
                       <tr key={`skeleton-${skeletonIdx}`} className="skeleton-row">
-                        <td colSpan={totalColCount}>
-                          <div className="skeleton" />
-                        </td>
+                        {selectable && (
+                          <td className="checkbox-cell">
+                            <div className="skeleton skeleton-checkbox" />
+                          </td>
+                        )}
+                        {columns.map((col, colIdx) => (
+                          <td key={col.key} className={col.colClass || undefined}>
+                            <div
+                              className="skeleton"
+                              style={{ width: colIdx === 0 ? '72%' : colIdx === columns.length - 1 ? '55%' : '82%' }}
+                            />
+                          </td>
+                        ))}
                       </tr>
                     ))
                   : visibleRows.map((row, rowIdx) => {
@@ -316,17 +328,27 @@ export function DataTable<T>({
                 ))}
               </div>
 
-              <div className="table-body" role="rowgroup">
+              <div className="table-body" role="rowgroup" aria-busy={isLoading || undefined}>
                 {isLoading
-                  ? [0, 1, 2].map((skeletonIdx) => (
+                  ? [0, 1, 2, 3, 4].map((skeletonIdx) => (
                       <div key={`skeleton-${skeletonIdx}`} className="table-row skeleton-row" role="row">
-                        <div
-                          className="td-cell"
-                          role="cell"
-                          style={{ width: '100%', flex: '1 1 100%', display: 'flex', flexDirection: 'column', gap: '8px', border: 'none' }}
-                        >
-                          <div className="skeleton" />
-                        </div>
+                        {selectable && (
+                          <div className="td-cell checkbox-cell" role="cell">
+                            <div className="skeleton skeleton-checkbox" />
+                          </div>
+                        )}
+                        {columns.map((col, colIdx) => (
+                          <div
+                            key={col.key}
+                            className={`td-cell ${col.colClass || ''}`.trim()}
+                            role="cell"
+                          >
+                            <div
+                              className="skeleton"
+                              style={{ width: colIdx === 0 ? '72%' : colIdx === columns.length - 1 ? '55%' : '82%' }}
+                            />
+                          </div>
+                        ))}
                       </div>
                     ))
                   : visibleRows.map((row, rowIdx) => {
