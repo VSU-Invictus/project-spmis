@@ -13,7 +13,9 @@ import {
   TableHeader,
   TablePaginationFooter,
   TableRow,
+  TableRowSkeleton,
   TagCluster,
+  useMinimumLoadingDuration,
 } from '../../components/ui';
 import { getTagBadgeVariant } from '../../components/reviews';
 import { useSession } from '../../context/SessionContext';
@@ -121,10 +123,10 @@ export function FacultyStudentsPage() {
   } = useStudentSearchPage(searchParams, {
     enabled: Boolean(isActiveFaculty),
   });
+  const isLoading = useMinimumLoadingDuration(isPending || isFetching);
 
   const students = studentPage?.students ?? [];
   const totalEntries = studentPage?.total ?? 0;
-  const isLoading = isPending || isFetching;
 
   useEffect(() => {
     if (!studentPage) return;
@@ -380,14 +382,10 @@ export function FacultyStudentsPage() {
                     <TableHead className="ui-table-heading-center">Action</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody aria-busy={isLoading || undefined}>
                   {isLoading
-                    ? [0, 1, 2].map((idx) => (
-                        <TableRow key={`skeleton-${idx}`} className="skeleton-row">
-                          <TableCell colSpan={5}>
-                            <div className="skeleton" />
-                          </TableCell>
-                        </TableRow>
+                    ? [0, 1, 2, 3, 4].map((idx) => (
+                        <TableRowSkeleton key={`skeleton-${idx}`} columns={5} />
                       ))
                     : students.map((student: StudentSearchResult) => {
                         const fullName = [
