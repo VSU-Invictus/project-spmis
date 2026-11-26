@@ -131,7 +131,7 @@ function RootLayout() {
       <ScrollToTop />
       <Outlet />
       {mockRole !== null && showMockRole && (
-        <label style={{ position: 'fixed', right: 16, bottom: 16, zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
+        <label style={{ position: 'fixed', right: 24, bottom: 52, zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
           <span style={{ fontSize: 12 }}>Mock role</span>
           <select aria-label="Mock role" value={mockRole} onChange={(event) => setMockRole(event.target.value as 'active' | 'pending' | 'admin')}>
             <option value="active">Active Faculty</option>
