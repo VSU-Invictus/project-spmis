@@ -10,7 +10,8 @@ declare
 begin
   select id, role into caller_id, caller_role
     from public.faculty_profiles
-    where id = coalesce(nullif(current_setting('app.actor_id', true), '')::uuid, auth.uid());
+    -- Prefer the verified JWT identity; service-role calls use the verified RPC actor.
+    where id = coalesce(auth.uid(), nullif(current_setting('app.actor_id', true), '')::uuid);
 
   if tg_op = 'DELETE' then affected_id := old.id;
   else affected_id := new.id;

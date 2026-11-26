@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(8);
+select plan(10);
 
 -- Isolate entries created by this test from synthetic seed history.
 create temporary table prior_audit_ids as select id from public.audit_log_entries;
@@ -73,6 +73,22 @@ select is(
    where p.name = 'Synthetic JWT Audit Fallback' and a.action = 'program.created'),
   '30000000-0000-4000-8000-000000000004:admin',
   'audit trigger falls back to the authenticated admin JWT'
+);
+
+-- A transaction actor must never override an authenticated caller's identity.
+select set_config('app.actor_id', '30000000-0000-4000-8000-000000000001', true);
+select lives_ok(
+  $$update public.programs set name = 'Synthetic JWT Audit Precedence'
+    where name = 'Synthetic JWT Audit Fallback'$$,
+  'direct admin write succeeds with a different transaction actor configured'
+);
+
+select is(
+  (select a.actor_id::text || ':' || a.actor_role
+   from public.audit_log_entries a join public.programs p on p.id = a.entity_id
+   where p.name = 'Synthetic JWT Audit Precedence' and a.action = 'program.updated'),
+  '30000000-0000-4000-8000-000000000004:admin',
+  'verified JWT identity takes precedence over a conflicting app.actor_id'
 );
 
 select * from finish();
