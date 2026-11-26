@@ -6,7 +6,7 @@ import { Badge, Table, TableContainer } from '../../components/ui';
 import { useSession } from '../../context/SessionContext';
 import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
 import type { ApprovalQueueItem } from '../../hooks/useApprovalQueueItems';
-import { useAuditLogs } from '../../hooks/useAuditLogs';
+import { useAuditLogPreview } from '../../hooks/useAuditLogs';
 import { useDepartmentOptions } from '../../hooks/useDepartments';
 import { useProgramOptions } from '../../hooks/usePrograms';
 import './AdminDashboardPage.css';
@@ -81,8 +81,11 @@ function DashboardOverview({ profileId }: { profileId: string }) {
     .slice(0, 4);
   const departments = useDepartmentOptions({ enabled: pending.some(item => item.type === 'faculty_account' && Boolean(item.payload.department_id)) });
   const programs = useProgramOptions({ enabled: pending.some(item => item.type === 'student_registration') });
-  const audits = useAuditLogs({ limit: 3, order: 'created_at.desc,id.asc' });
-  const shownAudits = audits.data?.slice(0, 3) ?? [];
+  const auditPreviewLimit = 3;
+  const audits = useAuditLogPreview(auditPreviewLimit);
+  const shownAudits = audits.data?.entries.slice(0, auditPreviewLimit) ?? [];
+  const auditTotal = audits.data?.total;
+  const auditCount = auditTotal ?? shownAudits.length;
   const loading = queues.some(({ result }) => result.isPending);
   const failed = queues.some(({ result }) => result.isError);
 
@@ -136,14 +139,16 @@ function DashboardOverview({ profileId }: { profileId: string }) {
         <div className="ui-dashboard-activity-list">
           {audits.isPending && <p role="status">Loading audit events…</p>}
           {audits.isError && <p role="alert">Audit events could not be loaded.</p>}
-          {audits.isSuccess && !audits.data.length && <p>No recent audit events.</p>}
+          {audits.isSuccess && !shownAudits.length && <p>No recent audit events.</p>}
           {shownAudits.map(event => <article key={event.id} className="ui-dashboard-activity-item">
             <div><h3>{event.action}</h3><ActivityTimestamp timestamp={event.created_at} /></div>
             <p>{event.actor_role} · {event.entity_type}</p>
           </article>)}
         </div>
         <div className="ui-dashboard-activity-footer">
-          {audits.isSuccess && <span>Showing {shownAudits.length} {shownAudits.length === 1 ? 'log' : 'logs'}</span>}
+          {audits.isSuccess && <span>
+            Showing {shownAudits.length}{auditTotal != null && ` of ${auditTotal}`} {auditCount === 1 ? 'log' : 'logs'}
+          </span>}
           <Link className="ui-link-neutral" to="/admin/audit-log">View All Logs →</Link>
         </div>
       </aside>
