@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSession } from '../../context/SessionContext';
 import { useTheme } from '../../context/ThemeContext';
 import { QueueModalHost } from '../queue-modal/QueueModalHost';
 import { AdminSidebar, type AdminNavKey } from './AdminSidebar';
@@ -46,7 +47,15 @@ export function AppShell({
   children,
 }: AppShellProps) {
   const navigate = useNavigate();
+  const { profile } = useSession();
   const [logoutOpen, setLogoutOpen] = useState(false);
+
+  const resolvedUserName =
+    role === 'admin'
+      ? 'Admin User'
+      : profile?.full_name || 'Alex Morgan';
+  const resolvedUserInitial =
+    resolvedUserName.trim().charAt(0).toUpperCase() || 'A';
 
   const defaultBreadcrumb =
     role === 'admin' ? 'Admin Portal / Overview' : 'Faculty Portal / Overview';
@@ -68,12 +77,16 @@ export function AppShell({
       {role === 'admin' ? (
         <AdminSidebar
           activeKey={activeNavKey as AdminNavKey}
+          userName={resolvedUserName}
+          userInitial={resolvedUserInitial}
           onSelectNav={handleSelectNav}
           onLogoutClick={() => setLogoutOpen(true)}
         />
       ) : (
         <FacultySidebar
           activeKey={activeNavKey as FacultyNavKey}
+          userName={resolvedUserName}
+          userInitial={resolvedUserInitial}
           onSelectNav={handleSelectNav}
           onLogoutClick={() => setLogoutOpen(true)}
         />
@@ -103,7 +116,6 @@ export function AppShell({
 
         <PortalFooter
           portalName={role === 'admin' ? 'Admin Portal' : 'Faculty Portal'}
-          showLinks={role === 'admin'}
         />
       </main>
 

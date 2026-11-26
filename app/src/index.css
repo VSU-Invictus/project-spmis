@@ -1672,3 +1672,104 @@ html:not(.dark) :is(.ui-toast, .toast) {
   font-size: 12px;
 }
 
+/* ==========================================================================
+   REVIEW COMPOSER EDITOR & TAG INPUT OVERRIDES (#189)
+   ========================================================================== */
+:is(a, button).ui-link-neutral.back-link,
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 6px !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  overflow: visible !important;
+}
+
+.back-link :is(.arrow, .arrow-left) {
+  display: inline-block;
+  line-height: 1;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.back-link:hover :is(.arrow, .arrow-left) {
+  transform: translateX(-4px);
+}
+
+#review-editor-textarea,
+.review-rich-editor {
+  min-height: 170px;
+  max-height: 420px;
+  padding: var(--space-5, 14px) var(--space-6, 16px) !important;
+  background: var(--muted, var(--color-input, #21201E)) !important;
+  border: 1px solid var(--input, var(--color-border-main, #383734)) !important;
+  border-top: none !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: var(--radius-sm, 6px) !important;
+  border-bottom-right-radius: var(--radius-sm, 6px) !important;
+  color: var(--foreground) !important;
+  line-height: 1.6;
+  outline: none !important;
+  font-family: inherit;
+  font-size: var(--font-size-md, 14px);
+}
+
+#review-editor-textarea::placeholder,
+.review-rich-editor::placeholder {
+  font-style: italic !important;
+  color: var(--muted-foreground, var(--color-text-muted, #A0988E)) !important;
+  opacity: 0.75 !important;
+}
+
+#tag-input-box,
+.tag-input-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2, 6px);
+  padding: var(--space-2, 6px) var(--space-4, 10px);
+  background: var(--muted, var(--color-input, #21201E));
+  border: 1px solid var(--input, var(--color-border-main, #383734));
+  border-radius: var(--radius-sm, 6px);
+  min-height: 42px;
+  cursor: text;
+}
+
+#tag-input-box:focus-within,
+.tag-input-box:focus-within {
+  border-color: var(--color-primary-base, var(--primary));
+  outline: 2px solid var(--ring, var(--primary));
+  outline-offset: 1px;
+}
+
+#review-tag-input,
+.tag-input-field {
+  flex: 1;
+  min-width: 140px;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  border: none !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  padding: 4px !important;
+  margin: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  font-size: var(--font-size-base, 13px) !important;
+  color: var(--foreground) !important;
+}
+
+#review-tag-input:focus,
+.tag-input-field:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+

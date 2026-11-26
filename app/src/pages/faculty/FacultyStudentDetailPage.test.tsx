@@ -191,46 +191,52 @@ describe('FacultyStudentDetailPage (#155)', () => {
     const writeBtn = await screen.findByRole('button', { name: /write review/i });
     await user.click(writeBtn);
 
-    const dialog = await screen.findByRole('dialog');
-    const publishBtn = within(dialog).getByRole('button', { name: /publish review/i });
+    expect(
+      await screen.findByRole('heading', { name: /Write a review/i })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByText(/Back to student/i)).toBeInTheDocument();
+    expect(screen.getByText('BS Computer Science')).toBeInTheDocument();
+
+    const publishBtn = screen.getByRole('button', { name: /publish review/i });
 
     // Submit empty review -> inline validation error
     await user.click(publishBtn);
-    expect(await within(dialog).findByText(/Enter a review before saving/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Enter a review before saving/i)).toBeInTheDocument();
 
-    const editor = within(dialog).getByLabelText(/review text/i);
+    const editor = screen.getByLabelText(/review text/i);
 
     // >500 words -> live counter and inline validation error
     const overLimitText = Array(501).fill('analysis').join(' ');
     await user.clear(editor);
     await user.paste(overLimitText);
-    expect(within(dialog).getByTestId('review-word-counter')).toHaveTextContent('501 / 500 words');
+    expect(screen.getByTestId('review-word-counter')).toHaveTextContent('501 / 500 words');
 
     await user.click(publishBtn);
     expect(
-      await within(dialog).findByText(/A review can contain no more than 500 words/i)
+      await screen.findByText(/A review can contain no more than 500 words/i)
     ).toBeInTheDocument();
 
     // Valid rich-text review with formatting toolbar and tag autocomplete
     await user.clear(editor);
     await user.paste('Demonstrated **excellent** project execution.');
-    await user.click(within(dialog).getByRole('button', { name: /bulleted list/i }));
+    await user.click(screen.getByRole('button', { name: /bulleted list/i }));
     expect(editor).toHaveValue(
       'Demonstrated **excellent** project execution.\n- List item'
     );
 
-    const tagInput = within(dialog).getByLabelText(/tags/i);
+    const tagInput = screen.getByLabelText(/tags/i);
     await user.click(tagInput);
     await user.paste('rob');
 
-    const suggestionOption = await within(dialog).findByRole('option', { name: /#robotics/i });
+    const suggestionOption = await screen.findByRole('option', { name: /#robotics/i });
     await user.click(suggestionOption);
 
     await user.click(publishBtn);
 
-    // Modal closes, toast displays, new review is rendered, and queries are invalidated
+    // Navigates back to student detail, toast displays, new review is rendered, and queries are invalidated
     await waitFor(() => {
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(screen.queryByRole('heading', { name: /Write a review/i })).not.toBeInTheDocument();
     });
 
     expect(await screen.findByText(/Review published successfully!/i)).toBeInTheDocument();
@@ -344,20 +350,22 @@ describe('FacultyStudentDetailPage (#155)', () => {
 
     // 1. Server-side 422 on createReview
     await user.click(await screen.findByRole('button', { name: /write review/i }));
-    const dialog = await screen.findByRole('dialog');
+    expect(
+      await screen.findByRole('heading', { name: /Write a review/i })
+    ).toBeInTheDocument();
 
-    const editor = within(dialog).getByLabelText(/review text/i);
+    const editor = screen.getByLabelText(/review text/i);
     await user.click(editor);
     await user.paste('Valid client text that triggers simulated server 422.');
     expect(editor).toHaveValue('Valid client text that triggers simulated server 422.');
 
-    await user.click(within(dialog).getByRole('button', { name: /publish review/i }));
+    await user.click(screen.getByRole('button', { name: /publish review/i }));
 
-    expect(await within(dialog).findByText('REVIEW_WORD_LIMIT')).toBeInTheDocument();
-    expect(within(dialog).getByText('Reviews must contain no more than 500 words.')).toBeInTheDocument();
-    expect(within(dialog).getByText(/Shorten the review and submit it again/i)).toBeInTheDocument();
+    expect(await screen.findByText('REVIEW_WORD_LIMIT')).toBeInTheDocument();
+    expect(screen.getByText('Reviews must contain no more than 500 words.')).toBeInTheDocument();
+    expect(screen.getByText(/Shorten the review and submit it again/i)).toBeInTheDocument();
 
-    await user.click(within(dialog).getByRole('button', { name: /cancel/i }));
+    await user.click(screen.getByRole('button', { name: /cancel/i }));
 
     // 2. Server-side 409 on setReviewStatus
     const reviewCard = await screen.findByTestId('review-card-67015de8-1ce8-4ac4-8634-384bf5fb3821');
@@ -368,25 +376,27 @@ describe('FacultyStudentDetailPage (#155)', () => {
     expect(screen.getByText(/Refresh the student page and try again/i)).toBeInTheDocument();
   });
 
-  it('opens the compose modal automatically on /faculty/students/:id/new-review and blocks invalid uncommitted tagDraft on submit', async () => {
+  it('renders the full-page compose view on /faculty/students/:id/new-review and blocks invalid uncommitted tagDraft on submit', async () => {
     const user = userEvent.setup();
     renderStudentDetailPage(undefined, `/faculty/students/${studentId}/new-review`);
 
-    const dialog = await screen.findByRole('dialog');
-    expect(within(dialog).getByText(/Write a review/i)).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /Write a review/i })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
-    const editor = within(dialog).getByLabelText(/review text/i);
+    const editor = await screen.findByLabelText(/review text/i);
     await user.click(editor);
     await user.paste('Assessment with an overly long uncommitted tag draft.');
 
-    const tagInput = within(dialog).getByLabelText(/tags/i);
+    const tagInput = screen.getByLabelText(/tags/i);
     await user.click(tagInput);
     await user.paste('a'.repeat(55));
 
-    await user.click(within(dialog).getByRole('button', { name: /publish review/i }));
+    await user.click(screen.getByRole('button', { name: /publish review/i }));
 
     expect(
-      await within(dialog).findByText(/Each tag must be 50 characters or fewer/i)
+      await screen.findByText(/Each tag must be 50 characters or fewer/i)
     ).toBeInTheDocument();
   });
 

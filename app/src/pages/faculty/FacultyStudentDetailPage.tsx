@@ -81,7 +81,6 @@ export function FacultyStudentDetailPage() {
   const { profile } = useSession();
 
   const isNewReviewRoute = location.pathname.endsWith('/new-review');
-  const [isWriteOpen, setIsWriteOpen] = useState(isNewReviewRoute);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [deletingReview, setDeletingReview] = useState<Review | null>(null);
   const [openKebabId, setOpenKebabId] = useState<string | null>(null);
@@ -93,14 +92,7 @@ export function FacultyStudentDetailPage() {
     hint?: string | null;
   } | null>(null);
 
-  useEffect(() => {
-    if (isNewReviewRoute) {
-      setIsWriteOpen(true);
-    }
-  }, [isNewReviewRoute]);
-
   const handleCloseReviewModal = useCallback(() => {
-    setIsWriteOpen(false);
     setEditingReview(null);
     if (isNewReviewRoute && id) {
       navigate(`/faculty/students/${id}`, { replace: true });
@@ -209,6 +201,64 @@ export function FacultyStudentDetailPage() {
     return matched?.name ?? 'Unknown program';
   }, [student, programs, isProgramsPending]);
 
+  if (isNewReviewRoute) {
+    return (
+      <AppShell
+        role={profile?.role === 'admin' ? 'admin' : 'faculty'}
+        activeNavKey="students"
+        breadcrumb="Faculty Portal / New Review"
+      >
+        <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <Link
+            to={id ? `/faculty/students/${id}` : '/faculty/students'}
+            data-student-link
+            className="ui-link-neutral back-link"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', width: 'fit-content', fontSize: '13px' }}
+          >
+            <span className="arrow-left">&larr;</span> Back to student
+          </Link>
+
+          <div className="header">
+            <div>
+              <h1 id="review-page-title" style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 4px 0' }}>
+                Write a review
+              </h1>
+              <p id="review-page-subtitle" style={{ margin: 0, color: 'var(--muted-foreground)', fontSize: '14px' }}>
+                Share an assessment grounded in your work with this student.
+              </p>
+            </div>
+          </div>
+
+          {isStudentPending && <CardSkeleton />}
+
+          {!isStudentPending && !student && (
+            <EmptyState
+              title="Student not found"
+              description="This student record is unavailable or could not be found."
+            />
+          )}
+
+          {!isStudentPending && student && (
+            <ReviewFormModal
+              isOpen
+              asPage
+              onClose={handleCloseReviewModal}
+              mode="create"
+              studentId={student.id}
+              studentName={fullName}
+              studentIdNumber={student.student_id_number}
+              studentProgram={programName}
+              contributorName={profile?.full_name || 'Alex Morgan'}
+              onSuccess={(msg) => setToastMessage(msg)}
+            />
+          )}
+        </div>
+
+        <Toast id="student-detail-toast" message={toastMessage} />
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell
       role={profile?.role === 'admin' ? 'admin' : 'faculty'}
@@ -248,7 +298,7 @@ export function FacultyStudentDetailPage() {
               variant="primary"
               onClick={() => {
                 setActionError(null);
-                setIsWriteOpen(true);
+                navigate(`/faculty/students/${student.id}/new-review`);
               }}
             >
               Write review
@@ -564,17 +614,17 @@ export function FacultyStudentDetailPage() {
         )}
       </div>
 
-      {/* Write / Edit Review Modal */}
-      {student && (isWriteOpen || isNewReviewRoute || editingReview) && (
+      {/* Edit Review Modal */}
+      {student && editingReview && (
         <ReviewFormModal
-          isOpen={Boolean(isWriteOpen || isNewReviewRoute || editingReview)}
+          isOpen={Boolean(editingReview)}
           onClose={handleCloseReviewModal}
-          mode={editingReview ? 'edit' : 'create'}
+          mode="edit"
           studentId={student.id}
           studentName={fullName}
           studentIdNumber={student.student_id_number}
           studentProgram={programName}
-          contributorName={profile?.full_name || 'Faculty Member'}
+          contributorName={profile?.full_name || 'Alex Morgan'}
           initialReview={editingReview}
           onSuccess={(msg) => setToastMessage(msg)}
         />
