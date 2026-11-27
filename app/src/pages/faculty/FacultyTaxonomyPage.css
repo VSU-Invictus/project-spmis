@@ -38,8 +38,8 @@ html:not(.dark) #faculty-entity-list .ui-table-wrap {
 
 #faculty-entity-list table,
 #faculty-entity-list .ui-table {
-  table-layout: fixed;
-  width: 100%;
+  table-layout: fixed !important;
+  width: 100% !important;
   border-collapse: collapse !important;
   background: transparent !important;
 }
