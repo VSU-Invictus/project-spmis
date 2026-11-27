@@ -2,18 +2,7 @@ import { assertAllowedKeys, errorResponse, FunctionError, handleOptions, jsonRes
 import { deidentifyText, reidentifyText, type StudentNameRecord } from '../_shared/deidentify.ts';
 import { embedText, generateAnswer } from '../_shared/gemini.ts';
 import { getProfile, adminClient } from '../_shared/supabase.ts';
-
-const requestTimes = new Map<string, number[]>();
-
-function enforceRateLimit(userId: string): void {
-  const now = Date.now();
-  const recent = (requestTimes.get(userId) ?? []).filter((time) => now - time < 60_000);
-  if (recent.length >= 20) {
-    throw new FunctionError(429, 'RATE_LIMITED', 'The AI Chat Assistant is temporarily unavailable.', null, 'Try again later.');
-  }
-  recent.push(now);
-  requestTimes.set(userId, recent);
-}
+import { enforceChatRateLimit } from '../_shared/chat-rate-limit.ts';
 
 function validateHistory(value: unknown): Array<{ role: 'user' | 'assistant'; content: string }> {
   if (value === undefined) return [];
@@ -40,13 +29,14 @@ async function handler(request: Request): Promise<Response> {
     }
     // getProfile verifies authentication and an active faculty/admin profile.
     const { id } = await getProfile(request);
-    enforceRateLimit(id);
+    const db = adminClient();
+    await enforceChatRateLimit(id, (actorId) =>
+      db.rpc('consume_chat_rate_limit', { p_actor_id: actorId }));
     const body = await readJson(request, ['message', 'history']);
     if (typeof body.message !== 'string' || body.message.length > 2000 || !/\S/u.test(body.message)) {
       throw new FunctionError(422, 'INVALID_MESSAGE', 'A nonblank message of at most 2,000 characters is required.');
     }
     const history = validateHistory(body.history);
-    const db = adminClient();
     const { data: students, error: studentsError } = await db.from('student_profiles')
       .select('id,first_name,middle_name,last_name,student_id_number,program:program_id(name)');
     if (studentsError) throw new FunctionError(500, 'DATABASE_ERROR', 'Student names could not be loaded.');
