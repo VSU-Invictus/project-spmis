@@ -28,6 +28,17 @@ import {
 } from '../../hooks';
 import { ApiRequestError } from '../../lib/api';
 
+function formatIsoDate(value?: string | null): string {
+  if (!value) return '';
+  if (/^\d{4}-\d{2}-\d{2}/.test(value)) return value.slice(0, 10);
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, '0');
+  const day = String(parsed.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function ReviewRevisionsSection({ reviewId }: { reviewId: string }) {
   const { data: revisions, isPending, isError, error } = useReviewRevisions({
     review_id: `eq.${reviewId}`,
@@ -57,7 +68,7 @@ function ReviewRevisionsSection({ reviewId }: { reviewId: string }) {
           revisions?.map((rev) => (
             <div key={rev.id} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               <small className="muted">
-                Previous version · {new Date(rev.edited_at).toLocaleDateString()}
+                Previous version · {formatIsoDate(rev.edited_at)}
               </small>
               <ReviewDocumentView
                 document={rev.body_document_snapshot}
@@ -489,7 +500,7 @@ export function FacultyStudentDetailPage() {
                           </h3>
                           <small>
                             {review.author_department_name || 'Department'} ·{' '}
-                            {new Date(review.created_at).toLocaleDateString()}
+                            {formatIsoDate(review.created_at)}
                           </small>
                         </div>
 
