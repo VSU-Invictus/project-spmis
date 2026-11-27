@@ -1,5 +1,6 @@
 export const queryKeys = {
   ownProfile: () => ['getOwnProfile'] as const,
+  onboardingDepartments: () => ['listFacultyOnboardingDepartments'] as const,
   searchStudents: (params?: Record<string, unknown>) => ['searchStudents', params ?? {}] as const,
   studentById: (studentId: string) => ['getStudentById', studentId] as const,
   studentReviews: (params?: Record<string, unknown>) => ['listStudentReviews', params ?? {}] as const,
