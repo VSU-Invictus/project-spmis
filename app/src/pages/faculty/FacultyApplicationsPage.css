@@ -58,9 +58,9 @@ html[data-theme-switching] .faculty-applications .ui-table-pagination-nav :is(.u
   border-radius: 12px !important;
   border: 1px solid var(--border, #2E2D2A) !important;
   background: var(--card, #1A1918) !important;
-  overflow: visible !important;
+  overflow: hidden !important;
   box-shadow: none !important;
-  margin-bottom: 20px !important;
+  margin-bottom: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
@@ -84,13 +84,24 @@ html:not(.dark) #faculty-application-list .ui-table-wrap {
   width: 100% !important;
   min-width: 0 !important;
   border-collapse: collapse !important;
-  background: transparent !important;
+  background: var(--card, #2B2A27) !important;
+}
+
+html:not(.dark) #faculty-application-list table,
+html:not(.dark) #faculty-application-list .ui-table {
+  background: #FAF9F6 !important;
 }
 
 #faculty-application-list thead,
 #faculty-application-list thead tr,
 #faculty-application-list th {
-  background: transparent !important;
+  background: var(--muted, #21201E) !important;
+}
+
+html:not(.dark) #faculty-application-list thead,
+html:not(.dark) #faculty-application-list thead tr,
+html:not(.dark) #faculty-application-list th {
+  background: var(--muted, #F4F1EA) !important;
 }
 
 #faculty-application-list thead tr th:first-child {
@@ -216,10 +227,14 @@ html:not(.dark) #faculty-application-list .ui-table-wrap {
   }
 }
 
-/* Submission note placed directly below pagination footer */
+/* Submission note placed directly below pagination footer with compact spacing */
+#faculty-application-list .ui-table-pagination {
+  padding: 0.75rem 0 0.5rem 0 !important;
+}
+
 .faculty-applications .application-footer-note {
-  margin-top: 1.25rem !important;
-  margin-bottom: 0.75rem !important;
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.5rem !important;
   font-size: 0.8125rem !important;
   color: var(--color-text-muted, #A0988E) !important;
   line-height: 1.5;
