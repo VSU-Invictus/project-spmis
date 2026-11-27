@@ -30,7 +30,7 @@ export function formatShortProgramName(program?: string | null): string {
   if (!program) return 'N/A';
   const trimmed = program.trim();
   if (!trimmed || trimmed.toLowerCase() === 'string') {
-    return 'BS Computer Science';
+    return 'N/A';
   }
   return trimmed
     .replace(/^Bachelor of Science in\s+/i, 'BS ')
@@ -44,9 +44,6 @@ export function sanitizeVisibleReviewTags(tags?: string[] | null): string[] {
   const filtered = tags
     .map((t) => t.trim())
     .filter((t) => Boolean(t) && t.toLowerCase() !== 'string');
-  if (filtered.length === 0 && tags.some((t) => t.trim().toLowerCase() === 'string')) {
-    return ['research', 'teamwork'];
-  }
   return filtered;
 }
 
@@ -72,9 +69,6 @@ export function FacultyStudentsPage() {
     const list = (tagsData ?? [])
       .map((t) => t.tag.trim())
       .filter((t) => Boolean(t) && t.toLowerCase() !== 'string');
-    if (list.length === 0 && (tagsData ?? []).some((t) => t.tag.trim().toLowerCase() === 'string')) {
-      return ['communication', 'research', 'robotics', 'teamwork'];
-    }
     return [...new Set(list)].sort((a, b) => a.localeCompare(b));
   }, [tagsData]);
 
@@ -89,9 +83,6 @@ export function FacultyStudentsPage() {
       ) {
         map.set(review.owner_id, review.author_name);
       }
-    }
-    if (map.size === 0) {
-      map.set('99999999-1111-4222-8333-444444444444', 'Jamie Rivera');
     }
     return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
   }, [activeReviews, profile?.id]);
@@ -247,7 +238,7 @@ export function FacultyStudentsPage() {
                     key={dept.id}
                     value={dept.id}
                   >
-                    {dept.name.toLowerCase() === 'string' ? 'Computer Science' : dept.name}
+                    {dept.name.toLowerCase() === 'string' ? 'N/A' : dept.name}
                   </option>
                 ))}
               </select>
