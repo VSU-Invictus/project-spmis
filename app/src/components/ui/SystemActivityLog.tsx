@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActionLink } from './Button';
+import { useMinimumLoadingDuration } from './Skeleton';
 
 export interface ActivityLogItem {
   id: string;
@@ -29,6 +30,7 @@ export interface SystemActivityLogProps {
   subtitle?: string;
   items?: ActivityLogItem[];
   totalCount?: number;
+  isLoading?: boolean;
   viewAllHref?: string;
   onViewAll?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   className?: string;
@@ -60,10 +62,12 @@ export function SystemActivityLog({
   subtitle = 'Recent Audits',
   items = DEFAULT_ACTIVITY_LOGS,
   totalCount = 128,
+  isLoading: rawIsLoading = false,
   viewAllHref = '/admin/audit-log',
   onViewAll,
   className = '',
 }: SystemActivityLogProps) {
+  const isLoading = useMinimumLoadingDuration(rawIsLoading);
   return (
     <aside
       className={`ui-card ui-dashboard-panel ui-dashboard-activity-panel ${className}`.trim()}
@@ -73,13 +77,25 @@ export function SystemActivityLog({
         <h2 id="activity-heading">{title}</h2>
         <span>{subtitle}</span>
       </div>
-      <div className="ui-dashboard-activity-list">
-        {items.map((item) => (
-          <ActivityLogItemCard key={item.id} item={item} />
-        ))}
+      <div className="ui-dashboard-activity-list" aria-busy={isLoading || undefined}>
+        {isLoading
+          ? [0, 1, 2].map((skeletonIdx) => (
+              <article
+                key={`activity-skeleton-${skeletonIdx}`}
+                className="ui-dashboard-activity-item skeleton-row"
+                aria-hidden="true"
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                  <div className="skeleton" style={{ width: '58%', height: '16px' }} />
+                  <div className="skeleton" style={{ width: '48px', height: '14px' }} />
+                </div>
+                <div className="skeleton" style={{ width: '82%', height: '14px', marginTop: '6px' }} />
+              </article>
+            ))
+          : items.map((item) => <ActivityLogItemCard key={item.id} item={item} />)}
       </div>
       <div className="ui-dashboard-activity-footer">
-        <span>Showing {items.length} of {totalCount} logs</span>
+        <span>{isLoading ? 'Loading logs…' : `Showing ${items.length} of ${totalCount} logs`}</span>
         <ActionLink href={viewAllHref} onClick={onViewAll}>
           View All Logs
         </ActionLink>

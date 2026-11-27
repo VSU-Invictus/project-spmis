@@ -51,7 +51,7 @@ function ApplicationHistory({ profileId }: { profileId: string }) {
         {applications.isError ? <><Alert variant="warning" title={applications.error.message}
           description={applications.error instanceof ApiRequestError ? applications.error.hint ?? '' : ''} />
           <Button variant="outline" onClick={() => void applications.refetch()}>Retry</Button></> :
-          <DataTable key={`${search}:${status}`} data={records} getRowId={item => item.id} ariaLabel="Your applications" isLoading={applications.isPending}
+          <DataTable key={`${search}:${status}`} data={records} getRowId={item => item.id} ariaLabel="Your applications" isLoading={applications.isPending || applications.isFetching}
             emptyTitle={search || status ? 'No matching applications' : 'No applications yet'}
             emptyDescription={search || status ? 'Try another search or status.' : 'Your submissions will appear here.'}
             columns={[

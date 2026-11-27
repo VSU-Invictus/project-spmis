@@ -11,6 +11,8 @@ import {
   TableHead,
   TableCell,
   TableRowSkeleton,
+  CardSkeleton,
+  useMinimumLoadingDuration,
   EmptyState,
   Badge,
   Button,
@@ -62,12 +64,14 @@ export function FacultyStudentsPage() {
   const {
     data: students,
     isPending,
+    isFetching,
     isError,
     error,
     refetch,
   } = useSearchStudents(searchParams, {
     enabled: Boolean(isActiveFaculty),
   });
+  const isLoading = useMinimumLoadingDuration(isPending || isFetching);
 
   const handleResetFilters = () => {
     setSearchTerm('');
@@ -132,7 +136,7 @@ export function FacultyStudentsPage() {
                 Clear All Filters
               </Button>
             )}
-            <Button size="sm" variant="secondary" onClick={() => refetch()}>
+            <Button size="sm" variant="secondary" disabled={isLoading} onClick={() => refetch()}>
               Refresh Roster
             </Button>
           </div>
@@ -265,9 +269,10 @@ export function FacultyStudentsPage() {
                 <TableHead style={{ width: '130px', textAlign: 'right' }}>Actions</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {isPending && (
+            <TableBody aria-busy={isLoading || undefined}>
+              {isLoading && (
                 <>
+                  <TableRowSkeleton columns={5} />
                   <TableRowSkeleton columns={5} />
                   <TableRowSkeleton columns={5} />
                   <TableRowSkeleton columns={5} />
@@ -275,7 +280,7 @@ export function FacultyStudentsPage() {
                 </>
               )}
 
-              {!isPending && (!students || students.length === 0) && (
+              {!isLoading && (!students || students.length === 0) && (
                 <TableRow>
                   <TableCell colSpan={5} style={{ padding: '36px 0', textAlign: 'center' }}>
                     <EmptyState
@@ -295,7 +300,7 @@ export function FacultyStudentsPage() {
                 </TableRow>
               )}
 
-              {!isPending &&
+              {!isLoading &&
                 students?.map((student) => {
                   const fullName = [student.first_name, student.middle_name, student.last_name]
                     .filter(Boolean)
@@ -358,7 +363,7 @@ export function FacultyStudentsPage() {
         </TableContainer>
 
         {/* Pagination controls */}
-        {!isPending && students && students.length > 0 && (
+        {(isLoading || (students && students.length > 0)) && (
           <div
             style={{
               display: 'flex',
@@ -367,14 +372,14 @@ export function FacultyStudentsPage() {
               padding: '8px 0',
             }}
           >
-            <span style={{ fontSize: '13px', color: 'var(--muted-foreground, #64748b)' }}>
-              Showing {students.length} results (Page {page})
+            <span style={{ fontSize: '13px', color: 'var(--muted-foreground, #64748b)' }} role="status">
+              {isLoading ? 'Loading students…' : `Showing ${students?.length ?? 0} results (Page ${page})`}
             </span>
             <div style={{ display: 'flex', gap: '8px' }}>
               <Button
                 size="sm"
                 variant="outline"
-                disabled={page <= 1}
+                disabled={isLoading || page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
                 Previous
@@ -382,7 +387,7 @@ export function FacultyStudentsPage() {
               <Button
                 size="sm"
                 variant="outline"
-                disabled={students.length < PAGE_SIZE}
+                disabled={isLoading || (students?.length ?? 0) < PAGE_SIZE}
                 onClick={() => setPage((p) => p + 1)}
               >
                 Next
@@ -410,10 +415,11 @@ function StudentReviewsDialog({
   student: StudentSearchResult;
   onClose: () => void;
 }) {
-  const { data: reviews, isPending, isError } = useStudentReviews({
+  const { data: reviews, isPending: rawIsPending, isFetching, isError } = useStudentReviews({
     student_id: `eq.${student.id}`,
     status: 'eq.active',
   });
+  const isPending = useMinimumLoadingDuration(rawIsPending || isFetching);
 
   const fullName = [student.first_name, student.middle_name, student.last_name].filter(Boolean).join(' ');
 
@@ -425,7 +431,12 @@ function StudentReviewsDialog({
       description={`${student.student_id_number} · ${student.program_name}`}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '60vh', overflowY: 'auto' }}>
-        {isPending && <p>Loading reviews from Prism mock...</p>}
+        {isPending && (
+          <>
+            <CardSkeleton />
+            <CardSkeleton />
+          </>
+        )}
         {isError && <p style={{ color: 'var(--destructive)' }}>Failed to load reviews.</p>}
         {!isPending && (!reviews || reviews.length === 0) && (
           <EmptyState

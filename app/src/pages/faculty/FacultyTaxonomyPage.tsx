@@ -95,7 +95,7 @@ function TaxonomyProposals({ mode }: { mode: Mode }) {
       <section id="faculty-entity-list" aria-live="polite">
         {list.isError ? <><Alert variant="warning" title={list.error.message} description={list.error instanceof ApiRequestError ? list.error.hint ?? '' : ''} />
           <Button variant="outline" onClick={() => void list.refetch()}>Retry</Button></> :
-          <DataTable key={search} data={records} getRowId={record => record.id} ariaLabel={title} isLoading={list.isPending}
+          <DataTable key={search} data={records} getRowId={record => record.id} ariaLabel={title} isLoading={list.isPending || list.isFetching}
             emptyTitle={search ? `No matching ${mode}` : `No ${mode} yet`}
             emptyDescription={search ? `Try another ${label.toLowerCase()} name.` : `Approved ${mode} will appear here.`}
             columns={[

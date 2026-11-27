@@ -213,7 +213,7 @@ function StudentManagement({ profileId }: { profileId: string }) {
       {programs.isError && <RequestError error={programs.error} retry={() => void programs.refetch()} />}
       {students.isError ? <RequestError error={students.error} retry={() => { if (page > 1) setPage(1); else void students.refetch(); }} /> :
         <DataTable layoutMode="flex" ariaLabel="Student roster" data={students.data?.students ?? []} getRowId={row => row.id}
-          isLoading={students.isFetching} emptyTitle={search || programId ? 'No matching students' : 'No students yet'}
+          isLoading={students.isPending || students.isFetching} emptyTitle={search || programId ? 'No matching students' : 'No students yet'}
           emptyDescription={search || programId ? 'Try adjusting your search or filters.' : 'Student records will appear here when they are added.'}
           pagination={{ page, pageSize, totalEntries: students.data?.total ?? 0, onPageChange: setPage,
             onPageSizeChange: size => { setPageSize(size); setPage(1); } }}
