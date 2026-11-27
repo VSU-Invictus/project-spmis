@@ -18,6 +18,7 @@
 .signin-brand { display: flex; flex-direction: column; overflow: hidden; padding: 36px 40px 32px; padding-right: 72px; background: radial-gradient(circle at 52% 54%, transparent 0 19%, rgba(255,255,255,.055) 19.1% 19.25%, transparent 19.35% 33%, rgba(255,255,255,.045) 33.1% 33.25%, transparent 33.35% 47%, rgba(255,255,255,.035) 47.1% 47.25%, transparent 47.35%), #2b2a27; }
 .signin-brand::after { position: absolute; inset: 0; content: ''; pointer-events: none; opacity: .22; background-image: radial-gradient(rgba(255,255,255,.13) .7px, transparent .8px); background-size: 9px 9px; mask-image: linear-gradient(transparent 45%, #000); }
 .signin-logo { position: relative; z-index: 1; display: block; width: min(210px, 70%); height: auto; object-fit: contain; }
+.signin-page .signin-logo-light { display: none; }
 .signin-brand-copy { position: relative; z-index: 1; width: min(245px, 100%); margin: auto 0; }
 .signin-brand-copy h1 { margin: 0 0 18px; color: #f6f3ef; font-size: clamp(38px, 3.4vw, 50px); font-weight: 800; line-height: 1.04; letter-spacing: -.035em; }
 .signin-brand-copy h1 span { color: #df7958; }
@@ -85,6 +86,62 @@
 .signin-legal a:hover, .auth-info-footer a:hover { color: #df7958; transform: translateY(-1px); }
 .signin-legal .dot, .auth-info-footer .dot { color: rgba(250,249,245,.35); font-size: .75rem; }
 .signin-legal a:focus-visible, .auth-info-footer a:focus-visible { outline: 2px solid rgba(223,121,88,.75); outline-offset: 4px; }
+
+html[data-theme="light"] .signin-page {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+html[data-theme="light"] .signin-page .signin-brand {
+  background: var(--card);
+  border-color: var(--border);
+  box-shadow: 0 10px 40px rgb(0 0 0 / 5%);
+}
+
+html[data-theme="light"] .signin-page .signin-brand::before {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background: radial-gradient(circle at 52% 54%,
+    transparent 0 19%, rgb(0 0 0 / 3%) 19.1% 19.25%,
+    transparent 19.35% 33%, rgb(0 0 0 / 2%) 33.1% 33.25%,
+    transparent 33.35% 47%, rgb(0 0 0 / 1%) 47.1% 47.25%,
+    transparent 47.35%);
+}
+
+html[data-theme="light"] .signin-page .signin-brand::after {
+  opacity: 1;
+  background-image: radial-gradient(rgb(0 0 0 / 4%) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 60% 60% at 80% 90%, #000 0%, transparent 70%);
+}
+
+html[data-theme="light"] .signin-page .signin-logo:not(.signin-logo-light) { display: none; }
+html[data-theme="light"] .signin-page .signin-logo-light { display: block; }
+html[data-theme="light"] .signin-page .signin-brand-copy h1 { color: var(--foreground); }
+html[data-theme="light"] .signin-page .signin-brand-copy h1 span { color: var(--primary); }
+html[data-theme="light"] .signin-page :is(.signin-brand-copy p, .signin-brand-copy ul, .signin-brand-footer, .signin-subtitle) {
+  color: var(--muted-foreground);
+}
+
+html[data-theme="light"] .signin-page .signin-brand-copy li::before {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 22%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 45%, transparent);
+}
+
+html[data-theme="light"] .signin-page .signin-card {
+  background: var(--card);
+  color: var(--card-foreground);
+}
+
+html[data-theme="light"] .signin-page .signin-card h2 { color: var(--card-foreground); }
+html[data-theme="light"] .signin-page .signin-label {
+  color: var(--foreground);
+  font: 600 0.8125rem/1.25 var(--font-sans);
+}
+
 @media (max-width: 1000px) { .signin-brand { padding-right: 34px; padding-left: 34px; } .signin-card { margin-left: -28px; padding-right: 30px; padding-left: 30px; } .signin-signup { width: calc(100% + 60px); margin-left: -30px; } }
 @media (max-width: 900px) { .signin-page { justify-content: flex-start; overflow: auto; padding: 18px 16px 82px; } .signin-layout { width: min(100%, 520px); height: auto; min-height: 0; grid-template-columns: 1fr; gap: 0; margin: auto; } .signin-brand { height: auto; min-height: 0; padding: 24px 26px 28px; border-radius: 24px 24px 0 0; } .signin-logo { width: 180px; } .signin-brand-copy { margin: 25px 0 0; } .signin-brand-copy h1 { margin-bottom: 8px; font-size: 34px; } .signin-brand-copy p, .signin-brand-copy ul, .signin-brand-footer { display: none; } .signin-card { height: auto; min-height: 0; margin: -1px 0 0; padding: 30px 26px 20px; border-radius: 0 0 24px 24px; } .signin-card h2 { font-size: 27px; } .signin-subtitle { margin: 12px 0 24px; font-size: 15px; } .signin-input { height: 42px; } .signin-google { min-height: 42px; } .signin-submit { min-height: 44px; } .signin-signup { width: calc(100% + 52px); margin: 25px 0 0 -26px; padding-top: 16px; } .signup-card { width: 100%; height: fit-content; align-self: center; padding: 48px 26px 20px; } .signup-card .signin-subtitle { margin: 29px 0 40px; } .signup-card .signin-divider { margin: 10px 0; } .signup-card .signin-input { margin-top: 2px; margin-bottom: 9px; } .signup-card .signin-submit { margin-top: 15px; } .signup-card .signin-signup { margin: 16px 0 0 -26px; padding-top: 14px; } .signin-legal { bottom: 22px; } .signin-legal, .auth-info-footer { font-size: 14px; } }
 @media (max-width: 380px) { .signin-brand-copy { display: none; } .signin-brand { padding-bottom: 24px; } .signin-card { padding-top: 24px; } .signin-legal, .auth-info-footer { gap: 9px; font-size: 12px; } }
