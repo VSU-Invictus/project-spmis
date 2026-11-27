@@ -1017,7 +1017,7 @@ export function ReviewFormModal({
           : 'A new review is active immediately. You can edit, hide, or delete your own review from the student page.'}
       </p>
 
-      <div className="actions review-actions modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '8px' }}>
+      <div className="actions review-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '8px' }}>
         <Button type="button" id="cancel-review-btn" variant="outline" onClick={onClose}>
           Cancel
         </Button>

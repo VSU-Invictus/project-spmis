@@ -1844,17 +1844,31 @@ html:not(.dark) :is(.ui-toast, .toast) {
 }
 
 .review-actions .ui-btn-outline,
-.modal-actions .ui-btn-outline {
+.modal-actions .ui-btn-outline,
+#cancel-review-btn {
   background: transparent !important;
   border: 1px solid var(--border) !important;
   color: var(--foreground) !important;
 }
 
 .review-actions .ui-btn-outline:hover,
-.modal-actions .ui-btn-outline:hover {
+.modal-actions .ui-btn-outline:hover,
+#cancel-review-btn:hover {
   background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
   border-color: var(--primary, #D97251) !important;
   color: var(--foreground) !important;
+}
+
+/* Suppress ALL transitions during theme toggle regardless of rule specificity */
+html[data-theme-switching],
+html[data-theme-switching] *,
+html[data-theme-switching] *::before,
+html[data-theme-switching] *::after,
+html[data-theme-switching] :is(.modal-actions, .review-actions, .actions) :is(.ui-btn, .ui-btn-outline, .ui-btn-primary, .modal-submit, .modal-btn-cancel, .modal-btn-confirm, button),
+html[data-theme-switching] #cancel-review-btn,
+html[data-theme-switching] #submit-review-btn {
+  transition: none !important;
+  transition-duration: 0s !important;
 }
 
 /* ==========================================================================
