@@ -22,12 +22,18 @@ These scenarios define the browser-level acceptance flows to automate in Milesto
 
 **Preconditions:** A unique email address is available; an approved department exists.
 
-1. Open the faculty registration screen and submit a valid name, email, password, and department.
-2. Verify registration succeeds and the application enters the pending state (including the expected confirmation or pending-approval screen).
+1. Sign in through Google OAuth with a unique synthetic test account, then complete faculty onboarding with a valid name and approved department. No password registration is used.
+2. Verify onboarding succeeds and exactly one pending profile and faculty-account application are created (including the expected pending-approval screen).
 3. Sign in as the new account if the flow permits it. Verify the account is identified as pending and cannot access active-faculty actions such as student mining, review authoring, or chat.
 4. Verify the account cannot access admin-only pages or actions.
 
 **Pass criteria:** One pending faculty application/profile is created; no active-faculty capability is granted before an admin decision; the UI presents a clear pending state rather than a false success for restricted actions.
+
+Backend endpoint verification for Issue #213 also covers the invitation alternative: an active admin calls `inviteFaculty`, verifies supported Auth identity provisioning plus a pending profile/application, retries the normalized email expecting 409 without new records, then approves the application. Backend HTTP integration coverage supplements this browser scenario; it does not prove frontend onboarding UI integration.
+
+### Opt-in local invitation integration check
+
+Run from the repository root against a seeded local stack only. In a separate terminal start `npx supabase functions serve --env-file supabase/.env`, then run `node supabase/tests/integration/faculty-invitations.mjs`. Docker must be running. The script obtains local keys internally without printing them, provisions unique synthetic accounts through supported Auth APIs, and verifies the HTTP invitation/approval flow and pending RLS restrictions. A read-only Docker query verifies Auth identity and instance integrity without broadening application grants. Fixtures remain until the next local database reset. Magic links are test-only session setup; the application remains Google-only. This script does not test the browser Google OAuth flow or replace E2E-PENDING-01.
 
 ## E2E-ADMIN-01 — Admin approves a pending faculty application
 

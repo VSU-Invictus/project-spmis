@@ -13,21 +13,22 @@ Deno.test('createReview and updateReview send only deidentified text to embeddin
   const created = prepareReviewForEmbedding({
     blocks: [{
       type: 'paragraph',
-      content: [{ text: 'Maria Dela Cruz Santos demonstrated strong teamwork.' }],
+      content: [{ text: 'Maria Dela Cruz Santos (TEST-001) demonstrated strong teamwork.' }],
     }],
-  }, [student]);
+  }, [student], student.id);
   assertEquals(
     created.deidentifiedText,
-    '{{STUDENT:40000000-0000-4000-8000-000000000001}} demonstrated strong teamwork.',
+    '{{STUDENT:40000000-0000-4000-8000-000000000001}} ({{STUDENT:40000000-0000-4000-8000-000000000001}}) demonstrated strong teamwork.',
   );
-  assertEquals(created.text.includes(student.student_id_number), false);
+  assertEquals(created.text.includes(student.student_id_number), true);
+  assertEquals(created.deidentifiedText.includes(student.student_id_number), false);
 
   const updated = prepareReviewForEmbedding({
     blocks: [{
       type: 'bullet_list',
       items: [[{ text: 'Santos, Maria leads consistently.' }]],
     }],
-  }, [student]);
+  }, [student], student.id);
   assertEquals(
     updated.deidentifiedText,
     '{{STUDENT:40000000-0000-4000-8000-000000000001}} leads consistently.',
