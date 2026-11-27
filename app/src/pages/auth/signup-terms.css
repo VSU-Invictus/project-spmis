@@ -24,6 +24,7 @@
 }
 
 .signup-terms-logo { display: block; width: 132px; max-height: 42px; align-self: center; margin: 0 auto 16px; object-fit: contain; }
+.signup-terms-dialog .signup-terms-logo-light { display: none; }
 .signup-terms-dialog h2 { margin: 0 0 8px; color: #faf9f5; text-align: center; font-size: 1.5rem; line-height: 1.25; }
 .signup-terms-intro { margin: 0 0 18px; color: #bdb7af; text-align: center; font-size: .9rem; line-height: 1.5; }
 
@@ -63,6 +64,68 @@
 .signup-terms-continue:not(:disabled):hover { transform: translateY(-1px); background: #e78867; }
 .signup-terms-continue:disabled { cursor: not-allowed; opacity: .45; }
 .signup-terms-actions button:focus-visible { outline: 2px solid rgba(217,114,81,.8); outline-offset: 3px; }
+
+html[data-theme="light"] .signup-terms-backdrop {
+  background: color-mix(in srgb, var(--foreground) 45%, transparent);
+}
+
+html[data-theme="light"] .signup-terms-dialog {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--foreground);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 25%);
+}
+
+html[data-theme="light"] .signup-terms-dialog .signup-terms-logo:not(.signup-terms-logo-light) { display: none; }
+html[data-theme="light"] .signup-terms-dialog .signup-terms-logo-light {
+  display: block;
+  aspect-ratio: 774 / 244;
+}
+
+html[data-theme="light"] .signup-terms-dialog :is(h2, h3, strong, .signup-terms-agreement) {
+  color: var(--foreground);
+}
+
+html[data-theme="light"] .signup-terms-dialog :is(.signup-terms-intro, .signup-terms-hint, .signup-terms-agreement.is-locked) {
+  color: var(--muted-foreground);
+}
+
+html[data-theme="light"] .signup-terms-dialog .signup-terms-hint.is-read { color: #376541; }
+
+html[data-theme="light"] .signup-terms-scroll {
+  background: var(--background);
+  border-color: var(--border);
+  color: var(--foreground);
+  scrollbar-color: var(--muted-foreground) transparent;
+}
+
+html[data-theme="light"] .signup-terms-agreement input { accent-color: var(--primary); }
+
+html[data-theme="light"] .signup-terms-back {
+  border-color: var(--muted-foreground);
+  color: var(--foreground);
+}
+
+html[data-theme="light"] .signup-terms-back:hover { background: var(--accent); }
+
+html[data-theme="light"] .signup-terms-continue {
+  background: color-mix(in srgb, var(--primary) 90%, var(--card-foreground));
+  color: var(--primary-foreground);
+}
+
+html[data-theme="light"] .signup-terms-continue:not(:disabled):hover {
+  background: color-mix(in srgb, var(--primary) 85%, var(--card-foreground));
+}
+
+html[data-theme="light"] .signup-terms-continue:disabled {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  opacity: 1;
+}
+
+html[data-theme="light"] .signup-terms-dialog :is(.signup-terms-actions button, .signup-terms-agreement input):focus-visible {
+  outline-color: var(--ring);
+}
 
 @media (max-width: 560px) {
   .signup-terms-backdrop { padding: 12px; }

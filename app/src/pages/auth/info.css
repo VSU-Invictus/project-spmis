@@ -44,6 +44,7 @@
 .auth-info-logo { display: flex; flex-shrink: 0; align-items: center; height: 68px; transition: opacity .2s, transform .2s; }
 .auth-info-logo:hover { opacity: .85; transform: scale(1.02); }
 .auth-info-logo img { display: block; width: auto; height: 100%; object-fit: contain; }
+.auth-info-logo .auth-info-logo-light { display: none; }
 .auth-info-content {
   position: relative;
   flex: 1;
@@ -70,6 +71,43 @@
 .auth-info-copy li::before { position: absolute; left: 0; color: #d97757; content: '—'; opacity: .75; }
 .auth-info-copy strong { color: #faf9f5; font-weight: 600; }
 .auth-info-footer { flex-shrink: 0; }
+
+html[data-theme="light"] .auth-info-page {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+html[data-theme="light"] .auth-info-page .auth-info-header h1 {
+  background-image: linear-gradient(90deg, var(--foreground) 55%, var(--primary) 80%, #b85a3d 100%);
+}
+
+html[data-theme="light"] .auth-info-page .auth-info-logo img:not(.auth-info-logo-light) { display: none; }
+html[data-theme="light"] .auth-info-page .auth-info-logo .auth-info-logo-light {
+  display: block;
+  aspect-ratio: 774 / 244;
+}
+
+html[data-theme="light"] .auth-info-page .auth-info-content {
+  background: var(--card);
+  border-color: var(--border);
+  box-shadow: 0 10px 40px rgb(0 0 0 / 5%);
+}
+
+html[data-theme="light"] .auth-info-page :is(.auth-info-copy, .auth-info-footer) {
+  color: var(--muted-foreground);
+}
+
+html[data-theme="light"] .auth-info-page :is(.auth-info-section-title, .auth-info-copy strong) {
+  color: var(--foreground);
+}
+
+html[data-theme="light"] .auth-info-page .auth-info-section-title { border-left-color: var(--primary); }
+html[data-theme="light"] .auth-info-page .auth-info-copy li::before { color: var(--primary); }
+html[data-theme="light"] .auth-info-page .auth-info-footer .dot { color: currentColor; }
+html[data-theme="light"] .auth-info-page :is(.auth-info-copy a, .auth-info-footer a:hover) {
+  color: color-mix(in srgb, var(--primary) 75%, var(--card-foreground));
+}
+
 @media (max-width: 768px) {
   .auth-info-page { padding: 1.5rem 1rem; }
   .auth-info-container { gap: 1.25rem; }
