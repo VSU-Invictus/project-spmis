@@ -10,11 +10,13 @@ import {
   useMinimumLoadingDuration,
   EmptyState,
   Modal,
+  TagCluster,
   Toast,
 } from '../../components/ui';
 import {
   ReviewDocumentView,
   ReviewFormModal,
+  formatShortProgramName,
   getTagBadgeVariant,
 } from '../../components/reviews';
 import { useSession } from '../../context/SessionContext';
@@ -198,7 +200,11 @@ export function FacultyStudentDetailPage() {
   );
 
   const activeTags = useMemo(() => {
-    return [...new Set(activeReviews.flatMap((review) => review.tags ?? []))];
+    const cleaned = activeReviews
+      .flatMap((review) => review.tags ?? [])
+      .map((tag) => tag.trim())
+      .filter((tag) => Boolean(tag) && tag.toLowerCase() !== 'string');
+    return [...new Set(cleaned)];
   }, [activeReviews]);
 
   const fullName = useMemo(() => {
@@ -212,7 +218,7 @@ export function FacultyStudentDetailPage() {
     if (!student) return 'N/A';
     if (isProgramsPending) return 'Loading…';
     const matched = programs?.find((prog) => prog.id === student.program_id);
-    return matched?.name ?? 'Unknown program';
+    return matched?.name ? formatShortProgramName(matched.name) : 'Unknown program';
   }, [student, programs, isProgramsPending]);
 
   if (isNewReviewRoute) {
@@ -399,13 +405,13 @@ export function FacultyStudentDetailPage() {
                   <dt className="basic-info-label">REVIEW TAGS</dt>
                   <dd className="basic-info-value" data-student-tags>
                     {activeTags.length > 0 ? (
-                      <div className="ui-tags-cluster" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                        {activeTags.map((tag) => (
-                          <Badge key={tag} variant={getTagBadgeVariant(tag)}>
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
+                      <TagCluster
+                        maxVisible={2}
+                        tags={activeTags.map((tag) => ({
+                          label: tag,
+                          variant: getTagBadgeVariant(tag),
+                        }))}
+                      />
                     ) : (
                       <Badge variant="neutral">No active reviews</Badge>
                     )}
