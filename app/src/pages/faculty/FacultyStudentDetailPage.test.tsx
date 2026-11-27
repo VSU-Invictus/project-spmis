@@ -399,6 +399,18 @@ describe('FacultyStudentDetailPage (#155)', () => {
     ).toBeInTheDocument();
   });
 
+  it('redirects non-active faculty or admin away from /faculty/students/:id/new-review back to /faculty/students/:id', async () => {
+    renderStudentDetailPage(
+      { role: 'admin', status: 'active', full_name: 'System Admin' },
+      `/faculty/students/${studentId}/new-review`
+    );
+
+    expect(
+      await screen.findByRole('heading', { name: /Student Information & Reviews/i })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /Write a review/i })).not.toBeInTheDocument();
+  });
+
   it('renders AI Review Summary panel between basic info and review list, excluding hidden reviews (#156)', async () => {
     server.use(
       http.get('*/rest/v1/review_details', () =>

@@ -62,7 +62,7 @@ export function ReviewFormModal({
   studentName,
   studentIdNumber,
   studentProgram,
-  contributorName = 'Alex Morgan',
+  contributorName = 'Faculty Member',
   initialReview,
   onSuccess,
 }: ReviewFormModalProps) {

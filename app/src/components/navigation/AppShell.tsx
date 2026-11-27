@@ -59,9 +59,9 @@ export function AppShell({
   const [logoutOpen, setLogoutOpen] = useState(false);
 
   const resolvedUserName =
-    role === 'admin'
-      ? 'Admin User'
-      : profile?.full_name || 'Alex Morgan';
+    profile?.full_name ||
+    profile?.email ||
+    (role === 'admin' ? 'Admin User' : 'Faculty Member');
   const resolvedUserInitial =
     resolvedUserName.trim().charAt(0).toUpperCase() || 'A';
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
   Alert,
@@ -205,6 +205,10 @@ export function FacultyStudentDetailPage() {
   }, [student, programs, isProgramsPending]);
 
   if (isNewReviewRoute) {
+    if (!isActiveFaculty) {
+      return <Navigate to={id ? `/faculty/students/${id}` : '/faculty/students'} replace />;
+    }
+
     return (
       <AppShell
         role={profile?.role === 'admin' ? 'admin' : 'faculty'}
@@ -251,7 +255,7 @@ export function FacultyStudentDetailPage() {
               studentName={fullName}
               studentIdNumber={student.student_id_number}
               studentProgram={programName}
-              contributorName={profile?.full_name || 'Alex Morgan'}
+              contributorName={profile?.full_name || profile?.email || 'Faculty Member'}
               onSuccess={(msg) => setToastMessage(msg)}
             />
           )}
@@ -627,7 +631,7 @@ export function FacultyStudentDetailPage() {
           studentName={fullName}
           studentIdNumber={student.student_id_number}
           studentProgram={programName}
-          contributorName={profile?.full_name || 'Alex Morgan'}
+          contributorName={profile?.full_name || profile?.email || 'Faculty Member'}
           initialReview={editingReview}
           onSuccess={(msg) => setToastMessage(msg)}
         />
