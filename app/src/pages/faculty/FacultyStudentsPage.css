@@ -40,7 +40,9 @@
 }
 
 .faculty-students-page :is(.controls-container, .filters) .search-input,
-.faculty-students-page :is(.controls-container, .filters) input[type="search"] {
+.faculty-students-page :is(.controls-container, .filters) input[type="search"],
+.faculty-students-page .ui-select-pill,
+.faculty-students-page #rows-per-page {
   transition: border-color 0s, box-shadow var(--transition-fast), outline-color var(--transition-fast) !important;
 }
 
