@@ -4,6 +4,50 @@
  */
 
 export interface paths {
+    "/functions/v1/faculty-onboarding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get approved department choices for Google onboarding
+         * @description Authenticated verified Google users only, including those without a faculty profile. Returns approved department IDs and names solely for completing onboarding. This does not grant direct department-table access or expose proposal metadata or faculty details.
+         */
+        get: operations["listFacultyOnboardingDepartments"];
+        put?: never;
+        /**
+         * Complete Google faculty self-registration
+         * @description Authenticated verified Google users complete registration after OAuth by supplying a name and approved department. No existing faculty profile is required. Identity and email come from verified Auth state; the profile and faculty_account application are created atomically as pending. Protected feature access requires admin approval. Repeated completion returns 409.
+         */
+        post: operations["completeFacultyOnboarding"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/functions/v1/faculty-invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Invite a faculty member through Supabase Auth
+         * @description Active admins only. Invites a new account through Supabase Auth, creating a pending faculty profile and faculty_account application in the Auth transaction. Existing emails return 409 without creating another identity. No password, client identity, privilege, or redirect fields are accepted. Google remains the application sign-in flow; approval is required for faculty feature access.
+         */
+        post: operations["inviteFaculty"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/rest/v1/rpc/get_student_by_id": {
         parameters: {
             query?: never;
@@ -59,7 +103,7 @@ export interface paths {
         put?: never;
         /**
          * Directly add a faculty profile
-         * @description Admin only. Directly provision a faculty or admin profile with an approved department. When status is omitted by an active admin, the backend defaults it to active and links or provisions the backing auth.users identity by email. Every mutation is audited in the same database transaction.
+         * @description Admin only. Directly provision a faculty or admin profile with an approved department. When status is omitted by an active admin, the backend defaults it to active and links an existing Auth identity by email. Missing identities return native PostgREST 400 (23514); use inviteFaculty instead. Invited pending profiles already exist and must go through approval rather than reinsertion. Every mutation is audited in the same database transaction.
          */
         post: operations["createFacultyByAdmin"];
         /**
@@ -432,6 +476,63 @@ export interface components {
         };
         /**
          * @example {
+         *       "id": "10000000-0000-4000-8000-000000000001",
+         *       "name": "Synthetic Department"
+         *     }
+         */
+        FacultyOnboardingDepartment: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        /**
+         * @example {
+         *       "full_name": "Synthetic Faculty",
+         *       "department_id": "10000000-0000-4000-8000-000000000001"
+         *     }
+         */
+        FacultyOnboardingInput: {
+            full_name: string;
+            /**
+             * Format: uuid
+             * @description Existing approved department UUID.
+             */
+            department_id: string;
+        };
+        /**
+         * @example {
+         *       "full_name": "Synthetic Faculty",
+         *       "department_id": "10000000-0000-4000-8000-000000000001",
+         *       "email": "synthetic-213@example.test"
+         *     }
+         */
+        FacultyInvitationInput: {
+            full_name: string;
+            /**
+             * Format: uuid
+             * @description Existing approved department UUID.
+             */
+            department_id: string;
+            /** Format: email */
+            email: string;
+        };
+        /**
+         * @example {
+         *       "id": "31300000-abcd-4000-8000-000000000011",
+         *       "email": "synthetic-213@example.test",
+         *       "status": "pending"
+         *     }
+         */
+        FacultyInvitationResult: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            status: "pending";
+        };
+        /**
+         * @example {
          *       "id": "e48adc9e-1b79-4b92-9848-aa12b25d63d7",
          *       "email": "alex.reyes@example.edu",
          *       "full_name": "Alex Reyes",
@@ -460,7 +561,7 @@ export interface components {
             updated_at: string;
         };
         /**
-         * @description Admin-only payload for directly provisioning a faculty or admin profile.
+         * @description Admin-only payload for linking an existing Auth identity to a faculty or admin profile. New accounts use inviteFaculty; this operation never creates Auth identities.
          * @example {
          *       "email": "jamie.rivera@example.edu",
          *       "full_name": "Jamie Rivera",
@@ -1320,6 +1421,150 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    listFacultyOnboardingDepartments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Approved onboarding department choices */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example [
+                     *       {
+                     *         "id": "10000000-0000-4000-8000-000000000001",
+                     *         "name": "Synthetic Department"
+                     *       }
+                     *     ]
+                     */
+                    "application/json": components["schemas"]["FacultyOnboardingDepartment"][];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    completeFacultyOnboarding: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FacultyOnboardingInput"];
+            };
+        };
+        responses: {
+            /** @description Pending faculty registration created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "id": "31300000-abcd-4000-8000-000000000011",
+                     *       "email": "synthetic-213@example.test",
+                     *       "status": "pending",
+                     *       "full_name": "Synthetic Faculty",
+                     *       "department_id": "10000000-0000-4000-8000-000000000001",
+                     *       "role": "faculty",
+                     *       "created_at": "2026-11-27T00:00:00Z",
+                     *       "updated_at": "2026-11-27T00:00:00Z"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["FacultyProfile"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["ValidationError"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    inviteFaculty: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FacultyInvitationInput"];
+            };
+        };
+        responses: {
+            /** @description Pending faculty registration created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "id": "31300000-abcd-4000-8000-000000000011",
+                     *       "email": "synthetic-213@example.test",
+                     *       "status": "pending"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["FacultyInvitationResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["ValidationError"];
+            /** @description Faculty invitations are temporarily unavailable. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "code": "RATE_LIMITED",
+                     *       "message": "Faculty invitations are temporarily unavailable.",
+                     *       "details": null,
+                     *       "hint": "Try again later."
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+            /** @description The Auth service could not complete the invitation. */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "code": "INVITATION_FAILED",
+                     *       "message": "The Auth service could not complete the invitation.",
+                     *       "details": null,
+                     *       "hint": null
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     getStudentById: {
         parameters: {
             query: {
