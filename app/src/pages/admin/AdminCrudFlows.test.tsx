@@ -68,6 +68,26 @@ function renderAdminPage(page: ReactNode, initialEntry: string) {
   );
 }
 
+describe('Admin roster footers', () => {
+  it('shows the M1 version label without legal links on the Student Roster', async () => {
+    const { container } = renderAdminPage(<AdminStudentsPage />, '/admin/students');
+    await screen.findByText('System Version 0.1.0');
+    const footer = within(container.querySelector('footer')!);
+    expect(footer.getByText('© 2026 Admin Portal. All rights reserved.')).toBeVisible();
+    expect(footer.getByText('System Version 0.1.0')).toBeVisible();
+    expect(footer.queryByRole('navigation', { name: 'Footer navigation' })).not.toBeInTheDocument();
+  });
+
+  it('shows the M1 version label without legal links on the Faculty Roster', async () => {
+    const { container } = renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+    await screen.findByText('System Version 0.1.0');
+    const footer = within(container.querySelector('footer')!);
+    expect(footer.getByText('© 2026 Admin Portal. All rights reserved.')).toBeVisible();
+    expect(footer.getByText('System Version 0.1.0')).toBeVisible();
+    expect(footer.queryByRole('navigation', { name: 'Footer navigation' })).not.toBeInTheDocument();
+  });
+});
+
 describe('AdminStudentsPage delete flow (v1.1.0)', () => {
   it('deletes an unreferenced student and refreshes the roster', async () => {
     const user = userEvent.setup();
