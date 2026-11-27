@@ -15,7 +15,12 @@ select lives_ok(
   $$select * from public.decide_applications_transaction(
     '30000000-0000-4000-8000-000000000004',
     jsonb_build_object('decision', 'approve', 'application_ids',
-      (select jsonb_agg(id) from public.approval_queue_items where status = 'pending'))
+      (select jsonb_agg(id) from (
+        select distinct on (type) id
+        from public.approval_queue_items
+        where status = 'pending'
+        order by type, (submitted_by = '30000000-0000-4000-8000-000000000003') desc nulls last, id
+      ) as one_per_type))
   )$$,
   'service-role admin approves all four synthetic application types without a user JWT'
 );
