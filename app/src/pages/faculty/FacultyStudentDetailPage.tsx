@@ -707,6 +707,7 @@ export function FacultyStudentDetailPage() {
         isOpen={Boolean(deletingReview)}
         onClose={handleCloseDeleteModal}
         size="sm"
+        className="delete-review-modal"
         title="Delete Review"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

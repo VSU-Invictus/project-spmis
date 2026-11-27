@@ -302,6 +302,7 @@ describe('FacultyStudentDetailPage (#155)', () => {
     await user.click(within(reviewCard).getByRole('menuitem', { name: /^delete$/i }));
 
     const confirmDialog = await screen.findByRole('dialog');
+    expect(confirmDialog.querySelector('.ui-modal-card.delete-review-modal')).not.toBeNull();
     expect(within(confirmDialog).getByText(/Confirm Delete Decision/i)).toBeInTheDocument();
 
     await user.click(within(confirmDialog).getByRole('button', { name: /confirm delete/i }));

@@ -9,6 +9,7 @@ export interface ModalProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  className?: string;
   closeOnBackdropClick?: boolean;
   closeOnEscape?: boolean;
 }
@@ -21,6 +22,7 @@ export function Modal({
   children,
   footer,
   size = 'md',
+  className,
   closeOnBackdropClick = true,
   closeOnEscape = true,
 }: ModalProps) {
@@ -127,7 +129,7 @@ export function Modal({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="ui-modal-card"
+        className={className ? `ui-modal-card ${className}` : 'ui-modal-card'}
         style={{
           width: '100%',
           maxWidth: sizeMaxWidth,

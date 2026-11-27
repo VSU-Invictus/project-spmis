@@ -27,10 +27,10 @@ html:not(.dark) .ui-kebab-item--danger {
 }
 
 /* Ensure the Delete Review modal title divider is clearly visible in dark and light modes */
-.ui-modal-card .ui-modal-header {
-  border-bottom: 1px solid var(--border, #383734) !important;
+.ui-modal-card.delete-review-modal {
+  --color-border-subtle: var(--border, #383734);
 }
 
-html:not(.dark) .ui-modal-card .ui-modal-header {
-  border-bottom: 1px solid var(--border, #E2DDD4) !important;
+html:not(.dark) .ui-modal-card.delete-review-modal {
+  --color-border-subtle: var(--border, #E2DDD4);
 }
