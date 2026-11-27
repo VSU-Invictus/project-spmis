@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #212 — faculty-only department assignments:** Rejected assignments targeting student registrations or taxonomy proposals with HTTP 422 during the locked approval preflight, before any bulk decision writes; added mixed-batch rollback and valid faculty override regression coverage.
 - **Issue #212 — complete review revisions:** Moved pre-edit snapshots into the update RPC so tag-only edits save old text, document, and tags exactly once; retained omitted-tag preservation and explicit tag clearing, with transactional history regression coverage.
 - **Issue #212 — review edit concurrency:** Rechecked active status under the review row lock and returned a retryable HTTP 409 when an edit lacks a fresh embedding; added regression coverage for unchanged conflict state, hidden edits, and successful retries.
 - **Issue #212 — approval UUIDs:** Normalized application and assignment UUID casing, rejected case-insensitive duplicates in the Edge Function and database RPC, and added validation and side-effect regression coverage.
