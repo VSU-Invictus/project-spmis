@@ -30,7 +30,7 @@ export function AdminAuditLogPage() {
       <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <h1 className="ui-page-title" style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 6px 0' }}>
+            <h1 className="ui-page-title" style={{ margin: '0 0 6px 0' }}>
               System Audit Trail
             </h1>
             <p className="ui-page-subtitle" style={{ margin: 0, color: 'var(--muted-foreground, #64748b)', fontSize: '14px' }}>

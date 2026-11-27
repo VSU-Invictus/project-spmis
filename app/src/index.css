@@ -394,6 +394,12 @@ code, kbd, samp, pre {
   line-height: 1.25 !important;
 }
 
+.admin-portal-main > .ui-dashboard-content :is(h1.heading-title, h1.ui-page-title, .ui-dashboard-intro > h1) {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
 .ui-heading-2 {
   font-family: var(--font-sans) !important;
   font-size: 1.375rem !important; /* 22px */

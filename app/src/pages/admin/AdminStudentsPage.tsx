@@ -187,7 +187,7 @@ function StudentManagement({ profileId }: { profileId: string }) {
   return <AppShell role="admin" activeNavKey="students" breadcrumb="Admin Portal / Student Roster" showFooterLinks={false}>
     <div className="admin-student-management">
       <div className="header-container">
-        <div className="heading-wrapper"><h2 className="heading-title">Student Roster</h2></div>
+        <div className="heading-wrapper"><h1 className="heading-title">Student Roster</h1></div>
         <Button variant="add" onClick={() => setSelection({ action: 'create' })}>Add Student</Button>
       </div>
       <div className="controls-container">
