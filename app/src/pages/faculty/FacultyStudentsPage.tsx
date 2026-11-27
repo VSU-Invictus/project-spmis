@@ -19,7 +19,7 @@ import {
 } from '../../components/ui';
 import { getTagBadgeVariant } from '../../components/reviews';
 import { useSession } from '../../context/SessionContext';
-import { useDepartments } from '../../hooks/useDepartments';
+import { useApprovedDepartmentOptions } from '../../hooks/useDepartments';
 import { useStudentSearchPage, type StudentSearchResult } from '../../hooks/useSearchStudents';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
 import { useTags } from '../../hooks/useTags';
@@ -58,8 +58,12 @@ export function FacultyStudentsPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
-  const { data: departments, isPending: isDepartmentsPending } = useDepartments();
-  const { data: tagsData, isPending: isTagsPending } = useTags();
+  const { data: departments, isPending: isDepartmentsPending } = useApprovedDepartmentOptions({
+    enabled: Boolean(isActiveFaculty),
+  });
+  const { data: tagsData, isPending: isTagsPending } = useTags(undefined, {
+    enabled: Boolean(isActiveFaculty),
+  });
   const { data: activeReviews } = useStudentReviews(
     { status: 'eq.active' },
     { enabled: Boolean(isActiveFaculty) }
