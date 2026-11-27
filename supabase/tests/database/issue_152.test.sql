@@ -124,8 +124,16 @@ select lives_ok(
 );
 
 reset role;
-update public.reviews set body_text = 'Synthetic edited text'
-where id = '50000000-0000-4000-8000-000000000001';
+set local request.jwt.claim.sub = '';
+set local role service_role;
+select public.update_review_transaction(
+  '30000000-0000-4000-8000-000000000001',
+  '50000000-0000-4000-8000-000000000001',
+  'Synthetic edited text',
+  '{"blocks":[{"type":"paragraph","content":[{"text":"Synthetic edited text"}]}]}',
+  'Synthetic edited text', null, false,
+  array_fill(0.1::real, array[768])::extensions.vector::text);
+reset role;
 select results_eq(
   $$select body_text_snapshot from public.review_versions
     where review_id = '50000000-0000-4000-8000-000000000001'$$,

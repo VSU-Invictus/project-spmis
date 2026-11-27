@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #212 — faculty-only department assignments:** Rejected assignments targeting student registrations or taxonomy proposals with HTTP 422 during the locked approval preflight, before any bulk decision writes; added mixed-batch rollback and valid faculty override regression coverage.
+- **Issue #212 — complete review revisions:** Moved pre-edit snapshots into the update RPC so tag-only edits save old text, document, and tags exactly once; retained omitted-tag preservation and explicit tag clearing, with transactional history regression coverage.
+- **Issue #212 — review edit concurrency:** Rechecked active status under the review row lock and returned a retryable HTTP 409 when an edit lacks a fresh embedding; added regression coverage for unchanged conflict state, hidden edits, and successful retries.
+- **Issue #212 — approval UUIDs:** Normalized application and assignment UUID casing, rejected case-insensitive duplicates in the Edge Function and database RPC, and added validation and side-effect regression coverage.
+- **Issue #212 — strict request fields:** Rejected unsupported fields across Edge Function bodies and closed nested request objects, distinguished malformed JSON (HTTP 400) from invalid object shapes (HTTP 422), and retained role checks before body processing.
+- **Issue #212 — normalized tag limit:** Enforced the 30-tag limit after whitespace tokenization, lowercasing, and deduplication, while retaining the contract's input-array limit; added boundary and duplicate regression tests.
+- **Issue #212 — database error handling:** Mapped foreign-key conflicts to HTTP 409 and missing/invalid values to HTTP 422, removed raw database details from generic mapper and profile-load failures, and added error-envelope regression tests.
 - **Issue #211 — audit review follow-up:** Preferred the verified JWT identity over `app.actor_id`, retaining the service-role actor fallback and testing conflicting actor settings.
 - **Issue #211 — redaction matching:** Matched full names across whitespace variations and aligned Unicode case-folded token lookup with regex matching, including collision regression coverage.
 - **Issue #211 — redaction review:** Covered last-first-middle names and prevented malformed student markers from shielding names or IDs from redaction.
