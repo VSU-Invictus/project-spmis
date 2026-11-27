@@ -525,7 +525,21 @@ html[data-theme-switching] *::before,
 html[data-theme-switching] *::after,
 html[data-theme-switching] button,
 html[data-theme-switching] .section-container :is(.admin-student-management, .admin-faculty-management)
-  :is(button, .queue-counter, .table-row, input, select, .dropdown-container, .dropdown-chevron) {
+  :is(button, .queue-counter, .table-row, input, select, .dropdown-container, .dropdown-chevron),
+/* Match the ID specificity of the legacy Add button rule. */
+html[data-theme-switching] :is(.admin-student-management, .admin-faculty-management)
+  :is(.add-button, #addButton.ui-btn) {
+  transition: none !important;
+}
+
+html[data-theme-switching]
+  [data-component="sidebar-admin"]:has(.nav [aria-current="page"]:is(
+    [data-nav-key="dashboard"], [data-nav-key="students"], [data-nav-key="faculty"], [data-nav-key="audit-log"]
+  ))
+  :is(.nav a, .nav a svg, .nav a span, .sidebar-logout-btn),
+html[data-theme-switching] .admin-dashboard-overview .ui-dashboard-table-wrap tbody tr,
+html[data-theme-switching] [data-component="sidebar-admin"]:has(.nav [aria-current="page"][data-nav-key="audit-log"])
+  + .admin-portal-main .admin-page-intro-layout .ui-table-wrap tbody tr {
   transition: none !important;
 }
 
