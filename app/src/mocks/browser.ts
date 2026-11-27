@@ -12,6 +12,23 @@ const rosterPaths = new Set([
   approvalQueuePath,
   approvalDecisionPath,
 ]);
+const reviewExactPaths = new Set([
+  '/rest/v1/review_details',
+  '/rest/v1/review_revisions',
+  '/rest/v1/rpc/suggest_review_tags',
+  '/rest/v1/programs',
+  '/functions/v1/reviews',
+]);
+
+export function isReviewMockPath(pathname: string): boolean {
+  return reviewExactPaths.has(pathname) || pathname.startsWith('/functions/v1/reviews/');
+}
+
+export function isReviewMockRequest(request: Request, apiOrigin: string): boolean {
+  const url = new URL(request.url);
+  if (url.origin !== apiOrigin) return false;
+  return isReviewMockPath(url.pathname);
+}
 
 export async function isRosterMockRequest(request: Request, apiOrigin: string): Promise<boolean> {
   const url = new URL(request.url);
@@ -49,14 +66,47 @@ export async function rosterMockHandlers(apiOrigin: string) {
   ];
 }
 
+export async function reviewMockHandlers(apiOrigin: string) {
+  const [{ http, passthrough }, { handlers }] = await Promise.all([
+    import('msw'),
+    import('./handlers'),
+  ]);
+  return [
+    http.all(({ request }) => !isReviewMockRequest(request, apiOrigin), () => passthrough()),
+    ...handlers.filter(({ info }) => typeof info.path === 'string' && isReviewMockPath(info.path.slice(1))),
+  ];
+}
+
+export async function localMockHandlers(apiOrigin: string) {
+  const [{ http, passthrough }, { auditLogHandler, handlers }] = await Promise.all([
+    import('msw'),
+    import('./handlers'),
+  ]);
+  const rosterMatched = handlers.filter(
+    ({ info }) => typeof info.path === 'string' && rosterPaths.has(info.path.slice(1)),
+  );
+  const reviewMatched = handlers.filter(
+    ({ info }) => typeof info.path === 'string' && isReviewMockPath(info.path.slice(1)),
+  );
+  return [
+    auditLogHandler(apiOrigin),
+    http.all(
+      async ({ request }) =>
+        !(await isRosterMockRequest(request, apiOrigin)) && !isReviewMockRequest(request, apiOrigin),
+      () => passthrough(),
+    ),
+    ...rosterMatched,
+    ...reviewMatched,
+  ];
+}
+
 async function startLocalMocks() {
   const origin = new URL(import.meta.env.VITE_SUPABASE_URL ?? 'http://localhost:4010').origin;
-  const [{ setupWorker }, { auditLogHandler }, rosterHandlers] = await Promise.all([
+  const [{ setupWorker }, handlers] = await Promise.all([
     import('msw/browser'),
-    import('./handlers'),
-    rosterMockHandlers(origin),
+    localMockHandlers(origin),
   ]);
-  await setupWorker(auditLogHandler(origin), ...rosterHandlers)
+  await setupWorker(...handlers)
     .start({ onUnhandledRequest: 'bypass' });
 }
 

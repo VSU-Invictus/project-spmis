@@ -10,11 +10,13 @@ import {
   useMinimumLoadingDuration,
   EmptyState,
   Modal,
+  TagCluster,
   Toast,
 } from '../../components/ui';
 import {
   ReviewDocumentView,
   ReviewFormModal,
+  formatShortProgramName,
   getTagBadgeVariant,
 } from '../../components/reviews';
 import { useSession } from '../../context/SessionContext';
@@ -27,6 +29,46 @@ import {
   type Review,
 } from '../../hooks';
 import { ApiRequestError } from '../../lib/api';
+import './FacultyStudentDetailPage.css';
+
+function formatIsoDate(value?: string | null): string {
+  if (!value) return '';
+  if (/^\d{4}-\d{2}-\d{2}/.test(value)) return value.slice(0, 10);
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, '0');
+  const day = String(parsed.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function buildAiReviewSummary(
+  fullName: string,
+  activeReviews: Review[],
+  activeTags: string[]
+): string {
+  if (activeReviews.length === 0) {
+    return `No active faculty reviews are currently available to synthesize for ${fullName}.`;
+  }
+
+  const tagSummary =
+    activeTags.length > 0
+      ? `highlighting ${activeTags.join(', ')}`
+      : 'covering recent academic coursework and collaboration';
+  const departments = [
+    ...new Set(
+      activeReviews
+        .map((review) => review.author_department_name?.trim())
+        .filter((dept): dept is string => Boolean(dept))
+    ),
+  ];
+  const deptPhrase =
+    departments.length > 0
+      ? `Contributors from ${departments.join(' and ')}`
+      : 'Contributing faculty members';
+
+  return `${fullName} demonstrates consistent strengths across ${activeReviews.length} attributed active ${activeReviews.length === 1 ? 'review' : 'reviews'}, ${tagSummary}. ${deptPhrase} note dependable progress, thoughtful execution, and constructive engagement across these areas.`;
+}
 
 function ReviewRevisionsSection({ reviewId }: { reviewId: string }) {
   const { data: revisions, isPending, isError, error } = useReviewRevisions({
@@ -57,7 +99,7 @@ function ReviewRevisionsSection({ reviewId }: { reviewId: string }) {
           revisions?.map((rev) => (
             <div key={rev.id} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               <small className="muted">
-                Previous version · {new Date(rev.edited_at).toLocaleDateString()}
+                Previous version · {formatIsoDate(rev.edited_at)}
               </small>
               <ReviewDocumentView
                 document={rev.body_document_snapshot}
@@ -187,7 +229,11 @@ export function FacultyStudentDetailPage() {
   );
 
   const activeTags = useMemo(() => {
-    return [...new Set(activeReviews.flatMap((review) => review.tags ?? []))];
+    const cleaned = activeReviews
+      .flatMap((review) => review.tags ?? [])
+      .map((tag) => tag.trim())
+      .filter((tag) => Boolean(tag) && tag.toLowerCase() !== 'string');
+    return [...new Set(cleaned)];
   }, [activeReviews]);
 
   const fullName = useMemo(() => {
@@ -201,7 +247,7 @@ export function FacultyStudentDetailPage() {
     if (!student) return 'N/A';
     if (isProgramsPending) return 'Loading…';
     const matched = programs?.find((prog) => prog.id === student.program_id);
-    return matched?.name ?? 'Unknown program';
+    return matched?.name ? formatShortProgramName(matched.name) : 'Unknown program';
   }, [student, programs, isProgramsPending]);
 
   if (isNewReviewRoute) {
@@ -388,13 +434,13 @@ export function FacultyStudentDetailPage() {
                   <dt className="basic-info-label">REVIEW TAGS</dt>
                   <dd className="basic-info-value" data-student-tags>
                     {activeTags.length > 0 ? (
-                      <div className="ui-tags-cluster" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                        {activeTags.map((tag) => (
-                          <Badge key={tag} variant={getTagBadgeVariant(tag)}>
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
+                      <TagCluster
+                        maxVisible={2}
+                        tags={activeTags.map((tag) => ({
+                          label: tag,
+                          variant: getTagBadgeVariant(tag),
+                        }))}
+                      />
                     ) : (
                       <Badge variant="neutral">No active reviews</Badge>
                     )}
@@ -431,12 +477,10 @@ export function FacultyStudentDetailPage() {
                 </Badge>
               </div>
               <p className="ai-summary-text">
-                {activeReviews.length > 0
-                  ? `${fullName} has ${activeReviews.length} attributed active ${activeReviews.length === 1 ? 'review' : 'reviews'} highlighting ${activeTags.length > 0 ? activeTags.join(', ') : 'academic coursework'}.`
-                  : `No active faculty reviews are currently available to synthesize for ${fullName}.`}
+                {buildAiReviewSummary(fullName, activeReviews, activeTags)}
               </p>
               <p className="ai-summary-meta">
-                Generated from <span data-ai-review-count data-testid="ai-review-count">{activeReviews.length}</span> active reviews. Hidden and deleted reviews are excluded.
+                Generated from <span data-ai-review-count data-testid="ai-review-count">{activeReviews.length}</span> active {activeReviews.length === 1 ? 'review' : 'reviews'}. Hidden and deleted reviews are excluded.
               </p>
             </section>
 
@@ -489,7 +533,7 @@ export function FacultyStudentDetailPage() {
                           </h3>
                           <small>
                             {review.author_department_name || 'Department'} ·{' '}
-                            {new Date(review.created_at).toLocaleDateString()}
+                            {formatIsoDate(review.created_at)}
                           </small>
                         </div>
 
@@ -537,7 +581,7 @@ export function FacultyStudentDetailPage() {
                               >
                                 <button
                                   type="button"
-                                  className="ui-kebab-item"
+                                  className="ui-kebab-item ui-kebab-item--primary"
                                   role="menuitem"
                                   onClick={() => {
                                     setOpenKebabId(null);
@@ -545,6 +589,10 @@ export function FacultyStudentDetailPage() {
                                     setEditingReview(review);
                                   }}
                                 >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <path d="M12 20h9" />
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                  </svg>
                                   <span>Edit</span>
                                 </button>
                                 <button
@@ -563,6 +611,19 @@ export function FacultyStudentDetailPage() {
                                     });
                                   }}
                                 >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    {isHidden ? (
+                                      <>
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                      </>
+                                    ) : (
+                                      <>
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                        <line x1="1" y1="1" x2="23" y2="23" />
+                                      </>
+                                    )}
+                                  </svg>
                                   <span>{isHidden ? 'Unhide' : 'Hide'}</span>
                                 </button>
                                 <button
@@ -575,6 +636,10 @@ export function FacultyStudentDetailPage() {
                                     setDeletingReview(review);
                                   }}
                                 >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <polyline points="3 6 5 6 21 6" />
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                  </svg>
                                   <span>Delete</span>
                                 </button>
                               </div>
@@ -642,6 +707,7 @@ export function FacultyStudentDetailPage() {
         isOpen={Boolean(deletingReview)}
         onClose={handleCloseDeleteModal}
         size="sm"
+        className="delete-review-modal"
         title="Delete Review"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -650,17 +716,11 @@ export function FacultyStudentDetailPage() {
             title="Confirm Delete Decision"
             description="This action cannot be undone. The review will disappear from the portal, including your own view. Use Hide if you want to restore visibility later."
           />
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCloseDeleteModal}
-            >
-              Cancel
-            </Button>
+          <div className="modal-actions-confirm">
             <Button
               type="button"
               variant="primary"
+              className="modal-submit"
               disabled={setReviewStatusMutation.isPending}
               onClick={() => {
                 if (!deletingReview) return;

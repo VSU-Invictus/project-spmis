@@ -103,17 +103,19 @@ describe('FacultyStudentDetailPage (#155)', () => {
     expect(await screen.findByText('Maria Santos')).toBeInTheDocument();
     expect(screen.getByText('27-1-12345')).toBeInTheDocument();
     expect(
-      await screen.findByText('Bachelor of Science in Computer Science')
+      await screen.findByText('BS Computer Science')
     ).toBeInTheDocument();
 
-    // Attributed review body & attachment metadata
+    // Attributed review body, YYYY-MM-DD metadata date, & attachment metadata
     expect(
       await screen.findByText('Demonstrated strong leadership and research skills.')
     ).toBeInTheDocument();
+    expect(screen.getByText('Computer Science · 2026-10-26')).toBeInTheDocument();
     expect(screen.getByText(/application\/pdf/i)).toBeInTheDocument();
 
-    // Edit history loaded via useReviewRevisions
+    // Edit history loaded via useReviewRevisions with YYYY-MM-DD date
     expect(await screen.findByText(/Edit history \(1\)/i)).toBeInTheDocument();
+    expect(screen.getByText('Previous version · 2026-10-25')).toBeInTheDocument();
     expect(
       screen.getByText('Demonstrated strong leadership skills.')
     ).toBeInTheDocument();
@@ -300,6 +302,7 @@ describe('FacultyStudentDetailPage (#155)', () => {
     await user.click(within(reviewCard).getByRole('menuitem', { name: /^delete$/i }));
 
     const confirmDialog = await screen.findByRole('dialog');
+    expect(confirmDialog.querySelector('.ui-modal-card.delete-review-modal')).not.toBeNull();
     expect(within(confirmDialog).getByText(/Confirm Delete Decision/i)).toBeInTheDocument();
 
     await user.click(within(confirmDialog).getByRole('button', { name: /confirm delete/i }));
@@ -448,11 +451,82 @@ describe('FacultyStudentDetailPage (#155)', () => {
     expect(await screen.findByRole('heading', { name: /AI Review Summary/i })).toBeInTheDocument();
     expect(screen.getByText(/AI-generated/i)).toBeInTheDocument();
 
-    // Summary counts only active reviews (1), excludes hidden review from AI synthesis
+    // Summary counts only active reviews (1) with singular grammar, excludes hidden review from AI synthesis
     const aiSummarySection = screen.getByRole('heading', { name: /AI Review Summary/i }).closest('section')!;
     const countElement = within(aiSummarySection).getByTestId('ai-review-count');
     expect(countElement).toHaveTextContent('1');
+    expect(aiSummarySection).toHaveTextContent(/Generated from 1 active review\./i);
     expect(within(aiSummarySection).getByText(/highlighting algorithms/i)).toBeInTheDocument();
+    expect(within(aiSummarySection).getByText(/Contributors from Computer Science/i)).toBeInTheDocument();
     expect(within(aiSummarySection).queryByText(/hidden-skill/i)).not.toBeInTheDocument();
+  });
+
+  it('caps Basic Information Review Tags at 2 with a +N pill, renders kebab icons, updates AI summary on hide, and uses single-button Delete modal (#186)', async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.get('*/rest/v1/review_details', () =>
+        HttpResponse.json([
+          {
+            id: 'owned-1',
+            student_id: studentId,
+            owner_id: ownerId,
+            author_name: 'Alex Reyes',
+            author_department_name: 'Computer Science',
+            body_text: 'Strong research planning and teamwork.',
+            status: 'active',
+            tags: ['research', 'teamwork', 'robotics'],
+            created_at: '2026-11-23T09:00:00.000Z',
+            updated_at: '2026-11-23T09:00:00.000Z',
+          },
+          {
+            id: 'peer-2',
+            student_id: studentId,
+            owner_id: otherFacultyId,
+            author_name: 'Jamie Rivera',
+            author_department_name: 'Engineering',
+            body_text: 'Clear communication during prototype demos.',
+            status: 'active',
+            tags: ['communication'],
+            created_at: '2026-11-22T09:00:00.000Z',
+            updated_at: '2026-11-22T09:00:00.000Z',
+          },
+        ])
+      )
+    );
+
+    const { container } = renderStudentDetailPage();
+
+    // Basic Info shows short program and TagCluster (2 visible tags + +2 overflow pill)
+    expect(await screen.findByText('BS Computer Science')).toBeInTheDocument();
+    const basicTags = container.querySelector('[data-student-tags]') as HTMLElement;
+    const directVisibleBadges = basicTags.querySelectorAll(':scope > .ui-tags-cluster > .ui-badge');
+    expect(directVisibleBadges).toHaveLength(2);
+    expect(directVisibleBadges[0]).toHaveTextContent('research');
+    expect(directVisibleBadges[1]).toHaveTextContent('teamwork');
+    expect(within(basicTags).getByRole('button', { name: /2 more tags/i })).toHaveTextContent('+2');
+
+    // Plural AI summary meta for 2 active reviews
+    const aiSummarySection = screen.getByRole('heading', { name: /AI Review Summary/i }).closest('section')!;
+    expect(aiSummarySection).toHaveTextContent(/Generated from 2 active reviews\./i);
+
+    // Kebab menu items include SVG icons and accent classes
+    const ownedCard = await screen.findByTestId('review-card-owned-1');
+    await user.click(within(ownedCard).getByRole('button', { name: /review options/i }));
+
+    const editItem = within(ownedCard).getByRole('menuitem', { name: /^edit$/i });
+    const hideItem = within(ownedCard).getByRole('menuitem', { name: /^hide$/i });
+    const deleteItem = within(ownedCard).getByRole('menuitem', { name: /^delete$/i });
+    expect(editItem).toHaveClass('ui-kebab-item--primary');
+    expect(editItem.querySelector('svg')).not.toBeNull();
+    expect(hideItem.querySelector('svg')).not.toBeNull();
+    expect(deleteItem).toHaveClass('ui-kebab-item--danger');
+    expect(deleteItem.querySelector('svg')).not.toBeNull();
+
+    // Delete Review modal uses single full-width Confirm Delete button without Cancel
+    await user.click(deleteItem);
+    const deleteDialog = await screen.findByRole('dialog');
+    expect(within(deleteDialog).getByText('Delete Review')).toBeInTheDocument();
+    expect(within(deleteDialog).getByRole('button', { name: /confirm delete/i })).toHaveClass('modal-submit');
+    expect(within(deleteDialog).queryByRole('button', { name: /cancel/i })).not.toBeInTheDocument();
   });
 });
