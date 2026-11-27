@@ -2,10 +2,11 @@
 
 `openapi.yaml` is the single source of truth for the SPMIS API. `generated/schema.d.ts` is generated from it and must never be edited by hand. See [`../docs/contract-decisions.md`](../docs/contract-decisions.md) for architectural proposals and scope decisions.
 
-## Contract Freeze & Versioning (`v1.0.0` → `v1.1.0`)
+## Contract Freeze & Versioning (`v1.0.0` → `v1.1.0` → `v2.0.0`)
 
 - **Status:** Originally **FROZEN** at `v1.0.0` (tagged as `contract-v1.0.0`, effective **2026-10-30**, 27 operations), and extended additively in **`v1.1.0`** (30 operations) to add Admin direct student deletion (`deleteStudent`) and Admin direct faculty creation/deletion (`createFacultyByAdmin`, `deleteFaculty`).
 - **Purpose:** Locks the curated request/response boundary so **Milestone 3 (Backend — DB, RLS & Edge Functions)** and **Milestone 4 (Frontend — React SPA on Mock)** can proceed in parallel without blocking or surprising each other.
+- **Issue #213 proposal (`v2.0.0`):** Adds `completeFacultyOnboarding` and `inviteFaculty`. Direct profile insertion now links existing Auth identities only; it no longer provisions missing accounts. This breaking provisioning change requires Frontend Lead, Backend Lead, and PM review before merge.
 - **Change Control Policy:**
   1. Neither Frontend nor Backend may unilaterally add, rename, or remove endpoints, parameters, or schema fields.
   2. Any required contract change after the freeze must be proposed in a dedicated PR editing `contract/openapi.yaml`, regenerating `contract/generated/schema.d.ts` (`npm --prefix app run contract:gen`) and `app/public/docs/index.html` (`npm --prefix app run contract:docs`), and updating `docs/contract-decisions.md`.
@@ -15,7 +16,8 @@
 
 ## Scope & Operations
 
-This contract covers the 30 curated PostgREST, RPC, and Edge Function operations required by SPMIS:
+This contract covers 32 curated PostgREST, RPC, and Edge Function operations:
+- **Faculty Onboarding:** `completeFacultyOnboarding`, `inviteFaculty`
 - **Profiles & Auth:** `getOwnProfile`, `updateOwnProfile`, `listFaculty`, `createFacultyByAdmin`, `updateFacultyByAdmin`, `deleteFaculty`
 - **Student Directory & Search:** `searchStudents`, `getStudentById`, `createStudentDirect`, `updateStudent`, `deleteStudent`
 - **Academic Taxonomy:** `listDepartments`, `createDepartment`, `updateDepartment`, `deleteDepartment`, `listPrograms`, `createProgram`, `updateProgram`, `deleteProgram`

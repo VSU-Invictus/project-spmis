@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #213 — contract proposal:** Documented faculty onboarding and invitations, proposed contract v2.0.0 for the changed direct-provisioning behavior, and updated Google-only E2E guidance and migration/review notes; generated types and Redoc must be regenerated together.
 - **Issue #213 — admin invitation endpoint:** Added active-admin-only faculty invitations through `inviteUserByEmail`, with preflight validation, duplicate and rate-limit responses, a minimal pending invitation result, and offline mocked handler tests.
 - **Issue #213 — atomic invitations:** Added service-only admin invitation preflight and an Auth invitation trigger that creates a pending faculty profile and approval application in the Auth transaction, with fixed faculty privileges and verified inviter attribution.
 - **Issue #213 — supported Auth provisioning:** Removed direct Auth-user creation from the faculty insert trigger; existing Auth identities can still be linked, while missing identities require the invitation flow. Updated admin CRUD fixtures and added no-orphan regression assertions.

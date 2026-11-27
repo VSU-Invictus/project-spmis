@@ -22,12 +22,14 @@ These scenarios define the browser-level acceptance flows to automate in Milesto
 
 **Preconditions:** A unique email address is available; an approved department exists.
 
-1. Open the faculty registration screen and submit a valid name, email, password, and department.
-2. Verify registration succeeds and the application enters the pending state (including the expected confirmation or pending-approval screen).
+1. Sign in through Google OAuth with a unique synthetic test account, then complete faculty onboarding with a valid name and approved department. No password registration is used.
+2. Verify onboarding succeeds and exactly one pending profile and faculty-account application are created (including the expected pending-approval screen).
 3. Sign in as the new account if the flow permits it. Verify the account is identified as pending and cannot access active-faculty actions such as student mining, review authoring, or chat.
 4. Verify the account cannot access admin-only pages or actions.
 
 **Pass criteria:** One pending faculty application/profile is created; no active-faculty capability is granted before an admin decision; the UI presents a clear pending state rather than a false success for restricted actions.
+
+Backend endpoint verification for Issue #213 also covers the invitation alternative: an active admin calls `inviteFaculty`, verifies supported Auth identity provisioning plus a pending profile/application, retries the normalized email expecting 409 without new records, then approves the application. Backend HTTP integration coverage supplements this browser scenario; it does not prove frontend onboarding UI integration.
 
 ## E2E-ADMIN-01 — Admin approves a pending faculty application
 

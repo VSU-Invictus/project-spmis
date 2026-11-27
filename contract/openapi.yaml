@@ -1,13 +1,15 @@
 openapi: 3.1.0
 info:
   title: SPMIS API
-  version: 1.1.0
+  version: 2.0.0
   description: >-
     Contract-first API for the Student Profiling Management Information System. This curated
     contract documents only the operations available to the frontend. Originally frozen at v1.0.0
     (2026-10-30) with 27 operations and extended additively in v1.1.0 (30 operations) to add
     Admin direct student removal (`deleteStudent`) and faculty creation/removal
     (`createFacultyByAdmin`, `deleteFaculty`).
+    Version 2.0.0 adds onboarding and invitations (32 operations). Direct faculty profile insertion
+    links existing Auth identities only; missing identities must use inviteFaculty first.
     Proposed backend views and functions are described before implementation; scope decisions are
     recorded in docs/contract-decisions.md. Data API calls require a public project apikey and the
     caller JWT. OAuth and refresh use Supabase Auth through its SDK. An RLS-filtered read or update
@@ -43,6 +45,107 @@ x-tagGroups:
     tags:
       - Admin
 paths:
+  /functions/v1/faculty-onboarding:
+    post:
+      tags:
+        - Auth
+      operationId: completeFacultyOnboarding
+      summary: Complete Google faculty self-registration
+      description: >-
+        Authenticated verified Google users complete registration after OAuth by supplying a name and approved department. No existing faculty profile is required. Identity and email come from verified Auth state; the profile and faculty_account application are created atomically as pending. Protected feature access requires admin approval. Repeated completion returns 409.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyOnboardingInput'
+      responses:
+        '201':
+          description: Pending faculty registration created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyProfile'
+              example:
+                id: 31300000-abcd-4000-8000-000000000011
+                email: synthetic-213@example.test
+                status: pending
+                full_name: Synthetic Faculty
+                department_id: 10000000-0000-4000-8000-000000000001
+                role: faculty
+                created_at: '2026-11-27T00:00:00Z'
+                updated_at: '2026-11-27T00:00:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /functions/v1/faculty-invitations:
+    post:
+      tags:
+        - Admin
+      operationId: inviteFaculty
+      summary: Invite a faculty member through Supabase Auth
+      description: >-
+        Active admins only. Invites a new account through Supabase Auth, creating a pending faculty profile and faculty_account application in the Auth transaction. Existing emails return 409 without creating another identity. No password, client identity, privilege, or redirect fields are accepted. Google remains the application sign-in flow; approval is required for faculty feature access.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyInvitationInput'
+      responses:
+        '201':
+          description: Pending faculty registration created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyInvitationResult'
+              example:
+                id: 31300000-abcd-4000-8000-000000000011
+                email: synthetic-213@example.test
+                status: pending
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '429':
+          description: Faculty invitations are temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: RATE_LIMITED
+                message: Faculty invitations are temporarily unavailable.
+                details: null
+                hint: Try again later.
+        '502':
+          description: The Auth service could not complete the invitation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: INVITATION_FAILED
+                message: The Auth service could not complete the invitation.
+                details: null
+                hint: null
   /rest/v1/rpc/get_student_by_id:
     get:
       tags:
@@ -210,8 +313,11 @@ paths:
       summary: Directly add a faculty profile
       description: >-
         Admin only. Directly provision a faculty or admin profile with an approved department.
-        When status is omitted by an active admin, the backend defaults it to active and links or
-        provisions the backing auth.users identity by email. Every mutation is audited in the same
+        When status is omitted by an active admin, the backend defaults it to active and links an
+        existing Auth identity by email. Missing identities return native PostgREST 400 (23514);
+        use inviteFaculty instead.
+        Invited pending profiles already exist and must go through approval rather than reinsertion.
+        Every mutation is audited in the same
         database transaction.
       parameters:
         - $ref: '#/components/parameters/PreferReturnRepresentation'
@@ -1720,6 +1826,72 @@ components:
         message: The requested resource could not be returned.
         details: null
         hint: Check the request filters and caller permissions.
+    FacultyOnboardingInput:
+      type: object
+      additionalProperties: false
+      required:
+        - full_name
+        - department_id
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        department_id:
+          type: string
+          format: uuid
+          description: Existing approved department UUID.
+      example:
+        full_name: Synthetic Faculty
+        department_id: 10000000-0000-4000-8000-000000000001
+    FacultyInvitationInput:
+      type: object
+      additionalProperties: false
+      required:
+        - full_name
+        - department_id
+        - email
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          pattern: \S
+        department_id:
+          type: string
+          format: uuid
+          description: Existing approved department UUID.
+        email:
+          type: string
+          format: email
+          maxLength: 320
+      example:
+        full_name: Synthetic Faculty
+        department_id: 10000000-0000-4000-8000-000000000001
+        email: synthetic-213@example.test
+    FacultyInvitationResult:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - email
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        status:
+          type: string
+          enum:
+            - pending
+      example:
+        id: 31300000-abcd-4000-8000-000000000011
+        email: synthetic-213@example.test
+        status: pending
     FacultyProfile:
       type: object
       required:
@@ -1775,7 +1947,8 @@ components:
         - full_name
         - department_id
       description: >-
-        Admin-only payload for directly provisioning a faculty or admin profile.
+        Admin-only payload for linking an existing Auth identity to a faculty or admin profile.
+        New accounts use inviteFaculty; this operation never creates Auth identities.
       properties:
         email:
           type: string
