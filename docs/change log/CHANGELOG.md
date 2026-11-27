@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #212 — review edit concurrency:** Rechecked active status under the review row lock and returned a retryable HTTP 409 when an edit lacks a fresh embedding; added regression coverage for unchanged conflict state, hidden edits, and successful retries.
 - **Issue #212 — approval UUIDs:** Normalized application and assignment UUID casing, rejected case-insensitive duplicates in the Edge Function and database RPC, and added validation and side-effect regression coverage.
 - **Issue #212 — strict request fields:** Rejected unsupported fields across Edge Function bodies and closed nested request objects, distinguished malformed JSON (HTTP 400) from invalid object shapes (HTTP 422), and retained role checks before body processing.
 - **Issue #212 — normalized tag limit:** Enforced the 30-tag limit after whitespace tokenization, lowercasing, and deduplication, while retaining the contract's input-array limit; added boundary and duplicate regression tests.
