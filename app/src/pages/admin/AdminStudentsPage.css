@@ -24,25 +24,6 @@
   border: none !important;
 }
 
-.admin-student-management .pill-btn-sm.remove {
-  min-height: 0;
-}
-
-html:not(.dark) .admin-student-management .pill-btn-sm.remove {
-  --destructive: color-mix(in srgb, var(--color-status-danger) 88%, black);
-  border-color: transparent !important;
-  color: var(--destructive-foreground) !important;
-}
-
-html:not(.dark) .admin-student-management .pill-btn-sm.remove:is(:hover, :active):not(:disabled) {
-  background: color-mix(in srgb, var(--destructive) 88%, var(--foreground)) !important;
-  opacity: 1 !important;
-}
-
-.admin-student-management .pill-btn-sm.remove:focus-visible {
-  outline-color: var(--ring);
-}
-
 /* Same two-column name group as the approved Student modal. */
 .admin-student-name-fields {
   display: grid;

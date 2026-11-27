@@ -27,7 +27,7 @@ export function AdminAuditLogPage() {
       activeNavKey="audit-log"
       breadcrumb="Admin Portal / System Audit Logs"
     >
-      <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div className="admin-page-intro-layout" style={{ paddingBottom: '8px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <h1 className="ui-page-title" style={{ margin: '0 0 6px 0' }}>

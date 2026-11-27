@@ -400,6 +400,16 @@ code, kbd, samp, pre {
   letter-spacing: -0.025em;
 }
 
+.admin-portal-main:has(> .ui-dashboard-content > :is(.admin-taxonomy-management, .admin-page-intro-layout))
+  > .ui-dashboard-top-header {
+  margin-bottom: 0 !important;
+}
+
+/* The roster title starts 11px into its centered heading wrapper. */
+.admin-portal-main > .ui-dashboard-content > .admin-page-intro-layout {
+  padding-top: 11px;
+}
+
 .ui-heading-2 {
   font-family: var(--font-sans) !important;
   font-size: 1.375rem !important; /* 22px */

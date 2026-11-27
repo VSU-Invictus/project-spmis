@@ -16,6 +16,7 @@ import { facultyEditSchema, type FacultyEditValues } from '../../lib/validation/
 import { ApiRequestError } from '../../lib/api';
 import { confirmsMutation } from '../../lib/api/confirmMutation';
 import './AdminFacultyPage.css';
+import './AdminRemoveButton.css';
 
 type Selection = { action: 'create' } | { action: 'edit' | 'remove'; id: string };
 const SELF_DELETION_UNAVAILABLE = 'You cannot remove your own active administrator account.';
@@ -269,7 +270,7 @@ function FacultyManagement({ profileId }: { profileId: string }) {
             { key: 'actions', label: 'Actions', colClass: 'col-action text-right', headerClass: 'col-action text-center ui-table-heading-center', render: row =>
               <div className="action-group">
                 <button type="button" className="pill-btn edit-btn" onClick={() => setSelection({ action: 'edit', id: row.id })}>Edit</button>
-                <button type="button" className="pill-btn remove-btn" title={row.id === profileId ? SELF_DELETION_UNAVAILABLE : undefined} onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</button>
+                <Button variant="destructive" className="pill-btn-sm remove admin-remove-button" title={row.id === profileId ? SELF_DELETION_UNAVAILABLE : undefined} onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</Button>
               </div> },
           ]} />}
       {selection?.action === 'remove' && <FacultyRemoveDialog id={selection.id} isSelf={selection.id === profileId}
