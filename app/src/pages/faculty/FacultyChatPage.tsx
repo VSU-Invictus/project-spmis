@@ -48,7 +48,7 @@ export function FacultyChatPage() {
             <h1 className="ui-page-title">AI Chat Assistant</h1>
             <p className="ui-page-subtitle">Explore attributed reviews across students in one conversation.</p>
           </div>
-          <Link className="ui-btn ui-btn-secondary" to="/faculty/students">Browse Students</Link>
+          <Link className="ui-btn ui-btn-secondary" to="/faculty/students">Browse Student</Link>
         </header>
 
         <section className="chat-privacy-notice" role="note" aria-label="De-identification privacy notice">
