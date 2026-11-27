@@ -169,7 +169,7 @@ html[data-theme="light"] .signin-page .signin-field.has-error .signin-input {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--signin-error-color) 20%, transparent);
 }
 
-html[data-theme="light"] .signin-page .signin-password-toggle { color: var(--muted-foreground); }
+html[data-theme="light"] .signin-page .signin-password-toggle { color: var(--foreground); }
 html[data-theme="light"] .signin-page .signin-password-toggle:hover {
   color: var(--foreground);
   background: color-mix(in srgb, var(--foreground) 8%, transparent);
