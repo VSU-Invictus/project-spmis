@@ -59,11 +59,14 @@ type MockReviewRevision = {
 };
 
 type ApprovalItemType =
+  | 'faculty_account'
   | 'student_registration'
   | 'program_proposal'
   | 'department_proposal';
 
 type ApprovalPayload = {
+  full_name?: string;
+  email?: string;
   student_id_number?: string;
   first_name?: string;
   last_name?: string;
@@ -186,6 +189,22 @@ const approvalQueue: ApprovalItem[] = [
     created_at: now,
     decided_at: null,
   },
+  ...[
+    ['07e42297-6b44-4b35-ab2f-d216d547bdc8', 'Example Faculty Applicant Two', 'faculty.two@example.test', departmentId],
+    ['07e42297-6b44-4b35-ab2f-d216d547bdc9', 'Example Faculty Applicant Three', 'faculty.three@example.test', '98a12d0b-73c2-4e02-b7c9-aebc20e823de'],
+    ['07e42297-6b44-4b35-ab2f-d216d547bda0', 'Example Faculty Applicant Four', 'faculty.four@example.test', departmentId],
+    ['07e42297-6b44-4b35-ab2f-d216d547bda1', 'Example Faculty Applicant Five', 'faculty.five@example.test', '98a12d0b-73c2-4e02-b7c9-aebc20e823de'],
+  ].map(([id, full_name, email, department_id]) => ({
+    id,
+    type: 'faculty_account' as const,
+    payload: { full_name, email, department_id },
+    status: 'pending' as const,
+    submitted_by: '98b5fca9-0d8c-4c0a-a10a-7aa10b9bb3a1',
+    decided_by: null,
+    decision_reason: null,
+    created_at: now,
+    decided_at: null,
+  })),
 ];
 
 const departments = [
@@ -314,6 +333,43 @@ const reviewValidationError = (code: 'REVIEW_BODY_REQUIRED' | 'REVIEW_WORD_LIMIT
     },
     { status: 422 },
   );
+
+export function auditLogHandler(origin = '*') {
+  return http.get(`${origin}/rest/v1/audit_log_entries`, async ({ request }) => {
+    await delay(10);
+    const { searchParams } = new URL(request.url);
+    const offset = Number(searchParams.get('offset') ?? 0);
+    const limit = Number(searchParams.get('limit') ?? 20);
+    const ascending = searchParams.get('order') === 'created_at.asc,id.asc';
+    const exactCount = request.headers.get('Prefer')?.split(',').some(value => value.trim() === 'count=exact');
+    const records = auditLogs.filter(entry =>
+      matches(entry.action, searchParams.get('action')) && matches(entry.actor_role, searchParams.get('actor_role')),
+    ).sort((a, b) => {
+      const dateOrder = Date.parse(a.created_at) - Date.parse(b.created_at);
+      return (ascending ? dateOrder : -dateOrder) || a.id.localeCompare(b.id);
+    });
+    const total = exactCount ? records.length : '*';
+
+    if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(limit) || limit < 1 || limit > 100) {
+      return HttpResponse.json({
+        code: 'BAD_REQUEST', message: 'Invalid audit log pagination.', details: null, hint: null,
+      }, { status: 400 });
+    }
+    if (offset > 0 && offset >= records.length) {
+      return HttpResponse.json({
+        code: 'PGRST103', message: 'Requested range not satisfiable',
+        details: `An offset of ${offset} was requested, but there are only ${records.length} rows.`, hint: null,
+      }, { status: 416, headers: { 'Content-Range': `*/${total}` } });
+    }
+
+    const page = records.slice(offset, offset + limit);
+    const range = page.length ? `${offset}-${offset + page.length - 1}` : '*';
+    return HttpResponse.json(page, {
+      status: exactCount && page.length < records.length ? 206 : 200,
+      headers: { 'Content-Range': `${range}/${total}` },
+    });
+  });
+}
 
 export const handlers = [
   http.get('*/rest/v1/rpc/search_students', async ({ request }) => {
@@ -1171,15 +1227,7 @@ export const handlers = [
     return new HttpResponse(null, { status: 204 });
   }),
 
-  http.get('*/rest/v1/audit_log_entries', async ({ request }) => {
-    await delay(10);
-    const url = new URL(request.url);
-    const actionFilter = url.searchParams.get('action');
-    const roleFilter = url.searchParams.get('actor_role');
-    return HttpResponse.json(auditLogs.filter((entry) =>
-      matches(entry.action, actionFilter) && matches(entry.actor_role, roleFilter),
-    ));
-  }),
+  auditLogHandler(),
 ];
 
 export const __resetMocks = () => {

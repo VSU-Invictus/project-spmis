@@ -19,6 +19,21 @@
 @import '../../mockup/assets/css/pages/faculty/new-review.css';
 @import '../../mockup/assets/css/pages/design-system.css';
 
+html:not(.dark) .admin-queue-filters [aria-pressed="false"] {
+  background: transparent;
+  color: var(--foreground);
+}
+
+html:not(.dark) .admin-queue-filters [aria-pressed="false"]:hover {
+  background: var(--secondary);
+}
+
+@media (max-width: 700px) {
+  .app-sidebar.ui-dashboard-sidebar {
+    display: none !important;
+  }
+}
+
 /* --- 3. CLAUDE+ DESIGN SYSTEM ROOT TOKENS (LIGHT DEFAULTS) --- */
 .contract-auth-page {
   min-height: 100vh;
@@ -488,7 +503,9 @@ button {
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
 }
 
-html[data-theme-switching] button {
+html[data-theme-switching] *,
+html[data-theme-switching] *::before,
+html[data-theme-switching] *::after {
   transition: none !important;
 }
 
@@ -1699,13 +1716,37 @@ html:not(.dark) :is(.ui-toast, .toast) {
   transform: translateX(-4px);
 }
 
+#review-page-title {
+  font-family: var(--font-sans) !important;
+  font-size: 30px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  color: var(--foreground) !important;
+  margin: 0 0 4px 0 !important;
+  line-height: 1.25 !important;
+}
+
+.rich-text-toolbar {
+  background: var(--ui-surface-muted, var(--card)) !important;
+  border: 1px solid var(--input, var(--border)) !important;
+  border-bottom: 1px solid var(--ui-surface-border, var(--border)) !important;
+  border-top-left-radius: var(--radius-sm, 6px) !important;
+  border-top-right-radius: var(--radius-sm, 6px) !important;
+}
+
+.toolbar-divider {
+  background: var(--ui-surface-border, var(--border)) !important;
+}
+
+#review-editor,
 #review-editor-textarea,
 .review-rich-editor {
   min-height: 170px;
   max-height: 420px;
+  overflow-y: auto;
   padding: var(--space-5, 14px) var(--space-6, 16px) !important;
-  background: var(--muted, var(--color-input, #21201E)) !important;
-  border: 1px solid var(--input, var(--color-border-main, #383734)) !important;
+  background: var(--muted, var(--color-input)) !important;
+  border: 1px solid var(--input, var(--border)) !important;
   border-top: none !important;
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
@@ -1714,14 +1755,44 @@ html:not(.dark) :is(.ui-toast, .toast) {
   color: var(--foreground) !important;
   line-height: 1.6;
   outline: none !important;
+  box-shadow: none !important;
   font-family: inherit;
   font-size: var(--font-size-md, 14px);
+  word-break: break-word;
+}
+
+#editor-container:focus-within .rich-text-toolbar {
+  border-color: var(--color-primary-base, var(--primary)) !important;
+  border-bottom-color: var(--ui-surface-border, var(--border)) !important;
+}
+
+#editor-container:focus-within #review-editor,
+#review-editor:focus,
+#review-editor-textarea:focus,
+.review-rich-editor:focus {
+  border-color: var(--color-primary-base, var(--primary)) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#review-editor[data-invalid="true"],
+#review-editor[aria-invalid="true"] {
+  border-color: var(--color-status-danger, #ef4444) !important;
+}
+
+#review-editor:empty::before,
+#review-editor[data-empty="true"]:not(:has(ul, ol, li))::before {
+  content: attr(data-placeholder);
+  color: var(--muted-foreground) !important;
+  pointer-events: none;
+  opacity: 0.75 !important;
+  font-style: italic !important;
 }
 
 #review-editor-textarea::placeholder,
 .review-rich-editor::placeholder {
   font-style: italic !important;
-  color: var(--muted-foreground, var(--color-text-muted, #A0988E)) !important;
+  color: var(--muted-foreground) !important;
   opacity: 0.75 !important;
 }
 
@@ -1732,8 +1803,8 @@ html:not(.dark) :is(.ui-toast, .toast) {
   align-items: center;
   gap: var(--space-2, 6px);
   padding: var(--space-2, 6px) var(--space-4, 10px);
-  background: var(--muted, var(--color-input, #21201E));
-  border: 1px solid var(--input, var(--color-border-main, #383734));
+  background: var(--muted, var(--color-input));
+  border: 1px solid var(--input, var(--border));
   border-radius: var(--radius-sm, 6px);
   min-height: 42px;
   cursor: text;
@@ -1772,4 +1843,91 @@ html:not(.dark) :is(.ui-toast, .toast) {
   box-shadow: none !important;
 }
 
+.review-actions .ui-btn-outline,
+.modal-actions .ui-btn-outline {
+  background: transparent !important;
+  border: 1px solid var(--border) !important;
+  color: var(--foreground) !important;
+}
 
+.review-actions .ui-btn-outline:hover,
+.modal-actions .ui-btn-outline:hover {
+  background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+  border-color: var(--primary, #D97251) !important;
+  color: var(--foreground) !important;
+}
+
+/* ==========================================================================
+   TABLE SKELETON LOADING ROWS (<DataTable />, <TableRowSkeleton />, <ApplicationQueue />)
+   Preserves multi-column flex widths and column alignment during loading.
+   ========================================================================== */
+.table-row.skeleton-row .td-cell:not(:only-child) {
+  width: auto !important;
+  flex: 1 1 0%;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+.admin-student-management .table-row.skeleton-row .td-cell.col-id { flex: 130 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-fname { flex: 150 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-mname { flex: 120 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-lname { flex: 120 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-program { flex: 250 1 0 !important; }
+.admin-student-management .table-row.skeleton-row .td-cell.col-action { flex: 160 1 0 !important; justify-content: flex-end !important; }
+
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-name { flex: 210 1 0 !important; }
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-email { flex: 220 1 0 !important; }
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-dept { flex: 290 1 0 !important; }
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-role { flex: 100 1 0 !important; justify-content: center !important; }
+.admin-faculty-management .table-row.skeleton-row .td-cell.col-action { flex: 180 1 0 !important; justify-content: flex-end !important; }
+
+.admin-taxonomy-management .table-row.skeleton-row .td-cell.col-taxonomy { flex: 620 1 0 !important; }
+.admin-taxonomy-management .table-row.skeleton-row .td-cell.col-status { flex: 180 1 0 !important; justify-content: center !important; }
+.admin-taxonomy-management .table-row.skeleton-row .td-cell.col-action { flex: 200 1 0 !important; justify-content: flex-end !important; }
+
+/* Approval Queue column geometry for both live rows and skeleton rows */
+.queue-container.queue-student :is(.th-cell, .td-cell).col-id { flex: 140 1 0 !important; }
+.queue-container.queue-student :is(.th-cell, .td-cell).col-name { flex: 220 1 0 !important; }
+.queue-container.queue-student :is(.th-cell, .td-cell).col-program { flex: 320 1 0 !important; }
+.queue-container.queue-student :is(.th-cell, .td-cell).col-date { flex: 140 1 0 !important; }
+
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-name { flex: 190 1 0 !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-email { flex: 220 1 0 !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-dept { flex: 250 1 0 !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-role { flex: 100 1 0 !important; justify-content: center !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-status { flex: 110 1 0 !important; justify-content: center !important; }
+.queue-container.queue-faculty :is(.th-cell, .td-cell).col-date { flex: 130 1 0 !important; }
+
+.queue-container:is(.queue-department, .queue-program) :is(.th-cell, .td-cell).col-program { flex: 340 1 0 !important; }
+.queue-container:is(.queue-department, .queue-program) :is(.th-cell, .td-cell).col-proposed { flex: 220 1 0 !important; }
+.queue-container:is(.queue-department, .queue-program) :is(.th-cell, .td-cell).col-type { flex: 140 1 0 !important; justify-content: center !important; }
+.queue-container:is(.queue-department, .queue-program) :is(.th-cell, .td-cell).col-date { flex: 140 1 0 !important; }
+
+.table-row.skeleton-row .td-cell.checkbox-cell {
+  flex: 0 0 48px !important;
+  width: 48px !important;
+  justify-content: center !important;
+}
+
+.table-row.skeleton-row .td-cell.text-center {
+  justify-content: center !important;
+}
+
+.table-row.skeleton-row .td-cell.text-right {
+  justify-content: flex-end !important;
+}
+
+:is(tr.skeleton-row .skeleton, .table-row.skeleton-row .skeleton) {
+  height: 18px !important;
+  border-radius: 6px !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+
+:is(tr.skeleton-row .skeleton.skeleton-checkbox, .table-row.skeleton-row .skeleton.skeleton-checkbox) {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 4px !important;
+}

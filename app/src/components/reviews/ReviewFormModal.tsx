@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal, Button, Badge } from '../ui';
@@ -10,9 +10,10 @@ import { useTags } from '../../hooks/useTags';
 import { useCreateReview } from '../../hooks/useCreateReview';
 import { useUpdateReview } from '../../hooks/useUpdateReview';
 import type { Review } from '../../hooks/useStudentReviews';
-import { ReviewDocumentView } from './ReviewDocumentView';
 import {
+  deserializeDocumentToEditorHtml,
   deserializeDocumentToEditorText,
+  extractEditorDomToMarkdownText,
   serializeEditorTextToDocument,
 } from './richTextDocument';
 
@@ -74,6 +75,12 @@ export function ReviewFormModal({
   );
 
   const [editorText, setEditorText] = useState(initialEditorText);
+  const [activeFormats, setActiveFormats] = useState<{
+    bold: boolean;
+    italic: boolean;
+    bullet: boolean;
+    number: boolean;
+  }>({ bold: false, italic: false, bullet: false, number: false });
   const [tagDraft, setTagDraft] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState<Array<{ name: string; size: number }>>([]);
@@ -85,7 +92,7 @@ export function ReviewFormModal({
     hint?: string | null;
   } | null>(null);
 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const editorDivRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const tagInputRef = useRef<HTMLInputElement | null>(null);
   const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -110,6 +117,38 @@ export function ReviewFormModal({
     },
   });
 
+  const syncEmptyDataset = useCallback((el: HTMLDivElement | null) => {
+    if (!el) return;
+    const hasListOrStructure = Boolean(el.querySelector('ul, ol, li'));
+    const text = (el.textContent ?? '').replace(/[\n\r\t\u200B-\u200D\uFEFF]/g, '').trim();
+    const html = el.innerHTML.trim();
+    const isEmpty =
+      !hasListOrStructure &&
+      text.length === 0 &&
+      (!html || html === '<br>' || html === '<div><br></div>' || html === '<p><br></p>');
+    if (isEmpty) {
+      el.dataset.empty = 'true';
+    } else {
+      delete el.dataset.empty;
+    }
+  }, []);
+
+  const updateToolbarActiveState = useCallback(() => {
+    if (typeof document === 'undefined' || typeof document.queryCommandState !== 'function') {
+      return;
+    }
+    try {
+      setActiveFormats({
+        bold: Boolean(document.queryCommandState('bold')),
+        italic: Boolean(document.queryCommandState('italic')),
+        bullet: Boolean(document.queryCommandState('insertUnorderedList')),
+        number: Boolean(document.queryCommandState('insertOrderedList')),
+      });
+    } catch {
+      // Ignore queryCommandState errors in non-browser/jsdom environments
+    }
+  }, []);
+
   const initialReviewId = initialReview?.id;
   useEffect(() => {
     if (!isOpen) return;
@@ -117,12 +156,21 @@ export function ReviewFormModal({
       mode === 'edit' && initialReview
         ? deserializeDocumentToEditorText(initialReview.body_document, initialReview.body_text)
         : '';
+    const nextHtml =
+      mode === 'edit' && initialReview
+        ? deserializeDocumentToEditorHtml(initialReview.body_document, initialReview.body_text)
+        : '';
     setEditorText(nextText);
+    setActiveFormats({ bold: false, italic: false, bullet: false, number: false });
     setTagDraft('');
     setShowSuggestions(false);
     setAttachedFiles([]);
     setFailureMode('none');
     setServerError(null);
+    if (editorDivRef.current) {
+      editorDivRef.current.innerHTML = nextHtml;
+      syncEmptyDataset(editorDivRef.current);
+    }
     form.reset({
       student_id: studentId,
       body_document:
@@ -181,57 +229,107 @@ export function ReviewFormModal({
     !watchedTags.includes(normalizedDraftTag) &&
     !filteredSuggestions.includes(normalizedDraftTag);
 
-  const handleEditorChange = (nextValue: string) => {
-    setEditorText(nextValue);
-    setServerError(null);
-    const nextDoc = serializeEditorTextToDocument(nextValue);
-    form.setValue('body_document', nextDoc, {
-      shouldDirty: true,
-      shouldValidate: form.formState.isSubmitted,
-    });
-  };
-
-  const applyFormat = (format: 'bold' | 'italic' | 'bullet' | 'number' | 'linebreak') => {
-    const textarea = textareaRef.current;
-    const start = textarea?.selectionStart ?? editorText.length;
-    const end = textarea?.selectionEnd ?? editorText.length;
-    const selected = editorText.slice(start, end);
-
-    let nextText = editorText;
-    if (format === 'bold') {
-      const target = selected || 'bold text';
-      nextText = `${editorText.slice(0, start)}**${target}**${editorText.slice(end)}`;
-    } else if (format === 'italic') {
-      const target = selected || 'italic text';
-      nextText = `${editorText.slice(0, start)}*${target}*${editorText.slice(end)}`;
-    } else if (format === 'bullet') {
-      if (selected) {
-        const bulleted = selected
-          .split('\n')
-          .map((line) => (line.trim().startsWith('- ') ? line : `- ${line}`))
-          .join('\n');
-        nextText = `${editorText.slice(0, start)}${bulleted}${editorText.slice(end)}`;
-      } else {
-        const prefix = editorText && !editorText.endsWith('\n') ? '\n' : '';
-        nextText = `${editorText}${prefix}- List item`;
+  const handleEditorChange = useCallback(
+    (nextValue: string, syncDomHtml = false) => {
+      setEditorText(nextValue);
+      setServerError(null);
+      const nextDoc = serializeEditorTextToDocument(nextValue);
+      if (syncDomHtml && editorDivRef.current) {
+        editorDivRef.current.innerHTML = nextValue
+          ? deserializeDocumentToEditorHtml(nextDoc, nextValue)
+          : '';
+        syncEmptyDataset(editorDivRef.current);
       }
-    } else if (format === 'number') {
-      if (selected) {
-        const numbered = selected
-          .split('\n')
-          .map((line, idx) => (/^\d+\.\s/.test(line.trim()) ? line : `${idx + 1}. ${line}`))
-          .join('\n');
-        nextText = `${editorText.slice(0, start)}${numbered}${editorText.slice(end)}`;
-      } else {
-        const prefix = editorText && !editorText.endsWith('\n') ? '\n' : '';
-        nextText = `${editorText}${prefix}1. Numbered item`;
+      form.setValue('body_document', nextDoc, {
+        shouldDirty: true,
+        shouldValidate: form.formState.isSubmitted,
+      });
+    },
+    [form, syncEmptyDataset]
+  );
+
+  const syncFromContentEditable = useCallback(() => {
+    const el = editorDivRef.current;
+    if (!el) return;
+    syncEmptyDataset(el);
+    const mdText = extractEditorDomToMarkdownText(el);
+    handleEditorChange(mdText, false);
+  }, [handleEditorChange, syncEmptyDataset]);
+
+  const applyFormat = (format: 'bold' | 'italic' | 'bullet' | 'number') => {
+    const el = editorDivRef.current;
+    if (!el) return;
+    el.focus();
+
+    let executedNatively = false;
+    if (typeof document !== 'undefined' && typeof document.execCommand === 'function') {
+      try {
+        if (format === 'bold') {
+          executedNatively = document.execCommand('bold', false);
+        } else if (format === 'italic') {
+          executedNatively = document.execCommand('italic', false);
+        } else if (format === 'bullet') {
+          executedNatively = document.execCommand('insertUnorderedList', false);
+        } else if (format === 'number') {
+          executedNatively = document.execCommand('insertOrderedList', false);
+        }
+      } catch {
+        executedNatively = false;
       }
-    } else if (format === 'linebreak') {
-      nextText = `${editorText.slice(0, start)}\n${editorText.slice(end)}`;
     }
 
-    handleEditorChange(nextText);
-    textarea?.focus();
+    if (executedNatively) {
+      updateToolbarActiveState();
+      syncFromContentEditable();
+      return;
+    }
+
+    // Fallback for environments where document.execCommand is unsupported (e.g. jsdom unit tests)
+    const selection = typeof window !== 'undefined' ? window.getSelection?.() : null;
+    const selectedText =
+      selection && selection.rangeCount > 0 && el.contains(selection.anchorNode)
+        ? selection.toString()
+        : '';
+
+    if (format === 'bold') {
+      const strong = document.createElement('strong');
+      strong.textContent = selectedText || 'bold text';
+      if (selection && selection.rangeCount > 0 && selectedText && el.contains(selection.anchorNode)) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(strong);
+      } else {
+        el.appendChild(strong);
+      }
+      setActiveFormats((prev) => ({ ...prev, bold: !prev.bold }));
+    } else if (format === 'italic') {
+      const em = document.createElement('em');
+      em.textContent = selectedText || 'italic text';
+      if (selection && selection.rangeCount > 0 && selectedText && el.contains(selection.anchorNode)) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(em);
+      } else {
+        el.appendChild(em);
+      }
+      setActiveFormats((prev) => ({ ...prev, italic: !prev.italic }));
+    } else if (format === 'bullet') {
+      const ul = document.createElement('ul');
+      const li = document.createElement('li');
+      li.textContent = selectedText || 'List item';
+      ul.appendChild(li);
+      el.appendChild(ul);
+      setActiveFormats((prev) => ({ ...prev, bullet: !prev.bullet, number: false }));
+    } else if (format === 'number') {
+      const ol = document.createElement('ol');
+      const li = document.createElement('li');
+      li.textContent = selectedText || 'Numbered item';
+      ol.appendChild(li);
+      el.appendChild(ol);
+      setActiveFormats((prev) => ({ ...prev, number: !prev.number, bullet: false }));
+    }
+
+    syncFromContentEditable();
   };
 
   const addTagsFromInput = (rawText: string) => {
@@ -411,7 +509,7 @@ export function ReviewFormModal({
               variant={failureMode === '422_word_limit' ? 'destructive' : 'outline'}
               onClick={() => {
                 setFailureMode('422_word_limit');
-                handleEditorChange('A '.repeat(505));
+                handleEditorChange('A '.repeat(505), true);
               }}
             >
               Trigger 422 (Word Limit &gt;500)
@@ -422,7 +520,7 @@ export function ReviewFormModal({
               variant={failureMode === '422_empty_body' ? 'destructive' : 'outline'}
               onClick={() => {
                 setFailureMode('422_empty_body');
-                handleEditorChange('');
+                handleEditorChange('', true);
               }}
             >
               Trigger 422 (Empty Body)
@@ -434,7 +532,8 @@ export function ReviewFormModal({
               onClick={() => {
                 setFailureMode('none');
                 handleEditorChange(
-                  'Demonstrated great analytical ability and project leadership in software engineering.'
+                  'Demonstrated great analytical ability and project leadership in software engineering.',
+                  true
                 );
               }}
             >
@@ -511,19 +610,20 @@ export function ReviewFormModal({
         </div>
       )}
 
-      {/* Constrained Rich-Text Editor */}
+      {/* Constrained Rich-Text Editor (In-Place Live Formatting matching mockup #review-editor) */}
       <div className="ui-form-group">
-        <label className="ui-form-label" id="review-editor-label" htmlFor="review-editor-textarea">
+        <span className="ui-form-label" id="review-editor-label">
           Review text
-        </label>
+        </span>
         <div id="editor-container">
           <div className="rich-text-toolbar" role="toolbar" aria-label="Text formatting toolbar">
             <button
               type="button"
-              className="toolbar-btn"
+              className={`toolbar-btn ${activeFormats.bold ? 'active' : ''}`.trim()}
               data-format="bold"
               title="Bold (Ctrl+B)"
               aria-label="Bold"
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => applyFormat('bold')}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -533,10 +633,11 @@ export function ReviewFormModal({
             </button>
             <button
               type="button"
-              className="toolbar-btn"
+              className={`toolbar-btn ${activeFormats.italic ? 'active' : ''}`.trim()}
               data-format="italic"
               title="Italic (Ctrl+I)"
               aria-label="Italic"
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => applyFormat('italic')}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -548,10 +649,11 @@ export function ReviewFormModal({
             <div className="toolbar-divider" />
             <button
               type="button"
-              className="toolbar-btn"
+              className={`toolbar-btn ${activeFormats.bullet ? 'active' : ''}`.trim()}
               data-format="bullet"
               title="Bulleted list"
               aria-label="Bulleted list"
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => applyFormat('bullet')}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -565,10 +667,11 @@ export function ReviewFormModal({
             </button>
             <button
               type="button"
-              className="toolbar-btn"
+              className={`toolbar-btn ${activeFormats.number ? 'active' : ''}`.trim()}
               data-format="number"
               title="Numbered list"
               aria-label="Numbered list"
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => applyFormat('number')}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -584,8 +687,12 @@ export function ReviewFormModal({
             <button
               type="button"
               id="toolbar-attach-btn"
-              className="toolbar-btn"
-              title="Attach files"
+              className={`toolbar-btn ${attachedFiles.length > 0 ? 'active' : ''}`.trim()}
+              title={
+                attachedFiles.length > 0
+                  ? `${attachedFiles.length} file${attachedFiles.length > 1 ? 's' : ''} attached (click to add more)`
+                  : 'Attach files'
+              }
               aria-label="Attach files"
               onClick={() => fileInputRef.current?.click()}
             >
@@ -617,43 +724,46 @@ export function ReviewFormModal({
             </div>
           </div>
 
-          <textarea
-            id="review-editor-textarea"
-            ref={textareaRef}
+          <div
+            id="review-editor"
+            ref={editorDivRef}
             className="review-rich-editor"
-            rows={7}
-            value={editorText}
-            onChange={(e) => handleEditorChange(e.target.value)}
-            placeholder="Describe how you worked with this student and what you observed."
+            aria-labelledby="review-editor-label"
+            contentEditable
+            suppressContentEditableWarning
+            role="textbox"
+            aria-multiline="true"
             aria-invalid={Boolean(bodyFieldError || isOverWordLimit)}
-            style={{
-              width: '100%',
-              display: 'block',
-              resize: 'vertical',
-              borderColor: bodyFieldError || isOverWordLimit ? 'var(--color-status-danger, #ef4444)' : undefined,
+            data-invalid={Boolean(bodyFieldError || isOverWordLimit) || undefined}
+            data-empty={!editorText.trim() ? 'true' : undefined}
+            data-placeholder="Describe how you worked with this student and what you observed."
+            onInput={() => {
+              syncFromContentEditable();
+              updateToolbarActiveState();
+            }}
+            onKeyUp={updateToolbarActiveState}
+            onMouseUp={updateToolbarActiveState}
+            onFocus={updateToolbarActiveState}
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+                e.preventDefault();
+                applyFormat('bold');
+              } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'i') {
+                e.preventDefault();
+                applyFormat('italic');
+              }
             }}
           />
+          <textarea
+            id="review-text"
+            name="body"
+            value={editorText}
+            readOnly
+            tabIndex={-1}
+            aria-hidden="true"
+            style={{ display: 'none' }}
+          />
         </div>
-
-        {/* Live rich-text preview when formatting blocks are used */}
-        {plainText.length > 0 && (
-          <div
-            aria-label="Formatted review preview"
-            style={{
-              marginTop: '6px',
-              padding: '8px 12px',
-              borderRadius: 'var(--radius-sm, 6px)',
-              border: '1px dashed var(--border)',
-              backgroundColor: 'var(--color-card-subtle, var(--muted))',
-              fontSize: '13px',
-            }}
-          >
-            <small style={{ display: 'block', marginBottom: '4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Formatted preview
-            </small>
-            <ReviewDocumentView document={watchedDocument} />
-          </div>
-        )}
 
         {/* Newly selected file attachments */}
         {attachedFiles.length > 0 && (

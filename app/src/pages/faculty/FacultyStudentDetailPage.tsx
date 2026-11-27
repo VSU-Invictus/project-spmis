@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   CardSkeleton,
+  useMinimumLoadingDuration,
   EmptyState,
   Modal,
   Toast,
@@ -117,16 +118,17 @@ export function FacultyStudentDetailPage() {
 
   const {
     data: student,
-    isPending: isStudentPending,
+    isPending: rawIsStudentPending,
     isError: isStudentError,
     error: studentError,
   } = useStudentById(id);
+  const isStudentPending = useMinimumLoadingDuration(rawIsStudentPending);
 
   const { data: programs, isPending: isProgramsPending } = usePrograms();
 
   const {
     data: reviews,
-    isPending: isReviewsPending,
+    isPending: rawIsReviewsPending,
     isError: isReviewsError,
     error: reviewsError,
   } = useStudentReviews(
@@ -140,6 +142,7 @@ export function FacultyStudentDetailPage() {
       enabled: Boolean(id),
     }
   );
+  const isReviewsPending = useMinimumLoadingDuration(rawIsReviewsPending);
 
   const setReviewStatusMutation = useSetReviewStatus({
     onSuccess: (result) => {
@@ -220,10 +223,10 @@ export function FacultyStudentDetailPage() {
 
           <div className="header">
             <div>
-              <h1 id="review-page-title" style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 4px 0' }}>
+              <h1 id="review-page-title" className="ui-heading-1">
                 Write a review
               </h1>
-              <p id="review-page-subtitle" style={{ margin: 0, color: 'var(--muted-foreground)', fontSize: '14px' }}>
+              <p id="review-page-subtitle" style={{ margin: '4px 0 0 0', color: 'var(--muted-foreground)', fontSize: '14px' }}>
                 Share an assessment grounded in your work with this student.
               </p>
             </div>

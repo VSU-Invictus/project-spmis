@@ -221,9 +221,8 @@ describe('FacultyStudentDetailPage (#155)', () => {
     await user.clear(editor);
     await user.paste('Demonstrated **excellent** project execution.');
     await user.click(screen.getByRole('button', { name: /bulleted list/i }));
-    expect(editor).toHaveValue(
-      'Demonstrated **excellent** project execution.\n- List item'
-    );
+    expect(editor).toHaveTextContent(/Demonstrated.*excellent.*project execution/i);
+    expect(editor.querySelector('ul li')).not.toBeNull();
 
     const tagInput = screen.getByLabelText(/tags/i);
     await user.click(tagInput);
@@ -261,7 +260,7 @@ describe('FacultyStudentDetailPage (#155)', () => {
     const editor = within(dialog).getByLabelText(/review text/i);
     await user.clear(editor);
     await user.paste('Updated assessment noting strong **algorithms** mastery.');
-    expect(editor).toHaveValue('Updated assessment noting strong **algorithms** mastery.');
+    expect(editor).toHaveTextContent('Updated assessment noting strong **algorithms** mastery.');
 
     const saveBtn = within(dialog).getByRole('button', { name: /save changes/i });
     await user.click(saveBtn);
@@ -357,7 +356,7 @@ describe('FacultyStudentDetailPage (#155)', () => {
     const editor = screen.getByLabelText(/review text/i);
     await user.click(editor);
     await user.paste('Valid client text that triggers simulated server 422.');
-    expect(editor).toHaveValue('Valid client text that triggers simulated server 422.');
+    expect(editor).toHaveTextContent('Valid client text that triggers simulated server 422.');
 
     await user.click(screen.getByRole('button', { name: /publish review/i }));
 

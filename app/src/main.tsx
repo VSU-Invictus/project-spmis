@@ -1,6 +1,6 @@
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate, Outlet, matchPath, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
 import './pages/auth/signin.css';
@@ -33,6 +33,7 @@ import { FacultyStudentDetailPage } from './pages/faculty/FacultyStudentDetailPa
 import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
 import { FacultyChatPage } from './pages/faculty/FacultyChatPage';
 import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminTaxonomyManagementPage } from './pages/admin/AdminTaxonomyManagementPage';
 import { FacultyApplicationsPage } from './pages/faculty/FacultyApplicationsPage';
 import { FacultyTaxonomyPage } from './pages/faculty/FacultyTaxonomyPage';
@@ -126,12 +127,13 @@ function RootLayout() {
   const { mockRole, setMockRole } = useSession();
   const location = useLocation();
   const showMockRole = !['/', '/signin', '/login', '/signup'].includes(location.pathname);
+  const mockRoleBottom = matchPath('/admin/dashboard', location.pathname) ? 56 : 16;
   return (
     <>
       <ScrollToTop />
       <Outlet />
       {mockRole !== null && showMockRole && (
-        <label style={{ position: 'fixed', right: 24, bottom: 52, zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
+        <label style={{ position: 'fixed', right: 24, bottom: Math.max(mockRoleBottom, 52), zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
           <span style={{ fontSize: 12 }}>Mock role</span>
           <select aria-label="Mock role" value={mockRole} onChange={(event) => setMockRole(event.target.value as 'active' | 'pending' | 'admin')}>
             <option value="active">Active Faculty</option>
@@ -205,7 +207,7 @@ const router = createBrowserRouter([
           element: <RequireRole role="admin" />,
           children: [
             { index: true, element: <Navigate to="/admin/dashboard" replace /> },
-            { path: 'dashboard', element: <AdminApprovalQueuePage /> },
+            { path: 'dashboard', element: <AdminDashboardPage /> },
             { path: 'applications', element: <AdminApprovalQueuePage /> },
             { path: 'students', element: <AdminStudentsPage /> },
             { path: 'departments', element: <AdminTaxonomyManagementPage mode="departments" /> },

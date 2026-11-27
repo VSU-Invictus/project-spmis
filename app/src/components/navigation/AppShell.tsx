@@ -35,6 +35,10 @@ export interface AppShellProps {
   onSelectNav?: (key: string) => void;
   breadcrumb?: string;
   academicYear?: string;
+  showHeaderThemeToggle?: boolean;
+  showFooterLinks?: boolean;
+  mainClassName?: string;
+  mobileNavigation?: React.ReactElement;
   children: React.ReactNode;
 }
 
@@ -44,10 +48,14 @@ export function AppShell({
   onSelectNav,
   breadcrumb,
   academicYear = 'AY 2026-2027',
+  showHeaderThemeToggle = true,
+  showFooterLinks,
+  mainClassName = '',
+  mobileNavigation,
   children,
 }: AppShellProps) {
   const navigate = useNavigate();
-  const { profile } = useSession();
+  const { profile, signOut } = useSession();
   const [logoutOpen, setLogoutOpen] = useState(false);
 
   const resolvedUserName =
@@ -76,6 +84,7 @@ export function AppShell({
     <div className={`app-canvas ui-dashboard-app ui-dashboard-app--${role}`} style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}>
       {role === 'admin' ? (
         <AdminSidebar
+          className={mobileNavigation ? 'ui-dashboard-sidebar' : undefined}
           activeKey={activeNavKey as AdminNavKey}
           userName={resolvedUserName}
           userInitial={resolvedUserInitial}
@@ -92,7 +101,7 @@ export function AppShell({
         />
       )}
 
-      <main className="section-container ui-dashboard-main" style={{ flex: 1, minWidth: 0, height: '100vh', display: 'flex', flexDirection: 'column', padding: '16px 24px', boxSizing: 'border-box' }}>
+      <main className={`section-container ui-dashboard-main ${mainClassName}`.trim()} style={{ flex: 1, minWidth: 0, height: '100vh', display: 'flex', flexDirection: 'column', padding: '16px 24px', boxSizing: 'border-box' }}>
         <div className="admin-top-header ui-dashboard-top-header">
           <div className="header-left ui-dashboard-header-left">
             <span className="red-dot ui-dashboard-header-dot" aria-hidden="true" />
@@ -101,7 +110,7 @@ export function AppShell({
             </span>
           </div>
           <div className="header-right ui-dashboard-header-right" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <ThemeToggleButton />
+            {showHeaderThemeToggle && <ThemeToggleButton />}
             <span className="status-badge ui-dashboard-status" role="status" aria-live="polite">
               <span className="green-dot ui-dashboard-live-dot" aria-hidden="true" />
               System Live
@@ -110,12 +119,14 @@ export function AppShell({
           </div>
         </div>
 
+        {mobileNavigation}
         <div className="ui-dashboard-content" style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
           {children}
         </div>
 
         <PortalFooter
           portalName={role === 'admin' ? 'Admin Portal' : 'Faculty Portal'}
+          showLinks={showFooterLinks}
         />
       </main>
 
@@ -124,9 +135,10 @@ export function AppShell({
         syncWithUrl
         role={role}
         onCancel={() => setLogoutOpen(false)}
-        onConfirm={() => {
+        onConfirm={async () => {
+          await signOut();
           setLogoutOpen(false);
-          navigate('/');
+          navigate('/signin', { replace: true });
         }}
       />
 
@@ -134,4 +146,3 @@ export function AppShell({
     </div>
   );
 }
-
