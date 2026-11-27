@@ -44,6 +44,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { SessionProvider } from './context/SessionContext';
 import { useSession } from './context/SessionContext';
 import { ChatProvider } from './context/ChatContext';
+import { isLocalMockAuth } from './lib/supabase';
 
 function GuardLoading() {
   return <main className="contract-auth-page" aria-busy="true"><p>Checking your account…</p></main>;
@@ -127,13 +128,18 @@ function RootLayout() {
   const { mockRole, setMockRole } = useSession();
   const location = useLocation();
   const showMockRole = !['/', '/signin', '/login', '/signup'].includes(location.pathname);
-  const mockRoleBottom = matchPath('/admin/dashboard', location.pathname) ? 56 : 16;
+  // Keep the mock-role control above the bottom-right version label.
+  const isAdminFaculty = Boolean(matchPath('/admin/faculty', location.pathname));
+  const hasVersionOffset = matchPath('/admin/students', location.pathname) ||
+    matchPath('/admin/dashboard', location.pathname);
+  const mockRoleBottom = isAdminFaculty ? 'var(--faculty-mock-role-bottom, 56px)' :
+    hasVersionOffset ? 56 : 16;
   return (
     <>
       <ScrollToTop />
       <Outlet />
       {mockRole !== null && showMockRole && (
-        <label style={{ position: 'fixed', right: 24, bottom: Math.max(mockRoleBottom, 52), zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
+        <label className={isAdminFaculty ? 'admin-faculty-mock-role' : undefined} style={{ position: 'fixed', right: 16, bottom: mockRoleBottom, zIndex: 1000, display: 'grid', gap: 4, padding: 10, background: 'var(--background)', border: '1px solid var(--border)', borderRadius: 8 }}>
           <span style={{ fontSize: 12 }}>Mock role</span>
           <select aria-label="Mock role" value={mockRole} onChange={(event) => setMockRole(event.target.value as 'active' | 'pending' | 'admin')}>
             <option value="active">Active Faculty</option>
@@ -232,16 +238,33 @@ const router = createBrowserRouter([
   },
 ]);
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <SessionProvider>
-        <ThemeProvider>
-          <ChatProvider>
-            <RouterProvider router={router} />
-          </ChatProvider>
-        </ThemeProvider>
-      </SessionProvider>
-    </QueryClientProvider>
-  </StrictMode>
-);
+async function startApp() {
+  const root = document.getElementById('root')!;
+  if (import.meta.env.DEV && isLocalMockAuth &&
+      ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
+    try {
+      const { waitForLocalMocks } = await import('./mocks/browser');
+      await waitForLocalMocks();
+    } catch (error) {
+      console.error('Unable to start local API mocks.', error);
+      root.textContent = 'Unable to start local API mocks. Check service worker permissions and reload.';
+      return;
+    }
+  }
+
+  createRoot(root).render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider>
+          <ThemeProvider>
+            <ChatProvider>
+              <RouterProvider router={router} />
+            </ChatProvider>
+          </ThemeProvider>
+        </SessionProvider>
+      </QueryClientProvider>
+    </StrictMode>
+  );
+}
+
+void startApp();

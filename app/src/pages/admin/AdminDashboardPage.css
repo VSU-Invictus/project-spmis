@@ -2,6 +2,10 @@
   margin-bottom: 0 !important;
 }
 
+.admin-dashboard-overview .ui-dashboard-intro > h1 {
+  color: var(--color-text-main);
+}
+
 .admin-dashboard-overview .ui-dashboard-metric .ui-dashboard-metric-action {
   color: var(--primary) !important;
   font-size: 0.75rem;

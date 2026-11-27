@@ -16,6 +16,7 @@ import { ApiRequestError } from '../../lib/api';
 import { confirmsMutation } from '../../lib/api/confirmMutation';
 import { taxonomyProposalSchema, createTaxonomyProposalEditSchema, type TaxonomyProposalFormValues } from '../../lib/validation/taxonomyProposal';
 import './AdminTaxonomyManagementPage.css';
+import './AdminRemoveButton.css';
 
 type Mode = 'departments' | 'programs';
 type Selection = { action: 'create' } | { action: 'edit' | 'remove'; record: Department };
@@ -149,7 +150,7 @@ function TaxonomyManagement({ mode, profileId }: { mode: Mode; profileId: string
             { key: 'actions', label: 'Actions', colClass: 'col-action text-right', headerClass: 'col-action text-center ui-table-heading-center', render: record =>
               <div className="action-group">
                 <button className="pill-btn edit-btn" type="button" onClick={() => setSelection({ action: 'edit', record })}>Edit</button>
-                <button className="pill-btn remove-btn" type="button" onClick={() => setSelection({ action: 'remove', record })}>Remove</button>
+                <Button variant="destructive" className="pill-btn-sm remove admin-remove-button" onClick={() => setSelection({ action: 'remove', record })}>Remove</Button>
               </div> },
           ]} />}
       {selection && <TaxonomyDialog mode={mode} selection={selection} onClose={() => setSelection(null)} onSaved={setToast} />}
