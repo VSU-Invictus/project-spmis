@@ -16,8 +16,8 @@
 
 ## Scope & Operations
 
-This contract covers 32 curated PostgREST, RPC, and Edge Function operations:
-- **Faculty Onboarding:** `completeFacultyOnboarding`, `inviteFaculty`
+This contract covers 33 curated PostgREST, RPC, and Edge Function operations:
+- **Faculty Onboarding:** `listFacultyOnboardingDepartments`, `completeFacultyOnboarding`, `inviteFaculty`
 - **Profiles & Auth:** `getOwnProfile`, `updateOwnProfile`, `listFaculty`, `createFacultyByAdmin`, `updateFacultyByAdmin`, `deleteFaculty`
 - **Student Directory & Search:** `searchStudents`, `getStudentById`, `createStudentDirect`, `updateStudent`, `deleteStudent`
 - **Academic Taxonomy:** `listDepartments`, `createDepartment`, `updateDepartment`, `deleteDepartment`, `listPrograms`, `createProgram`, `updateProgram`, `deleteProgram`

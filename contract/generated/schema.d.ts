@@ -11,7 +11,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get approved department choices for Google onboarding
+         * @description Authenticated verified Google users only, including those without a faculty profile. Returns approved department IDs and names solely for completing onboarding. This does not grant direct department-table access or expose proposal metadata or faculty details.
+         */
+        get: operations["listFacultyOnboardingDepartments"];
         put?: never;
         /**
          * Complete Google faculty self-registration
@@ -469,6 +473,17 @@ export interface components {
             message: string;
             details: string | null;
             hint: string | null;
+        };
+        /**
+         * @example {
+         *       "id": "10000000-0000-4000-8000-000000000001",
+         *       "name": "Synthetic Department"
+         *     }
+         */
+        FacultyOnboardingDepartment: {
+            /** Format: uuid */
+            id: string;
+            name: string;
         };
         /**
          * @example {
@@ -1406,6 +1421,37 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    listFacultyOnboardingDepartments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Approved onboarding department choices */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example [
+                     *       {
+                     *         "id": "10000000-0000-4000-8000-000000000001",
+                     *         "name": "Synthetic Department"
+                     *       }
+                     *     ]
+                     */
+                    "application/json": components["schemas"]["FacultyOnboardingDepartment"][];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["ServerError"];
+        };
+    };
     completeFacultyOnboarding: {
         parameters: {
             query?: never;

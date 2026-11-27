@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(20);
+select plan(24);
 
 -- Synthetic database fixtures only. Real registration and invitation use Supabase Auth APIs.
 insert into auth.users (id, aud, role, email, email_confirmed_at) values
@@ -22,9 +22,20 @@ set local request.jwt.claim.sub = '31300000-abcd-4000-8000-000000000001';
 
 select throws_ok($$select public.complete_faculty_onboarding('31300000-abcd-4000-8000-000000000001', ' Synthetic Onboarding Faculty ', '10000000-0000-4000-8000-000000000001')$$, '42501', null, 'authenticated users cannot bypass the onboarding Edge Function');
 
+select throws_ok($$select * from public.get_faculty_onboarding_departments('31300000-abcd-4000-8000-000000000001')$$,
+  '42501', null, 'clients cannot execute privileged onboarding choices directly');
+
 reset role;
 set local request.jwt.claim.sub = '';
 set local role service_role;
+
+select is((select count(*) from public.get_faculty_onboarding_departments('31300000-abcd-4000-8000-000000000001')),
+  2::bigint, 'verified Google account can load approved choices before creating a profile');
+select is((select array_agg(key order by key) from jsonb_object_keys((select to_jsonb(d)
+  from public.get_faculty_onboarding_departments('31300000-abcd-4000-8000-000000000001') d limit 1)) key),
+  array['id', 'name']::text[], 'onboarding choices expose only IDs and names');
+select throws_ok($$select * from public.get_faculty_onboarding_departments('31300000-abcd-4000-8000-000000000003')$$,
+  '42501', 'A verified Google account is required for faculty onboarding.', 'email-only identity cannot load onboarding choices');
 
 select throws_ok($$select public.complete_faculty_onboarding('31300000-abcd-4000-8000-000000000002', ' Synthetic Onboarding Faculty ', '10000000-0000-4000-8000-999999999999')$$, '23514', 'The faculty department must be approved.', 'invalid department rejects registration');
 

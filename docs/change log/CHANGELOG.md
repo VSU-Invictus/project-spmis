@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #213 — onboarding department choices:** Added a verified-Google-only lookup exposing approved department IDs and names before a faculty profile exists, without expanding table RLS permissions.
 - **Issue #213 — contract boundary review:** Enforced name and email request-length limits before trimming so padded over-limit input cannot bypass the published schemas; added boundary regression coverage.
 - **Issue #213 — local invitation integration:** Added an opt-in synthetic HTTP check for real Auth invitation identity integrity, duplicate rejection, pending restrictions, admin approval, and active access; documented local-only setup and the separate Google OAuth browser coverage requirement.
 - **Issue #213 — contract proposal:** Documented faculty onboarding and invitations, proposed contract v2.0.0 for the changed direct-provisioning behavior, and updated Google-only E2E guidance and migration/review notes; generated types and Redoc must be regenerated together.

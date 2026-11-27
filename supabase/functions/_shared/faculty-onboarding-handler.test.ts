@@ -14,6 +14,7 @@ function request(body: string = JSON.stringify(input), method = 'POST') {
 Deno.test('onboarding handler uses verified identity and normalized fields without an existing profile', async () => {
   let calls = 0;
   const handler = createFacultyOnboardingHandler({
+    listDepartments: async () => ({ data: [], error: null }),
     requireUser: async () => ({ id: userId }),
     async complete(id, value) {
       calls++;
@@ -31,6 +32,7 @@ Deno.test('onboarding handler uses verified identity and normalized fields witho
 Deno.test('onboarding authentication failure prevents parsing and database calls', async () => {
   let calls = 0;
   const handler = createFacultyOnboardingHandler({
+    listDepartments: async () => ({ data: [], error: null }),
     requireUser: async () => { throw new FunctionError(401, 'UNAUTHORIZED', 'Authentication is required.'); },
     complete: async () => { calls++; return { data: profile, error: null }; },
   });
@@ -41,6 +43,7 @@ Deno.test('onboarding authentication failure prevents parsing and database calls
 Deno.test('onboarding rejects malformed JSON and invalid or privileged body fields before writes', async () => {
   let calls = 0;
   const handler = createFacultyOnboardingHandler({
+    listDepartments: async () => ({ data: [], error: null }),
     requireUser: async () => ({ id: userId }),
     complete: async () => { calls++; return { data: profile, error: null }; },
   });
@@ -58,19 +61,22 @@ Deno.test('onboarding rejects malformed JSON and invalid or privileged body fiel
 Deno.test('onboarding handles CORS and rejects unsupported methods without authentication or writes', async () => {
   let calls = 0;
   const handler = createFacultyOnboardingHandler({
+    listDepartments: async () => ({ data: [], error: null }),
     requireUser: async () => { calls++; return { id: userId }; },
     complete: async () => { calls++; return { data: profile, error: null }; },
   });
   const response = await handler(request('', 'OPTIONS'));
   assertEquals(response.status, 200);
   assertEquals(response.headers.get('access-control-allow-origin'), '*');
-  assertEquals((await handler(request('', 'GET'))).status, 405);
+  assertEquals(response.headers.get('access-control-allow-methods'), 'GET, POST, OPTIONS');
+  assertEquals((await handler(request('', 'DELETE'))).status, 405);
   assertEquals(calls, 0);
 });
 
 for (const [code, status] of [['23505', 409], ['42501', 403], ['23514', 422], ['22P02', 422], ['XX000', 500]] as const) {
   Deno.test(`onboarding maps database ${code} to a sanitized ${status} response`, async () => {
     const handler = createFacultyOnboardingHandler({
+      listDepartments: async () => ({ data: [], error: null }),
       requireUser: async () => ({ id: userId }),
       complete: async () => ({ data: null, error: { code, message: 'Synthetic internal table or constraint details' } }),
     });
@@ -85,8 +91,36 @@ for (const [code, status] of [['23505', 409], ['42501', 403], ['23514', 422], ['
 
 Deno.test('onboarding treats a missing database result as a safe server error', async () => {
   const handler = createFacultyOnboardingHandler({
+    listDepartments: async () => ({ data: [], error: null }),
     requireUser: async () => ({ id: userId }),
     complete: async () => ({ data: null, error: null }),
   });
   assertEquals((await handler(request())).status, 500);
+});
+
+Deno.test('onboarding GET uses verified identity and returns only department choices without writes', async () => {
+  const choices = [{ id: input.department_id.toLowerCase(), name: 'Synthetic Department' }];
+  let writes = 0;
+  const handler = createFacultyOnboardingHandler({
+    requireUser: async () => ({ id: userId }),
+    async listDepartments(id) { assertEquals(id, userId); return { data: choices, error: null }; },
+    complete: async () => { writes++; return { data: profile, error: null }; },
+  });
+  const response = await handler(request('', 'GET'));
+  assertEquals(response.status, 200);
+  assertEquals(await response.json(), choices);
+  assertEquals(writes, 0);
+});
+
+Deno.test('onboarding department failures are sanitized', async () => {
+  for (const [code, status] of [['42501', 403], ['XX000', 500]] as const) {
+    const handler = createFacultyOnboardingHandler({
+      requireUser: async () => ({ id: userId }),
+      listDepartments: async () => ({ data: null, error: { code } }),
+      complete: async () => ({ data: profile, error: null }),
+    });
+    const response = await handler(request('', 'GET'));
+    assertEquals(response.status, status);
+    assertEquals((await response.json()).details, null);
+  }
 });
