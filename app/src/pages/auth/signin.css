@@ -49,6 +49,7 @@
 .signin-field { position: relative; width: 100%; }
 .signin-password-wrap { position: relative; }
 .signin-page .signin-password-wrap .signin-input { padding-right: 54px; }
+.signin-page .signin-password-wrap .signin-input[type="password"]::-ms-reveal { display: none; }
 .signin-password-wrap > button { position: absolute; top: 50%; right: 18px; display: grid; width: 26px; height: 32px; place-items: center; transform: translateY(-50%); border: 0; border-radius: 6px; background: transparent; color: #b7b1a9; cursor: pointer; transition: color .18s ease, background-color .18s ease, transform .18s ease; }
 .signin-password-wrap > button:hover { transform: translateY(-50%) scale(1.08); background: rgba(255,255,255,.06); color: #fff; }
 .signin-password-wrap > button:active { transform: translateY(-50%) scale(.94); }
