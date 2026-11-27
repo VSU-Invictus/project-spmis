@@ -39,6 +39,11 @@
   border-color: var(--primary, #D97251) !important;
 }
 
+.faculty-students-page :is(.controls-container, .filters) .search-input,
+.faculty-students-page :is(.controls-container, .filters) input[type="search"] {
+  transition: border-color 0s, box-shadow var(--transition-fast), outline-color var(--transition-fast) !important;
+}
+
 .faculty-students-page #clear-filters:hover:not(:disabled) {
   border-color: var(--primary, #D97251) !important;
   background-color: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
