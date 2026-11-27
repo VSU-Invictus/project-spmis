@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #213 — supported Auth provisioning:** Removed direct Auth-user creation from the faculty insert trigger; existing Auth identities can still be linked, while missing identities require the invitation flow. Updated admin CRUD fixtures and added no-orphan regression assertions.
 - **Issue #213 — onboarding Edge Function:** Connected verified Auth users to the pending onboarding transaction, with strict request validation, safe error responses, and mocked handler tests that require no network access or existing faculty profile.
 - **Issue #213 — pending faculty transaction:** Added a service-role-only onboarding RPC that validates a verified Google identity and approved department, serializes duplicate submissions, and creates a pending faculty profile and approval application atomically without writing Auth tables.
 - **Issue #213 — onboarding input validation:** Added shared faculty onboarding and invitation validators with normalized names, emails, and department UUIDs; rejected caller-supplied identity, privilege, and redirect fields, with offline unit coverage.
