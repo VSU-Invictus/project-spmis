@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #213 — invitation concurrency:** Reserved normalized invitation emails in a private service-only workflow before calling Auth, rejected overlapping requests with 409, and used expiring request tokens to prevent stale cleanup from releasing a newer reservation.
 - **Issue #213 — onboarding department choices:** Added a verified-Google-only lookup exposing approved department IDs and names before a faculty profile exists, without expanding table RLS permissions.
 - **Issue #213 — contract boundary review:** Enforced name and email request-length limits before trimming so padded over-limit input cannot bypass the published schemas; added boundary regression coverage.
 - **Issue #213 — local invitation integration:** Added an opt-in synthetic HTTP check for real Auth invitation identity integrity, duplicate rejection, pending restrictions, admin approval, and active access; documented local-only setup and the separate Google OAuth browser coverage requirement.

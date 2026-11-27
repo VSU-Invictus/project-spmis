@@ -85,6 +85,14 @@ try {
   assert.equal((await api(`/rest/v1/faculty_profiles?email=eq.${encodeURIComponent(inviteEmail)}`)).data.length, 1);
   assert.equal((await api(`/rest/v1/approval_queue_items?submitted_by=eq.${userId}`)).data.length, 1);
 
+  phase = 'verify concurrent duplicate invitations';
+  const concurrentInput = { ...input, email: `concurrent-${suffix}@example.test` };
+  const overlapping = await Promise.all([0, 1].map(() => api('/functions/v1/faculty-invitations', {
+    token: adminToken, method: 'POST', body: concurrentInput,
+  })));
+  assert.deepEqual(overlapping.map((result) => result.status).sort(), [201, 409]);
+  assert.equal((await api(`/rest/v1/faculty_profiles?email=eq.${encodeURIComponent(concurrentInput.email)}`)).data.length, 1);
+
   phase = 'verify pending restrictions using a real Auth session';
   const facultyToken = await session(inviteEmail);
   for (const table of ['student_profiles', 'reviews']) {
