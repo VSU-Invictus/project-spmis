@@ -19,8 +19,7 @@ dialog#register-student-modal[open],
   overflow: hidden !important;
   margin: auto !important;
   position: fixed !important;
-  inset: 36px 0 0 !important;
-  height: fit-content !important;
+  inset: 0 !important;
   max-height: calc(100vh - 32px) !important;
   box-sizing: border-box !important;
 }
