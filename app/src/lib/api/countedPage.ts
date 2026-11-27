@@ -6,8 +6,21 @@ export async function countedPage<T extends { id: string }>(
   limit: number,
   fetchPage: (offset: number, limit: number) => Promise<T[]>,
 ): Promise<{ records: T[]; total: number }> {
-  const count = /\/(\d+)$/.exec(contentRange ?? '');
-  if (count) return { records: initial, total: Number(count[1]) };
+  const match = /^(?:(\d+)-(\d+)|\*)\/(\d+)$/.exec(contentRange ?? '');
+  if (match) {
+    const reportedTotal = Number(match[3]);
+    const rangeSpan = match[1] !== undefined && match[2] !== undefined
+      ? Number(match[2]) - Number(match[1]) + 1
+      : 0;
+    // Ignore static OpenAPI/Prism example headers (e.g. "0-19/73") when the returned array length disagrees with the header's range span.
+    const isConsistentRange =
+      match[1] === undefined
+        ? initial.length === 0 && reportedTotal === 0
+        : initial.length === rangeSpan;
+    if (isConsistentRange) {
+      return { records: initial, total: reportedTotal };
+    }
+  }
 
   // A page length is not a total. Reuse the collection-loading pattern used by taxonomy.
   const records: T[] = [];

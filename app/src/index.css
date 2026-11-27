@@ -519,10 +519,10 @@ button {
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
 }
 
-/* Match the roster component rules, including the Queue counter inside the button. */
-html[data-theme-switching] button,
-html[data-theme-switching] .section-container :is(.admin-student-management, .admin-faculty-management)
-  :is(button, .queue-counter, .table-row, input, select, .dropdown-container, .dropdown-chevron) {
+/* Disable transitions across the page while the theme is changing. */
+html[data-theme-switching] *,
+html[data-theme-switching] *::before,
+html[data-theme-switching] *::after {
   transition: none !important;
 }
 
