@@ -48,6 +48,7 @@ select is(
   'service_role rejects request 21 in the same sliding window'
 );
 
+reset role;
 select is(
   (select count(*) from private.chat_rate_limit_requests
    where actor_id = '30000000-0000-4000-8000-000000000001'),
@@ -55,7 +56,6 @@ select is(
   'a rejected request does not add a timestamp'
 );
 
-reset role;
 insert into private.chat_rate_limit_requests (actor_id, requested_at)
 values ('30000000-0000-4000-8000-000000000004', pg_catalog.clock_timestamp() - interval '2 minutes');
 set local role service_role;
