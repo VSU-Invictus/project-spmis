@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { isRosterMockRequest, rosterMockHandlers } from './browser';
+import { isReviewMockRequest, isRosterMockRequest, localMockHandlers, rosterMockHandlers } from './browser';
 import { server } from './server';
 
 const origin = 'http://localhost:4010';
@@ -59,6 +59,36 @@ it('serves pending student registrations and decisions from the same fixture sta
   const result = await fetch(decisions);
   expect(await result.json()).toMatchObject([{ id: items[0].id, status: 'approved' }]);
   expect(await (await fetch(pending)).json()).toEqual([]);
+});
+
+it('routes review lifecycle and program requests through stateful local mocks (#186)', async () => {
+  expect(isReviewMockRequest(new Request(origin + '/rest/v1/review_details'), origin)).toBe(true);
+  expect(isReviewMockRequest(new Request(origin + '/functions/v1/reviews/rev-1/status', { method: 'POST' }), origin)).toBe(true);
+  expect(isReviewMockRequest(new Request(origin + '/rest/v1/programs'), origin)).toBe(true);
+  expect(isReviewMockRequest(new Request('https://example.test/rest/v1/review_details'), origin)).toBe(false);
+
+  server.resetHandlers(...await localMockHandlers(origin));
+  const detailStudentId = '45b54332-e470-4c21-a839-7428c4f6bf42';
+  const listUrl = `${origin}/rest/v1/review_details?student_id=eq.${detailStudentId}`;
+
+  const initial = await (await fetch(listUrl)).json();
+  expect(initial).toHaveLength(1);
+  expect(initial[0].status).toBe('active');
+
+  const hideResp = await fetch(`${origin}/functions/v1/reviews/${initial[0].id}/status`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'hide' }),
+  });
+  expect(await hideResp.json()).toEqual({ id: initial[0].id, status: 'hidden' });
+  expect((await (await fetch(listUrl)).json())[0].status).toBe('hidden');
+
+  const unhideResp = await fetch(`${origin}/functions/v1/reviews/${initial[0].id}/status`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'unhide' }),
+  });
+  expect(await unhideResp.json()).toEqual({ id: initial[0].id, status: 'active' });
 });
 
 const { start } = vi.hoisted(() => ({ start: vi.fn() }));
