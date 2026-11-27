@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
-import { Badge, Button, Card, Input } from '../../components/ui';
+import { Badge, Button, Card } from '../../components/ui';
 import { useChatContext } from '../../context/ChatContext';
 import { useSession } from '../../context/SessionContext';
 import './FacultyChatPage.css';
@@ -97,10 +97,27 @@ export function FacultyChatPage() {
                 )}
               </div>
               <form className="faculty-chat-form" onSubmit={handleSubmit}>
-                <Input value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} placeholder="Type a question across student reviews (ask about student skills or leadership)..." aria-label="Message to AI Chat Assistant" disabled={isPending} />
+                <textarea
+                  className="ui-chat-textarea faculty-chat-textarea"
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+                      e.preventDefault();
+                      if (inputMessage.trim() && !isPending) {
+                        sendMessage(inputMessage);
+                        setInputMessage('');
+                      }
+                    }
+                  }}
+                  placeholder="Type a question across student reviews..."
+                  aria-label="Message to AI Chat Assistant"
+                  rows={2}
+                  disabled={isPending}
+                />
                 <div className="faculty-chat-form-footer">
-                  <span>Press Enter to send</span>
-                  <Button type="submit" variant="primary" aria-label="Send Message" disabled={!inputMessage.trim() || isPending}>Send query <span aria-hidden="true">→</span></Button>
+                  <span>Press Enter to send, Shift+Enter for new line</span>
+                  <Button type="submit" variant="primary" aria-label="Send Message" disabled={!inputMessage.trim() || isPending}>Send query <svg className="faculty-chat-send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4 20-7Z" /></svg></Button>
                 </div>
               </form>
             </div>
