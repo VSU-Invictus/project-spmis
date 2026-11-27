@@ -132,6 +132,8 @@ html[data-theme="light"] .signin-page .signin-brand-copy li::before {
 }
 
 html[data-theme="light"] .signin-page .signin-card {
+  --signin-link-color: color-mix(in srgb, var(--primary) 75%, var(--card-foreground));
+  --signin-error-color: #9c3728;
   background: var(--card);
   color: var(--card-foreground);
 }
@@ -141,6 +143,102 @@ html[data-theme="light"] .signin-page .signin-label {
   color: var(--foreground);
   font: 600 0.8125rem/1.25 var(--font-sans);
 }
+
+html[data-theme="light"] .signin-page .signin-google {
+  gap: 8px;
+  padding: 0 16px;
+  border-color: var(--border);
+  background: var(--muted);
+  color: var(--foreground);
+  font: 500 0.8125rem/1 var(--font-sans);
+}
+
+html[data-theme="light"] .signin-page .signin-google svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+html[data-theme="light"] .signin-page .signin-google:is(:hover, :focus-visible):enabled {
+  background: var(--accent);
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+}
+
+html[data-theme="light"] .signin-page .signin-input {
+  background: var(--muted);
+  border-color: color-mix(in srgb, var(--input) 60%, var(--foreground));
+  color: var(--foreground);
+  font-size: 0.825rem;
+}
+
+html[data-theme="light"] .signin-page .signin-input::placeholder {
+  color: color-mix(in srgb, var(--muted-foreground) 80%, var(--foreground));
+}
+
+html[data-theme="light"] .signin-page .signin-input:focus {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 25%, transparent);
+}
+
+html[data-theme="light"] .signin-page .signin-field.has-error .signin-input {
+  border-color: var(--signin-error-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--signin-error-color) 20%, transparent);
+}
+
+html[data-theme="light"] .signin-page .signin-password-toggle { color: var(--muted-foreground); }
+html[data-theme="light"] .signin-page .signin-password-toggle:hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+html[data-theme="light"] .signin-page .signin-password-toggle svg { width: 16px; height: 16px; }
+
+html[data-theme="light"] .signin-page .signin-submit {
+  background: var(--primary);
+  color: var(--card-foreground);
+  font: 600 0.875rem/1 var(--font-sans);
+}
+
+html[data-theme="light"] .signin-page .signin-submit:is(:hover, :focus-visible):enabled {
+  background: color-mix(in srgb, var(--primary) 90%, var(--card));
+}
+
+html[data-theme="light"] .signin-page :is(.signin-google, .signin-submit):disabled {
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  opacity: 1;
+}
+
+html[data-theme="light"] .signin-page .signin-forgot:disabled {
+  color: var(--muted-foreground);
+  opacity: 1;
+  transform: none;
+}
+
+html[data-theme="light"] .signin-page :is(
+  .signin-input, .signin-google, .signin-submit, .signin-password-toggle,
+  .signin-forgot, .signin-remember input, .signin-signup a
+):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+html[data-theme="light"] .signin-page :is(.signin-divider, .signin-remember) { color: var(--muted-foreground); }
+html[data-theme="light"] .signin-page .signin-divider { font-size: 0.7rem; }
+html[data-theme="light"] .signin-page .signin-divider::before,
+html[data-theme="light"] .signin-page .signin-divider::after { background: var(--border); }
+html[data-theme="light"] .signin-page .signin-remember input { accent-color: var(--signin-link-color); }
+html[data-theme="light"] .signin-page :is(.signin-forgot, .signin-signup a) { color: var(--signin-link-color); }
+html[data-theme="light"] .signin-page .signin-forgot:hover:enabled { text-decoration: underline; }
+
+html[data-theme="light"] .signin-page :is(.signin-field-error, .signin-feedback) { color: var(--signin-error-color); }
+html[data-theme="light"] .signin-page .signin-field-error-icon {
+  background: var(--signin-error-color);
+  color: var(--card);
+}
+
+html[data-theme="light"] .signin-page .signin-notice { color: #376541; }
 
 @media (max-width: 1000px) { .signin-brand { padding-right: 34px; padding-left: 34px; } .signin-card { margin-left: -28px; padding-right: 30px; padding-left: 30px; } .signin-signup { width: calc(100% + 60px); margin-left: -30px; } }
 @media (max-width: 900px) { .signin-page { justify-content: flex-start; overflow: auto; padding: 18px 16px 82px; } .signin-layout { width: min(100%, 520px); height: auto; min-height: 0; grid-template-columns: 1fr; gap: 0; margin: auto; } .signin-brand { height: auto; min-height: 0; padding: 24px 26px 28px; border-radius: 24px 24px 0 0; } .signin-logo { width: 180px; } .signin-brand-copy { margin: 25px 0 0; } .signin-brand-copy h1 { margin-bottom: 8px; font-size: 34px; } .signin-brand-copy p, .signin-brand-copy ul, .signin-brand-footer { display: none; } .signin-card { height: auto; min-height: 0; margin: -1px 0 0; padding: 30px 26px 20px; border-radius: 0 0 24px 24px; } .signin-card h2 { font-size: 27px; } .signin-subtitle { margin: 12px 0 24px; font-size: 15px; } .signin-input { height: 42px; } .signin-google { min-height: 42px; } .signin-submit { min-height: 44px; } .signin-signup { width: calc(100% + 52px); margin: 25px 0 0 -26px; padding-top: 16px; } .signup-card { width: 100%; height: fit-content; align-self: center; padding: 48px 26px 20px; } .signup-card .signin-subtitle { margin: 29px 0 40px; } .signup-card .signin-divider { margin: 10px 0; } .signup-card .signin-input { margin-top: 2px; margin-bottom: 9px; } .signup-card .signin-submit { margin-top: 15px; } .signup-card .signin-signup { margin: 16px 0 0 -26px; padding-top: 14px; } .signin-legal { bottom: 22px; } .signin-legal, .auth-info-footer { font-size: 14px; } }
