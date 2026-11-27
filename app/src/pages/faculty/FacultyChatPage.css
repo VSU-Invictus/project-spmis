@@ -135,7 +135,7 @@
 
 .faculty-chat-bubble {
   padding: 11px 13px;
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--primary) 72%, var(--border));
   border-radius: 4px 14px 14px 14px;
   background: var(--muted);
   font-size: 13px;
@@ -148,10 +148,10 @@
 }
 
 .faculty-chat-bubble--user {
-  border-color: transparent;
+  border-color: color-mix(in srgb, var(--primary) 55%, #4b3228);
   border-radius: 14px 4px 14px 14px;
-  background: var(--primary);
-  color: var(--primary-foreground, #fff);
+  background: color-mix(in srgb, var(--primary) 64%, #4b3228);
+  color: #fff;
 }
 
 .faculty-chat-pending {

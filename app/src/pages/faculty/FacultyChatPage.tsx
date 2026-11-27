@@ -114,7 +114,7 @@ export function FacultyChatPage() {
               <dt>Program</dt><dd>BS Computer Science</dd>
               <dt>Year Level</dt><dd>3rd Year</dd>
               <dt>Status</dt><dd><Badge variant="success">Good Standing</Badge></dd>
-              <dt>Tags</dt><dd><Badge variant="neutral">Research</Badge> <Badge variant="neutral">Algorithms</Badge></dd>
+              <dt>Tags</dt><dd><Badge variant="purple">Research</Badge> <Badge variant="cyan">Algorithms</Badge></dd>
             </dl>
             <p className="faculty-chat-context-note">Referenced record. Review conversations can synthesize evaluations across all enrolled students.</p>
             <Link className="ui-btn ui-btn-outline" to="/faculty/students/24-1-00001">View Full Profile <span aria-hidden="true">→</span></Link>
