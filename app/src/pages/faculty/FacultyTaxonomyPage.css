@@ -43,6 +43,40 @@
   white-space: nowrap;
 }
 
+/* Match mockup .table-wrap status pill sizing and colors */
+#faculty-entity-list .ui-badge {
+  border-radius: 9999px !important;
+  padding: 5px 14px !important;
+  min-height: 26px !important;
+  gap: 6px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+#faculty-entity-list .ui-badge .ui-icon {
+  width: 12px !important;
+  height: 12px !important;
+  stroke-width: 2.5 !important;
+  flex-shrink: 0 !important;
+}
+
+#faculty-entity-list .ui-badge--success {
+  background: #142E1F !important;
+  border: 1px solid #1E5C38 !important;
+  color: #4ADE80 !important;
+}
+
+html:not(.dark) #faculty-entity-list .ui-badge--success {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  color: #059669 !important;
+}
+
 /* Reduced-motion safety */
 @media (prefers-reduced-motion: reduce) {
   #faculty-entity-list .skeleton {
