@@ -1,4 +1,4 @@
-import { errorResponse, FunctionError, handleOptions, jsonResponse, mapDatabaseError, readJson } from '../_shared/errors.ts';
+import { assertAllowedKeys, errorResponse, FunctionError, handleOptions, jsonResponse, mapDatabaseError, readJson } from '../_shared/errors.ts';
 import { deidentifyText, reidentifyText, type StudentNameRecord } from '../_shared/deidentify.ts';
 import { embedText, generateAnswer } from '../_shared/gemini.ts';
 import { getProfile, adminClient } from '../_shared/supabase.ts';
@@ -10,8 +10,9 @@ function validateHistory(value: unknown): Array<{ role: 'user' | 'assistant'; co
     throw new FunctionError(422, 'INVALID_HISTORY', 'Chat history must contain at most 20 turns.');
   }
   return value.map((turn) => {
-    if (!turn || typeof turn !== 'object') throw new FunctionError(422, 'INVALID_HISTORY', 'Chat history is invalid.');
+    if (!turn || typeof turn !== 'object' || Array.isArray(turn)) throw new FunctionError(422, 'INVALID_HISTORY', 'Chat history is invalid.');
     const item = turn as Record<string, unknown>;
+    assertAllowedKeys(item, ['role', 'content']);
     if (!['user', 'assistant'].includes(item.role as string) ||
       typeof item.content !== 'string' || !item.content.trim() || item.content.length > 10000) {
       throw new FunctionError(422, 'INVALID_HISTORY', 'Chat history is invalid.');
@@ -31,7 +32,7 @@ async function handler(request: Request): Promise<Response> {
     const db = adminClient();
     await enforceChatRateLimit(id, (actorId) =>
       db.rpc('consume_chat_rate_limit', { p_actor_id: actorId }));
-    const body = await readJson(request);
+    const body = await readJson(request, ['message', 'history']);
     if (typeof body.message !== 'string' || body.message.length > 2000 || !/\S/u.test(body.message)) {
       throw new FunctionError(422, 'INVALID_MESSAGE', 'A nonblank message of at most 2,000 characters is required.');
     }

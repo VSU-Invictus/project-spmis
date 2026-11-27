@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(36);
+select plan(38);
 
 -- Capture exception hints without bypassing the caller's grants or RLS.
 create function pg_temp.faculty_delete_error(profile_id uuid)
@@ -27,6 +27,11 @@ values ('10000000-0000-4000-8000-000000000099', 'Example Pending Department', 'p
 insert into auth.users (id, aud, role, email, email_confirmed_at)
 values ('30000000-0000-4000-8000-000000000099', 'authenticated', 'authenticated', 'existing.auth@example.test', now());
 
+-- Synthetic test setup only: production account provisioning uses the Auth invitation API.
+insert into auth.users (id, aud, role, email, email_confirmed_at) values
+  ('31300000-0000-4000-8000-000000000101', 'authenticated', 'authenticated', 'new.faculty@example.test', now()),
+  ('31300000-0000-4000-8000-000000000102', 'authenticated', 'authenticated', 'explicit.pending@example.test', now());
+
 -- ===== 1. Admin direct faculty create/delete & student delete (30...0004) =====
 set local role authenticated;
 set local request.jwt.claim.sub = '30000000-0000-4000-8000-000000000004';
@@ -34,7 +39,7 @@ set local request.jwt.claim.sub = '30000000-0000-4000-8000-000000000004';
 select lives_ok(
   $$insert into public.faculty_profiles (email, full_name, department_id, role)
     values ('  New.Faculty@example.test  ', 'Example Direct Faculty', '10000000-0000-4000-8000-000000000001', 'faculty')$$,
-  'admin can directly create a faculty profile without supplying id or status'
+  'admin can link an existing Auth identity without supplying id or status'
 );
 
 select is(
@@ -50,7 +55,7 @@ select ok(
     join auth.users u on u.id = f.id
     where f.email = 'new.faculty@example.test' and lower(u.email) = 'new.faculty@example.test'
   ),
-  'admin-created faculty profile links to a provisioned auth.users row'
+  'admin-created faculty profile links to its existing Auth fixture'
 );
 set local role authenticated;
 set local request.jwt.claim.sub = '30000000-0000-4000-8000-000000000004';
@@ -263,6 +268,20 @@ select throws_ok(
   $$delete from public.student_profiles where student_id_number = 'TEST-001'$$,
   '42501', null, 'anon cannot delete from student_profiles'
 );
+
+reset role;
+set local role authenticated;
+set local request.jwt.claim.sub = '30000000-0000-4000-8000-000000000004';
+select throws_ok(
+  $$insert into public.faculty_profiles (email, full_name, department_id, role)
+    values ('missing.auth.213@example.test', 'Synthetic Missing Identity',
+      '10000000-0000-4000-8000-000000000001', 'faculty')$$,
+  '23514', 'Invite the faculty member through the invitation endpoint before linking a profile.',
+  'profile insertion cannot create an Auth account directly'
+);
+reset role;
+select is((select count(*) from auth.users where email = 'missing.auth.213@example.test'),
+  0::bigint, 'rejected profile provisioning leaves no orphaned Auth user');
 
 select * from finish();
 rollback;

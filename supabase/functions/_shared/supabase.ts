@@ -47,7 +47,7 @@ export async function getProfile(request: Request): Promise<{
     .eq('id', result.id)
     .maybeSingle();
   if (error) {
-    throw new FunctionError(500, 'DATABASE_ERROR', 'The faculty profile could not be loaded.', error.message);
+    throw new FunctionError(500, 'DATABASE_ERROR', 'The faculty profile could not be loaded.');
   }
   if (!data || data.status !== 'active' || !['faculty', 'admin'].includes(data.role)) {
     throw new FunctionError(403, 'FORBIDDEN', 'An active faculty profile is required.');
