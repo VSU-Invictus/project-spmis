@@ -15,9 +15,7 @@ const QUEUE_TABS: { key: QueueType; label: string }[] = [
   { key: 'department', label: 'Departments' },
 ];
 
-/** Compatibility shell for both existing routes; decisions live only in ApplicationQueue.
- * This deliberately does not claim parity with the M1 dashboard summary layout.
- */
+/** Standalone approval workspace. Decisions are handled by ApplicationQueue. */
 export function AdminApprovalQueuePage() {
   const { role, loading } = useSession();
   const { pathname } = useLocation();
@@ -50,7 +48,7 @@ function ApprovalQueueWorkspace() {
             </Button>
           </div>
         </div>
-        <div role="group" aria-label="Application queues" style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--border)', paddingBottom: '8px', flexWrap: 'wrap' }}>
+        <div className="admin-queue-filters" role="group" aria-label="Application queues" style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--border)', paddingBottom: '8px', flexWrap: 'wrap' }}>
           {QUEUE_TABS.map(tab => (
             <Button key={tab.key} variant={queueType === tab.key ? 'primary' : 'ghost'} size="sm"
               aria-pressed={queueType === tab.key} onClick={() => setQueueType(tab.key)}>

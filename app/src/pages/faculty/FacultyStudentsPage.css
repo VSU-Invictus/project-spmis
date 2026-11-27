@@ -1,5 +1,63 @@
 /* Faculty Students Page Layout & Table Styles (#188) */
 
+.faculty-students-page .header h1 {
+  font-family: var(--font-sans) !important;
+  font-size: 30px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  color: var(--foreground) !important;
+  margin: 0 0 4px 0 !important;
+  line-height: 1.25 !important;
+}
+
+.faculty-students-page :is(.controls-container, .filters) .search-input,
+.faculty-students-page :is(.controls-container, .filters) input[type="search"],
+.faculty-students-page .dropdown-select,
+.faculty-students-page .filters select,
+.faculty-students-page .ui-select-pill,
+.faculty-students-page #rows-per-page,
+.faculty-students-page .ui-table-pagination-nav :is(.ui-btn, button, .secondary),
+.faculty-students-page #clear-filters {
+  border-color: var(--border) !important;
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+}
+
+.faculty-students-page .ui-select-pill,
+.faculty-students-page #rows-per-page,
+.faculty-students-page .ui-table-pagination-nav :is(.ui-btn, button, .secondary),
+.faculty-students-page #clear-filters {
+  background-color: transparent !important;
+}
+
+.faculty-students-page :is(.controls-container, .filters) .search-input:focus,
+.faculty-students-page :is(.controls-container, .filters) input[type="search"]:focus,
+.faculty-students-page .dropdown-select:focus,
+.faculty-students-page .filters select:focus,
+.faculty-students-page .ui-select-pill:focus,
+.faculty-students-page #rows-per-page:focus {
+  border-color: var(--primary, #D97251) !important;
+}
+
+.faculty-students-page #clear-filters:hover:not(:disabled) {
+  border-color: var(--primary, #D97251) !important;
+  background-color: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+}
+
+#roster-results a.ui-link-neutral,
+#roster-results td a.ui-link-neutral,
+#roster-results td:last-child a.ui-link-neutral,
+#roster-results td:last-child a {
+  color: var(--foreground) !important;
+}
+
+#roster-results a.ui-link-neutral:hover,
+#roster-results td a.ui-link-neutral:hover,
+#roster-results td:last-child a.ui-link-neutral:hover,
+#roster-results td:last-child a:hover {
+  color: var(--primary, #D97251) !important;
+}
+
 #roster-results .table-margin-container {
   margin: 0;
 }

@@ -197,7 +197,7 @@ export function FacultyStudentsPage() {
       <div className="faculty-students-page" style={{ display: 'flex', flexDirection: 'column' }}>
         <div className="header">
           <div>
-            <h1>Students</h1>
+            <h1 className="ui-heading-1">Students</h1>
             <p>Browse students and search the text of active reviews.</p>
           </div>
           <FacultyStudentRegistration />

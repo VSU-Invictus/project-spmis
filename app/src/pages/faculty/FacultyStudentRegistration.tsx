@@ -54,16 +54,16 @@ function RegistrationForm({ onClose, onSubmitted }: { onClose: () => void; onSub
       <div className="ui-alert-content"><span className="ui-alert-desc">Registration requires physical verification by an administrator outside the system. Your application stays pending until the admin approves it.</span></div>
     </div>
     <form id="registration-form" className="modal-form" noValidate onSubmit={submit} aria-busy={pending}>
-      <Input id="student-id" label="Student ID number" aria-required="true" placeholder="e.g. 24-1-00006" autoComplete="off"
+      <Input id="student-id" label="Student ID number" aria-required="true" maxLength={40} placeholder="e.g. 24-1-00006" autoComplete="off"
         disabled={pending} {...form.register('student_id_number')} error={errors.student_id_number?.message} autoFocus />
       <div className="ui-form-grid ui-form-grid--2">
-        <Input id="first-name" label="First name" aria-required="true" placeholder="e.g. Alex" autoComplete="off"
+        <Input id="first-name" label="First name" aria-required="true" maxLength={80} placeholder="e.g. Alex" autoComplete="off"
           disabled={pending} {...form.register('first_name')} error={errors.first_name?.message} />
-        <Input id="last-name" label="Last name" aria-required="true" placeholder="e.g. Morgan" autoComplete="off"
+        <Input id="last-name" label="Last name" aria-required="true" maxLength={80} placeholder="e.g. Morgan" autoComplete="off"
           disabled={pending} {...form.register('last_name')} error={errors.last_name?.message} />
       </div>
       <Input id="middle-name" label={<>Middle name <span className="ui-form-optional">(optional)</span></>}
-        placeholder="e.g. Taylor" autoComplete="off" disabled={pending} {...form.register('middle_name')} error={errors.middle_name?.message} />
+        maxLength={80} placeholder="e.g. Taylor" autoComplete="off" disabled={pending} {...form.register('middle_name')} error={errors.middle_name?.message} />
       <div className="ui-form-group">
         <Select id="program" label="Program" aria-required="true" disabled={pending || programs.isPending || programs.isError}
           {...form.register('program_id')} error={Boolean(errors.program_id)} aria-describedby="registration-program-hint registration-program-error">
@@ -71,7 +71,7 @@ function RegistrationForm({ onClose, onSubmitted }: { onClose: () => void; onSub
           {choices.map(program => <option key={program.id} value={program.id}>{program.name}</option>)}
         </Select>
         <span className="ui-form-hint" id="registration-program-hint">Choose an approved program. A missing program can be proposed from the Programs page.</span>
-        <span className="ui-form-error" id="registration-program-error" role="status">{errors.program_id && 'Choose an approved program.'}</span>
+        {errors.program_id && <span className="ui-form-error" id="registration-program-error" role="status">Choose an approved program.</span>}
         {programs.isPending && <p role="status">Loading approved programs…</p>}
         {programs.isError && <>
           <p className="ui-form-error" role="alert">{programs.error.message} {programs.error instanceof ApiRequestError && programs.error.hint}</p>
@@ -84,8 +84,8 @@ function RegistrationForm({ onClose, onSubmitted }: { onClose: () => void; onSub
         {requestError?.message} {requestError instanceof ApiRequestError && requestError.hint}
       </p>
       <div className="modal-actions">
-        <Button variant="outline" onClick={close} disabled={pending}>Cancel</Button>
-        <Button type="submit" disabled={!allowed || pending || programs.isPending || programs.isError || choices.length === 0}>Submit application</Button>
+        <Button variant="outline" id="cancel-register-btn" onClick={close} disabled={pending}>Cancel</Button>
+        <Button type="submit" id="submit-register-btn" disabled={!allowed || pending || programs.isPending || programs.isError || choices.length === 0}>Submit application</Button>
       </div>
     </form>
   </FacultyProposalDialog>;

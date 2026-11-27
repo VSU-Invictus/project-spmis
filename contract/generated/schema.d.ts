@@ -2046,6 +2046,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    /**
+                     * @example [
+                     *       {
+                     *         "id": "07e42297-6b44-4b35-ab2f-d216d547bdc7",
+                     *         "type": "faculty_account",
+                     *         "payload": {
+                     *           "full_name": "Alex Reyes",
+                     *           "email": "alex.reyes@example.edu",
+                     *           "department_id": "5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb"
+                     *         },
+                     *         "status": "pending",
+                     *         "submitted_by": "e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+                     *         "decided_by": null,
+                     *         "decision_reason": null,
+                     *         "created_at": "2026-10-26T00:00:00Z",
+                     *         "decided_at": null
+                     *       }
+                     *     ]
+                     */
                     "application/json": components["schemas"]["ApprovalQueueItem"][];
                 };
             };
@@ -2056,6 +2075,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    /**
+                     * @example [
+                     *       {
+                     *         "id": "07e42297-6b44-4b35-ab2f-d216d547bdc7",
+                     *         "type": "faculty_account",
+                     *         "payload": {
+                     *           "full_name": "Alex Reyes",
+                     *           "email": "alex.reyes@example.edu",
+                     *           "department_id": "5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb"
+                     *         },
+                     *         "status": "pending",
+                     *         "submitted_by": "e48adc9e-1b79-4b92-9848-aa12b25d63d7",
+                     *         "decided_by": null,
+                     *         "decision_reason": null,
+                     *         "created_at": "2026-10-26T00:00:00Z",
+                     *         "decided_at": null
+                     *       }
+                     *     ]
+                     */
                     "application/json": components["schemas"]["ApprovalQueueItem"][];
                 };
             };
