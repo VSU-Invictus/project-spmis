@@ -1,29 +1,24 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
-import {
-  Button,
-  Card,
-  Badge,
-  Input,
-} from '../../components/ui';
+import { Badge, Button, Card, Input } from '../../components/ui';
 import { useChatContext } from '../../context/ChatContext';
 import { useSession } from '../../context/SessionContext';
+import './FacultyChatPage.css';
+
+const suggestedTopics = [
+  { title: 'Research experience', description: 'Explore faculty assessments', prompt: 'Which students have research experience?' },
+  { title: 'Teamwork', description: 'Ask across student records', prompt: 'Which students show teamwork?' },
+  { title: 'Communication', description: 'Find relevant review excerpts', prompt: 'Find reviews mentioning communication.' },
+  { title: 'Robotics', description: 'Explore project experience', prompt: 'Which students have robotics experience?' },
+];
 
 export function FacultyChatPage() {
   const { profile } = useSession();
   const isActiveFaculty = profile?.role === 'faculty' && profile?.status === 'active';
-
   const [inputMessage, setInputMessage] = useState('');
-  const {
-    state,
-    isPending,
-    sendMessage,
-    retryLastMessage,
-    dismissError,
-    setSimulateRateLimit,
-  } = useChatContext();
-
-  const { messages, error: rateLimitError, simulateRateLimit } = state;
+  const { state, isPending, sendMessage, retryLastMessage, dismissError } = useChatContext();
+  const { messages, error: rateLimitError } = state;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,26 +29,11 @@ export function FacultyChatPage() {
 
   if (!isActiveFaculty) {
     return (
-      <AppShell
-        role={profile?.role === 'admin' ? 'admin' : 'faculty'}
-        activeNavKey="chat"
-        breadcrumb="Faculty Portal / AI Chat Assistant"
-      >
+      <AppShell role={profile?.role === 'admin' ? 'admin' : 'faculty'} activeNavKey="chat" breadcrumb="FACULTY PORTAL / CHATS">
         <div style={{ padding: '24px 0', maxWidth: '640px' }}>
-          <div
-            role="alert"
-            style={{
-              padding: '20px 24px',
-              backgroundColor: 'var(--destructive-subtle, #fee2e2)',
-              border: '1px solid var(--destructive, #ef4444)',
-              borderRadius: 'var(--radius-md, 8px)',
-              color: 'var(--destructive, #b91c1c)',
-            }}
-          >
-            <h2 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 600 }}>Access Restricted</h2>
-            <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.5 }}>
-              The AI Chat Assistant is reserved exclusively for active, verified faculty members. Pending accounts and administrative users are restricted from querying the assistant.
-            </p>
+          <div role="alert" style={{ padding: '20px 24px', backgroundColor: 'var(--destructive-subtle, #fee2e2)', border: '1px solid var(--destructive, #ef4444)', borderRadius: 'var(--radius-md, 8px)', color: 'var(--destructive, #b91c1c)' }}>
+            <h2 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 600 }}>Access Restricted</h2>
+            <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.5 }}>The AI Chat Assistant is reserved exclusively for active, verified faculty members. Pending accounts and administrative users are restricted from querying the assistant.</p>
           </div>
         </div>
       </AppShell>
@@ -61,152 +41,86 @@ export function FacultyChatPage() {
   }
 
   return (
-    <AppShell
-      role="faculty"
-      activeNavKey="chat"
-      breadcrumb="Faculty Portal / AI Chat Assistant"
-    >
-      <div style={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {/* Top Assistant Header & Gate A5 Controls */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+    <AppShell role="faculty" activeNavKey="chat" breadcrumb="FACULTY PORTAL / CHATS" mainClassName="faculty-chat-shell">
+      <div className="faculty-chat-page">
+        <header className="faculty-chat-heading">
           <div>
-            <h1 className="ui-page-title" style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 4px 0' }}>
-              AI Chat Assistant
-            </h1>
-            <p className="ui-page-subtitle" style={{ margin: 0, color: 'var(--muted-foreground, #64748b)', fontSize: '14px' }}>
-              De-identified intelligence queries connected to Prism mock <code style={{ fontSize: '12px' }}>/functions/v1/chat</code>.
-            </p>
+            <h1 className="ui-page-title">AI Chat Assistant</h1>
+            <p className="ui-page-subtitle">Explore attributed reviews across students in one conversation.</p>
           </div>
+          <Link className="ui-btn ui-btn-secondary" to="/faculty/students">Browse Students</Link>
+        </header>
 
-          {/* Demonstration Helper for Milestone 2 Gate A5 */}
-          {import.meta.env.DEV && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Badge variant={simulateRateLimit ? 'danger' : 'neutral'}>
-                Mode: {simulateRateLimit ? '429 Rate Limit Simulation' : '200 Normal'}
-              </Badge>
-              <Button
-                size="sm"
-                variant={simulateRateLimit ? 'destructive' : 'outline'}
-                onClick={() => setSimulateRateLimit(!simulateRateLimit)}
-              >
-                {simulateRateLimit ? 'Disable 429 Simulator' : '⚡ Simulate 429 Rate Limit'}
-              </Button>
-            </div>
-          )}
+        <section className="chat-privacy-notice" role="note" aria-label="De-identification privacy notice">
+          <Badge variant="warning">Privacy</Badge>
+          <p><strong>Do not enter raw student names or other identifying details.</strong> Refer to students by ID or program instead so the assistant can help without exposing personal data.</p>
+        </section>
+
+        <div className="ui-chat-prompts" aria-label="Suggested questions">
+          {suggestedTopics.map((topic) => (
+            <button className="ui-chat-prompt-card" key={topic.title} type="button" onClick={() => setInputMessage(topic.prompt)}>
+              <h3>{topic.title}</h3><p>{topic.description}</p>
+            </button>
+          ))}
         </div>
 
-        {/* Message Thread */}
-        <Card
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            padding: '20px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            backgroundColor: 'var(--card)',
-            border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-lg, 12px)',
-          }}
-        >
-          {messages.map((m) => {
-            const isUser = m.role === 'user';
-            return (
-              <div
-                key={m.id}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: isUser ? 'flex-end' : 'flex-start',
-                }}
-              >
-                <div
-                  style={{
-                    maxWidth: '75%',
-                    padding: '12px 16px',
-                    borderRadius: isUser ? '16px 16px 2px 16px' : '16px 16px 16px 2px',
-                    backgroundColor: isUser ? 'var(--primary, #0284c7)' : 'var(--muted, #f1f5f9)',
-                    color: isUser ? '#ffffff' : 'var(--foreground)',
-                    fontSize: '14px',
-                    lineHeight: 1.5,
-                    boxShadow: 'var(--shadow-xs)',
-                  }}
-                >
-                  {m.content}
-                </div>
-                <span style={{ fontSize: '11px', color: 'var(--muted-foreground)', marginTop: '4px', padding: '0 4px' }}>
-                  {isUser ? 'You' : 'SPMIS Assistant'} · {m.timestamp}
-                </span>
-              </div>
-            );
-          })}
-
-          {isPending && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--muted-foreground)', fontSize: '13px' }}>
-              <span className="animate-spin">⏳</span> Querying AI Assistant via Prism mock...
+        <div className="ui-chat-columns">
+          <Card className="ui-chat-card-resizable">
+            <div className="ui-card-header ui-card-header-top faculty-chat-card-header">
+              <h2 className="ui-card-title">Ask across student reviews</h2>
+              <p className="ui-card-description">Faculty conversational assistant for student evaluations.</p>
             </div>
-          )}
-
-          {/* Graceful 429 Rate Limit / Error Retry Box (Gate A5 / M4 Requirement) */}
-          {rateLimitError && (
-            <div
-              role="alert"
-              style={{
-                padding: '16px 20px',
-                backgroundColor: 'var(--destructive-subtle, #fef2f2)',
-                border: '1px solid var(--destructive, #ef4444)',
-                borderRadius: 'var(--radius-md, 8px)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px',
-                maxWidth: '650px',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Badge variant="danger">
-                  {rateLimitError.code}
-                </Badge>
-                <span style={{ fontWeight: 700, color: 'var(--destructive, #b91c1c)' }}>
-                  {rateLimitError.message}
-                </span>
+            <div className="ui-chat-container faculty-chat-container">
+              <div className="ui-chat-log" aria-live="polite" aria-relevant="additions text">
+                {messages.map((message) => {
+                  const isUser = message.role === 'user';
+                  return (
+                    <article className={`faculty-chat-message ${isUser ? 'faculty-chat-message--user' : ''}`} key={message.id}>
+                      {!isUser && <span className="faculty-chat-avatar" aria-hidden="true">SP</span>}
+                      <div className="faculty-chat-message-content">
+                        <div className="faculty-chat-message-meta"><strong>{isUser ? 'You' : 'AI Assistant'}</strong><time>{message.timestamp}</time></div>
+                        <div className={`faculty-chat-bubble ${isUser ? 'faculty-chat-bubble--user' : ''}`}>{message.content}</div>
+                      </div>
+                    </article>
+                  );
+                })}
+                {isPending && <p className="faculty-chat-pending" role="status">Querying AI Assistant…</p>}
+                {rateLimitError && (
+                  <div className="faculty-chat-error" role="alert">
+                    <div><Badge variant="danger" className="faculty-chat-error-code">{rateLimitError.code}</Badge> <strong>{rateLimitError.message}</strong></div>
+                    {rateLimitError.hint && <p>{rateLimitError.hint}</p>}
+                    <div className="faculty-chat-error-actions">
+                      <Button size="sm" variant="primary" onClick={retryLastMessage} disabled={isPending}>Retry Prompt</Button>
+                      <Button size="sm" variant="ghost" onClick={dismissError}>Dismiss</Button>
+                    </div>
+                  </div>
+                )}
               </div>
-              {rateLimitError.hint && (
-                <div style={{ fontSize: '13px', color: '#991b1b' }}>
-                  💡 <strong>Guidance:</strong> {rateLimitError.hint}
+              <form className="faculty-chat-form" onSubmit={handleSubmit}>
+                <Input value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} placeholder="Type a question across student reviews (ask about student skills or leadership)..." aria-label="Message to AI Chat Assistant" disabled={isPending} />
+                <div className="faculty-chat-form-footer">
+                  <span>Press Enter to send</span>
+                  <Button type="submit" variant="primary" aria-label="Send Message" disabled={!inputMessage.trim() || isPending}>Send query <span aria-hidden="true">→</span></Button>
                 </div>
-              )}
-              <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
-                <Button size="sm" variant="primary" onClick={retryLastMessage} disabled={isPending}>
-                  🔄 Retry Prompt
-                </Button>
-                <Button size="sm" variant="ghost" onClick={dismissError}>
-                  Dismiss
-                </Button>
-              </div>
+              </form>
             </div>
-          )}
-        </Card>
+          </Card>
 
-        {/* Input Bar */}
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: 'flex', gap: '10px' }}
-        >
-          <Input
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Ask about student skills, leadership, or recommendable candidates..."
-            disabled={isPending}
-            style={{ flex: 1 }}
-          />
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={!inputMessage.trim() || isPending}
-          >
-            Send Message
-          </Button>
-        </form>
+          <aside className="ui-card ui-chat-context-card" aria-label="Referenced student">
+            <div className="faculty-chat-context-avatar">SP</div>
+            <h2>Sam Lee Parker</h2>
+            <p className="faculty-chat-context-id">ID: 24-1-00001</p>
+            <dl className="faculty-chat-context-meta">
+              <dt>Program</dt><dd>BS Computer Science</dd>
+              <dt>Year Level</dt><dd>3rd Year</dd>
+              <dt>Status</dt><dd><Badge variant="success">Good Standing</Badge></dd>
+              <dt>Tags</dt><dd><Badge variant="neutral">Research</Badge> <Badge variant="neutral">Algorithms</Badge></dd>
+            </dl>
+            <p className="faculty-chat-context-note">Referenced record. Review conversations can synthesize evaluations across all enrolled students.</p>
+            <Link className="ui-btn ui-btn-outline" to="/faculty/students/24-1-00001">View Full Profile <span aria-hidden="true">→</span></Link>
+          </aside>
+        </div>
+        <p className="faculty-chat-footer-note">Use contributor assessments as context for your own decisions. Read full reviews and edit histories from the student roster.</p>
       </div>
     </AppShell>
   );

@@ -1,0 +1,316 @@
+.faculty-chat-page {
+  box-sizing: border-box;
+  padding: 8px 0 112px;
+  color: var(--foreground);
+}
+
+.faculty-chat-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 4px 0 20px;
+}
+
+.faculty-chat-heading .ui-page-title {
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.faculty-chat-heading .ui-page-subtitle {
+  margin: 0;
+  color: var(--muted-foreground);
+}
+
+.faculty-chat-heading a,
+.faculty-chat-context-card > a {
+  text-decoration: none;
+}
+
+.faculty-chat-page .chat-privacy-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--primary) 8%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+  border-radius: var(--radius-md, 10px);
+}
+
+.faculty-chat-page .chat-privacy-notice p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.faculty-chat-page .ui-chat-prompts {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.faculty-chat-page .ui-chat-prompt-card {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.faculty-chat-page .ui-chat-columns {
+  grid-template-columns: minmax(0, 1.8fr) minmax(240px, 1fr);
+  align-items: stretch;
+}
+
+.faculty-chat-page .ui-chat-card-resizable {
+  width: 100%;
+  min-width: 0;
+  min-height: 480px;
+}
+
+.faculty-chat-card-header {
+  margin-bottom: 16px;
+}
+
+.faculty-chat-card-header .ui-card-title {
+  margin: 0 0 4px;
+}
+
+.faculty-chat-card-header .ui-card-description {
+  margin: 0;
+  color: var(--muted-foreground);
+}
+
+.faculty-chat-container {
+  gap: 12px;
+}
+
+.faculty-chat-page .ui-chat-log {
+  gap: 14px;
+  padding: 4px 2px 12px;
+}
+
+.faculty-chat-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 92%;
+}
+
+.faculty-chat-message--user {
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+.faculty-chat-avatar,
+.faculty-chat-context-avatar {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--primary) 14%, var(--card));
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.faculty-chat-message-content {
+  min-width: 0;
+}
+
+.faculty-chat-message-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 4px 5px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.faculty-chat-message-meta strong {
+  color: var(--foreground);
+}
+
+.faculty-chat-bubble {
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 4px 14px 14px 14px;
+  background: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.faculty-chat-message--user .faculty-chat-message-meta {
+  justify-content: flex-end;
+}
+
+.faculty-chat-bubble--user {
+  border-color: transparent;
+  border-radius: 14px 4px 14px 14px;
+  background: var(--primary);
+  color: var(--primary-foreground, #fff);
+}
+
+.faculty-chat-pending {
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+
+.faculty-chat-error {
+  display: grid;
+  gap: 10px;
+  max-width: 650px;
+  padding: 14px;
+  border: 1px solid var(--destructive, #ef4444);
+  border-radius: var(--radius-md, 8px);
+  background: color-mix(in srgb, var(--destructive, #ef4444) 10%, var(--card));
+  color: var(--foreground);
+}
+
+.faculty-chat-error strong {
+  color: var(--destructive, #ef4444);
+}
+
+.faculty-chat-error-code {
+  margin-right: 6px;
+  background: color-mix(in srgb, var(--destructive, #ef4444) 16%, var(--card));
+  border-color: color-mix(in srgb, var(--destructive, #ef4444) 40%, transparent);
+  color: var(--destructive, #ef4444);
+}
+
+.faculty-chat-error p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.faculty-chat-error-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.faculty-chat-form {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.faculty-chat-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.faculty-chat-context-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.faculty-chat-context-avatar {
+  width: 54px;
+  height: 54px;
+  margin: 4px 0 14px;
+  font-size: 16px;
+}
+
+.faculty-chat-context-card h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.faculty-chat-context-id {
+  margin: 4px 0 18px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+
+.faculty-chat-context-meta {
+  display: grid;
+  grid-template-columns: minmax(75px, 0.7fr) minmax(0, 1.3fr);
+  gap: 12px 8px;
+  width: 100%;
+  margin: 0;
+  text-align: left;
+  font-size: 12px;
+}
+
+.faculty-chat-context-meta dt {
+  color: var(--muted-foreground);
+}
+
+.faculty-chat-context-meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.faculty-chat-context-meta dd .ui-badge + .ui-badge {
+  margin-left: 4px;
+}
+
+.faculty-chat-context-note {
+  margin: 20px 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.faculty-chat-context-card > a {
+  width: 100%;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.faculty-chat-footer-note {
+  margin: 16px 0 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .faculty-chat-page .ui-chat-prompts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .faculty-chat-page .ui-chat-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .faculty-chat-page .ui-chat-card-resizable {
+    min-height: 440px;
+  }
+}
+
+@media (max-width: 600px) {
+  .faculty-chat-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .faculty-chat-page .ui-chat-prompts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .faculty-chat-page .ui-chat-card-resizable {
+    padding: 16px !important;
+  }
+
+  .faculty-chat-form-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .faculty-chat-form-footer button {
+    width: 100%;
+    justify-content: center;
+  }
+}
