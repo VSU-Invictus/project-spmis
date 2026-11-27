@@ -56,10 +56,10 @@ html[data-theme-switching] .faculty-applications .ui-table-pagination-nav :is(.u
 #faculty-application-list .table-container,
 #faculty-application-list .ui-table-wrap {
   border-radius: 12px !important;
-  border: 1px solid var(--border, #2E2D2A) !important;
-  background: var(--card, #1A1918) !important;
+  border: 1px solid var(--border, #383734) !important;
+  background: var(--card, #2B2A27) !important;
   overflow: hidden !important;
-  box-shadow: none !important;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.2)) !important;
   margin-bottom: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -69,8 +69,8 @@ html[data-theme-switching] .faculty-applications .ui-table-pagination-nav :is(.u
 
 html:not(.dark) #faculty-application-list .table-container,
 html:not(.dark) #faculty-application-list .ui-table-wrap {
-  background: #FAF9F6 !important;
-  border-color: #E2DDD4 !important;
+  background: var(--card, #FAF9F6) !important;
+  border-color: var(--border, #E2DDD4) !important;
 }
 
 #faculty-application-list .table-scroll {
@@ -85,23 +85,43 @@ html:not(.dark) #faculty-application-list .ui-table-wrap {
   min-width: 0 !important;
   border-collapse: collapse !important;
   background: var(--card, #2B2A27) !important;
+  color: var(--card-foreground, #FAF9F5) !important;
 }
 
 html:not(.dark) #faculty-application-list table,
 html:not(.dark) #faculty-application-list .ui-table {
-  background: #FAF9F6 !important;
+  background: var(--card, #FAF9F6) !important;
+  color: var(--card-foreground, #2B2A27) !important;
 }
 
 #faculty-application-list thead,
 #faculty-application-list thead tr,
 #faculty-application-list th {
   background: var(--muted, #21201E) !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  border-bottom: 1px solid var(--border, #383734) !important;
 }
 
 html:not(.dark) #faculty-application-list thead,
 html:not(.dark) #faculty-application-list thead tr,
 html:not(.dark) #faculty-application-list th {
   background: var(--muted, #F4F1EA) !important;
+  color: var(--foreground, #2B2A27) !important;
+  border-bottom-color: var(--border, #E2DDD4) !important;
+}
+
+#faculty-application-list tbody td {
+  color: var(--card-foreground, #FAF9F5) !important;
+  border-bottom: 1px solid var(--border, #383734) !important;
+}
+
+html:not(.dark) #faculty-application-list tbody td {
+  color: var(--card-foreground, #2B2A27) !important;
+  border-bottom-color: var(--border, #E2DDD4) !important;
+}
+
+#faculty-application-list tbody tr:last-child td {
+  border-bottom: none !important;
 }
 
 #faculty-application-list thead tr th:first-child {
