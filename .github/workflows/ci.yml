@@ -52,6 +52,9 @@ jobs:
         with:
           version: v2.stable
 
+      - name: Set an isolated CI database port
+        run: sed -i '/^\[db\]$/,/^\[/ s/^port = 54322$/port = 55432/' supabase/config.toml
+
       - name: Start local Supabase database
         run: supabase start --exclude studio,mailpit,imgproxy,edge-runtime,logflare,vector,supavisor,storage-api,realtime
 

@@ -56,6 +56,9 @@ export default defineConfig({
   test: {
     environment: 'node',
     setupFiles: ['./src/mocks/setupTests.ts'],
+    maxWorkers: 2,
+    testTimeout: 15_000,
+    hookTimeout: 20_000,
   },
   server: {
     // Allow importing the shared design tokens from ../mockup/assets/css.

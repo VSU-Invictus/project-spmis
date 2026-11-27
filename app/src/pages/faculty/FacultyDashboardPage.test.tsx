@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom/vitest';
 import { useEffect, type ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { FacultyDashboardPage } from './FacultyDashboardPage';
@@ -76,11 +76,11 @@ describe('FacultyDashboardPage', () => {
   it('renders the greeting, dynamic statistics, quick links, and recent review details', async () => {
     hookCalls.reviewQueries.length = 0;
     renderDashboard();
-    expect(hookCalls.reviewQueries).toEqual(expect.arrayContaining([
+    expect(await screen.findByRole('heading', { name: 'Good day, Alex Reyes' })).toBeInTheDocument();
+    await waitFor(() => expect(hookCalls.reviewQueries).toEqual(expect.arrayContaining([
       expect.objectContaining({ params: expect.objectContaining({ status: 'eq.active', limit: 5 }), enabled: true }),
       expect.objectContaining({ params: expect.objectContaining({ owner_id: 'eq.faculty-1' }), enabled: true }),
-    ]));
-    expect(await screen.findByRole('heading', { name: 'Good day, Alex Reyes' })).toBeInTheDocument();
+    ])));
     expect(screen.getByLabelText('Students statistic')).toHaveTextContent('27');
     expect(screen.getByLabelText('Your reviews statistic')).toHaveTextContent('2');
 

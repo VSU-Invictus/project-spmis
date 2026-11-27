@@ -57,11 +57,11 @@ function renderStudentsPage(
   });
 
   const profile: FacultyProfile = {
-    id: 'f-1111-2222-3333-444444444444',
+    id: 'e48adc9e-1b79-4b92-9848-aa12b25d63d7',
     role,
     status,
     email: 'faculty.test@example.edu',
-    full_name: 'Test Faculty User',
+    full_name: 'Alex Morgan',
     department_id: '5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb',
     created_at: '2026-01-01T00:00:00Z',
     updated_at: '2026-01-01T00:00:00Z',
@@ -82,25 +82,39 @@ function renderStudentsPage(
   );
 }
 
-describe('FacultyStudentsPage (#156)', () => {
+describe('FacultyStudentsPage (#156 & #188)', () => {
   beforeEach(() => {
     __resetMocks();
   });
 
-  it('renders student directory with multi-filter controls for active faculty', async () => {
+  it('renders Students layout, filters, short program name, colored tags, Write review action, and pagination footer for active faculty', async () => {
     renderStudentsPage('faculty', 'active');
 
     expect(
-      await screen.findByRole('heading', { name: /Student Directory & Review Mining/i })
+      await screen.findByRole('heading', { name: /^Students$/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Browse students and search the text of active reviews\./i)
     ).toBeInTheDocument();
 
-    expect(screen.getByPlaceholderText(/Search name, ID, or review text/i)).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: /Filter by program/i })).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: /Filter by reviewer department/i })).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: /Filter by competency tag/i })).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/Search by student name or keyword/i)
+    ).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /Filter by department/i })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /Filter by review tag/i })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /Filter by faculty contributor/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Clear filters/i })).toBeInTheDocument();
 
-    // Verify initial student list loads
+    // Verify initial student list loads with short program name, colored tag pills, and Write review link
     expect(await screen.findByText('Maria Santos')).toBeInTheDocument();
+    expect(screen.getAllByText('BS Computer Science').length).toBeGreaterThan(0);
+    expect(screen.getByText('No active reviews')).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /Write review/i }).length).toBeGreaterThan(0);
+
+    // Verify pagination footer
+    expect(screen.getByRole('combobox', { name: /Rows per page/i })).toBeInTheDocument();
+    expect(screen.getByText(/Page 1 of 1 · 2 entries/i)).toBeInTheDocument();
+    expect(screen.getByText(/System Version 0\.1\.0/i)).toBeInTheDocument();
   });
 
   it('blocks pending faculty from review mining tools with access alert', async () => {
@@ -110,7 +124,7 @@ describe('FacultyStudentsPage (#156)', () => {
       expect(screen.getByRole('alert')).toBeInTheDocument();
     });
     expect(screen.getByText(/Access Restricted/i)).toBeInTheDocument();
-    expect(screen.queryByPlaceholderText(/Search name, ID, or review text/i)).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/Search by student name or keyword/i)).not.toBeInTheDocument();
   });
 
   it('blocks admin users from faculty review mining tools', async () => {
@@ -120,7 +134,7 @@ describe('FacultyStudentsPage (#156)', () => {
       expect(screen.getByRole('alert')).toBeInTheDocument();
     });
     expect(screen.getByText(/Access Restricted/i)).toBeInTheDocument();
-    expect(screen.queryByPlaceholderText(/Search name, ID, or review text/i)).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/Search by student name or keyword/i)).not.toBeInTheDocument();
   });
 
   it('filters students by keyword query and preserves results', async () => {
@@ -129,11 +143,12 @@ describe('FacultyStudentsPage (#156)', () => {
 
     expect(await screen.findByText('Maria Santos')).toBeInTheDocument();
 
-    const searchInput = screen.getByPlaceholderText(/Search name, ID, or review text/i);
+    const searchInput = screen.getByPlaceholderText(/Search by student name or keyword/i);
     await user.type(searchInput, 'Maria');
 
     await waitFor(() => {
       expect(screen.getByText('Maria Santos')).toBeInTheDocument();
+      expect(screen.queryByText('Juan Dela Cruz')).not.toBeInTheDocument();
     });
   });
 
@@ -143,43 +158,42 @@ describe('FacultyStudentsPage (#156)', () => {
 
     expect(await screen.findByText('Maria Santos')).toBeInTheDocument();
 
-    const searchInput = screen.getByPlaceholderText(/Search name, ID, or review text/i);
+    const searchInput = screen.getByPlaceholderText(/Search by student name or keyword/i);
     await user.type(searchInput, 'NonExistentStudentXYZ999');
 
     // Accessible .ui-empty-state should render
-    const emptyHeading = await screen.findByText(/No students matched your search/i);
+    const emptyHeading = await screen.findByText(/No matching students/i);
     const emptyState = emptyHeading.closest('.ui-empty-state');
     expect(emptyState).toBeInTheDocument();
     expect(emptyState).toHaveAttribute('role', 'status');
 
     // One-click reset action
-    const resetBtn = screen.getByRole('button', { name: /Reset Filters/i });
-    expect(resetBtn).toBeInTheDocument();
-
-    await user.click(resetBtn);
+    const resetButtons = screen.getAllByRole('button', { name: /Clear filters/i });
+    await user.click(resetButtons[resetButtons.length - 1]);
 
     // After reset, input is cleared and students re-appear
     expect(searchInput).toHaveValue('');
     expect(await screen.findByText('Maria Santos')).toBeInTheDocument();
   });
 
-  it('filters students by competency tag dropdown', async () => {
+  it('filters students by review tag dropdown', async () => {
     const user = userEvent.setup();
     renderStudentsPage('faculty', 'active');
 
     expect(await screen.findByText('Maria Santos')).toBeInTheDocument();
 
-    const tagSelect = screen.getByRole('combobox', { name: /Filter by competency tag/i });
+    const tagSelect = screen.getByRole('combobox', { name: /Filter by review tag/i });
 
     // Wait for tag suggestions to populate
     await waitFor(() => {
-      expect(within(tagSelect).getByRole('option', { name: /#research/i })).toBeInTheDocument();
+      expect(within(tagSelect).getByRole('option', { name: /^research$/i })).toBeInTheDocument();
     });
 
     await user.selectOptions(tagSelect, 'research');
 
     await waitFor(() => {
       expect(screen.getByText('Maria Santos')).toBeInTheDocument();
+      expect(screen.queryByText('Juan Dela Cruz')).not.toBeInTheDocument();
     });
   });
 });

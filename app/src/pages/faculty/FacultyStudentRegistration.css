@@ -20,6 +20,8 @@ dialog#register-student-modal[open],
   margin: auto !important;
   position: fixed !important;
   inset: 0 !important;
+  max-height: calc(100vh - 32px) !important;
+  box-sizing: border-box !important;
 }
 
 dialog#register-student-modal::backdrop {
@@ -72,6 +74,10 @@ dialog#register-student-modal[open] {
   flex-shrink: 0 !important;
 }
 
+#register-student-modal .modal-form {
+  padding: 0 !important;
+}
+
 #register-student-modal .modal-body .ui-alert {
   padding: 6px 10px !important;
   margin-bottom: 9px !important;
@@ -104,6 +110,8 @@ dialog#register-student-modal[open] {
 }
 
 #register-student-modal .modal-form .ui-form-label {
+  display: inline-block !important;
+  margin-bottom: 0 !important;
   font-size: 0.75rem !important;
   font-weight: 600 !important;
   color: var(--foreground, #FAF9F5) !important;
@@ -111,6 +119,8 @@ dialog#register-student-modal[open] {
 }
 
 #register-student-modal .modal-form .ui-form-optional {
+  display: inline !important;
+  margin-left: 2px !important;
   font-weight: 400 !important;
   color: var(--muted-foreground, #A0988E) !important;
   font-size: 0.6875rem !important;
@@ -134,7 +144,9 @@ dialog#register-student-modal[open] {
   }
 }
 
-#register-student-modal .modal-form .ui-input {
+#register-student-modal .modal-form .ui-input,
+#register-student-modal .modal-form input,
+#register-student-modal .modal-form select {
   width: 100% !important;
   height: 33px !important;
   min-height: 33px !important;
@@ -150,12 +162,15 @@ dialog#register-student-modal[open] {
   box-sizing: border-box !important;
 }
 
-#register-student-modal .modal-form .ui-input:focus {
+#register-student-modal .modal-form .ui-input:focus,
+#register-student-modal .modal-form input:focus,
+#register-student-modal .modal-form select:focus {
   border-color: var(--primary, #D97251) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent) !important;
 }
 
-#register-student-modal .modal-form .ui-input::placeholder {
+#register-student-modal .modal-form .ui-input::placeholder,
+#register-student-modal .modal-form input::placeholder {
   color: var(--muted-foreground, #706B65) !important;
   opacity: 0.8 !important;
 }
@@ -199,12 +214,18 @@ dialog#register-student-modal[open] {
   line-height: 1.25 !important;
 }
 
-#register-student-modal .modal-form .ui-form-error {
+#register-student-modal .modal-form .ui-form-error,
+#register-student-modal .modal-form .ui-field-error {
   margin: 0 !important;
   min-height: 0 !important;
   font-size: 0.71875rem !important;
   color: var(--color-status-danger, #EF4444) !important;
   font-weight: 500 !important;
+}
+
+#register-student-modal .modal-form .ui-form-error:empty,
+#register-student-modal .modal-form .ui-field-error:empty {
+  display: none !important;
 }
 
 #register-student-modal .modal-actions {
@@ -288,13 +309,17 @@ html:not(.dark) #register-student-modal .modal-form .ui-form-label {
   color: var(--foreground, #21201E) !important;
 }
 
-html:not(.dark) #register-student-modal .modal-form .ui-input {
+html:not(.dark) #register-student-modal .modal-form .ui-input,
+html:not(.dark) #register-student-modal .modal-form input,
+html:not(.dark) #register-student-modal .modal-form select {
   background: #FFFFFF !important;
   border-color: var(--border, #E2DDD4) !important;
   color: var(--foreground, #21201E) !important;
 }
 
-html:not(.dark) #register-student-modal .modal-form .ui-input:focus {
+html:not(.dark) #register-student-modal .modal-form .ui-input:focus,
+html:not(.dark) #register-student-modal .modal-form input:focus,
+html:not(.dark) #register-student-modal .modal-form select:focus {
   border-color: var(--primary, #D97251) !important;
 }
 
