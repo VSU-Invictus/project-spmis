@@ -161,6 +161,7 @@ export default function SignUpPage() {
         <div className="signup-terms-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) { setTermsOpen(false); setSignupMethod(null); } }}>
           <section className="signup-terms-dialog" role="dialog" aria-modal="true" aria-labelledby="signup-terms-title">
             <img className="signup-terms-logo" src={logo} alt="SPMIS" />
+            <img className="signup-terms-logo signup-terms-logo-light" src={lightLogo} alt="SPMIS" />
             <h2 id="signup-terms-title">Terms &amp; Conditions</h2>
             <p className="signup-terms-intro">Please read and accept the terms to continue to SPMIS.</p>
             <div className="signup-terms-scroll" ref={termsScrollRef} onScroll={checkTermsScroll}>
