@@ -8,18 +8,31 @@ import { useQueueSearchParam } from '../../components/queue-modal';
 import { useSession } from '../../context/SessionContext';
 import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
 import {
-  useFacultyList, useFacultyPage, useCreateFacultyByAdmin, useUpdateFacultyByAdmin, useDeleteFaculty,
+  useFacultyList, useFacultyPage, useInviteFaculty, useUpdateFacultyByAdmin, useDeleteFaculty,
   useApprovedDepartmentOptions, useDepartmentOptions,
   type FacultyListItem, type UpdateFacultyByAdminInput, type Department,
 } from '../../hooks';
 import { facultyEditSchema, type FacultyEditValues } from '../../lib/validation/faculty';
 import { ApiRequestError } from '../../lib/api';
-import { confirmsMutation } from '../../lib/api/confirmMutation';
 import './AdminFacultyPage.css';
 import './AdminRemoveButton.css';
 
 type Selection = { action: 'create' } | { action: 'edit' | 'remove'; id: string };
 const SELF_DELETION_UNAVAILABLE = 'You cannot remove your own active administrator account.';
+
+function invitationError(error: unknown): Error {
+  if (!(error instanceof ApiRequestError)) return error instanceof Error ? error : new Error('Unable to invite faculty.');
+  const messages: Record<number, [string, string]> = {
+    409: ['An account or invitation already exists for this email address.', 'Use a different email, or approve the existing account from the Faculty Accounts queue.'],
+    422: ['The faculty name, email, or department is invalid.', 'Use a nonblank name (max 200 characters), a valid email (max 320 characters), and an approved department.'],
+    429: ['Faculty invitations are temporarily rate limited.', 'Wait a moment, then try sending the invitation again.'],
+    502: ['The invitation could not be completed by the Auth service.', 'Refresh the roster and Faculty Accounts queue to check the account state before retrying.'],
+  };
+  const mapped = error.status ? messages[error.status] : undefined;
+  return mapped
+    ? new ApiRequestError({ code: error.code, message: mapped[0], details: error.details, hint: mapped[1], status: error.status })
+    : error;
+}
 
 function RequestError({ error, retry }: { error: Error; retry?: () => void }) {
   return <>
@@ -38,7 +51,7 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
   faculty?: FacultyListItem; departments: Department[]; onClose: () => void; onSaved: (message: string) => void;
 }) {
   const { profile, syncProfile } = useSession();
-  const create = useCreateFacultyByAdmin();
+  const invite = useInviteFaculty();
   const update = useUpdateFacultyByAdmin();
   const submitting = useRef(false);
   const [requestError, setRequestError] = useState<Error | null>(null);
@@ -48,7 +61,7 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
   };
   const form = useForm<FacultyEditValues>({ resolver: zodResolver(facultyEditSchema), defaultValues: initial });
   const selectableDepartments = faculty ? departments : departments.filter(department => department.status === 'approved');
-  const pending = form.formState.isSubmitting || create.isPending || update.isPending;
+  const pending = form.formState.isSubmitting || invite.isPending || update.isPending;
   const close = () => { if (!submitting.current) onClose(); };
   const submit = form.handleSubmit(async values => {
     if (submitting.current) return;
@@ -59,22 +72,20 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
         return;
       }
       const payload = {
-        full_name: values.full_name,
-        email: values.email.toLowerCase(),
+        full_name: values.full_name.trim(),
+        email: values.email.trim().toLowerCase(),
         department_id: values.department_id,
-        role: values.role,
-        status: 'active' as const,
       };
       submitting.current = true;
       try {
-        const result = await create.mutateAsync(payload);
-        if (!confirmsMutation(result, payload)) {
-          throw new Error('The server did not confirm the requested faculty creation. Close this dialog and refresh the roster before trying again.');
+        const result = await invite.mutateAsync(payload);
+        if (result.status !== 'pending' || result.email.toLowerCase() !== payload.email) {
+          throw new Error('The server did not confirm the invitation. Close this dialog and refresh the roster before trying again.');
         }
-        onSaved('Faculty Created Successfully');
+        onSaved('Faculty Invited — Pending Approval in Faculty Accounts Queue');
         onClose();
       } catch (error) {
-        setRequestError(error instanceof Error ? error : new Error('Unable to create faculty.'));
+        setRequestError(invitationError(error));
       } finally { submitting.current = false; }
       return;
     }
@@ -109,10 +120,10 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
   return <AdminEntityModal open onClose={close} title={faculty ? 'Edit Faculty' : 'Add Faculty'}
     subtitle="Enter faculty credentials and assignment details." cardClassName="faculty" noValidate
     onSubmit={submit}>
-    <Alert variant="info" title={faculty ? 'Confirm Update' : 'Confirm Addition'}
+    <Alert variant="info" title={faculty ? 'Confirm Update' : 'Confirm Invitation'}
       description={faculty
         ? 'You are about to update this faculty record. Review the details below before saving your changes.'
-        : 'You are about to add this faculty record. Review the details below before proceeding.'} />
+        : 'An invitation email will be sent. The account is created as Pending and appears in the Faculty Accounts approval queue until approved.'} />
     <Input id="facultyName" label="Full Name" aria-required="true" placeholder="e.g. Dr. Jane Doe"
       disabled={pending} {...form.register('full_name')} error={errors.full_name?.message} />
     <Input id="facultyEmail" label="Email Address" type="email" aria-required="true" placeholder="e.g. jdoe@university.edu"
@@ -133,7 +144,7 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
       {errors.department_id && <span id="facultyDepartment-error" className="ui-field-error" role="alert"
         style={{ color: 'var(--color-status-danger, #EF4444)', fontSize: 'var(--font-size-xs, 11px)' }}>{errors.department_id.message}</span>}
     </div>
-    <div className="ui-form-group">
+    {faculty && <div className="ui-form-group">
       <label htmlFor="facultyRole" className="ui-form-label">Role</label>
       <div className="modal-select-wrapper">
         <select id="facultyRole" className="ui-input" aria-required="true" disabled={pending} {...form.register('role')}>
@@ -142,14 +153,14 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
         <Chevron className="modal-select-chevron" />
       </div>
       {errors.role && <Alert variant="warning" title="Invalid role" description="Select Faculty or Admin." />}
-    </div>
+    </div>}
     {!faculty && selectableDepartments.length === 0 && <Alert variant="warning" title="No approved departments available"
       description="A faculty member must belong to an approved department. Add or approve a department before saving." />}
     {errors.root && <Alert variant="warning" title="No changes to save" description={errors.root.message ?? ''} />}
     {requestError && <RequestError error={requestError} />}
     <div className="modal-actions">
       <Button variant="outline" className="modal-btn-cancel" disabled={pending} onClick={close}>Cancel</Button>
-      <Button type="submit" className="modal-submit" disabled={pending || (!faculty && selectableDepartments.length === 0)}>{faculty ? 'Update' : 'Add Faculty'}</Button>
+      <Button type="submit" className="modal-submit" disabled={pending || (!faculty && selectableDepartments.length === 0)}>{faculty ? 'Update' : 'Send Invitation'}</Button>
     </div>
   </AdminEntityModal>;
 }

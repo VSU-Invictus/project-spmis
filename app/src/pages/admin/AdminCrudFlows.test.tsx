@@ -155,7 +155,7 @@ describe('AdminStudentsPage delete flow (v1.1.0)', () => {
 });
 
 describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
-  it('creates a new faculty member with lowercase email normalization and refreshes the roster', async () => {
+  it('invites a new faculty member via faculty-invitations as pending and refreshes the roster', async () => {
     const user = userEvent.setup();
     renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
 
@@ -165,19 +165,37 @@ describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
     const fullNameInput = await screen.findByLabelText('Full Name');
     const dialog = screen.getByRole('dialog');
 
+    expect(within(dialog).queryByLabelText('Role')).not.toBeInTheDocument();
     await user.type(fullNameInput, 'Dr. Jane Doe');
     await user.type(within(dialog).getByLabelText('Email Address'), 'Jane.Doe@Example.Edu');
     await user.selectOptions(within(dialog).getByLabelText('Department'), CS_DEPARTMENT_ID);
-    await user.selectOptions(within(dialog).getByLabelText('Role'), 'faculty');
 
-    await user.click(within(dialog).getByRole('button', { name: 'Add Faculty' }));
+    await user.click(within(dialog).getByRole('button', { name: 'Send Invitation' }));
 
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
-    expect(screen.getByText('Faculty Created Successfully')).toBeInTheDocument();
+    expect(screen.getByText(/Faculty Invited — Pending Approval/)).toBeInTheDocument();
     expect(await screen.findByText('Dr. Jane Doe')).toBeInTheDocument();
     expect(screen.getByText('jane.doe@example.edu')).toBeInTheDocument();
+  });
+
+  it.each([
+    ['ratelimit@example.edu', /temporarily rate limited/i],
+    ['authfail@example.edu', /could not be completed by the Auth service/i],
+  ])('shows a friendly inline error for %s and keeps the dialog open', async (email, message) => {
+    const user = userEvent.setup();
+    renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+    expect(await screen.findByText('Alex Reyes')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Add Faculty' }));
+    const fullNameInput = await screen.findByLabelText('Full Name');
+    const dialog = screen.getByRole('dialog');
+    await user.type(fullNameInput, 'Invite Error');
+    await user.type(within(dialog).getByLabelText('Email Address'), email);
+    await user.selectOptions(within(dialog).getByLabelText('Department'), CS_DEPARTMENT_ID);
+    await user.click(within(dialog).getByRole('button', { name: 'Send Invitation' }));
+    expect(await within(dialog).findByText(message)).toBeInTheDocument();
+    expect(within(dialog).getByLabelText('Full Name')).toHaveValue('Invite Error');
   });
 
   it('shows inline 409 error and preserves inputs on duplicate faculty email', async () => {
@@ -193,10 +211,10 @@ describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
     await user.type(fullNameInput, 'Duplicate Alex');
     await user.type(within(dialog).getByLabelText('Email Address'), 'alex.reyes@example.edu');
     await user.selectOptions(within(dialog).getByLabelText('Department'), CS_DEPARTMENT_ID);
-    await user.click(within(dialog).getByRole('button', { name: 'Add Faculty' }));
+    await user.click(within(dialog).getByRole('button', { name: 'Send Invitation' }));
 
     expect(
-      await within(dialog).findByText(/A faculty profile with that email address already exists/i),
+      await within(dialog).findByText(/An account or invitation already exists for this email address/i),
     ).toBeInTheDocument();
     expect(within(dialog).getByLabelText('Full Name')).toHaveValue('Duplicate Alex');
   });
@@ -328,6 +346,6 @@ describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
     expect(
       await within(emptyDialog).findByText(/No approved departments available/i),
     ).toBeInTheDocument();
-    expect(within(emptyDialog).getByRole('button', { name: 'Add Faculty' })).toBeDisabled();
+    expect(within(emptyDialog).getByRole('button', { name: 'Send Invitation' })).toBeDisabled();
   });
 });

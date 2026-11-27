@@ -7,6 +7,8 @@ select plan(10);
 -- Isolate entries created by this test from synthetic seed history.
 create temporary table prior_audit_ids as select id from public.audit_log_entries;
 
+-- The seed includes additional faculty applications for the Admin queue badge.
+-- Approve only the four base examples used by this audit attribution test.
 -- Simulate an Edge Function using service_role, without a caller JWT subject.
 set local request.jwt.claim.sub = '';
 set local role service_role;

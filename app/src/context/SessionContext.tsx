@@ -26,6 +26,8 @@ export interface SessionContextValue {
   mockRole: MockRole | null;
   setMockRole: (role: MockRole) => void;
   syncProfile: (profile: FacultyProfile) => void;
+  /** Re-reads getOwnProfile and updates session state. */
+  refreshProfile: () => Promise<FacultyProfile | null>;
   signOut: () => Promise<void>;
 }
 
@@ -85,6 +87,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const syncProfile = useCallback((nextProfile: FacultyProfile) => {
     setProfile(nextProfile);
   }, []);
+  const refreshProfile = useCallback(async (): Promise<FacultyProfile | null> => {
+    if (MOCK_ENABLED) return profile;
+    const ownProfile = (await request(apiClient.GET('/rest/v1/rpc/get_own_profile'))) ?? null;
+    setProfile(ownProfile);
+    return ownProfile;
+  }, [profile]);
   const signOut = useCallback(async () => {
     if (MOCK_ENABLED) {
       setProfile(null);
@@ -171,8 +179,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     mockRole: MOCK_ENABLED ? mockRole : null,
     setMockRole,
     syncProfile,
+    refreshProfile,
     signOut,
-  }), [session, profile, loading, error, mockRole, setMockRole, syncProfile, signOut]);
+  }), [session, profile, loading, error, mockRole, setMockRole, syncProfile, refreshProfile, signOut]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

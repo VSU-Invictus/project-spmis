@@ -47,7 +47,7 @@ function renderChatPage() {
     mockRole: null,
     setMockRole: () => undefined,
     syncProfile: () => undefined,
-    signOut: async () => undefined,
+    refreshProfile: async () => null, signOut: async () => undefined,
   };
 
   return render(

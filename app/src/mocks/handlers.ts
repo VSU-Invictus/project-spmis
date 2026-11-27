@@ -6,6 +6,7 @@ const programId = '8ef76d5f-e6b2-49aa-a627-171dee1b8b65';
 const departmentId = '5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb';
 const ownerId = 'e48adc9e-1b79-4b92-9848-aa12b25d63d7';
 const reviewWordLimit = 500;
+const onboardingUserId = '31300000-abcd-4000-8000-000000000011';
 const chatbotRateLimit = 3;
 
 type RichTextRun = { text?: string; bold?: boolean; italic?: boolean };
@@ -908,6 +909,79 @@ export const handlers = [
 
     facultyProfiles.push(profile);
     return HttpResponse.json([profile], { status: 201 });
+  }),
+
+  http.get('*/functions/v1/faculty-onboarding', async () => {
+    await delay(10);
+    return HttpResponse.json(
+      departments.filter((item) => item.status === 'approved').map(({ id, name }) => ({ id, name })),
+    );
+  }),
+
+  http.post('*/functions/v1/faculty-onboarding', async ({ request }) => {
+    await delay(10);
+    const input: unknown = await request.json().catch(() => null);
+    const invalid = (message: string) => HttpResponse.json(
+      { code: 'VALIDATION_ERROR', message, details: null, hint: null }, { status: 422 });
+    if (!isRecord(input) || Object.keys(input).some((key) => key !== 'full_name' && key !== 'department_id')) {
+      return HttpResponse.json({ code: 'INVALID_REQUEST', message: 'The request must contain only the documented fields.', details: null, hint: null }, { status: 422 });
+    }
+    if (typeof input.full_name !== 'string' || !input.full_name.trim() || input.full_name.length > 200) {
+      return invalid('A nonblank name of at most 200 characters is required.');
+    }
+    const department = departments.find((item) => item.id === input.department_id && item.status === 'approved');
+    if (!department) return invalid('The faculty name or department is invalid.');
+    if (facultyProfiles.some((item) => item.id === onboardingUserId)) {
+      return HttpResponse.json({ code: 'CONFLICT', message: 'A faculty profile already exists for this account.', details: null, hint: null }, { status: 409 });
+    }
+    const timestamp = new Date().toISOString();
+    const profile: MockFacultyProfile = {
+      id: onboardingUserId, email: 'google.applicant@example.test', full_name: input.full_name.trim(),
+      department_id: department.id, role: 'faculty', status: 'pending', created_at: timestamp, updated_at: timestamp,
+    };
+    facultyProfiles.push(profile);
+    approvalQueue.push({
+      id: crypto.randomUUID(), type: 'faculty_account',
+      payload: { full_name: profile.full_name, email: profile.email, department_id: profile.department_id },
+      status: 'pending', submitted_by: profile.id, decided_by: null, decision_reason: null, created_at: timestamp, decided_at: null,
+    });
+    return HttpResponse.json(profile, { status: 201 });
+  }),
+
+  http.post('*/functions/v1/faculty-invitations', async ({ request }) => {
+    await delay(10);
+    const input: unknown = await request.json().catch(() => null);
+    const allowed = ['email', 'full_name', 'department_id'];
+    if (!isRecord(input) || Object.keys(input).some((key) => !allowed.includes(key))) {
+      return HttpResponse.json({ code: 'INVALID_REQUEST', message: 'The request must contain only the documented fields.', details: null, hint: null }, { status: 422 });
+    }
+    const email = typeof input.email === 'string' ? input.email.trim().toLowerCase() : '';
+    if (typeof input.full_name !== 'string' || !input.full_name.trim() || input.full_name.length > 200
+      || !email || (input.email as string).length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)
+      || !departments.some((item) => item.id === input.department_id && item.status === 'approved')) {
+      return HttpResponse.json({ code: 'VALIDATION_ERROR', message: 'The faculty email or department is invalid.', details: null, hint: null }, { status: 422 });
+    }
+    if (email.startsWith('ratelimit')) {
+      return HttpResponse.json({ code: 'RATE_LIMITED', message: 'Faculty invitations are temporarily unavailable.', details: null, hint: 'Try again later.' }, { status: 429 });
+    }
+    if (email.startsWith('authfail')) {
+      return HttpResponse.json({ code: 'INVITATION_FAILED', message: 'The Auth service could not complete the invitation.', details: null, hint: null }, { status: 502 });
+    }
+    if (facultyProfiles.some((item) => item.email.toLowerCase() === email)) {
+      return HttpResponse.json({ code: 'CONFLICT', message: 'An account already exists for this email address.', details: null, hint: null }, { status: 409 });
+    }
+    const timestamp = new Date().toISOString();
+    const profile: MockFacultyProfile = {
+      id: crypto.randomUUID(), email, full_name: input.full_name.trim(), department_id: input.department_id as string,
+      role: 'faculty', status: 'pending', created_at: timestamp, updated_at: timestamp,
+    };
+    facultyProfiles.push(profile);
+    approvalQueue.push({
+      id: crypto.randomUUID(), type: 'faculty_account',
+      payload: { full_name: profile.full_name, email, department_id: profile.department_id },
+      status: 'pending', submitted_by: ownerId, decided_by: null, decision_reason: null, created_at: timestamp, decided_at: null,
+    });
+    return HttpResponse.json({ id: profile.id, email, status: 'pending' }, { status: 201 });
   }),
 
   http.patch('*/rest/v1/faculty_profiles', async ({ request }) => {
