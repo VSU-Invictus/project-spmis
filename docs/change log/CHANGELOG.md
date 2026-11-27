@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #213 — onboarding input validation:** Added shared faculty onboarding and invitation validators with normalized names, emails, and department UUIDs; rejected caller-supplied identity, privilege, and redirect fields, with offline unit coverage.
 - **Issue #211 — audit review follow-up:** Preferred the verified JWT identity over `app.actor_id`, retaining the service-role actor fallback and testing conflicting actor settings.
 - **Issue #211 — redaction matching:** Matched full names across whitespace variations and aligned Unicode case-folded token lookup with regex matching, including collision regression coverage.
 - **Issue #211 — redaction review:** Covered last-first-middle names and prevented malformed student markers from shielding names or IDs from redaction.
