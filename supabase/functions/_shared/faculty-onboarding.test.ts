@@ -47,3 +47,13 @@ Deno.test('invitations reject privilege overrides and redirect injection', () =>
     }), FunctionError).status, 422);
   }
 });
+
+Deno.test('raw request length limits match the contract before trimming', () => {
+  assertThrows(() => parseFacultyOnboardingInput({
+    ...input, full_name: ` ${'x'.repeat(200)} `,
+  }), FunctionError);
+  const email = `${'x'.repeat(307)}@example.test`;
+  assertEquals(email.length, 320);
+  assertEquals(parseFacultyInviteInput({ ...input, email }).email, email);
+  assertThrows(() => parseFacultyInviteInput({ ...input, email: ` ${email} ` }), FunctionError);
+});

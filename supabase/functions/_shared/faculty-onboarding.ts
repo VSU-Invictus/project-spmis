@@ -19,7 +19,7 @@ function requestObject(value: unknown, keys: readonly string[]): Record<string, 
 
 function profileFields(body: Record<string, unknown>): FacultyOnboardingInput {
   if (typeof body.full_name !== 'string' || !body.full_name.trim() ||
-    body.full_name.trim().length > 200) {
+    body.full_name.length > 200) {
     throw new FunctionError(422, 'INVALID_NAME', 'A nonblank name of at most 200 characters is required.');
   }
   if (!isUuid(body.department_id)) {
@@ -40,7 +40,7 @@ export function parseFacultyInviteInput(value: unknown): FacultyInviteInput {
     throw new FunctionError(422, 'INVALID_EMAIL', 'A valid email address is required.');
   }
   const email = body.email.trim().toLowerCase();
-  if (email.length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)) {
+  if (body.email.length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)) {
     throw new FunctionError(422, 'INVALID_EMAIL', 'A valid email address is required.');
   }
   return { ...profile, email };
