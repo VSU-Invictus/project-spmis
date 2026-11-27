@@ -7,6 +7,18 @@ select plan(10);
 -- Isolate entries created by this test from synthetic seed history.
 create temporary table prior_audit_ids as select id from public.audit_log_entries;
 
+-- The seed includes additional faculty applications for the Admin queue badge.
+-- Approve only the four base examples used by this audit attribution test.
+create temporary table audit_test_application_ids as
+select id
+from public.approval_queue_items
+where status = 'pending'
+  and (
+    (type = 'faculty_account' and submitted_by = '30000000-0000-4000-8000-000000000003')
+    or (type in ('program_proposal', 'department_proposal', 'student_registration')
+      and submitted_by = '30000000-0000-4000-8000-000000000001')
+  );
+
 -- Simulate an Edge Function using service_role, without a caller JWT subject.
 set local request.jwt.claim.sub = '';
 set local role service_role;
@@ -15,7 +27,7 @@ select lives_ok(
   $$select * from public.decide_applications_transaction(
     '30000000-0000-4000-8000-000000000004',
     jsonb_build_object('decision', 'approve', 'application_ids',
-      (select jsonb_agg(id) from public.approval_queue_items where status = 'pending'))
+      (select jsonb_agg(id) from audit_test_application_ids))
   )$$,
   'service-role admin approves all four synthetic application types without a user JWT'
 );
