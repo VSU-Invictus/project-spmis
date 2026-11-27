@@ -51,8 +51,8 @@ function createMockProfile(mockRole: MockRole): FacultyProfile {
   const admin = mockRole === 'admin';
   return {
     id: MOCK_PROFILE_ID,
-    email: admin ? 'admin@example.edu' : 'alex.reyes@example.edu',
-    full_name: admin ? 'SPMIS Administrator' : 'Alex Reyes',
+    email: admin ? 'admin@example.edu' : 'alex.morgan@example.edu',
+    full_name: admin ? 'SPMIS Administrator' : 'Alex Morgan',
     department_id: MOCK_DEPARTMENT_ID,
     role: admin ? 'admin' : 'faculty',
     status: mockRole === 'pending' ? 'pending' : 'active',

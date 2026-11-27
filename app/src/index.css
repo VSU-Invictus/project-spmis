@@ -522,7 +522,10 @@ button {
 /* Disable transitions across the page while the theme is changing. */
 html[data-theme-switching] *,
 html[data-theme-switching] *::before,
-html[data-theme-switching] *::after {
+html[data-theme-switching] *::after,
+html[data-theme-switching] button,
+html[data-theme-switching] .section-container :is(.admin-student-management, .admin-faculty-management)
+  :is(button, .queue-counter, .table-row, input, select, .dropdown-container, .dropdown-chevron) {
   transition: none !important;
 }
 
@@ -1716,6 +1719,188 @@ html:not(.dark) :is(.ui-toast, .toast) {
 }
 
 /* ==========================================================================
+   REVIEW COMPOSER EDITOR & TAG INPUT OVERRIDES (#189)
+   ========================================================================== */
+:is(a, button).ui-link-neutral.back-link,
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 6px !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  overflow: visible !important;
+}
+
+.back-link :is(.arrow, .arrow-left) {
+  display: inline-block;
+  line-height: 1;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.back-link:hover :is(.arrow, .arrow-left) {
+  transform: translateX(-4px);
+}
+
+#review-page-title {
+  font-family: var(--font-sans) !important;
+  font-size: 30px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  color: var(--foreground) !important;
+  margin: 0 0 4px 0 !important;
+  line-height: 1.25 !important;
+}
+
+.rich-text-toolbar {
+  background: var(--ui-surface-muted, var(--card)) !important;
+  border: 1px solid var(--input, var(--border)) !important;
+  border-bottom: 1px solid var(--ui-surface-border, var(--border)) !important;
+  border-top-left-radius: var(--radius-sm, 6px) !important;
+  border-top-right-radius: var(--radius-sm, 6px) !important;
+}
+
+.toolbar-divider {
+  background: var(--ui-surface-border, var(--border)) !important;
+}
+
+#review-editor,
+#review-editor-textarea,
+.review-rich-editor {
+  min-height: 170px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding: var(--space-5, 14px) var(--space-6, 16px) !important;
+  background: var(--muted, var(--color-input)) !important;
+  border: 1px solid var(--input, var(--border)) !important;
+  border-top: none !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: var(--radius-sm, 6px) !important;
+  border-bottom-right-radius: var(--radius-sm, 6px) !important;
+  color: var(--foreground) !important;
+  line-height: 1.6;
+  outline: none !important;
+  box-shadow: none !important;
+  font-family: inherit;
+  font-size: var(--font-size-md, 14px);
+  word-break: break-word;
+}
+
+#editor-container:focus-within .rich-text-toolbar {
+  border-color: var(--color-primary-base, var(--primary)) !important;
+  border-bottom-color: var(--ui-surface-border, var(--border)) !important;
+}
+
+#editor-container:focus-within #review-editor,
+#review-editor:focus,
+#review-editor-textarea:focus,
+.review-rich-editor:focus {
+  border-color: var(--color-primary-base, var(--primary)) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#review-editor[data-invalid="true"],
+#review-editor[aria-invalid="true"] {
+  border-color: var(--color-status-danger, #ef4444) !important;
+}
+
+#review-editor:empty::before,
+#review-editor[data-empty="true"]:not(:has(ul, ol, li))::before {
+  content: attr(data-placeholder);
+  color: var(--muted-foreground) !important;
+  pointer-events: none;
+  opacity: 0.75 !important;
+  font-style: italic !important;
+}
+
+#review-editor-textarea::placeholder,
+.review-rich-editor::placeholder {
+  font-style: italic !important;
+  color: var(--muted-foreground) !important;
+  opacity: 0.75 !important;
+}
+
+#tag-input-box,
+.tag-input-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2, 6px);
+  padding: var(--space-2, 6px) var(--space-4, 10px);
+  background: var(--muted, var(--color-input));
+  border: 1px solid var(--input, var(--border));
+  border-radius: var(--radius-sm, 6px);
+  min-height: 42px;
+  cursor: text;
+}
+
+#tag-input-box:focus-within,
+.tag-input-box:focus-within {
+  border-color: var(--color-primary-base, var(--primary));
+  outline: 2px solid var(--ring, var(--primary));
+  outline-offset: 1px;
+}
+
+#review-tag-input,
+.tag-input-field {
+  flex: 1;
+  min-width: 140px;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  border: none !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  padding: 4px !important;
+  margin: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  font-size: var(--font-size-base, 13px) !important;
+  color: var(--foreground) !important;
+}
+
+#review-tag-input:focus,
+.tag-input-field:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.review-actions .ui-btn-outline,
+.modal-actions .ui-btn-outline,
+#cancel-review-btn {
+  background: transparent !important;
+  border: 1px solid var(--border) !important;
+  color: var(--foreground) !important;
+}
+
+.review-actions .ui-btn-outline:hover,
+.modal-actions .ui-btn-outline:hover,
+#cancel-review-btn:hover {
+  background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+  border-color: var(--primary, #D97251) !important;
+  color: var(--foreground) !important;
+}
+
+/* Suppress ALL transitions during theme toggle regardless of rule specificity */
+html[data-theme-switching],
+html[data-theme-switching] *,
+html[data-theme-switching] *::before,
+html[data-theme-switching] *::after,
+html[data-theme-switching] :is(.modal-actions, .review-actions, .actions) :is(.ui-btn, .ui-btn-outline, .ui-btn-primary, .modal-submit, .modal-btn-cancel, .modal-btn-confirm, button),
+html[data-theme-switching] #cancel-review-btn,
+html[data-theme-switching] #submit-review-btn {
+  transition: none !important;
+  transition-duration: 0s !important;
+}
+
+/* ==========================================================================
    TABLE SKELETON LOADING ROWS (<DataTable />, <TableRowSkeleton />, <ApplicationQueue />)
    Preserves multi-column flex widths and column alignment during loading.
    ========================================================================== */
@@ -1789,4 +1974,3 @@ html:not(.dark) :is(.ui-toast, .toast) {
   height: 16px !important;
   border-radius: 4px !important;
 }
-

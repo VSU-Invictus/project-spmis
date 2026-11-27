@@ -159,3 +159,124 @@ export function deserializeDocumentToEditorText(
     .filter(Boolean)
     .join('\n\n');
 }
+
+function escapeHtml(text: string): string {
+  return text.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      })[c] ?? c
+  );
+}
+
+function serializeRunsToHtml(runs: readonly RichTextRun[]): string {
+  return runs
+    .map((run) => {
+      const escaped = escapeHtml(run.text ?? '').replace(/\n/g, '<br>');
+      if (!escaped) return '';
+      if (run.bold && run.italic) return `<strong><em>${escaped}</em></strong>`;
+      if (run.bold) return `<strong>${escaped}</strong>`;
+      if (run.italic) return `<em>${escaped}</em>`;
+      return escaped;
+    })
+    .join('');
+}
+
+export function deserializeDocumentToEditorHtml(
+  document?: ReviewDocument | null,
+  fallbackText?: string | null
+): string {
+  const blocks = document?.blocks ?? [];
+  if (blocks.length === 0) {
+    if (!fallbackText) return '';
+    return escapeHtml(fallbackText).replace(/\n/g, '<br>');
+  }
+
+  const parts = blocks
+    .map((block) => {
+      if (block.type === 'paragraph') {
+        const inner = serializeRunsToHtml(block.content);
+        return inner ? `<p>${inner}</p>` : '';
+      }
+      if (block.type === 'bullet_list') {
+        const items = block.items
+          .map((item) => `<li>${serializeRunsToHtml(item)}</li>`)
+          .join('');
+        return items ? `<ul>${items}</ul>` : '';
+      }
+      if (block.type === 'ordered_list') {
+        const items = block.items
+          .map((item) => `<li>${serializeRunsToHtml(item)}</li>`)
+          .join('');
+        return items ? `<ol>${items}</ol>` : '';
+      }
+      return '';
+    })
+    .filter(Boolean);
+
+  return parts.join('');
+}
+
+function domNodeToMarkdownText(node: Node): string {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return (node.nodeValue ?? '').replace(/\u200B/g, '');
+  }
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return '';
+  }
+
+  const el = node as HTMLElement;
+  const tag = el.tagName.toLowerCase();
+
+  if (tag === 'br') {
+    return '\n';
+  }
+
+  const childrenText = Array.from(el.childNodes)
+    .map((child) => domNodeToMarkdownText(child))
+    .join('');
+
+  if (tag === 'strong' || tag === 'b') {
+    const trimmed = childrenText.trim();
+    return trimmed ? `**${trimmed}**` : childrenText;
+  }
+
+  if (tag === 'em' || tag === 'i') {
+    const trimmed = childrenText.trim();
+    return trimmed ? `*${trimmed}*` : childrenText;
+  }
+
+  if (tag === 'ul') {
+    const items = Array.from(el.children)
+      .filter((child) => child.tagName.toLowerCase() === 'li')
+      .map((li) => `- ${domNodeToMarkdownText(li).trim()}`);
+    return `\n${items.join('\n')}\n`;
+  }
+
+  if (tag === 'ol') {
+    const items = Array.from(el.children)
+      .filter((child) => child.tagName.toLowerCase() === 'li')
+      .map((li, idx) => `${idx + 1}. ${domNodeToMarkdownText(li).trim()}`);
+    return `\n${items.join('\n')}\n`;
+  }
+
+  if (tag === 'div' || tag === 'p') {
+    return `${childrenText}\n`;
+  }
+
+  return childrenText;
+}
+
+export function extractEditorDomToMarkdownText(root: HTMLElement): string {
+  const raw = Array.from(root.childNodes)
+    .map((child) => domNodeToMarkdownText(child))
+    .join('')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  return raw;
+}

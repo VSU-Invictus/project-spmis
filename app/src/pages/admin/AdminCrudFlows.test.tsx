@@ -205,11 +205,16 @@ describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
     const user = userEvent.setup();
     renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
 
-    const adminCell = await screen.findByText('SPMIS Administrator');
-    const adminRow = adminCell.closest('[role="row"]');
-    expect(adminRow).not.toBeNull();
+    const adminRow = await waitFor(() => {
+      const row = screen
+        .getAllByText('SPMIS Administrator')
+        .map((cell) => cell.closest('[role="row"]'))
+        .find((r): r is HTMLElement => r !== null);
+      expect(row).toBeDefined();
+      return row!;
+    });
 
-    await user.click(within(adminRow as HTMLElement).getByRole('button', { name: 'Remove' }));
+    await user.click(within(adminRow).getByRole('button', { name: 'Remove' }));
 
     const dialog = await screen.findByRole('dialog');
     expect(

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../../context/ThemeContext';
 import { useSession } from '../../context/SessionContext';
+import { useTheme } from '../../context/ThemeContext';
 import { QueueModalHost } from '../queue-modal/QueueModalHost';
 import { AdminSidebar, type AdminNavKey } from './AdminSidebar';
 import { FacultySidebar, type FacultyNavKey } from './FacultySidebar';
@@ -55,8 +55,15 @@ export function AppShell({
   children,
 }: AppShellProps) {
   const navigate = useNavigate();
-  const { signOut } = useSession();
+  const { profile, signOut } = useSession();
   const [logoutOpen, setLogoutOpen] = useState(false);
+
+  const resolvedUserName =
+    profile?.full_name ||
+    profile?.email ||
+    (role === 'admin' ? 'Admin User' : 'Faculty Member');
+  const resolvedUserInitial =
+    resolvedUserName.trim().charAt(0).toUpperCase() || 'A';
 
   const defaultBreadcrumb =
     role === 'admin' ? 'Admin Portal / Overview' : 'Faculty Portal / Overview';
@@ -79,12 +86,16 @@ export function AppShell({
         <AdminSidebar
           className={mobileNavigation ? 'ui-dashboard-sidebar' : undefined}
           activeKey={activeNavKey as AdminNavKey}
+          userName={resolvedUserName}
+          userInitial={resolvedUserInitial}
           onSelectNav={handleSelectNav}
           onLogoutClick={() => setLogoutOpen(true)}
         />
       ) : (
         <FacultySidebar
           activeKey={activeNavKey as FacultyNavKey}
+          userName={resolvedUserName}
+          userInitial={resolvedUserInitial}
           onSelectNav={handleSelectNav}
           onLogoutClick={() => setLogoutOpen(true)}
         />
@@ -135,4 +146,3 @@ export function AppShell({
     </div>
   );
 }
-
