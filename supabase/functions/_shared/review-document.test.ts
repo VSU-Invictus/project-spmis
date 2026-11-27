@@ -67,6 +67,19 @@ Deno.test('rejects empty and over-limit reviews', () => {
   );
 });
 
+Deno.test('review documents reject unknown fields at document, block and text-run levels', () => {
+  const paragraph = { type: 'paragraph', content: [{ text: 'Synthetic review.' }] };
+  for (const input of [
+    { blocks: [paragraph], extra: true },
+    { blocks: [{ ...paragraph, extra: true }] },
+    { blocks: [{ type: 'bullet_list', items: [[{ text: 'Synthetic review.' }]], extra: true }] },
+    { blocks: [{ type: 'paragraph', content: [{ text: 'Synthetic review.', extra: true }] }] },
+  ]) {
+    const error = assertThrows(() => extractReviewText(input), FunctionError);
+    assertEquals(error.status, 422);
+  }
+});
+
 Deno.test('review validation returns the expected 422 contract error envelopes', async () => {
   const invalidCases = [
     {

@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 <!-- Active development updates -->
 
 ### Added 
+- **Issue #212 — strict request fields:** Rejected unsupported fields across Edge Function bodies and closed nested request objects, distinguished malformed JSON (HTTP 400) from invalid object shapes (HTTP 422), and retained role checks before body processing.
 - **Issue #212 — normalized tag limit:** Enforced the 30-tag limit after whitespace tokenization, lowercasing, and deduplication, while retaining the contract's input-array limit; added boundary and duplicate regression tests.
 - **Issue #212 — database error handling:** Mapped foreign-key conflicts to HTTP 409 and missing/invalid values to HTTP 422, removed raw database details from generic mapper and profile-load failures, and added error-envelope regression tests.
 - **Issue #211 — audit review follow-up:** Preferred the verified JWT identity over `app.actor_id`, retaining the service-role actor fallback and testing conflicting actor settings.

@@ -57,14 +57,25 @@ export function requireMethod(request: Request, method: string): void {
   }
 }
 
-export async function readJson(request: Request): Promise<Record<string, unknown>> {
+export function assertAllowedKeys(body: Record<string, unknown>, allowedKeys: readonly string[]): void {
+  if (Object.keys(body).some((key) => !allowedKeys.includes(key))) {
+    throw new FunctionError(422, 'INVALID_REQUEST', 'The request contains unsupported fields.');
+  }
+}
+
+export async function readJson(request: Request, allowedKeys: readonly string[]): Promise<Record<string, unknown>> {
+  let body: unknown;
   try {
-    const body = await request.json();
-    if (!body || typeof body !== 'object' || Array.isArray(body)) throw new Error();
-    return body as Record<string, unknown>;
+    body = await request.json();
   } catch {
+    throw new FunctionError(400, 'INVALID_REQUEST', 'The request body must contain valid JSON.');
+  }
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
     throw new FunctionError(422, 'INVALID_REQUEST', 'The request body must be a JSON object.');
   }
+  const object = body as Record<string, unknown>;
+  assertAllowedKeys(object, allowedKeys);
+  return object;
 }
 
 export function isUuid(value: unknown): value is string {

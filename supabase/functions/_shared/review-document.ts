@@ -1,5 +1,5 @@
 import { deidentifyText, type StudentNameRecord } from './deidentify.ts';
-import { FunctionError } from './errors.ts';
+import { assertAllowedKeys, FunctionError } from './errors.ts';
 
 type RichTextRun = { text: string; bold?: boolean; italic?: boolean };
 type ReviewBlock =
@@ -29,6 +29,7 @@ export function extractReviewText(value: unknown): { document: ReviewDocument; t
     throw new FunctionError(422, 'REVIEW_BODY_REQUIRED', 'A valid review document is required.', null, 'Add review text before saving.');
   }
   const input = value as Record<string, unknown>;
+  assertAllowedKeys(input, ['blocks']);
   if (!Array.isArray(input.blocks) || input.blocks.length < 1 || input.blocks.length > 100) {
     throw new FunctionError(422, 'REVIEW_BODY_REQUIRED', 'A review must contain at least one text block.', null, 'Add review text before saving.');
   }
@@ -40,6 +41,7 @@ export function extractReviewText(value: unknown): { document: ReviewDocument; t
       throw new FunctionError(422, 'INVALID_REVIEW_DOCUMENT', 'The review document contains an invalid block.');
     }
     const block = blockValue as Record<string, unknown>;
+    assertAllowedKeys(block, block.type === 'paragraph' ? ['type', 'content'] : ['type', 'items']);
     if (block.type === 'paragraph' && isRuns(block.content)) {
       blocks.push({ type: 'paragraph', content: block.content });
       parts.push(block.content.map((run) => run.text).join(''));
