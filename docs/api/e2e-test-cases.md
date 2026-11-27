@@ -31,6 +31,10 @@ These scenarios define the browser-level acceptance flows to automate in Milesto
 
 Backend endpoint verification for Issue #213 also covers the invitation alternative: an active admin calls `inviteFaculty`, verifies supported Auth identity provisioning plus a pending profile/application, retries the normalized email expecting 409 without new records, then approves the application. Backend HTTP integration coverage supplements this browser scenario; it does not prove frontend onboarding UI integration.
 
+### Opt-in local invitation integration check
+
+Run from the repository root against a seeded local stack only. In a separate terminal start `npx supabase functions serve --env-file supabase/.env`, then run `node supabase/tests/integration/faculty-invitations.mjs`. Docker must be running. The script obtains local keys internally without printing them, provisions unique synthetic accounts through supported Auth APIs, and verifies the HTTP invitation/approval flow and pending RLS restrictions. A read-only Docker query verifies Auth identity and instance integrity without broadening application grants. Fixtures remain until the next local database reset. Magic links are test-only session setup; the application remains Google-only. This script does not test the browser Google OAuth flow or replace E2E-PENDING-01.
+
 ## E2E-ADMIN-01 — Admin approves a pending faculty application
 
 **Preconditions:** E2E-PENDING-01 has created a pending account; an admin account can sign in.
