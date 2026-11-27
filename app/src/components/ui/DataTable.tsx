@@ -26,6 +26,7 @@ export interface DataTableProps<T> {
   selectionStatusFormat?: 'rows' | 'compact';
   bulkActions?: React.ReactNode;
   entityName?: string;
+  singularEntityName?: string;
   defaultPageSize?: number;
   /** When supplied, data contains only the current server page. */
   pagination?: {
@@ -61,6 +62,7 @@ export function DataTable<T>({
   selectionStatusFormat = 'rows',
   bulkActions,
   entityName = 'entries',
+  singularEntityName,
   defaultPageSize = 5,
   pagination,
   preferenceKey,
@@ -429,6 +431,7 @@ export function DataTable<T>({
         dynamicPageSizeOptions={dynamicPageSizeOptions}
         isLoading={isLoading}
         entityName={entityName}
+        singularEntityName={singularEntityName}
         selectionText={selectionText}
         bulkActions={bulkActions}
         onPageSizeChange={(newSize) => {
@@ -510,6 +513,22 @@ export function RowsPerPageSelect({
   );
 }
 
+export function formatEntityCount(
+  count: number,
+  entityName = 'entries',
+  singularEntityName?: string
+): string {
+  if (count !== 1) return entityName;
+  if (singularEntityName) return singularEntityName;
+  if (entityName.length > 3 && entityName.endsWith('ies')) {
+    return `${entityName.slice(0, -3)}y`;
+  }
+  if (entityName.length > 1 && entityName.endsWith('s') && !entityName.endsWith('ss')) {
+    return entityName.slice(0, -1);
+  }
+  return entityName;
+}
+
 export interface TablePaginationFooterProps {
   currentPage: number;
   totalPages: number;
@@ -520,6 +539,7 @@ export interface TablePaginationFooterProps {
   dynamicPageSizeOptions?: boolean;
   isLoading?: boolean;
   entityName?: string;
+  singularEntityName?: string;
   selectionText?: string;
   bulkActions?: React.ReactNode;
   rowsPerPageSelectId?: string;
@@ -535,10 +555,12 @@ export function TablePaginationFooter({
   dynamicPageSizeOptions = true,
   isLoading = false,
   entityName = 'entries',
+  singularEntityName,
   selectionText = '',
   bulkActions,
   rowsPerPageSelectId,
 }: TablePaginationFooterProps) {
+  const entityLabel = formatEntityCount(totalEntries, entityName, singularEntityName);
   return (
     <div className="ui-table-pagination is-0272b5f">
       {bulkActions ? (
@@ -568,7 +590,7 @@ export function TablePaginationFooter({
           {isLoading
             ? `Loading ${entityName}…`
             : totalEntries > 0
-            ? `Page ${currentPage} of ${totalPages} · ${totalEntries} ${entityName}`
+            ? `Page ${currentPage} of ${totalPages} · ${totalEntries} ${entityLabel}`
             : `0 ${entityName}`}
         </span>
 

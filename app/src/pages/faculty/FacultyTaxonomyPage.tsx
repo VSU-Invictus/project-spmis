@@ -100,7 +100,19 @@ function TaxonomyProposals({ mode }: { mode: Mode }) {
             emptyDescription={search ? `Try another ${label.toLowerCase()} name.` : `Approved ${mode} will appear here.`}
             columns={[
               { key: 'name', label },
-              { key: 'status', label: 'Status', headerClass: 'ui-table-heading-center', render: () => <Badge variant="success">Approved</Badge> },
+              {
+                key: 'status',
+                label: 'Status',
+                headerClass: 'ui-table-heading-center',
+                render: () => (
+                  <Badge variant="success">
+                    <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Approved
+                  </Badge>
+                ),
+              },
               { key: 'action', label: 'Action', headerClass: 'ui-table-heading-center', render: record =>
                 <Button variant="outline" onClick={event => open(event.currentTarget, { id: record.id, name: record.name })}>Apply to edit</Button> },
             ]} />}
