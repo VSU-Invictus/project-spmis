@@ -41,6 +41,40 @@ function formatIsoDate(value?: string | null): string {
   return `${year}-${month}-${day}`;
 }
 
+function summarizeReviewExcerpt(text: string): string {
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (!normalized) return '';
+  const clipped = normalized.length > 140 ? `${normalized.slice(0, 137).trimEnd()}…` : normalized;
+  return /[.!?…]$/.test(clipped) ? clipped : `${clipped}.`;
+}
+
+function buildAiReviewSummary(
+  fullName: string,
+  activeReviews: Review[],
+  activeTags: string[]
+): string {
+  if (activeReviews.length === 0) {
+    return `No active faculty reviews are currently available to synthesize for ${fullName}.`;
+  }
+
+  const tagSummary =
+    activeTags.length > 0
+      ? `highlighting ${activeTags.join(', ')}`
+      : 'covering recent academic coursework and collaboration';
+  const lead = `${fullName} demonstrates consistent academic strengths across ${activeReviews.length} attributed active ${activeReviews.length === 1 ? 'review' : 'reviews'}, ${tagSummary}.`;
+
+  const excerpts = activeReviews
+    .map((review) => summarizeReviewExcerpt(review.body_text ?? ''))
+    .filter(Boolean)
+    .slice(0, 2);
+
+  if (excerpts.length === 0) return lead;
+  if (excerpts.length === 1) {
+    return `${lead} Recent faculty feedback notes: ${excerpts[0]}`;
+  }
+  return `${lead} Recent faculty feedback notes: ${excerpts[0]} Peers also observe: ${excerpts[1]}`;
+}
+
 function ReviewRevisionsSection({ reviewId }: { reviewId: string }) {
   const { data: revisions, isPending, isError, error } = useReviewRevisions({
     review_id: `eq.${reviewId}`,
@@ -448,12 +482,10 @@ export function FacultyStudentDetailPage() {
                 </Badge>
               </div>
               <p className="ai-summary-text">
-                {activeReviews.length > 0
-                  ? `${fullName} has ${activeReviews.length} attributed active ${activeReviews.length === 1 ? 'review' : 'reviews'} highlighting ${activeTags.length > 0 ? activeTags.join(', ') : 'academic coursework'}.`
-                  : `No active faculty reviews are currently available to synthesize for ${fullName}.`}
+                {buildAiReviewSummary(fullName, activeReviews, activeTags)}
               </p>
               <p className="ai-summary-meta">
-                Generated from <span data-ai-review-count data-testid="ai-review-count">{activeReviews.length}</span> active reviews. Hidden and deleted reviews are excluded.
+                Generated from <span data-ai-review-count data-testid="ai-review-count">{activeReviews.length}</span> active {activeReviews.length === 1 ? 'review' : 'reviews'}. Hidden and deleted reviews are excluded.
               </p>
             </section>
 
