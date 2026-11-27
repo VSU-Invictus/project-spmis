@@ -6,7 +6,88 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 <!-- Active development updates -->
 
-### Added
+### Added 
+- **Issue #213 — invitation concurrency:** Reserved normalized invitation emails in a private service-only workflow before calling Auth, rejected overlapping requests with 409, and used expiring request tokens to prevent stale cleanup from releasing a newer reservation.
+- **Issue #213 — onboarding department choices:** Added a verified-Google-only lookup exposing approved department IDs and names before a faculty profile exists, without expanding table RLS permissions.
+- **Issue #213 — contract boundary review:** Enforced name and email request-length limits before trimming so padded over-limit input cannot bypass the published schemas; added boundary regression coverage.
+- **Issue #213 — local invitation integration:** Added an opt-in synthetic HTTP check for real Auth invitation identity integrity, duplicate rejection, pending restrictions, admin approval, and active access; documented local-only setup and the separate Google OAuth browser coverage requirement.
+- **Issue #213 — contract proposal:** Documented faculty onboarding and invitations, proposed contract v2.0.0 for the changed direct-provisioning behavior, and updated Google-only E2E guidance and migration/review notes; generated types and Redoc must be regenerated together.
+- **Issue #213 — admin invitation endpoint:** Added active-admin-only faculty invitations through `inviteUserByEmail`, with preflight validation, duplicate and rate-limit responses, a minimal pending invitation result, and offline mocked handler tests.
+- **Issue #213 — atomic invitations:** Added service-only admin invitation preflight and an Auth invitation trigger that creates a pending faculty profile and approval application in the Auth transaction, with fixed faculty privileges and verified inviter attribution.
+- **Issue #213 — supported Auth provisioning:** Removed direct Auth-user creation from the faculty insert trigger; existing Auth identities can still be linked, while missing identities require the invitation flow. Updated admin CRUD fixtures and added no-orphan regression assertions.
+- **Issue #213 — onboarding Edge Function:** Connected verified Auth users to the pending onboarding transaction, with strict request validation, safe error responses, and mocked handler tests that require no network access or existing faculty profile.
+- **Issue #213 — pending faculty transaction:** Added a service-role-only onboarding RPC that validates a verified Google identity and approved department, serializes duplicate submissions, and creates a pending faculty profile and approval application atomically without writing Auth tables.
+- **Issue #213 — onboarding input validation:** Added shared faculty onboarding and invitation validators with normalized names, emails, and department UUIDs; rejected caller-supplied identity, privilege, and redirect fields, with offline unit coverage.
+- **Issue #212 — faculty-only department assignments:** Rejected assignments targeting student registrations or taxonomy proposals with HTTP 422 during the locked approval preflight, before any bulk decision writes; added mixed-batch rollback and valid faculty override regression coverage.
+- **Issue #212 — complete review revisions:** Moved pre-edit snapshots into the update RPC so tag-only edits save old text, document, and tags exactly once; retained omitted-tag preservation and explicit tag clearing, with transactional history regression coverage.
+- **Issue #212 — review edit concurrency:** Rechecked active status under the review row lock and returned a retryable HTTP 409 when an edit lacks a fresh embedding; added regression coverage for unchanged conflict state, hidden edits, and successful retries.
+- **Issue #212 — approval UUIDs:** Normalized application and assignment UUID casing, rejected case-insensitive duplicates in the Edge Function and database RPC, and added validation and side-effect regression coverage.
+- **Issue #212 — strict request fields:** Rejected unsupported fields across Edge Function bodies and closed nested request objects, distinguished malformed JSON (HTTP 400) from invalid object shapes (HTTP 422), and retained role checks before body processing.
+- **Issue #212 — normalized tag limit:** Enforced the 30-tag limit after whitespace tokenization, lowercasing, and deduplication, while retaining the contract's input-array limit; added boundary and duplicate regression tests.
+- **Issue #212 — database error handling:** Mapped foreign-key conflicts to HTTP 409 and missing/invalid values to HTTP 422, removed raw database details from generic mapper and profile-load failures, and added error-envelope regression tests.
+- **Issue #211 — audit review follow-up:** Preferred the verified JWT identity over `app.actor_id`, retaining the service-role actor fallback and testing conflicting actor settings.
+- **Issue #211 — redaction matching:** Matched full names across whitespace variations and aligned Unicode case-folded token lookup with regex matching, including collision regression coverage.
+- **Issue #211 — redaction review:** Covered last-first-middle names and prevented malformed student markers from shielding names or IDs from redaction.
+- **Issue #211 — reproducible database CI:** Pinned Supabase CLI to `3.4.0`, the version used for local migration and pgTAP verification.
+- **Issue #211 — audit attribution:** Set the verified service-role RPC actor transaction-locally and used it in audit triggers with a JWT fallback; added coverage for side effects across all four approval types.
+- **Issue #211 — self-deletion signal:** Added the `FACULTY_SELF_DELETE_FORBIDDEN` hint to the existing self-delete trigger while preserving `23503` / HTTP 409 and historical foreign keys; corrected the decision log and added hint regression checks.
+- **Issue #211 — admin AI chat:** Allowed active admins through chat and server-only vector retrieval, retained direct-review RLS restrictions and RPC grants, and recorded the PM's resolved access decision.
+- **Issue #211 — Gemini configuration:** Replaced retired model defaults, documented server-side model overrides and re-embedding requirements, and enforced 768-dimensional finite embedding responses with mocked regression coverage.
+- **Issue #211 — name redaction:** Limited partial-name matching to the review target, preserved common words in chat and other students' mentions, rendered ambiguous redactions as "a student", and added regression coverage including student-ID redaction.
+- **M3 Backend Review Hardening (`fix/m3-review-hardening`):**
+  - Locked `create_review_transaction`, `update_review_transaction`, `set_review_status_transaction`, `match_review_embeddings`, and `decide_applications_transaction` to `service_role` only via migration `20261126000100_lock_transactional_rpcs_to_service_role.sql` with explicit `p_actor_id` verification (blocking admins from `match_review_embeddings`).
+  - Updated `reviews`, `chat`, and `approvals` Edge Functions to invoke transactional RPCs via `adminClient()`, enforced faculty-only access on `chat`, removed dead `UNAUTHORIZED` catch branch, and fixed `readReview` error wording.
+  - Hardened `_shared/deidentify.ts` to redact `student_id_number` and prevent single-name collisions (`{{STUDENT:REDACTED}}`), and updated `reviews` to de-identify all students mentioned in review text.
+  - Hardened `_shared/gemini.ts` to send `GEMINI_API_KEY` via `x-goog-api-key` header, support model env overrides, and omit raw provider error bodies from client responses.
+  - Added `supabase/tests/05_service_role_rpcs.test.sql` (14 pgTAP assertions) and a `database` job in `.github/workflows/ci.yml` running `supabase start` + `supabase test db`.
+- **Contract `v1.1.0` & M3 Admin Direct CRUD (`feat/m3-admin-crud-contract`):**
+  - Extended `contract/openapi.yaml` additively to `v1.1.0` (30 operations) with `deleteStudent` (`DELETE /rest/v1/student_profiles`), `createFacultyByAdmin` (`POST /rest/v1/faculty_profiles`, `FacultyCreateInput`), and `deleteFaculty` (`DELETE /rest/v1/faculty_profiles`), regenerated `contract/generated/schema.d.ts` and `app/public/docs/index.html`, and updated `docs/contract-decisions.md` and `contract/README.md`.
+  - Added migration `supabase/migrations/20261124000100_add_admin_student_faculty_crud.sql` preventing admin self-deletion with `23503` (`409 Conflict`), validating approved `department_id` on insert/update, defaulting admin-direct inserts to `status = 'active'`, and linking/provisioning backing `auth.users` rows by email in `private.prepare_faculty_profile_insert()`.
+  - Added pgTAP test suite `supabase/tests/04_admin_direct_crud.test.sql` (34 assertions) covering Admin student deletion, Admin faculty creation/deletion, linking existing `auth.users`, self-deletion `23503` conflict, email/department validation on insert/update, FK conflict preservation (`23503`), and non-admin/pending/`anon` denial.
+- **Issue #153 Edge Functions:** Added transactional review lifecycle and
+  application-decision RPCs, server-side student-name de-identification,
+  Gemini embedding/chat helpers, vector retrieval, approval notifications, and
+  contract-shaped error handling under `supabase/functions/`.
+- **Milestone 3 database foundation (#152):** Added Supabase schema migrations, row-level security, contract-backed database functions and views, synthetic seed data, and pgTAP tests.
+- **Milestone 3 Gate - pgTAP RLS, embedding lifecycle, and constraint suites (#158):** Added three pgTAP suites in `supabase/tests/`. `01_rls_reviews_and_embeddings` proves `reviews.body_text` cannot be inserted or updated by any role, checks review visibility by status (active, hidden, deleted) across `anon`, pending faculty, owner, non-owner, and admin, and verifies that `review_embeddings` rows are removed when a review becomes hidden or deleted. `02_rls_profiles_and_taxonomy` covers profile access for pending and active faculty, admin access to profiles, departments, programs, and the audit log, and admin denial on `reviews`. `03_constraints` verifies the `CHECK` and `UNIQUE` rules for department and program names and student ID numbers. All fixtures are synthetic.
+- **CI Workflow, Contract Freeze (`v1.0.0`), and Pinned Tooling:**
+  - Added GitHub Actions CI workflow (`.github/workflows/ci.yml`) running `contract:lint`, `contract:check`, `contract:docs` verification and artifact upload, `typecheck`, `test` (Vitest), and `build` on pushes and pull requests.
+  - Marked `contract/openapi.yaml` as frozen at `v1.0.0` (effective `2026-10-30`) in `contract/README.md` with cross-team change-control rules, and extended `PreferReturnRepresentation` to support `return=representation, code=403` and `return=representation, code=409` for Prism mock simulation.
+  - Pinned `@redocly/cli` (`2.71.0`), `@stoplight/prism-cli` (`5.16.0`), `openapi-typescript` (`7.13.0`), and `msw` (`2.15.0`) in `app/package.json`, and migrated `api-failure-states.test.mjs` and `api-query-keys.test.mjs` to Vitest.
+- **Milestone 2 Gate (A5) - Prism Mock Typed Client & Reachable Failure State (#146):**
+  - Created TanStack Query hooks in `app/src/hooks/` for contract operation IDs: `useSearchStudents`, `useStudentById`, `useStudentReviews`, `useCreateReview`, `useApprovalQueueItems`, `useDecideApplications`, `useDepartments`, `usePrograms`, `useAuditLogs`, and `useAskChatbot`.
+  - Derived query keys mechanically from contract `operationId` and input parameters in `queryKeys.ts`.
+  - Added accessible `Skeleton`, `TableRowSkeleton`, and `CardSkeleton` components with `isPending` state handling.
+  - Registered and wired Faculty Portal (`/faculty/dashboard`, `/faculty/students`, `/faculty/chat`, `/faculty/departments`, `/faculty/programs`, `/faculty/applications`) and Admin Portal (`/admin/dashboard`, `/admin/applications`, `/admin/students`, `/admin/departments`, `/admin/programs`, `/admin/audit-log`) routes in `app/src/main.tsx` backed by Prism mock server data.
+  - Implemented reachable and demonstrable 422 Unprocessable Entity failure states (`REVIEW_WORD_LIMIT` and `REVIEW_BODY_REQUIRED`) on review creation with form validation highlight and contract `error.hint` guidance.
+  - Implemented reachable and demonstrable 429 Too Many Requests failure state (`RATE_LIMITED`) on AI Chat Assistant with graceful retry prompt and non-crashing UI state.
+  - Added unit and failure scenario test suites (`api-query-keys.test.mjs`, `api-failure-states.test.mjs`) verifying 200, 422, 429, and 401 error normalization and contract compliance.
+- **API documentation:** Added a Redoc documentation route with a bundled OpenAPI viewer. Added Supabase session authentication and a sign-in page to protect access.
+- **API client:** Added a typed API client with shared request and error handling, Supabase configuration, and generated TypeScript types. Added tests for API request and error handling.
+- **Vitest and domain rule tests:** Added Vitest test and watch scripts, with unit tests for entity-name validation, review word limits, and review-tag normalization.
+- **API testing:** Added faculty and admin endpoint test cases with reproducible Prism requests, sample bodies, and recorded responses. Documented valid requests, missing authentication, role violations, and invalid payloads; added QA task guidance and a contract mismatch log.
+- **GitHub templates:** Added issue templates for bugs, tasks, and QA test cases, plus a pull request template with QA and author checklists.
+
+- **Issue #3 detail reads:** Added dedicated getStudentById and getOwnProfile
+  read-only PostgREST RPC contracts with object-or-null responses, caller/RLS
+  requirements and explicit examples. Removed the shared-read mapping exception;
+  all operation IDs explicitly named in Issue #3 are now declared.
+- **Issue #3 contract completion:** Added the Redocly lint/theme configuration,
+  explicit ReviewTag, internal ReviewEmbedding and ReviewAttachment schemas,
+  reusable realistic mock examples, and documented mappings from the issue's
+  product-level read names to their curated PostgREST operations.
+- **Contract review alignment:** Documented the mockup's 500-word review limit and
+  422 word-limit examples, added a proposed active-review tag-suggestion RPC, and
+  aligned OpenAPI license metadata with the README's All Rights Reserved terms.
+  Program and department proposal names now use the same nonblank, 200-character
+  validation as direct admin additions.
+- **OpenAPI contract draft:** Added OpenAPI 3.1 operations and shared schemas for
+  profiles, student search, managed lists, reviews/history, applications, chat,
+  and audit metadata. Added typed application payloads, constrained
+  rich-text documents, native PostgREST filters/counts, lifecycle acknowledgements,
+  pinned lint/type-generation commands and a generated-type freshness check.
+  API proposals, attachment metadata boundaries and admin-access considerations are
+  recorded in `docs/contract-decisions.md`; backend/RLS implementation is pending.
 - **Navigation Cache & Instant Page Revisits (React Query & Mockup):** Eliminated repetitive skeleton loading states across Admin and Faculty route navigation (#113):
   - Configured `@tanstack/react-query` `QueryClient` cache defaults (`staleTime: 5m`, `gcTime: 30m`, `refetchOnMount: false`, `refetchOnWindowFocus: false`) and added `navigationCache.ts` utilities.
   - Refactored `mockup/assets/js/card-loading.js` with `window.spmisNavigationCache` storing visited routes across session navigation, bypassing skeleton overlays and timers on revisit.
@@ -16,6 +97,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Extended `mockup/tests/card-loading.cjs` to cover all 10 Admin routes and added cache-integration assertions to `mockup/tests/admin-tables.cjs`.
 
 ### Fixed
+- **OpenAPI/Prism compatibility (#137, #139):** Fixed the `update_own_profile` response  indentation and Prism validation issues that caused valid requests to return false `400` errors. Replaced Prism-incompatible single-value `const` schemas with `enum`, normalized request discriminators and preference header schemas, and documented required `Prefer` headers and `__code` response overrides. Regenerated the OpenAPI TypeScript definitions.
+- **API client, docs, and sign-in (#138, #140):** Fixed API response handling when `error` is `undefined`, including bodyless `204` responses and `null` results, and normalized request failures into `ApiRequestError`. Updated Redoc generation to write to the bundle served at `/docs`, applied Design System components and tokens to `/docs` and `/signin`, added `/login` as a sign-in alias, and handled OAuth/session errors. Added nine regression tests. The React `/docs` route enforces its access checks, but the static documentation bundle remains directly accessible unless protected at the deployment level.
+- **Issue #3 scope:** Removed five additional operations for faculty profile
+  creation/removal, student directory/removal and faculty enrollment, together
+  with their exclusive schemas, response and filter parameter. Narrowed current
+  documentation to the 27 operations required by Issue #3 and removed the
+  enrollment-specific department-access proposal from this contract.
+- **Contract type optionality:** Aligned type generation and freshness-check
+  options so optional rich-text formatting flags and chat history stay optional
+  in TypeScript, matching the documented request examples and backend defaults.
+- **Pagination error mock:** Added an explicit HTTP 416 response example using
+  PostgREST's PGRST103 code instead of inheriting the generic PGRST116 example.
+- **Issue #3 review corrections:** Split public attachment metadata from the
+  internal Storage entity, marked review body text read-only, added completed
+  approval/rejection response examples and explicit admin mutation permissions.
+  Aligned operation IDs with the issue and corrected Redocly EOF formatting.
+- **Contract permission descriptions:** Documented the separate safe author
+  projection needed by the review view without exposing private faculty profiles.
+  Backend permission implementation remains pending.
 - **UI:** Displayed full Faculty Applications Decision / reason text with wrapping and expanding rows; moved the column left by narrowing the leading columns and reducing its left padding.
 - **UI:** Left-aligned the Decision / reason header and cells in the Faculty Applications table, overriding the shared final-column alignment.
 - **UI:** Left-aligned the Audit Log Performed By and Target headers and cells, overriding the shared table alignment rules.
@@ -82,12 +182,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Added Tag Cluster & Overflow component (`.ui-tags-cluster`, `.ui-tags-more`, `.ui-tags-popover`) limiting visible badges to 2 with an interactive `+N` badge that reveals remaining tags on hover or click.
 
 ### Changed
+- **Docs:** Updated `ai-context.md` to match the current repository. It now documents the `app/` React workspace (installed stack, registered routes, providers, components, shared mockup CSS, and the `serve-mockup` Vite plugin) and the extracted per-page CSS/JS under `mockup/assets/{css,js}/pages/`. Also added: the full mockup route inventory, sidebar iframes and footer includes, current modal implementations, the shared loading/navigation cache, the MoM storage location, and PR rules from MoM #1, #6, and #7. Corrected outdated items: React code now exists in `app/`, legacy classes are gone from `global.css`, `.gitignore` coverage has expanded, and the Inter and inline-style examples were wrong. Recorded new debt: unwired Tailwind and unused `zod`/`lucide-react`, duplicated tokens, unreferenced auth/admin page scripts, the missing `background.css` link, the undeclared `targetKey` in `admin-sidebar.js`, the stale `chat-enter.cjs` test, and README/DESIGN_SYSTEM references to paths that do not exist yet.
 - **Admin Departments/Programs/Faculty:** Removed the extra Add/Edit confirmation step per Team Lead clarification. Submitting a valid Add or Edit form now executes the operation immediately (no second dialog). The shared `admin-entity-confirm.js` module, the `#entityConfirmModal` markup and its script tag on all three pages, and the `.confirm-modal`/`.confirm-record` CSS were removed. Form validation, modal layouts/headings/button labels, and success toasts (shown only after a successful operation) are unchanged. The Remove/Delete confirmation modals remain fully intact and still require explicit confirmation.
 - **Admin Departments/Programs/Faculty:** Renamed the Edit modal primary action button from "Confirm" to "Update" on all three pages. The label is set by the current operation in the shared modal logic, so Add still shows "Add Department"/"Add Program"/"Add Faculty" and Edit shows "Update"; switching between Add and Edit always displays the correct label.
 - **Admin Departments/Programs/Faculty:** Updated the Remove modals to match the design system. Removed the top-right X button and restored a secondary "Cancel" button beside the primary "Confirm" button in a standard `.modal-actions` row (reusing `.ui-btn-outline`/`.modal-btn-cancel` and `.ui-btn-primary`/`.modal-submit`). Cancel dismisses the modal without removing the record; Confirm still performs the removal. The warning alert, icon, irreversible-action message, heading, and Outfit typography are unchanged. The obsolete `.remove-modal .modal-close` and full-width `.modal-submit` CSS rules were removed.
 - **Admin Departments/Programs/Faculty:** Moved the confirmation notice from the removed "Confirm Edit" step into the existing Edit modal. Each Edit modal now shows an inline `.ui-alert ui-alert--info` notice ("Confirm Update") with the established icon, colors, typography, and spacing, informing the admin they are about to update the record (no irreversible-action warning). The notice is hidden by default and toggled by the current operation, so it appears only in Edit mode and never affects the Add modal's labels, fields, or behavior. The single-modal workflow, editable Name field, "Cancel"/"Update" buttons, unchanged/whitespace-only validation, and success toasts are preserved; Remove modals still require explicit confirmation.
 - **Admin Departments/Programs/Faculty:** Refined the Edit modal confirmation notice to match the original "Confirm Edit" design (commit `bea6405b`). The notice was moved inside the `.modal-form` so it inherits the same 20px horizontal padding as the modal header and fields, aligning it with the rest of the modal instead of rendering full-bleed against the card edge. It now uses the form's natural 14px gap for spacing, so it reads as an integrated part of the modal rather than a separate oversized component. The `.ui-alert--info` container, circle-info icon, colors, and Outfit typography are unchanged, and no functional behavior was altered.
-- **Admin Departments/Programs/Faculty:** Added the same confirmation notice to the Add modals. Each Add modal now shows an inline `.ui-alert ui-alert--info` notice ("Confirm Addition" / "You are about to add this … record. Review the details below before proceeding.") reusing the exact Edit notice component, colors, icon, typography, border, and spacing, positioned above the form fields. The notice is informational only — clicking the primary Add button still submits a valid form immediately with no extra dialog. Both notices are toggled by the current operation, so Add shows "Confirm Addition" and Edit shows "Confirm Update" with no incorrect messages when switching between modes. Modal headings, primary button labels, validation, success toasts, and cancellation are unchanged.
+- **Admin Departments/Programs/Faculty:** Added the same confirmation notice to the Add modals. Each Add modal now shows an inline `.ui-alert ui-alert--info` notice ("Confirm Addition" / "You are about to add this â€¦ record. Review the details below before proceeding.") reusing the exact Edit notice component, colors, icon, typography, border, and spacing, positioned above the form fields. The notice is informational only â€” clicking the primary Add button still submits a valid form immediately with no extra dialog. Both notices are toggled by the current operation, so Add shows "Confirm Addition" and Edit shows "Confirm Update" with no incorrect messages when switching between modes. Modal headings, primary button labels, validation, success toasts, and cancellation are unchanged.
 - **Admin students:** Renamed the add modal title from "Create Student" to "Add Student" (`79cbb2f`).
 - **Admin students:** Aligned the student modal with the Faculty Register Student form by placing First Name and Last Name together and Middle Name below. The submit button now reads "Add Student" when adding and "Update Student" when editing (`9a7e39a`).
 - **UI:** Standardized Portal Modals across `components.css`, `design-system.html`, and Admin application pages (`faculty-applications.html`, `student-applications.html`, `department-applications.html`, `program-applications.html`) to strictly follow the **Standard Card** container specification (`background: var(--card)`, `border: 1px solid var(--border)` with 16px radius and dark shadow), eliminating light `#444746` backgrounds and outer terracotta borders (`2c7ab3f`, `f52e935`).
@@ -174,6 +275,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **UI:** Corrected javascript syntax error in generate function (`a0ca4b3`).
 - **UI:** Removed hardcoded legacy orange borders and corrected component focus states (`9fbc3c9`, `567aa26`).
 - **UI:** Removed stray text beside the closing `</html>` tag in the sign-up page markup (`f84144f`).
+
 
 ## [Milestone 1] - YYYY-MM-DD
 <!-- Milestone release updates -->

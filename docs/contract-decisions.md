@@ -1,0 +1,253 @@
+# SPMIS Contract Decision Log
+
+This log records API decisions that require agreement across the frontend and backend teams. The OpenAPI contract remains the source of truth after a decision is approved.
+
+## Issue #3 scope
+
+The contract contains the 18 explicitly named operations, eight department/program
+CRUD operations and one supporting review-history read: 27 operations in total.
+Student browsing uses searchStudents. Faculty enrollment, admin profile
+creation/removal, student removal and a separate directory read are outside this
+PR. Their broader project requirements remain in the project README; removing
+them from this PR does not change those requirements.
+
+## Requirements confirmed by the README
+
+### Review mutations use Edge Functions
+
+Review creation, editing, and lifecycle changes use `/functions/v1/reviews` endpoints rather than direct PostgREST writes. These operations must keep de-identification and the review-embedding lifecycle atomic.
+
+## Proposed API decisions for team review
+
+These choices describe the draft; they are not approvals by the PM, backend lead,
+or frontend team. No corresponding database views/functions exist yet.
+
+### Review lifecycle requests use actions
+
+The review-status endpoint accepts `hide`, `unhide`, or `delete`. It does not accept an arbitrary target status. This preserves the terminal nature of deleted reviews and allows invalid transitions to return `409 Conflict`.
+
+The response is an ID/status acknowledgement. Deleting a review never returns its
+content. Editing a deleted review also returns `409`.
+
+### Student review-aware search uses a PostgREST RPC
+
+Structured student search crosses students, reviews, tags, review owners, and owner departments. The contract exposes `GET /rest/v1/rpc/search_students` so the database can implement the joined search while applying RLS to the visible review corpus.
+
+### Existing tag suggestions
+
+The README and composer require suggestions without restricting free-form tags.
+The proposed `GET /rest/v1/rpc/suggest_review_tags` supplies distinct normalized
+tags from accessible active reviews only. It accepts a case-insensitive prefix
+and returns rows shaped as `{ tag }` in lexical order. Hidden/deleted reviews
+never contribute, even for their owner; no usage counts or author information
+are returned. This RPC must be implemented and tested in the backend phase.
+
+### Application submissions use typed payloads
+
+Student-registration, program-proposal, and department-proposal submissions have separate payload schemas. A program proposal may include `program_id` to identify an edit request.
+
+Queue responses are also discriminated by application type, including faculty
+account payloads. Existing program/department edit IDs must be omitted for new
+proposals, rather than set to null. Department edit support follows README §6 but
+needs confirmation because the sitemap only mentions adding departments.
+
+### Safe review read shape
+
+`GET /rest/v1/review_details` is a proposed read-only, security-invoker view. It
+joins normalized tags and a safe author name/department projection; it never
+selects de-identified text or embeddings. The frontend cannot obtain that shape
+from the base reviews table without joins. Review revisions additionally need
+rich-document and tag snapshots, which are additions to the schema sketch.
+
+The attribution projection needs its own permissions design: a security-invoker
+view applies the caller's grants and underlying row policies. Joining directly
+to private faculty profiles that the caller cannot read can suppress other
+authors' reviews or their attribution. Use a separately permissioned projection
+containing only the author identity/name and department required for attribution;
+do not grant broad private-profile access to make the join work. Its database
+implementation remains a backend task. Test with two different faculty identities
+that active reviews retain author names/departments, own hidden reviews remain
+readable, and other users' hidden/deleted content and private emails stay blocked.
+
+### Review document and limits
+
+Review create/edit requests send a `body_document` with paragraphs, bold/italic
+text, lists and line breaks. The backend extracts `body_text`, validates the
+allowed structure and escapes literal text on rendering. The existing mockup's
+500-word limit applies to both creation and editing: extract plain text with
+whitespace between blocks/list items, trim it, split on whitespace and count
+nonempty tokens. Exactly 500 words passes; 501 words returns 422 with
+REVIEW_WORD_LIMIT. OpenAPI's x-max-words documents this rule; the backend must
+enforce it across the entire document. Proposed additional limits:
+10,000 extracted review characters; 30 normalized tags of up to 50 characters;
+chat message 2,000 characters, up to 20 history turns; 100 decisions per batch.
+These numerical limits are draft implementation choices for review.
+
+The additional numerical limits are proposals; the 500-word rule is taken from
+the current mockup validation and must not be silently replaced by a character limit.
+
+### License metadata
+
+OpenAPI metadata uses All Rights Reserved and links to the README's existing
+ownership/licensing terms. This does not introduce a separate educational license
+or grant additional rights.
+
+### Profile updates
+
+`POST /rest/v1/rpc/update_own_profile` accepts only full_name and derives the
+subject from the JWT. The table PATCH is admin-only. RLS controls rows;
+column permissions/guarded functions or triggers enforce protected fields.
+Faculty profile creation and removal are outside this issue's operation scope.
+
+### Pending access
+
+Pending users may read their own profile through getOwnProfile and their own
+faculty_account application history through listApprovalQueueItems, including
+rejection reasons. RLS must require both submitted_by=auth.uid() and
+type=faculty_account for pending queue callers, regardless of client filters.
+No other person's applications or non-faculty application types are visible.
+This status-reading exception supports the required application outcome flow;
+it grants no directory access or other faculty feature access.
+
+### Counts, filters and native errors
+
+Table queries use PostgREST operators and explicit filters, not a generic search
+parameter. Count requests use Prefer: count=exact and Content-Range; pages can
+return 200 or 206. The student-search RPC has nullable optional arguments with defaults;
+limit/offset/order are result modifiers. Native table validation is documented
+as 400, uniqueness/foreign keys as 409. Edge validation uses 422. Inaccessible
+rows can be filtered out rather than returning 403; an empty update is not proof
+of success. Public apikey plus the user's bearer token are required.
+
+### Bulk decisions, removal and audit
+
+Approval batches are all-or-nothing; any already-decided item rejects the batch.
+Faculty approval may redirect a proposed department using department_assignments.
+Removal rejects referenced program/department records rather
+than cascading into reviews or audit history. Application decisions also create
+persistent in-app outcome notifications. Notification read/acknowledgement
+operations are outside Issue #3.
+
+The audit actor_role snapshot is a proposed database addition required by the
+mockup's role filter. Historical audit entries must not change when a user's
+current role changes.
+
+### Chat context
+
+Chat is stateless: the request includes earlier user/assistant turns. Every turn
+is untrusted and grants no data access. The backend must de-identify prompts and
+history as well as retrieved reviews before calling the provider. Hidden/deleted
+content cannot be re-authorized by replaying client history.
+
+## Review considerations within Issue #3
+
+### Review attachment metadata
+
+Issue #3 requires attachment metadata in visible review reads. The internal
+ReviewAttachment schema includes the Storage object key; public responses use
+the separate closed ReviewAttachmentMetadata schema without that key. Metadata
+visibility follows the parent review, including owner-only hidden content and
+invisibility after deletion. The embedding and attachment database entities are
+schema references, not client write endpoints.
+
+Upload, signed-download and attachment-removal operations are outside this
+issue. Including metadata does not add or approve those Storage workflows.
+
+### Admin review access conflict
+
+Resolved by the PM in PR #203 (Issue #211): active admins may use
+`searchStudents`, including review-text matching, and `askChatbot` over active
+reviews. Admins cannot directly read `reviews`, `review_revisions`, or
+`review_details`; those RLS restrictions remain in force.
+
+`match_review_embeddings` remains executable only by `service_role`. The chat
+Edge Function verifies an active faculty/admin caller and passes that identity
+to the RPC for an independent actor check. Retrieved review context stays on the
+server; the client receives only the chatbot answer, never raw or de-identified
+review rows. The existing Faculty + Admin contract tags remain unchanged.
+
+### Supabase gateway errors
+
+The shared four-field Error is the application/PostgREST shape. Supabase Auth or
+API gateway failures may have another shape before an Edge Function runs. The
+future typed client must normalize those into the shared error handling path.
+Normalizing a body must retain its original HTTP status.
+
+## Validation boundaries
+
+### Optional defaults in generated types
+
+Type generation and freshness checking both pass `--default-non-nullable=false`.
+This keeps optional fields with defaults optional in TypeScript, including
+rich-text bold/italic flags and first-message chat history. Backend defaults
+remain documented in the YAML; a default does not require callers to supply a
+value. Generator options must stay identical in both commands.
+
+### Issue 3 operation mapping
+
+Each operation named by Issue #3 now has its own operation ID. The read contract is:
+
+| Operation | Method and path | Result |
+| --- | --- | --- |
+| `getStudentById` | `GET /rest/v1/rpc/get_student_by_id?p_student_id=<uuid>` | One visible StudentProfile object or null |
+| `getOwnProfile` | `GET /rest/v1/rpc/get_own_profile` | Own FacultyProfile object or null |
+| `searchStudents` | `GET /rest/v1/rpc/search_students` | Student browsing/search results with optional filters and pagination |
+| `listFaculty` | `GET /rest/v1/faculty_profiles` | Array of profiles allowed by the caller's role and RLS |
+| `listStudentReviews` | `GET /rest/v1/review_details` with `student_id=eq.<uuid>` | Array of visible reviews and attachment metadata |
+| `listTags` | `GET /rest/v1/rpc/suggest_review_tags` | Distinct accessible active-review tags |
+
+The dedicated detail RPCs are proposed STABLE, SECURITY INVOKER SQL functions returning scalar
+jsonb, so their responses are objects/null rather than table-result arrays. `getStudentById`
+accepts one required UUID argument without a PostgREST eq. prefix; it is available only to verified
+faculty/admins and returns null for missing or inaccessible rows. `getOwnProfile` accepts no
+arguments, derives the identity exclusively from auth.uid(), and permits pending users to read
+their own status. A profile not yet provisioned returns null and grants no access.
+Both functions must enforce the caller's grants/RLS and perform no writes. Their signatures and
+response shapes must be implemented and tested in the backend phase and reviewed with this PR.
+
+No exception for combined operation IDs is needed. The other issue-named operations use
+`createStudentDirect`, `updateStudent`, `updateFacultyByAdmin`, `updateOwnProfile`,
+`submitApplication`, `listApprovalQueueItems`, `listAuditLogs`, and the five required review,
+chat and approval Edge Function IDs exactly as specified.
+
+Review reads include visible attachment metadata; history is read through `listReviewRevisions`
+with `review_id=eq.<uuid>`. `listTags` returns distinct tags only from accessible active reviews.
+`ReviewEmbedding` and the full `ReviewAttachment` entity remain internal and are not referenced
+by any client operation. Public OAuth operations are handled by Supabase Auth SDK, so none of the
+declared application operations is public or needs `security: []`.
+
+Contract lint checks OpenAPI structure and references. Type generation checks
+that the document produces TypeScript. Neither proves backend behavior, RLS,
+atomic database transactions, Storage visibility, or AI de-identification.
+
+The current contract:check validates lint and generated-type freshness only.
+Live PostgREST drift comparison must be implemented once migrations/backend
+exist; the command explicitly reports that it is not checking live drift.
+
+## Contract `v1.1.0` additive extension — Admin Direct CRUD
+
+Historical behavior below is superseded for new-account provisioning by the Issue #213 proposal.
+
+To align the Admin Portal (`/admin/students` and `/admin/faculty`) with the
+approved Milestone 1 mockups while keeping existing `v1.0.0` operations
+unchanged, `v1.1.0` adds three Admin-only PostgREST operations (bringing the
+contract from 27 to 30 operations):
+
+| Operation | Method and path | Behavior & integrity guard |
+| --- | --- | --- |
+| `deleteStudent` | `DELETE /rest/v1/student_profiles?id=eq.<uuid>` | Admin only. Deletes unreferenced students (`204`); returns `409 Conflict` (`23503`) if reviews reference the student. |
+| `createFacultyByAdmin` | `POST /rest/v1/faculty_profiles` | Historical v1.1.0 behavior: Admin only (`FacultyCreateInput`), with an approved department and an active default status; linked or provisioned the Auth user by email. Superseded by Issue #213: direct insertion only links an existing Auth identity; new accounts use `inviteFaculty` and remain pending until approved. |
+| `deleteFaculty` | `DELETE /rest/v1/faculty_profiles?id=eq.<uuid>` | Admin only via RLS. Self-deletion is blocked by the `BEFORE DELETE` trigger `private.prevent_faculty_self_delete`, returning `409 Conflict` (`23503`) with hint `FACULTY_SELF_DELETE_FORBIDDEN`. Other referenced-profile deletions retain ordinary FK conflicts (`23503`); historical attribution is never cascade-deleted or nulled. |
+
+## Issue #213 — supported faculty onboarding and invitations (`v2.0.0` proposal)
+
+This proposal implements the approved issue and requires the project's breaking-contract review before merge; it is not a record of reviewer approval.
+
+- `POST /functions/v1/faculty-onboarding` (`completeFacultyOnboarding`) accepts a name and approved department after Google OAuth. The verified, confirmed Google identity supplies the ID and email. A service-only transaction creates one pending faculty profile and one pending faculty-account application. Duplicate completion returns 409. No password or privilege fields are accepted.
+- `POST /functions/v1/faculty-invitations` (`inviteFaculty`) allows active admins to invite a new email through `auth.admin.inviteUserByEmail`. The trusted Auth invitation event creates the pending faculty profile and application inside the Auth transaction. Failure rolls back provisioning; existing emails return 409. The response contains only ID, email, and pending status.
+- Invitation emails are reserved case-insensitively across Edge workers before calling Auth. An overlapping request returns 409. Reservations expire after five minutes if Auth's outcome is unknown; request tokens prevent stale cleanup from releasing newer requests. An uncertain request must refresh account state before retrying.
+- Auth user metadata never grants role or active status. Invited users are always pending faculty. Only the approval transaction activates them; existing pending RLS restrictions remain in force.
+- Google OAuth remains the application sign-in flow. Invitation email delivery does not introduce a password form or password signup endpoint. Users without a profile complete onboarding after OAuth; the database does not guess a department during first sign-in.
+- `GET /functions/v1/faculty-onboarding` (`listFacultyOnboardingDepartments`) supplies only approved department IDs and names to authenticated verified Google users before their profile exists. This narrow onboarding lookup preserves the existing direct-table RLS restrictions. Frontend flow: Google OAuth, load choices, submit the name/department to the POST endpoint, then refresh the own-profile query and show pending verification.
+- **Migration from v1.1.0:** `createFacultyByAdmin` continues linking existing Auth identities, but no longer inserts into `auth.users`. Missing identities now return native PostgREST 400 / SQLSTATE 23514. New-account UI callers must use `inviteFaculty`; invited profiles already exist and must be approved rather than inserted again. Existing-identity direct-link defaults remain unchanged.
+- Synthetic pgTAP fixtures may insert Auth rows solely to isolate database behavior. Production invitation code must use the Auth API; integration tests must verify the resulting Auth identity and instance data rather than relying only on SQL fixtures.

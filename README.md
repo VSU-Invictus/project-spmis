@@ -197,44 +197,63 @@ The app runs at `http://localhost:5173`.
 ## 5. Project Structure
 ```
 contract/
-  openapi.yaml         # THE contract — single source of truth for every callable endpoint
-  redocly.yaml         # lint ruleset + Redoc theme config
-  generated/           # openapi-typescript output (committed, CI-verified fresh, never hand-edited)
-src/
-  main.tsx             # app entry; mounts providers
-  App.tsx              # router + provider composition
-  routes/
-    auth/              # Google sign-in, pending-verification screen, T&C acceptance
-    faculty/           # faculty portal routes
-    admin/             # admin portal routes
-    docs/              # in-app Redoc viewer (auth-gated outside development)
-  components/
-    ui/                # shared primitives (buttons, modals, tables, badges)
-    features/          # feature-specific components (review composer, filter panel, chat UI)
-  context/             # React Context providers (see §9 State Management)
-    SessionContext.tsx      # session, faculty profile, role, verification status
-    ChatContext.tsx         # active chatbot conversation, in-flight state, retry status
-    PreferencesContext.tsx  # theme, table density, persisted UI preferences
-  lib/
-    api/               # openapi-fetch client bound to contract/generated: auth header, error mapping
-    supabase/          # supabase-js browser client (auth only), generated database types
-    validation/        # Zod schemas mirroring the contract's request bodies
-  hooks/               # TanStack Query hooks, one per contract operation
+  openapi.yaml                   # THE contract — single source of truth for every callable endpoint (v1.0.0 frozen)
+  redocly.yaml                   # lint ruleset + Redoc theme config
+  .redocly.lint-ignore.yaml      # intentional internal entity schema ignores
+  check-generated.mjs            # CI script verifying generated/schema.d.ts freshness
+  README.md                      # contract freeze policy, commands, and Prism / collection usage
+  collection/                    # runnable Postman / Bruno collection & environment for all 27 operations
+  generated/
+    schema.d.ts                  # openapi-typescript output (committed, CI-verified fresh, never hand-edited)
+app/
+  .env.example                   # public client-side environment template (VITE_SUPABASE_*)
+  package.json                   # frontend SPA & contract tooling scripts (npm --prefix app run ...)
+  vite.config.ts                 # Vite + Vitest configuration
+  public/
+    docs/index.html              # pre-built static Redoc bundle served at /docs
+  src/
+    main.tsx                     # app entry; mounts router and providers
+    pages/
+      faculty/                   # faculty portal screens (Dashboard, Students, Chat, Proposals, Applications)
+      admin/                     # admin portal screens (Dashboard, Applications, Students, Taxonomy, Audit Log)
+    routes/
+      docs/DocsPage.tsx          # in-app Redoc viewer (auth-gated outside development)
+    components/
+      ui/                        # Design System primitives (Button, Card, Badge, Input, Modal, Skeleton, EmptyState)
+      navigation/                # AppShell, Sidebar, Topbar
+    context/                     # React Context providers (see §9 State Management)
+      SessionContext.tsx         # session, faculty profile, role, verification status
+      ChatContext.tsx            # active chatbot conversation, in-flight state, retry status
+      PreferencesContext.tsx     # theme, table density, persisted UI preferences
+    lib/
+      api/                       # openapi-fetch client bound to contract/generated, request() unwrapper, ApiRequestError
+      rules/                     # pure domain validation rules (500-word review limit, tag normalization, entity names)
+      supabase/                  # supabase-js browser client (auth only), generated database types
+      validation/                # Zod schemas mirroring the contract's request bodies
+    hooks/                       # TanStack Query hooks + operationId-derived queryKeys.ts
+    mocks/                       # MSW (Mock Service Worker) contract-aligned handlers, Node server, and Vitest setup
+  tests/                         # API client, error normalization, query-key, and MSW integration tests
 supabase/
-  migrations/          # SQL migration files
-  functions/           # Edge Functions — each one an operation in contract/openapi.yaml
-    reviews/           # create/edit/hide/delete: de-identification + embedding lifecycle
-    chat/              # AI chatbot; the only holder of GEMINI_API_KEY
-    approvals/         # bulk approve/reject across the four queue types
-  seed.sql             # local/dev seed data
-.github/
-  workflows/           # CI pipelines
-  ISSUE_TEMPLATE/      # bug report / test-case issue templates
+  .env.example                   # server-only environment template (GEMINI_API_KEY, GOOGLE_CLIENT_*)
+  migrations/                    # versioned SQL migration files (tables, constraints, triggers, RPCs, RLS)
+  functions/                     # Edge Functions — each one an operation in contract/openapi.yaml
+    reviews/                     # create/edit/hide/delete: de-identification + embedding lifecycle
+    chat/                        # AI chatbot; the only holder of GEMINI_API_KEY
+    approvals/                   # bulk approve/reject across the four queue types
+  tests/                         # pgTAP SQL database & RLS test suite
+  seed.sql                       # local/dev synthetic seed data
+mockup/                          # Milestone 1 static HTML/CSS Design System & interactive prototype
 docs/
-  change log/          # Changelog tracking (CHANGELOG.md)
+  contract-decisions.md          # OpenAPI architectural trade-offs and scope decisions
+  api/                           # QA Prism endpoint test logs and E2E test-case specifications
+  change log/                    # project changelog tracking (CHANGELOG.md)
+.github/
+  workflows/ci.yml               # automated CI merge-gate pipeline (contract + app jobs)
+  ISSUE_TEMPLATE/                # task, bug report, and QA test-case issue templates
+  PULL_REQUEST_TEMPLATE.md       # pull request checklist and reviewer guidelines
 ```
 
-Note what is *absent*: there is no `lib/ai/` in `src/`. De-identification, embedding, retrieval, and prompt assembly live exclusively in `supabase/functions/`, because none of them may run on a machine the user controls.
+Note what is *absent*: there is no `lib/ai/` in `app/src/`. De-identification, embedding, retrieval, and prompt assembly live exclusively in `supabase/functions/`, because none of them may run on a machine the user controls.
 
 ## 6. Domain Rules & Business Logic
 
@@ -675,11 +694,38 @@ End-to-end test cases are raised as GitHub Issues by Quality Assurance in coordi
 Milestones group issues by development phase/sprint (e.g., "Review Authoring & Lifecycle," "Approval Queues," "AI Chatbot & De-identification"). Every issue should be assigned to a milestone before work starts.
 
 ### Branching & Pull Requests
-- Branch naming: `feature/<short-description>`, `fix/<short-description>`, tied to an issue number where applicable (e.g., `feature/09-review-hide-toggle`).
+
+- Branch naming: `feat/<feature-name>` for feature work, `fix/<short-description>` for fixes, tied to an issue number where applicable (e.g., `feat/09-review-hide-toggle`).
 - **Commit messages follow [Conventional Commits](https://www.conventionalcommits.org)**: `type(scope): imperative description`, using `feat`, `fix`, `docs`, `refactor`, `test`, `style`, or `chore`. A change that breaks existing callers takes a `!` before the colon — `feat(contract)!: rename the load endpoint` — which is how a breaking contract change announces itself in the log rather than in someone's failing build.
 - Every PR must reference the issue(s) it addresses and describe what changed.
 - **1 required reviewer approval** before merging, enforced via GitHub branch protection on `main`.
 - CI (see below) must pass before a PR is eligible for merge.
+
+#### PR Milestone Guideline
+
+**Canonical branch flow:**
+
+```text
+feat/<feature-name> -> feat/<milestone-name> -> dev -> staging -> main
+```
+
+Feature and QA PRs during milestone development target the milestone branch, not `main`. Once the milestone is complete, open a PR from the milestone branch to `dev`; promote changes through `staging` before `main`.
+
+**PR titles:**
+
+- Milestone completion: `[Milestone] <milestone-name>`
+- Promotion: `[Promotion] <source-branch> -> <target-branch>`
+
+**Review matrix:**
+
+| Promotion | Required review and validation |
+|---|---|
+| Feature → Milestone | Team review and standard checks; Sir Kyle/Sir Bars review is not required. |
+| Milestone → `dev` | Requestor + Sir Bars. |
+| `dev` → `staging` | Team review + manual and automated checks. |
+| `staging` → `main` | Team + Sir Kyle + Sir Bars + UAT. |
+
+Do not promote a branch with failing checks or missing required approvals. If validation or UAT fails, document the failure on the PR and open a fix branch from the affected branch.
 
 ### CI (GitHub Actions)
 Workflows in `.github/workflows/` run on every PR:

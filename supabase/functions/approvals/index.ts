@@ -1,0 +1,60 @@
+import { assertAllowedKeys, errorResponse, FunctionError, handleOptions, isUuid, jsonResponse, mapDatabaseError, readJson } from '../_shared/errors.ts';
+import { adminClient, getProfile } from '../_shared/supabase.ts';
+import { normalizeApplicationIds } from '../_shared/approval-request.ts';
+
+async function handler(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') return handleOptions();
+  try {
+    if (request.method !== 'POST') {
+      throw new FunctionError(405, 'METHOD_NOT_ALLOWED', 'The HTTP method is not supported.');
+    }
+    const { id, role } = await getProfile(request);
+    if (role !== 'admin') throw new FunctionError(403, 'FORBIDDEN', 'Only administrators can decide applications.');
+    const body = await readJson(request, ['application_ids', 'decision', 'reason', 'department_assignments']);
+    const applicationIds = normalizeApplicationIds(body.application_ids);
+    body.application_ids = applicationIds;
+    if (body.decision !== 'approve' && body.decision !== 'reject') {
+      throw new FunctionError(422, 'INVALID_DECISION', 'decision must be approve or reject.');
+    }
+    assertAllowedKeys(body, body.decision === 'approve'
+      ? ['application_ids', 'decision', 'department_assignments']
+      : ['application_ids', 'decision', 'reason']);
+    if (body.decision === 'reject' &&
+      (typeof body.reason !== 'string' || !body.reason.trim() || body.reason.length > 1000)) {
+      throw new FunctionError(422, 'REJECTION_REASON_REQUIRED', 'A nonblank rejection reason is required.');
+    }
+    if (body.department_assignments !== undefined) {
+      if (body.decision === 'reject' || !Array.isArray(body.department_assignments) ||
+        body.department_assignments.length > 100) {
+        throw new FunctionError(422, 'INVALID_DEPARTMENT_ASSIGNMENTS', 'department_assignments are only valid for approvals.');
+      }
+      const assignmentIds = new Set<string>();
+      for (const assignment of body.department_assignments) {
+        if (!assignment || typeof assignment !== 'object' || Array.isArray(assignment)) {
+          throw new FunctionError(422, 'INVALID_DEPARTMENT_ASSIGNMENTS', 'Each department assignment must target one selected application exactly once.');
+        }
+        const candidate = assignment as Record<string, unknown>;
+        assertAllowedKeys(candidate, ['application_id', 'department_id']);
+        if (!isUuid(candidate.application_id) || !isUuid(candidate.department_id) ||
+          assignmentIds.has(candidate.application_id.toLowerCase()) ||
+          !applicationIds.includes(candidate.application_id.toLowerCase())) {
+          throw new FunctionError(422, 'INVALID_DEPARTMENT_ASSIGNMENTS', 'Each department assignment must target one selected application exactly once.');
+        }
+        const assignmentId = candidate.application_id.toLowerCase();
+        candidate.application_id = assignmentId;
+        candidate.department_id = candidate.department_id.toLowerCase();
+        assignmentIds.add(assignmentId);
+      }
+    }
+    const { data, error } = await adminClient().rpc('decide_applications_transaction', {
+      p_actor_id: id,
+      p_request: body,
+    });
+    if (error) mapDatabaseError(error);
+    return jsonResponse(data ?? []);
+  } catch (error) {
+    return errorResponse(error);
+  }
+}
+
+Deno.serve(handler);

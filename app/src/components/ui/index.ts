@@ -9,6 +9,7 @@ export * from './Modal';
 export * from './Table';
 export * from './Tabs';
 export * from './EmptyState';
+export * from './Skeleton';
 export * from './RejectionRow';
 export * from './DataTable';
 export * from './QueueMetricCard';
