@@ -2,6 +2,7 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { FooterNav } from '../../components/navigation/FooterNav';
 import { useSession } from '../../context/SessionContext';
 import { supabase } from '../../lib/supabase';
+import { FacultyOnboardingForm } from './FacultyOnboardingForm';
 
 export default function PendingVerificationPage() {
   const { session, profile, mockRole, loading } = useSession();
@@ -25,6 +26,20 @@ export default function PendingVerificationPage() {
   async function backToSignIn() {
     if (supabase) await supabase.auth.signOut();
     navigate('/signin', { replace: true, viewTransition: true });
+  }
+
+  if (session && !profile && !signupPending) {
+    return (
+      <main className="verification-page auth-bg-pixel">
+        <section className="verification-wrapper">
+          <FacultyOnboardingForm />
+          <button className="verification-back-button verification-back-button--secondary" type="button" onClick={() => void backToSignIn()}>
+            Back to Sign In
+          </button>
+        </section>
+        <FooterNav className="verification-footer" />
+      </main>
+    );
   }
 
   return (
