@@ -394,6 +394,22 @@ code, kbd, samp, pre {
   line-height: 1.25 !important;
 }
 
+.admin-portal-main > .ui-dashboard-content :is(h1.heading-title, h1.ui-page-title, .ui-dashboard-intro > h1) {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.admin-portal-main:has(> .ui-dashboard-content > :is(.admin-taxonomy-management, .admin-page-intro-layout))
+  > .ui-dashboard-top-header {
+  margin-bottom: 0 !important;
+}
+
+/* The roster title starts 11px into its centered heading wrapper. */
+.admin-portal-main > .ui-dashboard-content > .admin-page-intro-layout {
+  padding-top: 11px;
+}
+
 .ui-heading-2 {
   font-family: var(--font-sans) !important;
   font-size: 1.375rem !important; /* 22px */
@@ -503,9 +519,13 @@ button {
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
 }
 
+/* Match the roster component rules, including the Queue counter inside the button. */
 html[data-theme-switching] *,
 html[data-theme-switching] *::before,
-html[data-theme-switching] *::after {
+html[data-theme-switching] *::after,
+html[data-theme-switching] button,
+html[data-theme-switching] .section-container :is(.admin-student-management, .admin-faculty-management)
+  :is(button, .queue-counter, .table-row, input, select, .dropdown-container, .dropdown-chevron) {
   transition: none !important;
 }
 
@@ -1292,6 +1312,15 @@ html:not(.dark) :is(.app-sidebar, .sidebar) [aria-current="page"] span {
 html:not(.dark) :is(.app-sidebar, .sidebar) .sidebar-divider {
   background-color: #E2DDD4 !important;
   border-color: #E2DDD4 !important;
+}
+
+html:not(.dark) [data-component="sidebar-admin"] .sidebar-divider {
+  background-color: var(--color-border-subtle) !important;
+  border-bottom-color: var(--color-border-subtle) !important;
+}
+
+html:not(.dark) .ui-dashboard-app--admin .ui-dashboard-footer {
+  border-top-color: var(--color-border-subtle) !important;
 }
 
 html:not(.dark) .ui-dashboard-app--faculty .ui-dashboard-footer {

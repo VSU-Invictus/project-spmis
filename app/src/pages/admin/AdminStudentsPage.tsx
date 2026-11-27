@@ -16,6 +16,7 @@ import { studentSchema } from '../../lib/validation/student';
 import { ApiRequestError } from '../../lib/api';
 import { confirmsMutation } from '../../lib/api/confirmMutation';
 import './AdminStudentsPage.css';
+import './AdminRemoveButton.css';
 
 type Selection = { action: 'create' } | { action: 'edit' | 'remove'; id: string };
 
@@ -184,10 +185,10 @@ function StudentManagement({ profileId }: { profileId: string }) {
     if (allowedSize !== pageSize) { setPageSize(allowedSize); setPage(1); }
     else if (page > Math.max(1, Math.ceil(total / pageSize))) setPage(Math.max(1, Math.ceil(total / pageSize)));
   }, [students.data, page, pageSize]);
-  return <AppShell role="admin" activeNavKey="students" breadcrumb="Admin Portal / Student Roster">
+  return <AppShell role="admin" activeNavKey="students" breadcrumb="Admin Portal / Student Roster" showFooterLinks={false}>
     <div className="admin-student-management">
       <div className="header-container">
-        <div className="heading-wrapper"><h2 className="heading-title">Student Roster</h2></div>
+        <div className="heading-wrapper"><h1 className="heading-title">Student Roster</h1></div>
         <Button variant="add" onClick={() => setSelection({ action: 'create' })}>Add Student</Button>
       </div>
       <div className="controls-container">
@@ -225,7 +226,7 @@ function StudentManagement({ profileId }: { profileId: string }) {
             { key: 'program_name', label: 'Program', colClass: 'col-program' },
             { key: 'actions', label: 'Actions', colClass: 'col-action', headerClass: 'col-action text-center ui-table-heading-center', render: row => <>
               <button type="button" className="pill-btn-sm edit" onClick={() => setSelection({ action: 'edit', id: row.id })}>Edit</button>
-              <button type="button" className="pill-btn-sm remove" onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</button>
+              <Button variant="destructive" className="pill-btn-sm remove admin-remove-button" onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</Button>
             </> },
           ]} />}
       {selection?.action === 'remove' && <StudentRemoveDialog id={selection.id} onClose={() => setSelection(null)} onSaved={setToast} />}

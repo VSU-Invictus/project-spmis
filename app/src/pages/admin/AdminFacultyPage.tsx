@@ -8,7 +8,7 @@ import { useQueueSearchParam } from '../../components/queue-modal';
 import { useSession } from '../../context/SessionContext';
 import { useAdminQueueBrowse } from '../../hooks/useAdminQueueBrowse';
 import {
-  useFacultyList, useCreateFacultyByAdmin, useUpdateFacultyByAdmin, useDeleteFaculty,
+  useFacultyList, useFacultyPage, useCreateFacultyByAdmin, useUpdateFacultyByAdmin, useDeleteFaculty,
   useApprovedDepartmentOptions, useDepartmentOptions,
   type FacultyListItem, type UpdateFacultyByAdminInput, type Department,
 } from '../../hooks';
@@ -16,6 +16,7 @@ import { facultyEditSchema, type FacultyEditValues } from '../../lib/validation/
 import { ApiRequestError } from '../../lib/api';
 import { confirmsMutation } from '../../lib/api/confirmMutation';
 import './AdminFacultyPage.css';
+import './AdminRemoveButton.css';
 
 type Selection = { action: 'create' } | { action: 'edit' | 'remove'; id: string };
 const SELF_DELETION_UNAVAILABLE = 'You cannot remove your own active administrator account.';
@@ -201,6 +202,8 @@ function FacultyRemoveDialog({ id, isSelf, onClose, onSaved }: {
 function FacultyManagement({ profileId }: { profileId: string }) {
   const [search, setSearch] = useState('');
   const [departmentId, setDepartmentId] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
   const [selection, setSelection] = useState<Selection | null>(null);
   const [toast, setToast] = useState('');
   const { openQueue } = useQueueSearchParam();
@@ -208,15 +211,23 @@ function FacultyManagement({ profileId }: { profileId: string }) {
   // Escape LIKE first, then quote the PostgREST operand. These are separate parser layers;
   // JSON.stringify must also escape the pattern's backslashes and embedded quotes.
   const pattern = JSON.stringify(`%${search.trim().replace(/[\\%_*]/g, '\\$&')}%`);
-  const faculty = useFacultyList({ or: search.trim() ? `(full_name.ilike.${pattern},email.ilike.${pattern})` : undefined,
-    department_id: departmentId ? `eq.${departmentId}` : undefined, order: 'created_at.desc,id.asc' });
+  const faculty = useFacultyPage({ or: search.trim() ? `(full_name.ilike.${pattern},email.ilike.${pattern})` : undefined,
+    department_id: departmentId ? `eq.${departmentId}` : undefined,
+    limit: pageSize, offset: (page - 1) * pageSize, order: 'created_at.desc,id.asc' });
   const queue = useAdminQueueBrowse('faculty_account', profileId);
   useEffect(() => {
     if (!toast) return;
     const timer = window.setTimeout(() => setToast(''), 3000);
     return () => window.clearTimeout(timer);
   }, [toast]);
-  return <AppShell role="admin" activeNavKey="faculty" breadcrumb="Admin Portal / Faculty Roster">
+  useEffect(() => {
+    if (!faculty.data) return;
+    const total = faculty.data.total;
+    const allowedSize = total < 10 ? 5 : total < 20 ? Math.min(pageSize, 10) : pageSize;
+    if (allowedSize !== pageSize) { setPageSize(allowedSize); setPage(1); }
+    else if (page > Math.max(1, Math.ceil(total / pageSize))) setPage(Math.max(1, Math.ceil(total / pageSize)));
+  }, [faculty.data, page, pageSize]);
+  return <AppShell role="admin" activeNavKey="faculty" breadcrumb="Admin Portal / Faculty Roster" showFooterLinks={false}>
     <div className="admin-faculty-management">
       <div className="header-container">
         <div className="heading-wrapper"><h1 className="heading-title">Faculty</h1></div>
@@ -226,7 +237,7 @@ function FacultyManagement({ profileId }: { profileId: string }) {
         <div className="search-wrapper">
           <svg className="search-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.3" /><path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
           <Input className="search-input" type="search" aria-label="Search by faculty name or email" placeholder="Search by faculty name or email..."
-            value={search} onChange={event => setSearch(event.target.value)} />
+            value={search} onChange={event => { setSearch(event.target.value); setPage(1); }} />
         </div>
         <div className="controls-actions">
           <Button variant="outline" className="queue-button" aria-label="Open faculty applications queue" onClick={() => openQueue('faculty')}>
@@ -234,7 +245,7 @@ function FacultyManagement({ profileId }: { profileId: string }) {
           </Button>
           <div className="dropdown-container department">
             <select className="dropdown-select" aria-label="Filter by department" value={departmentId} disabled={departments.isPending || departments.isError}
-              onChange={event => setDepartmentId(event.target.value)}>
+              onChange={event => { setDepartmentId(event.target.value); setPage(1); }}>
               <option value="">Department: All</option>
               {departments.data?.map(department => <option key={department.id} value={department.id}>{department.name}</option>)}
             </select>
@@ -243,10 +254,12 @@ function FacultyManagement({ profileId }: { profileId: string }) {
         </div>
       </div>
       {departments.isError && <RequestError error={departments.error} retry={() => void departments.refetch()} />}
-      {faculty.isError ? <RequestError error={faculty.error} retry={() => void faculty.refetch()} /> :
-        <DataTable layoutMode="flex" ariaLabel="Faculty roster" data={faculty.data ?? []} getRowId={row => row.id}
-          isLoading={faculty.isFetching} emptyTitle={search || departmentId ? 'No matching faculty' : 'No faculty yet'}
+      {faculty.isError ? <RequestError error={faculty.error} retry={() => { if (page > 1) setPage(1); else void faculty.refetch(); }} /> :
+        <DataTable layoutMode="flex" ariaLabel="Faculty roster" data={faculty.data?.faculty ?? []} getRowId={row => row.id}
+          isLoading={faculty.isPending || faculty.isFetching} emptyTitle={search || departmentId ? 'No matching faculty' : 'No faculty yet'}
           emptyDescription={search || departmentId ? 'Try adjusting your search or filters.' : 'Faculty records will appear here when they are added.'}
+          pagination={{ page, pageSize, totalEntries: faculty.data?.total ?? 0, onPageChange: setPage,
+            onPageSizeChange: size => { setPageSize(size); setPage(1); } }}
           columns={[
             { key: 'full_name', label: 'Name', colClass: 'col-name' },
             { key: 'email', label: 'Email Address', colClass: 'col-email' },
@@ -257,13 +270,13 @@ function FacultyManagement({ profileId }: { profileId: string }) {
             { key: 'actions', label: 'Actions', colClass: 'col-action text-right', headerClass: 'col-action text-center ui-table-heading-center', render: row =>
               <div className="action-group">
                 <button type="button" className="pill-btn edit-btn" onClick={() => setSelection({ action: 'edit', id: row.id })}>Edit</button>
-                <button type="button" className="pill-btn remove-btn" title={row.id === profileId ? SELF_DELETION_UNAVAILABLE : undefined} onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</button>
+                <Button variant="destructive" className="pill-btn-sm remove admin-remove-button" title={row.id === profileId ? SELF_DELETION_UNAVAILABLE : undefined} onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</Button>
               </div> },
           ]} />}
       {selection?.action === 'remove' && <FacultyRemoveDialog id={selection.id} isSelf={selection.id === profileId}
         onClose={() => setSelection(null)} onSaved={setToast} />}
       {selection && selection.action !== 'remove' && <FacultyEditor id={selection.action === 'edit' ? selection.id : undefined}
-        onClose={() => setSelection(null)} onSaved={setToast} />}
+        onClose={() => setSelection(null)} onSaved={message => { setToast(message); setPage(1); }} />}
       <div className={`toast ${toast ? 'show' : ''}`} role="status">{toast}</div>
     </div>
   </AppShell>;
