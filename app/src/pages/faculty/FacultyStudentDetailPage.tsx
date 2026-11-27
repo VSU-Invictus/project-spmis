@@ -42,13 +42,6 @@ function formatIsoDate(value?: string | null): string {
   return `${year}-${month}-${day}`;
 }
 
-function summarizeReviewExcerpt(text: string): string {
-  const normalized = text.replace(/\s+/g, ' ').trim();
-  if (!normalized) return '';
-  const clipped = normalized.length > 140 ? `${normalized.slice(0, 137).trimEnd()}…` : normalized;
-  return /[.!?…]$/.test(clipped) ? clipped : `${clipped}.`;
-}
-
 function buildAiReviewSummary(
   fullName: string,
   activeReviews: Review[],
@@ -62,18 +55,19 @@ function buildAiReviewSummary(
     activeTags.length > 0
       ? `highlighting ${activeTags.join(', ')}`
       : 'covering recent academic coursework and collaboration';
-  const lead = `${fullName} demonstrates consistent academic strengths across ${activeReviews.length} attributed active ${activeReviews.length === 1 ? 'review' : 'reviews'}, ${tagSummary}.`;
+  const departments = [
+    ...new Set(
+      activeReviews
+        .map((review) => review.author_department_name?.trim())
+        .filter((dept): dept is string => Boolean(dept))
+    ),
+  ];
+  const deptPhrase =
+    departments.length > 0
+      ? `Contributors from ${departments.join(' and ')}`
+      : 'Contributing faculty members';
 
-  const excerpts = activeReviews
-    .map((review) => summarizeReviewExcerpt(review.body_text ?? ''))
-    .filter(Boolean)
-    .slice(0, 2);
-
-  if (excerpts.length === 0) return lead;
-  if (excerpts.length === 1) {
-    return `${lead} Recent faculty feedback notes: ${excerpts[0]}`;
-  }
-  return `${lead} Recent faculty feedback notes: ${excerpts[0]} Peers also observe: ${excerpts[1]}`;
+  return `${fullName} demonstrates consistent strengths across ${activeReviews.length} attributed active ${activeReviews.length === 1 ? 'review' : 'reviews'}, ${tagSummary}. ${deptPhrase} note dependable progress, thoughtful execution, and constructive engagement across these areas.`;
 }
 
 function ReviewRevisionsSection({ reviewId }: { reviewId: string }) {
