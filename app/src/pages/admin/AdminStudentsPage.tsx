@@ -225,7 +225,7 @@ function StudentManagement({ profileId }: { profileId: string }) {
             { key: 'program_name', label: 'Program', colClass: 'col-program' },
             { key: 'actions', label: 'Actions', colClass: 'col-action', headerClass: 'col-action text-center ui-table-heading-center', render: row => <>
               <button type="button" className="pill-btn-sm edit" onClick={() => setSelection({ action: 'edit', id: row.id })}>Edit</button>
-              <button type="button" className="pill-btn-sm remove" onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</button>
+              <Button variant="destructive" className="pill-btn-sm remove" onClick={() => setSelection({ action: 'remove', id: row.id })}>Remove</Button>
             </> },
           ]} />}
       {selection?.action === 'remove' && <StudentRemoveDialog id={selection.id} onClose={() => setSelection(null)} onSaved={setToast} />}
