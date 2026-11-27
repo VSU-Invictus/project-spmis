@@ -1,4 +1,5 @@
-import { expect, it } from 'vitest';
+// @vitest-environment jsdom
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { isRosterMockRequest, rosterMockHandlers } from './browser';
 import { server } from './server';
 
@@ -28,7 +29,7 @@ it('limits browser mocks to the local API origin and relevant operations', async
 });
 
 it('uses the counted roster handlers and shares state for Student detail and deletion', async () => {
-  server.resetHandlers(...rosterMockHandlers(origin));
+  server.resetHandlers(...await rosterMockHandlers(origin));
   const roster = origin + '/rest/v1/rpc/search_students?limit=1';
   const detail = origin + '/rest/v1/rpc/get_student_by_id?p_student_id=' + studentId;
   const headers = { Prefer: 'count=exact' };
@@ -47,7 +48,7 @@ it('uses the counted roster handlers and shares state for Student detail and del
 });
 
 it('serves pending student registrations and decisions from the same fixture state', async () => {
-  server.resetHandlers(...rosterMockHandlers(origin));
+  server.resetHandlers(...await rosterMockHandlers(origin));
   const pending = origin + studentQueue + '?type=eq.student_registration&status=eq.pending';
   const items = await (await fetch(pending)).json();
   expect(items).toHaveLength(1);
@@ -58,4 +59,51 @@ it('serves pending student registrations and decisions from the same fixture sta
   const result = await fetch(decisions);
   expect(await result.json()).toMatchObject([{ id: items[0].id, status: 'approved' }]);
   expect(await (await fetch(pending)).json()).toEqual([]);
+});
+
+const { start } = vi.hoisted(() => ({ start: vi.fn() }));
+vi.mock('msw/browser', () => ({ setupWorker: () => ({ start }) }));
+vi.mock('../lib/supabase', () => ({ isLocalMockAuth: true }));
+
+describe('shared browser mock startup', () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.useFakeTimers();
+    Object.defineProperty(navigator, 'serviceWorker', { configurable: true, value: {} });
+  });
+
+  afterEach(() => {
+    Reflect.deleteProperty(navigator, 'serviceWorker');
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+    start.mockReset();
+  });
+
+  it('shares one startup attempt and releases audit requests when the worker stalls', async () => {
+    start.mockImplementation(() => new Promise(() => {}));
+    const { waitForAuditLogMock, waitForLocalMocks } = await import('./browser');
+    const readiness = waitForLocalMocks();
+    expect(readiness).toBeDefined();
+    expect(waitForAuditLogMock()).toBe(readiness);
+    await vi.dynamicImportSettled();
+    expect(start).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(2000);
+    await expect(readiness).resolves.toBeUndefined();
+  });
+
+  it('releases audit requests when startup rejects', async () => {
+    start.mockRejectedValue(new Error('registration failed'));
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const { waitForAuditLogMock } = await import('./browser');
+    await expect(waitForAuditLogMock()).resolves.toBeUndefined();
+    expect(warning).toHaveBeenCalledTimes(1);
+  });
+
+  it('releases audit requests as soon as a healthy worker starts', async () => {
+    start.mockResolvedValue(undefined);
+    const { waitForAuditLogMock } = await import('./browser');
+    await expect(waitForAuditLogMock()).resolves.toBeUndefined();
+    expect(start).toHaveBeenCalledWith({ onUnhandledRequest: 'bypass' });
+    expect(vi.getTimerCount()).toBe(0);
+  });
 });

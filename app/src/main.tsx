@@ -1,6 +1,6 @@
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, Navigate, Outlet, useLocation, matchPath } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate, Outlet, matchPath, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
 import './pages/auth/signin.css';
@@ -33,6 +33,7 @@ import { FacultyStudentDetailPage } from './pages/faculty/FacultyStudentDetailPa
 import { FacultyDashboardPage } from './pages/faculty/FacultyDashboardPage';
 import { FacultyChatPage } from './pages/faculty/FacultyChatPage';
 import { AdminApprovalQueuePage } from './pages/admin/AdminApprovalQueuePage';
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminTaxonomyManagementPage } from './pages/admin/AdminTaxonomyManagementPage';
 import { FacultyApplicationsPage } from './pages/faculty/FacultyApplicationsPage';
 import { FacultyTaxonomyPage } from './pages/faculty/FacultyTaxonomyPage';
@@ -127,10 +128,12 @@ function RootLayout() {
   const { mockRole, setMockRole } = useSession();
   const location = useLocation();
   const showMockRole = !['/', '/signin', '/login', '/signup'].includes(location.pathname);
-  // Keep the mock-role control above the rosters' bottom-right version label.
+  // Keep the mock-role control above the bottom-right version label.
   const isAdminFaculty = Boolean(matchPath('/admin/faculty', location.pathname));
+  const hasVersionOffset = matchPath('/admin/students', location.pathname) ||
+    matchPath('/admin/dashboard', location.pathname);
   const mockRoleBottom = isAdminFaculty ? 'var(--faculty-mock-role-bottom, 56px)' :
-    matchPath('/admin/students', location.pathname) ? 56 : 16;
+    hasVersionOffset ? 56 : 16;
   return (
     <>
       <ScrollToTop />
@@ -210,7 +213,7 @@ const router = createBrowserRouter([
           element: <RequireRole role="admin" />,
           children: [
             { index: true, element: <Navigate to="/admin/dashboard" replace /> },
-            { path: 'dashboard', element: <AdminApprovalQueuePage /> },
+            { path: 'dashboard', element: <AdminDashboardPage /> },
             { path: 'applications', element: <AdminApprovalQueuePage /> },
             { path: 'students', element: <AdminStudentsPage /> },
             { path: 'departments', element: <AdminTaxonomyManagementPage mode="departments" /> },
@@ -240,8 +243,8 @@ async function startApp() {
   if (import.meta.env.DEV && isLocalMockAuth &&
       ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
     try {
-      const { startRosterMocks } = await import('./mocks/browser');
-      await startRosterMocks();
+      const { waitForLocalMocks } = await import('./mocks/browser');
+      await waitForLocalMocks();
     } catch (error) {
       console.error('Unable to start local API mocks.', error);
       root.textContent = 'Unable to start local API mocks. Check service worker permissions and reload.';

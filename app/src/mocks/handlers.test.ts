@@ -171,6 +171,30 @@ describe('contract MSW handlers', () => {
     expect(await response.json()).toEqual([]);
   });
 
+  it('counts the existing filtered audit fixtures and honors the requested page', async () => {
+    const endpoint = `${BASE}/rest/v1/audit_log_entries`;
+    const headers = { Prefer: 'count=exact' };
+    const first = await fetch(`${endpoint}?action=eq.review.created&actor_role=eq.faculty&limit=1&offset=0&order=created_at.desc,id.asc`, { headers });
+    expect(first.status).toBe(200);
+    expect(first.headers.get('Content-Range')).toBe('0-0/1');
+    const entries = await first.json();
+    expect(entries).toHaveLength(1);
+    expect(entries[0]).toMatchObject({ action: 'review.created', actor_role: 'faculty' });
+
+    const ascending = await fetch(`${endpoint}?order=created_at.asc,id.asc`);
+    expect(ascending.headers.get('Content-Range')).toBe('0-0/*');
+    expect(await ascending.json()).toEqual(entries);
+
+    const empty = await fetch(`${endpoint}?actor_role=eq.system`, { headers });
+    expect(empty.headers.get('Content-Range')).toBe('*/0');
+    expect(await empty.json()).toEqual([]);
+
+    const outOfRange = await fetch(`${endpoint}?limit=1&offset=1`, { headers });
+    expect(outOfRange.status).toBe(416);
+    expect(outOfRange.headers.get('Content-Range')).toBe('*/1');
+    expect(await outOfRange.json()).toMatchObject({ code: 'PGRST103' });
+  });
+
   it('retrieves a student by ID via get_student_by_id RPC', async () => {
     const response = await fetch(`${BASE}/rest/v1/rpc/get_student_by_id?p_student_id=${studentId}`);
     expect(response.status).toBe(200);

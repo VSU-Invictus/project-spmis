@@ -1,5 +1,6 @@
-import { http, passthrough } from 'msw';
-import { handlers, isStudentRegistrationDecision } from './handlers';
+import { isLocalMockAuth } from '../lib/supabase';
+
+let localMocksReady: Promise<void> | undefined;
 
 const approvalQueuePath = '/rest/v1/approval_queue_items';
 const approvalDecisionPath = '/functions/v1/approvals';
@@ -29,13 +30,18 @@ export async function isRosterMockRequest(request: Request, apiOrigin: string): 
 
   if (url.pathname === approvalDecisionPath) {
     if (request.method !== 'POST') return false;
+    const { isStudentRegistrationDecision } = await import('./handlers');
     return isStudentRegistrationDecision(await request.clone().json().catch(() => null));
   }
 
   return true;
 }
 
-export function rosterMockHandlers(apiOrigin: string) {
+export async function rosterMockHandlers(apiOrigin: string) {
+  const [{ http, passthrough }, { handlers }] = await Promise.all([
+    import('msw'),
+    import('./handlers'),
+  ]);
   return [
     // Existing test handlers match any host. Bypass everything outside the local roster scope.
     http.all(async ({ request }) => !(await isRosterMockRequest(request, apiOrigin)), () => passthrough()),
@@ -43,9 +49,35 @@ export function rosterMockHandlers(apiOrigin: string) {
   ];
 }
 
-export async function startRosterMocks() {
-  const { setupWorker } = await import('msw/browser');
+async function startLocalMocks() {
   const origin = new URL(import.meta.env.VITE_SUPABASE_URL ?? 'http://localhost:4010').origin;
-  const worker = setupWorker(...rosterMockHandlers(origin));
-  await worker.start({ onUnhandledRequest: 'bypass' });
+  const [{ setupWorker }, { auditLogHandler }, rosterHandlers] = await Promise.all([
+    import('msw/browser'),
+    import('./handlers'),
+    rosterMockHandlers(origin),
+  ]);
+  await setupWorker(auditLogHandler(origin), ...rosterHandlers)
+    .start({ onUnhandledRequest: 'bypass' });
 }
+
+export function waitForLocalMocks(): Promise<void> | undefined {
+  if (!import.meta.env.DEV || !isLocalMockAuth || typeof window === 'undefined' ||
+      !('serviceWorker' in navigator) ||
+      !['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) return;
+
+  if (!localMocksReady) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<void>(resolve => {
+      timer = setTimeout(resolve, 2000);
+    });
+    localMocksReady = Promise.race([
+      startLocalMocks().catch(error => {
+        console.warn('Local API mocks could not start. Using the configured mock API.', error);
+      }),
+      timeout,
+    ]).finally(() => clearTimeout(timer));
+  }
+  return localMocksReady;
+}
+
+export const waitForAuditLogMock = waitForLocalMocks;
