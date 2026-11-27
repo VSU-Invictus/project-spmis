@@ -1,5 +1,6 @@
-import { errorResponse, FunctionError, handleOptions, isUuid, jsonResponse, mapDatabaseError, readJson } from '../_shared/errors.ts';
+import { assertAllowedKeys, errorResponse, FunctionError, handleOptions, isUuid, jsonResponse, mapDatabaseError, readJson } from '../_shared/errors.ts';
 import { adminClient, getProfile } from '../_shared/supabase.ts';
+import { normalizeApplicationIds } from '../_shared/approval-request.ts';
 
 async function handler(request: Request): Promise<Response> {
   if (request.method === 'OPTIONS') return handleOptions();
@@ -9,15 +10,15 @@ async function handler(request: Request): Promise<Response> {
     }
     const { id, role } = await getProfile(request);
     if (role !== 'admin') throw new FunctionError(403, 'FORBIDDEN', 'Only administrators can decide applications.');
-    const body = await readJson(request);
-    if (!Array.isArray(body.application_ids) || body.application_ids.length < 1 ||
-      body.application_ids.length > 100 || body.application_ids.some((id) => !isUuid(id)) ||
-      new Set(body.application_ids).size !== body.application_ids.length) {
-      throw new FunctionError(422, 'INVALID_APPLICATION_IDS', 'application_ids must contain 1 to 100 UUIDs.');
-    }
+    const body = await readJson(request, ['application_ids', 'decision', 'reason', 'department_assignments']);
+    const applicationIds = normalizeApplicationIds(body.application_ids);
+    body.application_ids = applicationIds;
     if (body.decision !== 'approve' && body.decision !== 'reject') {
       throw new FunctionError(422, 'INVALID_DECISION', 'decision must be approve or reject.');
     }
+    assertAllowedKeys(body, body.decision === 'approve'
+      ? ['application_ids', 'decision', 'department_assignments']
+      : ['application_ids', 'decision', 'reason']);
     if (body.decision === 'reject' &&
       (typeof body.reason !== 'string' || !body.reason.trim() || body.reason.length > 1000)) {
       throw new FunctionError(422, 'REJECTION_REASON_REQUIRED', 'A nonblank rejection reason is required.');
@@ -33,12 +34,16 @@ async function handler(request: Request): Promise<Response> {
           throw new FunctionError(422, 'INVALID_DEPARTMENT_ASSIGNMENTS', 'Each department assignment must target one selected application exactly once.');
         }
         const candidate = assignment as Record<string, unknown>;
+        assertAllowedKeys(candidate, ['application_id', 'department_id']);
         if (!isUuid(candidate.application_id) || !isUuid(candidate.department_id) ||
-          assignmentIds.has(candidate.application_id) ||
-          !body.application_ids.includes(candidate.application_id)) {
+          assignmentIds.has(candidate.application_id.toLowerCase()) ||
+          !applicationIds.includes(candidate.application_id.toLowerCase())) {
           throw new FunctionError(422, 'INVALID_DEPARTMENT_ASSIGNMENTS', 'Each department assignment must target one selected application exactly once.');
         }
-        assignmentIds.add(candidate.application_id);
+        const assignmentId = candidate.application_id.toLowerCase();
+        candidate.application_id = assignmentId;
+        candidate.department_id = candidate.department_id.toLowerCase();
+        assignmentIds.add(assignmentId);
       }
     }
     const { data, error } = await adminClient().rpc('decide_applications_transaction', {

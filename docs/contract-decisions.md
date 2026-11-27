@@ -155,11 +155,16 @@ issue. Including metadata does not add or approve those Storage workflows.
 
 ### Admin review access conflict
 
-README §1 says admins never access review content, whereas §6 allows admin mining
-and other wording discusses shared review visibility. This is not resolved by
-OpenAPI tags. The draft preserves explicitly required admin search/chat mining
-but excludes raw review/history reads pending the PM's decision. The final role
-policy must be consistent across mining, direct reads and RLS.
+Resolved by the PM in PR #203 (Issue #211): active admins may use
+`searchStudents`, including review-text matching, and `askChatbot` over active
+reviews. Admins cannot directly read `reviews`, `review_revisions`, or
+`review_details`; those RLS restrictions remain in force.
+
+`match_review_embeddings` remains executable only by `service_role`. The chat
+Edge Function verifies an active faculty/admin caller and passes that identity
+to the RPC for an independent actor check. Retrieved review context stays on the
+server; the client receives only the chatbot answer, never raw or de-identified
+review rows. The existing Faculty + Admin contract tags remain unchanged.
 
 ### Supabase gateway errors
 
@@ -221,6 +226,8 @@ exist; the command explicitly reports that it is not checking live drift.
 
 ## Contract `v1.1.0` additive extension — Admin Direct CRUD
 
+Historical behavior below is superseded for new-account provisioning by the Issue #213 proposal.
+
 To align the Admin Portal (`/admin/students` and `/admin/faculty`) with the
 approved Milestone 1 mockups while keeping existing `v1.0.0` operations
 unchanged, `v1.1.0` adds three Admin-only PostgREST operations (bringing the
@@ -229,5 +236,18 @@ contract from 27 to 30 operations):
 | Operation | Method and path | Behavior & integrity guard |
 | --- | --- | --- |
 | `deleteStudent` | `DELETE /rest/v1/student_profiles?id=eq.<uuid>` | Admin only. Deletes unreferenced students (`204`); returns `409 Conflict` (`23503`) if reviews reference the student. |
-| `createFacultyByAdmin` | `POST /rest/v1/faculty_profiles` | Admin only (`FacultyCreateInput`). Validates an approved `department_id`, defaults `status` to `active` when omitted by an active admin, and links or provisions the backing `auth.users` row by email in a `BEFORE INSERT` trigger. |
-| `deleteFaculty` | `DELETE /rest/v1/faculty_profiles?id=eq.<uuid>` | Admin only. Blocks self-deletion (`id <> auth.uid()`) via RLS and returns `409 Conflict` (`23503`) if reviews, revisions, proposals, or approval records reference the profile. |
+| `createFacultyByAdmin` | `POST /rest/v1/faculty_profiles` | Historical v1.1.0 behavior: Admin only (`FacultyCreateInput`), with an approved department and an active default status; linked or provisioned the Auth user by email. Superseded by Issue #213: direct insertion only links an existing Auth identity; new accounts use `inviteFaculty` and remain pending until approved. |
+| `deleteFaculty` | `DELETE /rest/v1/faculty_profiles?id=eq.<uuid>` | Admin only via RLS. Self-deletion is blocked by the `BEFORE DELETE` trigger `private.prevent_faculty_self_delete`, returning `409 Conflict` (`23503`) with hint `FACULTY_SELF_DELETE_FORBIDDEN`. Other referenced-profile deletions retain ordinary FK conflicts (`23503`); historical attribution is never cascade-deleted or nulled. |
+
+## Issue #213 — supported faculty onboarding and invitations (`v2.0.0` proposal)
+
+This proposal implements the approved issue and requires the project's breaking-contract review before merge; it is not a record of reviewer approval.
+
+- `POST /functions/v1/faculty-onboarding` (`completeFacultyOnboarding`) accepts a name and approved department after Google OAuth. The verified, confirmed Google identity supplies the ID and email. A service-only transaction creates one pending faculty profile and one pending faculty-account application. Duplicate completion returns 409. No password or privilege fields are accepted.
+- `POST /functions/v1/faculty-invitations` (`inviteFaculty`) allows active admins to invite a new email through `auth.admin.inviteUserByEmail`. The trusted Auth invitation event creates the pending faculty profile and application inside the Auth transaction. Failure rolls back provisioning; existing emails return 409. The response contains only ID, email, and pending status.
+- Invitation emails are reserved case-insensitively across Edge workers before calling Auth. An overlapping request returns 409. Reservations expire after five minutes if Auth's outcome is unknown; request tokens prevent stale cleanup from releasing newer requests. An uncertain request must refresh account state before retrying.
+- Auth user metadata never grants role or active status. Invited users are always pending faculty. Only the approval transaction activates them; existing pending RLS restrictions remain in force.
+- Google OAuth remains the application sign-in flow. Invitation email delivery does not introduce a password form or password signup endpoint. Users without a profile complete onboarding after OAuth; the database does not guess a department during first sign-in.
+- `GET /functions/v1/faculty-onboarding` (`listFacultyOnboardingDepartments`) supplies only approved department IDs and names to authenticated verified Google users before their profile exists. This narrow onboarding lookup preserves the existing direct-table RLS restrictions. Frontend flow: Google OAuth, load choices, submit the name/department to the POST endpoint, then refresh the own-profile query and show pending verification.
+- **Migration from v1.1.0:** `createFacultyByAdmin` continues linking existing Auth identities, but no longer inserts into `auth.users`. Missing identities now return native PostgREST 400 / SQLSTATE 23514. New-account UI callers must use `inviteFaculty`; invited profiles already exist and must be approved rather than inserted again. Existing-identity direct-link defaults remain unchanged.
+- Synthetic pgTAP fixtures may insert Auth rows solely to isolate database behavior. Production invitation code must use the Auth API; integration tests must verify the resulting Auth identity and instance data rather than relying only on SQL fixtures.
