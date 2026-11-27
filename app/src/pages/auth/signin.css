@@ -194,13 +194,13 @@ html[data-theme="light"] .signin-page .signin-password-toggle:hover {
 html[data-theme="light"] .signin-page .signin-password-toggle svg { width: 16px; height: 16px; }
 
 html[data-theme="light"] .signin-page .signin-submit {
-  background: var(--primary);
-  color: var(--card-foreground);
+  background: color-mix(in srgb, var(--primary) 90%, var(--card-foreground));
+  color: var(--primary-foreground);
   font: 600 0.875rem/1 var(--font-sans);
 }
 
 html[data-theme="light"] .signin-page .signin-submit:is(:hover, :focus-visible):enabled {
-  background: color-mix(in srgb, var(--primary) 90%, var(--card));
+  background: color-mix(in srgb, var(--primary) 85%, var(--card-foreground));
 }
 
 html[data-theme="light"] .signin-page :is(.signin-google, .signin-submit):disabled {
@@ -208,6 +208,11 @@ html[data-theme="light"] .signin-page :is(.signin-google, .signin-submit):disabl
   background: var(--secondary);
   color: var(--secondary-foreground);
   opacity: 1;
+}
+
+html[data-theme="light"] .signin-page .signin-submit:disabled {
+  background: var(--muted-foreground);
+  color: var(--primary-foreground);
 }
 
 html[data-theme="light"] .signin-page .signin-forgot:disabled {
