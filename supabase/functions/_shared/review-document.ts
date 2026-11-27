@@ -89,5 +89,9 @@ export function normalizeTags(value: unknown): string[] {
   if (tags.some((tag) => tag.length > 50)) {
     throw new FunctionError(422, 'INVALID_TAGS', 'Each tag must be 50 characters or fewer.');
   }
-  return [...new Set(tags)];
+  const normalizedTags = [...new Set(tags)];
+  if (normalizedTags.length > 30) {
+    throw new FunctionError(422, 'INVALID_TAGS', 'Tags must contain at most 30 unique tags after normalization.');
+  }
+  return normalizedTags;
 }
