@@ -8,8 +8,8 @@ dialog#register-student-modal[open],
 #register-student-modal[open] {
   display: flex !important;
   flex-direction: column !important;
-  width: min(500px, calc(100% - 32px)) !important;
-  max-width: 500px !important;
+  width: min(450px, calc(100% - 32px)) !important;
+  max-width: 450px !important;
   padding: 0 !important;
   background: var(--card, #21201E) !important;
   border: 1px solid var(--border, #383734) !important;
@@ -38,7 +38,7 @@ dialog#register-student-modal[open] {
   display: flex !important;
   justify-content: space-between !important;
   align-items: flex-start !important;
-  padding: 13px 16px 11px !important;
+  padding: 13px 18px 11px !important;
   border-bottom: 1px solid var(--border, #383734) !important;
   gap: 12px !important;
   flex-shrink: 0 !important;
@@ -70,7 +70,7 @@ dialog#register-student-modal[open] {
 }
 
 #register-student-modal .modal-body {
-  padding: 12px 16px 14px !important;
+  padding: 12px 18px 14px !important;
   overflow: hidden !important;
   flex-shrink: 0 !important;
 }
@@ -81,7 +81,7 @@ dialog#register-student-modal[open] {
 
 #register-student-modal .modal-body .ui-alert {
   padding: 6px 10px !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 9px !important;
   gap: 8px !important;
   border-radius: var(--radius-md, 8px) !important;
 }
