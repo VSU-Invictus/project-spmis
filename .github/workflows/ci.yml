@@ -50,7 +50,7 @@ jobs:
         id: setup_supabase_cli
         uses: supabase/setup-cli@v3
         with:
-          version: v2.stable
+          version: '3.4.0'
 
       - name: Set an isolated CI database port
         run: sed -i '/^\[db\]$/,/^\[/ s/^port = 54322$/port = 55432/' supabase/config.toml

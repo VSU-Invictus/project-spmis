@@ -2,7 +2,18 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(14);
+select plan(22);
+
+-- Include vectors even for hidden/deleted fixtures to test retrieval's own filter.
+insert into public.review_embeddings (review_id, embedding)
+select id, ('[' || array_to_string(array_fill(0.1, array[768]), ',') || ']')::extensions.vector
+from public.reviews
+on conflict (review_id) do update set embedding = excluded.embedding;
+
+insert into public.review_versions
+  (review_id, body_text_snapshot, body_document_snapshot, edited_by)
+values ('50000000-0000-4000-8000-000000000001', 'Synthetic old review.',
+  '{}'::jsonb, '30000000-0000-4000-8000-000000000001');
 
 -- ===== 1. Active faculty (authenticated) cannot execute any transactional RPC =====
 set local role authenticated;
@@ -97,6 +108,10 @@ select throws_ok(
 );
 
 -- ===== 3. Anonymous role cannot execute transactional RPCs =====
+select is_empty('select id from public.reviews', 'admin still cannot directly read review rows');
+select is_empty('select id from public.review_revisions', 'admin still cannot directly read revisions');
+select is_empty('select id from public.review_details', 'admin still cannot directly read review details');
+
 set local role anon;
 
 select throws_ok(
@@ -114,16 +129,55 @@ select throws_ok(
 reset role;
 set local role service_role;
 
-select throws_ok(
+select lives_ok(
   $$select * from public.match_review_embeddings(
       '30000000-0000-4000-8000-000000000004',
       (select '[' || string_agg('0', ',') || ']' from generate_series(1, 768)),
       5
     )$$,
-  '42501',
-  'The caller is not authorized for this operation.',
-  'service_role match_review_embeddings rejects admin actor so admins receive no review text'
+  'service_role match_review_embeddings accepts active admin actor for server-only chat'
 );
+
+select results_eq(
+  $$select review_id from public.match_review_embeddings(
+    '30000000-0000-4000-8000-000000000004',
+    '[' || array_to_string(array_fill(0.1, array[768]), ',') || ']', 8)$$,
+  array['50000000-0000-4000-8000-000000000001'::uuid],
+  'admin chat retrieval includes active reviews only'
+);
+
+select results_eq(
+  $$select review_id from public.match_review_embeddings(
+    '30000000-0000-4000-8000-000000000001',
+    '[' || array_to_string(array_fill(0.1, array[768]), ',') || ']', 8)$$,
+  array['50000000-0000-4000-8000-000000000001'::uuid],
+  'faculty chat retrieval also excludes own hidden and deleted reviews'
+);
+
+select throws_ok(
+  $$select * from public.match_review_embeddings(null, '[0.1]', 8)$$,
+  '42501', 'The caller is not authorized for this operation.',
+  'retrieval rejects a missing actor'
+);
+select throws_ok(
+  $$select * from public.match_review_embeddings('30000000-0000-4000-8000-999999999999', '[0.1]', 8)$$,
+  '42501', 'The caller is not authorized for this operation.',
+  'retrieval rejects an unknown actor'
+);
+
+reset role;
+update public.faculty_profiles set role = 'admin'
+where id = '30000000-0000-4000-8000-000000000003';
+set local role service_role;
+select throws_ok(
+  $$select * from public.match_review_embeddings('30000000-0000-4000-8000-000000000003', '[0.1]', 8)$$,
+  '42501', 'The caller is not authorized for this operation.',
+  'retrieval rejects a pending admin actor'
+);
+reset role;
+update public.faculty_profiles set role = 'faculty'
+where id = '30000000-0000-4000-8000-000000000003';
+set local role service_role;
 
 select throws_ok(
   $$select * from public.match_review_embeddings(

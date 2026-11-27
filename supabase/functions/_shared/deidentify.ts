@@ -21,7 +21,16 @@ function clean(value: string | null | undefined): string {
   return (value ?? '').trim().replace(/\s+/g, ' ');
 }
 
-function variants(student: StudentNameRecord): string[] {
+function variantKey(value: string): string {
+  // Unicode /iu matching treats long s as s; lowercasing alone does not.
+  return clean(value).toLowerCase().replace(/\u017f/g, 's');
+}
+
+function variantPattern(value: string): string {
+  return escapeRegex(value).replace(/ /g, '\\s+');
+}
+
+function variants(student: StudentNameRecord, includePartialNames: boolean): string[] {
   const first = clean(student.first_name);
   const middle = clean(student.middle_name);
   const last = clean(student.last_name);
@@ -31,11 +40,10 @@ function variants(student: StudentNameRecord): string[] {
     [first, middle, last].filter(Boolean).join(' '),
     [first, last].filter(Boolean).join(' '),
     [last, first].filter(Boolean).join(' '),
+    [last, [first, middle].filter(Boolean).join(' ')].filter(Boolean).join(', '),
     [last, middle, first].filter(Boolean).join(', '),
     [last, first].filter(Boolean).join(', '),
-    first,
-    middle,
-    last,
+    ...(includePartialNames ? [first, middle, last] : []),
   ].filter((value) => value.length > 1))];
 }
 
@@ -53,16 +61,17 @@ function reidentifiedValue(student: StudentNameRecord): string {
 export function deidentifyText(
   text: string,
   students: StudentNameRecord[],
+  targetStudentId?: string,
 ): { text: string; replacements: Replacement[] } {
   const replacements: Replacement[] = [];
   let output = text;
 
-  // Track which students own each normalized variant so colliding single names
-  // (e.g. two students named "Maria") never map back to the wrong student.
+  // Only a review's known subject permits partial-name matching. Chat has no
+  // target and matches full names and IDs, preserving ordinary words like "may".
   const variantOwners = new Map<string, { name: string; studentIds: Set<string> }>();
   for (const student of students) {
-    for (const name of variants(student)) {
-      const key = name.toLowerCase();
+    for (const name of variants(student, student.id === targetStudentId)) {
+      const key = variantKey(name);
       const entry = variantOwners.get(key) ?? { name, studentIds: new Set<string>() };
       entry.studentIds.add(student.id);
       variantOwners.set(key, entry);
@@ -78,12 +87,19 @@ export function deidentifyText(
     }))
     .sort((left, right) => right.name.length - left.name.length);
 
-  for (const candidate of candidates) {
-    const expression = new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(candidate.name)}(?![\\p{L}\\p{N}])`, 'giu');
-    if (expression.test(output)) {
-      output = output.replace(expression, candidate.token);
+  // Replace in one pass so a later name/ID cannot match inside a generated token.
+  if (candidates.length) {
+    const byName = new Map(candidates.map((candidate) => [variantKey(candidate.name), candidate]));
+    const expression = new RegExp(
+      `\\{\\{STUDENT:(?:REDACTED|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\\}\\}|(?<![\\p{L}\\p{N}])(?:${candidates.map((candidate) => variantPattern(candidate.name)).join('|')})(?![\\p{L}\\p{N}])`,
+      'giu',
+    );
+    output = output.replace(expression, (match) => {
+      if (/^\{\{STUDENT:/i.test(match)) return match;
+      const candidate = byName.get(variantKey(match))!;
       replacements.push(candidate);
-    }
+      return candidate.token;
+    });
   }
 
   return { text: output, replacements };
@@ -97,6 +113,7 @@ export function reidentifyText(
     `{{STUDENT:${student.id.toLowerCase()}}}`,
     reidentifiedValue(student),
   ]));
-  return text.replace(/\{\{STUDENT:([0-9a-f-]+)\}\}/gi, (token, id: string) =>
-    names.get(`{{STUDENT:${id.toLowerCase()}}}`) ?? token);
+  return text.replace(/\{\{STUDENT:(REDACTED|[0-9a-f-]+)\}\}/gi, (token, id: string) =>
+    id.toUpperCase() === 'REDACTED' ? 'a student' :
+      names.get(`{{STUDENT:${id.toLowerCase()}}}`) ?? token);
 }

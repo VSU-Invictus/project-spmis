@@ -1,8 +1,9 @@
 import { FunctionError } from './errors.ts';
 
 const apiKey = () => Deno.env.get('GEMINI_API_KEY');
-const embeddingModel = () => Deno.env.get('GEMINI_EMBEDDING_MODEL') || 'text-embedding-004';
-const generationModel = () => Deno.env.get('GEMINI_GENERATION_MODEL') || 'gemini-2.0-flash';
+const embeddingModel = () => Deno.env.get('GEMINI_EMBEDDING_MODEL') || 'gemini-embedding-001';
+const generationModel = () => Deno.env.get('GEMINI_GENERATION_MODEL') || 'gemini-3.1-flash-lite';
+const EMBEDDING_DIMENSIONS = 768;
 
 async function geminiRequest(path: string, body: unknown): Promise<Record<string, unknown>> {
   const key = apiKey();
@@ -31,9 +32,11 @@ export async function embedText(text: string): Promise<string> {
   const result = await geminiRequest(`models/${model}:embedContent`, {
     model: `models/${model}`,
     content: { parts: [{ text }] },
+    outputDimensionality: EMBEDDING_DIMENSIONS,
   });
   const values = (result.embedding as { values?: unknown } | undefined)?.values;
-  if (!Array.isArray(values) || values.some((value) => typeof value !== 'number')) {
+  if (!Array.isArray(values) || values.length !== EMBEDDING_DIMENSIONS ||
+    values.some((value) => typeof value !== 'number' || !Number.isFinite(value))) {
     throw new FunctionError(502, 'AI_PROVIDER_ERROR', 'The AI provider returned an invalid embedding.');
   }
   return `[${values.join(',')}]`;
