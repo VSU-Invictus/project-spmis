@@ -29,6 +29,7 @@ import {
   type Review,
 } from '../../hooks';
 import { ApiRequestError } from '../../lib/api';
+import './FacultyStudentDetailPage.css';
 
 function formatIsoDate(value?: string | null): string {
   if (!value) return '';
@@ -720,17 +721,11 @@ export function FacultyStudentDetailPage() {
             title="Confirm Delete Decision"
             description="This action cannot be undone. The review will disappear from the portal, including your own view. Use Hide if you want to restore visibility later."
           />
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCloseDeleteModal}
-            >
-              Cancel
-            </Button>
+          <div className="modal-actions-confirm">
             <Button
               type="button"
               variant="primary"
+              className="modal-submit"
               disabled={setReviewStatusMutation.isPending}
               onClick={() => {
                 if (!deletingReview) return;
