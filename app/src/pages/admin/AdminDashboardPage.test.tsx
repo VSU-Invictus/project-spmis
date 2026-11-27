@@ -30,7 +30,7 @@ const adminSession: SessionContextValue = {
   error: null,
   setMockRole: vi.fn(),
   syncProfile: vi.fn(),
-  signOut: vi.fn().mockResolvedValue(undefined),
+  refreshProfile: async () => null, signOut: vi.fn().mockResolvedValue(undefined),
 };
 
 vi.mock('../../mocks/browser', () => ({ waitForAuditLogMock: vi.fn() }));

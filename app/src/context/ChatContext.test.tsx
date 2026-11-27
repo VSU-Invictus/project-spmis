@@ -261,7 +261,7 @@ describe('ChatProvider integration (#156)', () => {
       mockRole: null,
       setMockRole: () => {},
       syncProfile: () => {},
-      signOut: async () => {},
+      refreshProfile: async () => null, signOut: async () => {},
     });
 
     function TestApp({ profileId }: { profileId: string | null }) {
@@ -347,7 +347,7 @@ describe('ChatProvider integration (#156)', () => {
       mockRole: null,
       setMockRole: () => {},
       syncProfile: () => {},
-      signOut: async () => {},
+      refreshProfile: async () => null, signOut: async () => {},
     };
 
     render(
@@ -435,7 +435,7 @@ describe('ChatProvider integration (#156)', () => {
             mockRole: null,
             setMockRole: () => {},
             syncProfile: () => {},
-            signOut: async () => {},
+            refreshProfile: async () => null, signOut: async () => {},
           }}
         >
           <ChatProvider>
