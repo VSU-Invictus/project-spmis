@@ -35,8 +35,9 @@ function serveMockup(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [react(), serveMockup(), {
+/** Serve the worker that ships with the installed MSW version, only in Vite dev. */
+function serveMockWorker(): Plugin {
+  return {
     name: 'serve-mock-worker',
     configureServer(server) {
       const workerPath = createRequire(import.meta.url).resolve('msw/mockServiceWorker.js');
@@ -47,7 +48,11 @@ export default defineConfig({
         createReadStream(workerPath).pipe(res);
       });
     },
-  }],
+  };
+}
+
+export default defineConfig({
+  plugins: [react(), serveMockup(), serveMockWorker()],
   test: {
     environment: 'node',
     setupFiles: ['./src/mocks/setupTests.ts'],

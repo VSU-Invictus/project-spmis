@@ -90,7 +90,7 @@ export function AppShell({
         />
       )}
 
-      <main className={`section-container ui-dashboard-main ${mainClassName}`.trim()} style={{ flex: 1, minWidth: 0, height: '100vh', display: 'flex', flexDirection: 'column', padding: '16px 24px', boxSizing: 'border-box' }}>
+      <main className={`section-container ui-dashboard-main ${role === 'admin' ? 'admin-portal-main ' : ''}${mainClassName}`.trim()} style={{ flex: 1, minWidth: 0, height: '100vh', display: 'flex', flexDirection: 'column', padding: '16px 24px', boxSizing: 'border-box' }}>
         <div className="admin-top-header ui-dashboard-top-header">
           <div className="header-left ui-dashboard-header-left">
             <span className="red-dot ui-dashboard-header-dot" aria-hidden="true" />
