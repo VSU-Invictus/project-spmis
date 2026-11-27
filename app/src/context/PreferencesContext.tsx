@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -74,7 +75,7 @@ export function PreferencesProvider({ children, defaultTheme }: PreferencesProvi
   const [preferences, setPreferences] = useState<StoredPreferences>(readPreferences);
   const themeSwitchTimeout = useRef<number | undefined>(undefined);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = document.documentElement;
     root.classList.toggle('dark', theme === 'dark');
     root.setAttribute('data-theme', theme);

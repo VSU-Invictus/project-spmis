@@ -24,6 +24,31 @@ function recordName(item: ApprovalQueueItem) {
   }
 }
 
+function StatusBadgeIcon({ status }: { status: ApprovalQueueItem['status'] }) {
+  if (status === 'approved') {
+    return (
+      <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    );
+  }
+  if (status === 'rejected') {
+    return (
+      <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+  );
+}
+
 function ApplicationHistory({ profileId }: { profileId: string }) {
   const applications = useOwnApplications(profileId);
   const [search, setSearch] = useState('');
@@ -32,16 +57,16 @@ function ApplicationHistory({ profileId }: { profileId: string }) {
     `${applicationType(item)} ${recordName(item)}`.toLowerCase().includes(search.trim().toLowerCase()));
   return <AppShell role="faculty" activeNavKey="applications" breadcrumb="Faculty Portal / Applications">
     <div className="faculty-applications">
-      <div className="header"><div><h1>Your applications</h1>
+      <div className="header"><div><h1 className="ui-heading-1">Your applications</h1>
         <p>Track your student registrations, program proposals, and department proposals.</p></div></div>
       <div className="controls-container">
         <div className="search-wrapper">
           <svg className="search-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.33" /><path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" /></svg>
-          <Input type="search" className="search-input" aria-label="Search record name or application type"
+          <Input id="application-search" type="search" className="search-input" aria-label="Search record name or application type"
             placeholder="Search record name or application type" value={search} onChange={event => setSearch(event.target.value)} />
         </div>
         <div className="controls-actions"><div className="dropdown-container status">
-          <select className="dropdown-select" aria-label="Filter by application status" value={status} onChange={event => setStatus(event.target.value)}>
+          <select id="application-status" className="dropdown-select" aria-label="Filter by application status" value={status} onChange={event => setStatus(event.target.value)}>
             <option value="">Status: All</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option>
           </select>
           <svg className="dropdown-chevron" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="currentColor" strokeWidth="1.17" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -53,13 +78,13 @@ function ApplicationHistory({ profileId }: { profileId: string }) {
           <Button variant="outline" onClick={() => void applications.refetch()}>Retry</Button></> :
           <DataTable key={`${search}:${status}`} data={records} getRowId={item => item.id} ariaLabel="Your applications" isLoading={applications.isPending || applications.isFetching}
             emptyTitle={search || status ? 'No matching applications' : 'No applications yet'}
-            emptyDescription={search || status ? 'Try another search or status.' : 'Your submissions will appear here.'}
+            emptyDescription={search || status ? 'Try another search or status filter.' : 'Submitted applications will appear here.'}
             columns={[
               { key: 'type', label: 'Application type', render: applicationType },
               { key: 'record', label: 'Requested record', render: recordName },
               { key: 'created_at', label: 'Submitted', render: item => <time dateTime={item.created_at}>{item.created_at.slice(0, 10)}</time> },
-              { key: 'status', label: 'Status', headerClass: 'ui-table-heading-center', render: item =>
-                <Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : 'warning'}>{item.status.charAt(0).toUpperCase() + item.status.slice(1)}</Badge> },
+              { key: 'status', label: 'Status', render: item =>
+                <Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'destructive' : 'warning'} icon={<StatusBadgeIcon status={item.status} />}>{item.status.charAt(0).toUpperCase() + item.status.slice(1)}</Badge> },
               { key: 'reason', label: 'Decision / reason', render: item => item.status === 'pending' ? 'Awaiting admin review'
                 : item.decision_reason || (item.status === 'rejected' ? 'Rejection reason unavailable.' : 'Approved by admin') },
             ]} />}

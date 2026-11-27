@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { FooterNav } from '../../components/navigation/FooterNav';
 import logo from '../../../../mockup/assets/icons/SPMIS.png';
+import lightLogo from './assets/SPMIS_LM.png';
 
 export default function AuthInfoPageLayout({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -11,6 +12,7 @@ export default function AuthInfoPageLayout({ title, children }: { title: string;
           <h1>{title}</h1>
           <Link className="auth-info-logo" to="/signin" viewTransition aria-label="Back to sign in">
             <img src={logo} alt="SPMIS" />
+            <img className="auth-info-logo-light" src={lightLogo} alt="SPMIS" />
           </Link>
         </header>
         <article className="auth-info-content">{children}</article>
