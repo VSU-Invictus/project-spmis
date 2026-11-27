@@ -236,7 +236,7 @@ contract from 27 to 30 operations):
 | Operation | Method and path | Behavior & integrity guard |
 | --- | --- | --- |
 | `deleteStudent` | `DELETE /rest/v1/student_profiles?id=eq.<uuid>` | Admin only. Deletes unreferenced students (`204`); returns `409 Conflict` (`23503`) if reviews reference the student. |
-| `createFacultyByAdmin` | `POST /rest/v1/faculty_profiles` | Admin only (`FacultyCreateInput`). Validates an approved `department_id`, defaults `status` to `active` when omitted by an active admin, and links or provisions the backing `auth.users` row by email in a `BEFORE INSERT` trigger. |
+| `createFacultyByAdmin` | `POST /rest/v1/faculty_profiles` | Historical v1.1.0 behavior: Admin only (`FacultyCreateInput`), with an approved department and an active default status; linked or provisioned the Auth user by email. Superseded by Issue #213: direct insertion only links an existing Auth identity; new accounts use `inviteFaculty` and remain pending until approved. |
 | `deleteFaculty` | `DELETE /rest/v1/faculty_profiles?id=eq.<uuid>` | Admin only via RLS. Self-deletion is blocked by the `BEFORE DELETE` trigger `private.prevent_faculty_self_delete`, returning `409 Conflict` (`23503`) with hint `FACULTY_SELF_DELETE_FORBIDDEN`. Other referenced-profile deletions retain ordinary FK conflicts (`23503`); historical attribution is never cascade-deleted or nulled. |
 
 ## Issue #213 — supported faculty onboarding and invitations (`v2.0.0` proposal)
