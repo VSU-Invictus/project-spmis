@@ -110,7 +110,7 @@ export function FacultyChatPage() {
                       }
                     }
                   }}
-                  placeholder="Type a question across student reviews..."
+                  placeholder="Type a question across student reviews... Ask about student skills or leadership."
                   aria-label="Message to AI Chat Assistant"
                   rows={2}
                   disabled={isPending}
