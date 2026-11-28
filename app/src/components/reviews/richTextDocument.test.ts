@@ -38,13 +38,13 @@ describe('serializeEditorDomToDocument', () => {
 
   it('does not reinterpret paragraph text that starts with list markers', () => {
     const editor = document.createElement('div');
-    editor.innerHTML = '<p>2026. Graduated top of class</p><p>- </p>';
+    editor.innerHTML = '<p>2026. Graduated top of class</p><p>- literal dash</p>';
 
     const documentValue = serializeEditorDomToDocument(editor);
 
     expect(documentValue.blocks).toEqual([
       { type: 'paragraph', content: [{ text: '2026. Graduated top of class' }] },
-      { type: 'paragraph', content: [{ text: '- ' }] },
+      { type: 'paragraph', content: [{ text: '- literal dash' }] },
     ]);
   });
 
