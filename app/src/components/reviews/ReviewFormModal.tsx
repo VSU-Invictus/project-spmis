@@ -13,6 +13,7 @@ import type { Review } from '../../hooks/useStudentReviews';
 import {
   deserializeDocumentToEditorHtml,
   deserializeDocumentToEditorText,
+  removeEmptyListItemsFromEditorDom,
   serializeEditorDomToDocument,
   serializeEditorTextToDocument,
 } from './richTextDocument';
@@ -260,6 +261,13 @@ export function ReviewFormModal({
       shouldValidate: form.formState.isSubmitted,
     });
   }, [form, syncEmptyDataset]);
+
+  const cleanEditorListItemsOnBlur = useCallback(() => {
+    const el = editorDivRef.current;
+    if (!el || !removeEmptyListItemsFromEditorDom(el)) return;
+    syncEmptyDataset(el);
+    syncFromContentEditable();
+  }, [syncEmptyDataset, syncFromContentEditable]);
 
   const applyFormat = (format: 'bold' | 'italic' | 'bullet' | 'number') => {
     const el = editorDivRef.current;
@@ -746,6 +754,7 @@ export function ReviewFormModal({
               syncFromContentEditable();
               updateToolbarActiveState();
             }}
+            onBlur={cleanEditorListItemsOnBlur}
             onKeyUp={updateToolbarActiveState}
             onMouseUp={updateToolbarActiveState}
             onFocus={updateToolbarActiveState}

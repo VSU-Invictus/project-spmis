@@ -278,45 +278,90 @@ function runsHaveContent(runs: readonly RichTextRun[]): boolean {
   return runs.some((run) => Boolean(run.text?.trim()));
 }
 
+function isStructuralElement(node: Node): node is HTMLElement {
+  if (node.nodeType !== Node.ELEMENT_NODE) return false;
+  const tag = (node as HTMLElement).tagName.toLowerCase();
+  return tag === 'p' || tag === 'div' || tag === 'ul' || tag === 'ol';
+}
+
 /** Build the review contract document from editor nodes without parsing user text as markup. */
 export function serializeEditorDomToDocument(root: HTMLElement): ReviewDocument {
   const blocks: ReviewBlock[] = [];
-  let inlineNodes: Node[] = [];
 
-  const flushInlineParagraph = () => {
-    if (inlineNodes.length === 0) return;
-    const content = serializeInlineNodes(inlineNodes);
-    inlineNodes = [];
-    if (runsHaveContent(content)) blocks.push({ type: 'paragraph', content });
+  const appendListBlock = (element: HTMLElement) => {
+    const tag = element.tagName.toLowerCase();
+    const items = Array.from(element.children)
+      .filter((child) => child.tagName.toLowerCase() === 'li')
+      .map((item) => serializeInlineNodes(Array.from(item.childNodes)))
+      .filter(runsHaveContent);
+    if (items.length > 0) {
+      blocks.push(tag === 'ul' ? { type: 'bullet_list', items } : { type: 'ordered_list', items });
+    }
   };
 
-  for (const node of Array.from(root.childNodes)) {
-    if (node.nodeType !== Node.ELEMENT_NODE) {
-      inlineNodes.push(node);
-      continue;
-    }
+  const appendNodes = (nodes: readonly Node[]) => {
+    let inlineNodes: Node[] = [];
+    const flushInlineParagraph = () => {
+      if (inlineNodes.length === 0) return;
+      const content = serializeInlineNodes(inlineNodes);
+      inlineNodes = [];
+      if (runsHaveContent(content)) blocks.push({ type: 'paragraph', content });
+    };
 
-    const element = node as HTMLElement;
-    const tag = element.tagName.toLowerCase();
-    if (tag === 'ul' || tag === 'ol') {
-      flushInlineParagraph();
-      const items = Array.from(element.children)
-        .filter((child) => child.tagName.toLowerCase() === 'li')
-        .map((item) => serializeInlineNodes(Array.from(item.childNodes)));
-      if (items.length > 0) {
-        blocks.push(tag === 'ul' ? { type: 'bullet_list', items } : { type: 'ordered_list', items });
+    for (const node of nodes) {
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        inlineNodes.push(node);
+        continue;
       }
-    } else if (tag === 'p' || tag === 'div') {
-      flushInlineParagraph();
-      const content = serializeInlineNodes(Array.from(element.childNodes));
-      blocks.push({ type: 'paragraph', content });
-    } else {
-      inlineNodes.push(node);
+
+      const element = node as HTMLElement;
+      const tag = element.tagName.toLowerCase();
+      if (tag === 'ul' || tag === 'ol') {
+        flushInlineParagraph();
+        appendListBlock(element);
+      } else if (tag === 'p' || tag === 'div') {
+        flushInlineParagraph();
+        const children = Array.from(element.childNodes);
+        if (children.some(isStructuralElement)) {
+          appendNodes(children);
+        } else {
+          blocks.push({ type: 'paragraph', content: serializeInlineNodes(children) });
+        }
+      } else {
+        inlineNodes.push(node);
+      }
     }
-  }
-  flushInlineParagraph();
+    flushInlineParagraph();
+  };
+
+  appendNodes(Array.from(root.childNodes));
 
   return blocks.length > 0
     ? { blocks }
     : { blocks: [{ type: 'paragraph', content: [{ text: '' }] }] };
+}
+
+/** Remove empty list rows when the editor loses focus, but keep empty paragraphs editable. */
+export function removeEmptyListItemsFromEditorDom(root: HTMLElement): boolean {
+  let removedAny = false;
+  const lists = Array.from(root.querySelectorAll('ul, ol')).reverse();
+
+  for (const list of lists) {
+    for (const item of Array.from(list.children)) {
+      if (item.tagName.toLowerCase() !== 'li') continue;
+      const hasNestedList = item.querySelector('ul, ol') !== null;
+      const hasText = (item.textContent ?? '').replace(/\u200B/g, '').trim().length > 0;
+      if (!hasText && !hasNestedList) {
+        item.remove();
+        removedAny = true;
+      }
+    }
+
+    if (!Array.from(list.children).some((item) => item.tagName.toLowerCase() === 'li')) {
+      list.remove();
+      removedAny = true;
+    }
+  }
+
+  return removedAny;
 }

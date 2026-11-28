@@ -6,6 +6,7 @@ import { extractPlainText } from '../../lib/rules/review';
 import { ReviewDocumentView } from './ReviewDocumentView';
 import {
   deserializeDocumentToEditorHtml,
+  removeEmptyListItemsFromEditorDom,
   serializeEditorDomToDocument,
 } from './richTextDocument';
 import type { ReviewDocument } from './ReviewDocumentView';
@@ -67,6 +68,42 @@ describe('serializeEditorDomToDocument', () => {
       { type: 'bullet_list', items: [[{ text: 'One' }], [{ text: 'Two', bold: true }]] },
       { type: 'ordered_list', items: [[{ text: 'First' }]] },
     ]);
+  });
+
+  it('preserves lists nested in browser-generated div and paragraph wrappers', () => {
+    const editor = document.createElement('div');
+    editor.innerHTML = '<div><p>Lead text</p><div><ul><li><strong>Bullet One</strong></li><li>Bullet Two</li></ul></div><div><ol><li><em>Number One</em></li><li>Number Two</li></ol></div></div>';
+
+    const documentValue = serializeEditorDomToDocument(editor);
+
+    expect(documentValue.blocks).toEqual([
+      { type: 'paragraph', content: [{ text: 'Lead text' }] },
+      {
+        type: 'bullet_list',
+        items: [[{ text: 'Bullet One', bold: true }], [{ text: 'Bullet Two' }]],
+      },
+      {
+        type: 'ordered_list',
+        items: [[{ text: 'Number One', italic: true }], [{ text: 'Number Two' }]],
+      },
+    ]);
+  });
+
+  it('removes empty list rows on blur and excludes them from the saved document', () => {
+    const editor = document.createElement('div');
+    editor.innerHTML = '<ul><li>Bullet</li><li><br></li></ul><ol><li><br></li><li>Numbered</li></ol><ul><li></li></ul>';
+
+    expect(serializeEditorDomToDocument(editor).blocks).toEqual([
+      { type: 'bullet_list', items: [[{ text: 'Bullet' }]] },
+      { type: 'ordered_list', items: [[{ text: 'Numbered' }]] },
+    ]);
+
+    expect(removeEmptyListItemsFromEditorDom(editor)).toBe(true);
+    expect(Array.from(editor.querySelectorAll('li')).map((item) => item.textContent)).toEqual([
+      'Bullet',
+      'Numbered',
+    ]);
+    expect(editor.querySelectorAll('ul, ol')).toHaveLength(2);
   });
 
   it('renders saved documents identically in the editor and ReviewDocumentView', () => {
