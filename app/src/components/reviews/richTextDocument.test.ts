@@ -46,6 +46,7 @@ describe('serializeEditorDomToDocument', () => {
       { type: 'paragraph', content: [{ text: '2026. Graduated top of class' }] },
       { type: 'paragraph', content: [{ text: '- literal dash' }] },
     ]);
+    expect(extractPlainText(documentValue)).toBe('2026. Graduated top of class - literal dash');
   });
 
   it('preserves actual formatting and list structure from editor nodes', () => {
