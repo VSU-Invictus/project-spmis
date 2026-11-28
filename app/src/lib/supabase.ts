@@ -77,12 +77,50 @@ export const authStorage = {
   },
 };
 
+const initialUrlHasRecovery =
+  typeof window !== 'undefined' &&
+  (window.location.hash.includes('type=recovery') ||
+    new URLSearchParams(window.location.search).get('type') === 'recovery');
+
+let passwordRecoveryPending = initialUrlHasRecovery;
+
+export function isPasswordRecoverySession(accessToken?: string | null): boolean {
+  if (passwordRecoveryPending) return true;
+  if (!accessToken) return false;
+  try {
+    const parts = accessToken.split('.');
+    if (parts.length < 2) return false;
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(atob(base64)) as { amr?: Array<string | { method?: string }> };
+    if (!Array.isArray(payload.amr)) return false;
+    return payload.amr.some((entry) =>
+      typeof entry === 'string' ? entry === 'recovery' : entry?.method === 'recovery',
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function clearPasswordRecoveryPending(): void {
+  passwordRecoveryPending = false;
+}
+
 export const supabase =
   supabaseUrl && supabaseKey
     ? createClient(supabaseUrl, supabaseKey, {
         auth: { flowType: 'pkce', storage: authStorage },
       })
     : null;
+
+if (supabase) {
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      passwordRecoveryPending = true;
+    } else if (event === 'SIGNED_OUT') {
+      passwordRecoveryPending = false;
+    }
+  });
+}
 
 export async function startGoogleOAuth(redirectTo: string): Promise<string | null> {
   if (!supabase) return 'Authentication is not configured.';

@@ -103,7 +103,7 @@ describe('SignInPage password recovery and session-only persistence (#248)', () 
     expect(window.sessionStorage.getItem('sb-test-auth-token')).toBeNull();
   });
 
-  it('sends password reset link to /signin?mode=reset and renders Set New Password form on PASSWORD_RECOVERY', async () => {
+  it('sends password reset link to /signin and renders Set New Password form on PASSWORD_RECOVERY', async () => {
     const user = userEvent.setup();
     renderSignIn('/signin');
 
@@ -113,7 +113,7 @@ describe('SignInPage password recovery and session-only persistence (#248)', () 
     await waitFor(() => {
       expect(mockAuth.resetPasswordForEmail).toHaveBeenCalledWith(
         'faculty@vsu.edu.ph',
-        expect.objectContaining({ redirectTo: expect.stringMatching(/\/signin\?mode=reset$/) }),
+        expect.objectContaining({ redirectTo: expect.stringMatching(/\/signin$/) }),
       );
     });
 
@@ -136,5 +136,15 @@ describe('SignInPage password recovery and session-only persistence (#248)', () 
     expect(mockAuth.signOut).toHaveBeenCalledTimes(1);
     expect(await screen.findByRole('heading', { name: 'Sign In' })).toBeInTheDocument();
     expect(screen.getByText(/Your password has been updated/i)).toBeInTheDocument();
+  });
+
+  it('does not trap users on Set New Password when manually visiting /signin?mode=reset without a recovery session', async () => {
+    renderSignIn('/signin?mode=reset');
+
+    expect(await screen.findByRole('heading', { name: 'Sign In' })).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Password reset requires a valid recovery link from your email/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Set New Password' })).not.toBeInTheDocument();
   });
 });

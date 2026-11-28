@@ -1,18 +1,18 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import { setAuthPersistence, startGoogleOAuth, supabase } from '../../lib/supabase';
+import {
+  clearPasswordRecoveryPending,
+  isPasswordRecoverySession,
+  setAuthPersistence,
+  startGoogleOAuth,
+  supabase,
+} from '../../lib/supabase';
 import { FooterNav } from '../../components/navigation/FooterNav';
 import logo from '../../../../mockup/assets/icons/SPMIS.png';
 import lightLogo from './assets/SPMIS_LM.png';
 
 const googleIcon = <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>;
-
-function isInitialPasswordRecovery(searchParams: URLSearchParams): boolean {
-  if (searchParams.get('mode') === 'reset') return true;
-  if (typeof window !== 'undefined' && window.location.hash.includes('type=recovery')) return true;
-  return false;
-}
 
 export default function SignInPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,7 +23,7 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [remember, setRemember] = useState(true);
-  const [isRecoveryMode, setIsRecoveryMode] = useState(() => isInitialPasswordRecovery(searchParams));
+  const [isRecoveryMode, setIsRecoveryMode] = useState(() => isPasswordRecoverySession());
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string; newPassword?: string; confirmPassword?: string }>({});
   const [notice, setNotice] = useState('');
@@ -42,10 +42,24 @@ export default function SignInPage() {
   useEffect(() => {
     if (!supabase) { setHasSession(false); return; }
     let active = true;
-    void supabase.auth.getSession().then(({ data }) => { if (active) setHasSession(Boolean(data.session)); });
+    const requestedResetMode = searchParams.get('mode') === 'reset';
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      const activeSession = data.session;
+      const recovery = isPasswordRecoverySession(activeSession?.access_token) || (requestedResetMode && Boolean(activeSession));
+      if (recovery) {
+        setIsRecoveryMode(true);
+      } else if (requestedResetMode && !activeSession) {
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete('mode');
+        setSearchParams(nextParams, { replace: true });
+        setError('Password reset requires a valid recovery link from your email. Enter your email and click "Forgot password?" to request one.');
+      }
+      setHasSession(Boolean(activeSession));
+    });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, nextSession) => {
       if (!active) return;
-      if (event === 'PASSWORD_RECOVERY') {
+      if (event === 'PASSWORD_RECOVERY' || isPasswordRecoverySession(nextSession?.access_token)) {
         setIsRecoveryMode(true);
         setError('');
         setNotice('');
@@ -56,7 +70,7 @@ export default function SignInPage() {
       active = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   if (hasSession && !isRecoveryMode) return <Navigate to={redirectPath} replace />;
 
@@ -108,14 +122,37 @@ export default function SignInPage() {
       document.getElementById('signin-email')?.focus();
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setFieldErrors((current) => ({ ...current, email: 'Please enter a valid email.' }));
+      document.getElementById('signin-email')?.focus();
+      return;
+    }
     if (!supabase) { setError('Authentication is not configured.'); return; }
     setError(''); setNotice(''); setBusy(true);
     try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/signin?mode=reset` });
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/signin` });
       if (resetError) setError(resetError.message);
-      else setNotice('If an account exists for this email, a password reset link is on its way.');
+      else setNotice(`If an account exists for ${email.trim()}, a password reset link has been sent to that email inbox. Open the link from your email to set a new password.`);
     } catch { setError('Unable to send a reset link. Please try again.'); }
     finally { setBusy(false); }
+  }
+
+  async function cancelRecoveryMode() {
+    clearPasswordRecoveryPending();
+    setIsRecoveryMode(false);
+    setNewPassword('');
+    setConfirmPassword('');
+    setFieldErrors({});
+    setError('');
+    if (supabase && hasSession) {
+      await supabase.auth.signOut();
+      setHasSession(false);
+    }
+    if (searchParams.has('mode')) {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('mode');
+      setSearchParams(nextParams, { replace: true });
+    }
   }
 
   async function submitNewPassword(event: FormEvent<HTMLFormElement>) {
@@ -139,9 +176,14 @@ export default function SignInPage() {
     try {
       const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
       if (updateError) {
-        setError(updateError.message);
+        setError(
+          /auth session missing/i.test(updateError.message)
+            ? 'Your password reset session is missing or has expired. Return to Sign In and request a new reset link.'
+            : updateError.message,
+        );
         return;
       }
+      clearPasswordRecoveryPending();
       await supabase.auth.signOut();
       setNewPassword('');
       setConfirmPassword('');
@@ -195,6 +237,7 @@ export default function SignInPage() {
                 {error && <p className="signin-feedback" role="alert">{error}</p>}
                 {notice && <p className="signin-feedback signin-notice" role="status">{notice}</p>}
                 <button className="signin-submit" type="submit" disabled={busy}>{busy ? 'Updating password…' : 'Update Password'}</button>
+                <button className="signin-google" style={{ marginTop: 10 }} type="button" disabled={busy} onClick={() => void cancelRecoveryMode()}>Back to Sign In</button>
               </form>
             </div>
           ) : (

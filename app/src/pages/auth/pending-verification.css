@@ -89,6 +89,33 @@
 .verification-back-button:active { transform: translateY(0); }
 .verification-back-button:focus-visible { outline: 2px solid var(--ring, #d97757); outline-offset: 3px; }
 
+.verification-back-button--secondary {
+  margin-top: 10px;
+  border-color: var(--border, #403e39);
+  background: transparent;
+  color: var(--muted-foreground, #c5beb7);
+  font-weight: 500;
+}
+
+.verification-back-button--secondary:hover {
+  border-color: var(--muted-foreground, #888);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--foreground, #faf9f5);
+  box-shadow: none;
+}
+
+.onboarding-form .link-button {
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary, #d97757);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .verification-footer {
   position: absolute;
   right: 16px;
