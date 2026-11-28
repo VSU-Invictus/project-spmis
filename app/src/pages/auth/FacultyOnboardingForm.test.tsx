@@ -19,22 +19,34 @@ const session = { access_token: 'token', user: { id: 'u1', user_metadata: { full
 afterEach(() => cleanup());
 beforeEach(() => __resetMocks());
 
-function Harness({ initialProfile = null, children }: { initialProfile?: FacultyProfile | null; children: ReactNode }) {
+function Harness({
+  initialSession = session,
+  initialProfile = null,
+  children,
+}: {
+  initialSession?: Session | null;
+  initialProfile?: FacultyProfile | null;
+  children: ReactNode;
+}) {
   const [profile, setProfile] = useState<FacultyProfile | null>(initialProfile);
   const value: SessionContextValue = {
-    session, profile, role: profile?.role ?? null, status: profile?.status ?? null, loading: false, error: null,
+    session: initialSession, profile, role: profile?.role ?? null, status: profile?.status ?? null, loading: false, error: null,
     mockRole: null, setMockRole: () => undefined, syncProfile: setProfile,
     refreshProfile: async () => profile, signOut: async () => undefined,
   };
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
 
-function renderPage(initialProfile: FacultyProfile | null = null) {
+function renderPage(
+  initialProfile: FacultyProfile | null = null,
+  initialEntry = '/pending-verification',
+  initialSession: Session | null = session,
+) {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
   return render(
     <QueryClientProvider client={queryClient}>
-      <Harness initialProfile={initialProfile}>
-        <MemoryRouter initialEntries={['/pending-verification']}><PendingVerificationPage /></MemoryRouter>
+      <Harness initialSession={initialSession} initialProfile={initialProfile}>
+        <MemoryRouter initialEntries={[initialEntry]}><PendingVerificationPage /></MemoryRouter>
       </Harness>
     </QueryClientProvider>,
   );
@@ -89,5 +101,21 @@ describe('Google OAuth faculty onboarding', () => {
     await user.click(screen.getByRole('button', { name: 'Submit Registration' }));
     expect(await screen.findByText(message)).toBeInTheDocument();
     expect(screen.getByLabelText('Full Name')).toHaveValue('Google Applicant');
+  });
+
+  it('renders FacultyOnboardingForm when Google OAuth redirects to /pending-verification?source=signup with session && !profile (#248)', async () => {
+    renderPage(null, '/pending-verification?source=signup', session);
+    expect(screen.getByRole('heading', { name: 'Complete Faculty Registration' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Full Name')).toHaveValue('Google Applicant');
+    expect(await screen.findByRole('option', { name: 'Computer Science' })).toBeInTheDocument();
+  });
+
+  it('shows the email verification prompt on /pending-verification?source=signup only when there is no active session (#248)', () => {
+    renderPage(null, '/pending-verification?source=signup', null);
+    expect(screen.getByRole('heading', { name: 'Account Pending Verification' })).toBeInTheDocument();
+    expect(
+      screen.getByText(/Verify your email address to continue with account review/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Complete Faculty Registration' })).not.toBeInTheDocument();
   });
 });
