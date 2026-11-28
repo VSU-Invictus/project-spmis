@@ -91,8 +91,9 @@ function FacultyForm({ faculty, departments, onClose, onSaved }: {
     }
     // Send only changed, approved form fields; never overwrite account status.
     const changes: Omit<UpdateFacultyByAdminInput, 'id'> = {};
+    const normalizedEmail = values.email.trim().toLowerCase();
     if (values.full_name !== initial.full_name.trim()) changes.full_name = values.full_name;
-    if (values.email !== initial.email.trim()) changes.email = values.email;
+    if (normalizedEmail !== initial.email.trim()) changes.email = normalizedEmail;
     if (values.department_id !== initial.department_id) changes.department_id = values.department_id;
     if (values.role !== initial.role) changes.role = values.role;
     if (!Object.keys(changes).length) {

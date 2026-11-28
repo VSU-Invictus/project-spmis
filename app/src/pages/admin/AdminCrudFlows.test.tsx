@@ -9,6 +9,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { http, HttpResponse } from 'msw';
 import { AdminStudentsPage } from './AdminStudentsPage';
 import { AdminFacultyPage } from './AdminFacultyPage';
+import { AdminTaxonomyManagementPage } from './AdminTaxonomyManagementPage';
 import { SessionProvider, useSession, type FacultyProfile } from '../../context/SessionContext';
 import { ThemeProvider } from '../../context/ThemeContext';
 import { __resetMocks } from '../../mocks/handlers';
@@ -347,5 +348,175 @@ describe('AdminFacultyPage create and delete flows (v1.1.0)', () => {
       await within(emptyDialog).findByText(/No approved departments available/i),
     ).toBeInTheDocument();
     expect(within(emptyDialog).getByRole('button', { name: 'Send Invitation' })).toBeDisabled();
+  });
+});
+
+describe('AdminTaxonomyManagementPage delete flow (#249)', () => {
+  it('deletes a department and refreshes the list when removal is verified', async () => {
+    const user = userEvent.setup();
+    renderAdminPage(<AdminTaxonomyManagementPage mode="departments" />, '/admin/departments');
+
+    const mathCell = await screen.findByText('Mathematics');
+    const mathRow = mathCell.closest('[role="row"]');
+    expect(mathRow).not.toBeNull();
+
+    await user.click(within(mathRow as HTMLElement).getByRole('button', { name: 'Remove' }));
+
+    const dialog = await screen.findByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Confirm' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('Department Removed Successfully')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Mathematics')).not.toBeInTheDocument();
+    });
+  });
+
+  it('keeps the modal open and shows an inline error if department DELETE returns 204 without removing the row', async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.delete('*/rest/v1/departments', () => new HttpResponse(null, { status: 204 })),
+    );
+    renderAdminPage(<AdminTaxonomyManagementPage mode="departments" />, '/admin/departments');
+
+    const mathCell = await screen.findByText('Mathematics');
+    const mathRow = mathCell.closest('[role="row"]');
+    expect(mathRow).not.toBeNull();
+
+    await user.click(within(mathRow as HTMLElement).getByRole('button', { name: 'Remove' }));
+
+    const dialog = await screen.findByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Confirm' }));
+
+    expect(
+      await within(dialog).findByText(/The department record could not be removed/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.queryByText('Department Removed Successfully')).not.toBeInTheDocument();
+  });
+
+  it('deletes a program and refreshes the list when removal is verified', async () => {
+    const user = userEvent.setup();
+    renderAdminPage(<AdminTaxonomyManagementPage mode="programs" />, '/admin/programs');
+
+    const mathProgramCell = await screen.findByText('Bachelor of Science in Mathematics');
+    const mathProgramRow = mathProgramCell.closest('[role="row"]');
+    expect(mathProgramRow).not.toBeNull();
+
+    await user.click(within(mathProgramRow as HTMLElement).getByRole('button', { name: 'Remove' }));
+
+    const dialog = await screen.findByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Confirm' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('Program Removed Successfully')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Bachelor of Science in Mathematics')).not.toBeInTheDocument();
+    });
+  });
+
+  it('keeps the modal open and shows an inline error if program DELETE returns 204 without removing the row', async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.delete('*/rest/v1/programs', () => new HttpResponse(null, { status: 204 })),
+    );
+    renderAdminPage(<AdminTaxonomyManagementPage mode="programs" />, '/admin/programs');
+
+    const mathProgramCell = await screen.findByText('Bachelor of Science in Mathematics');
+    const mathProgramRow = mathProgramCell.closest('[role="row"]');
+    expect(mathProgramRow).not.toBeNull();
+
+    await user.click(within(mathProgramRow as HTMLElement).getByRole('button', { name: 'Remove' }));
+
+    const dialog = await screen.findByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Confirm' }));
+
+    expect(
+      await within(dialog).findByText(/The program record could not be removed/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.queryByText('Program Removed Successfully')).not.toBeInTheDocument();
+  });
+});
+
+describe('AdminFacultyPage edit email normalization (#249)', () => {
+  it('lowercases mixed-case email input before sending PATCH and updates the roster', async () => {
+    const user = userEvent.setup();
+    let capturedEmail: unknown;
+
+    server.use(
+      http.patch('*/rest/v1/faculty_profiles', async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>;
+        capturedEmail = body.email;
+        return HttpResponse.json([
+          {
+            id: 'e48adc9e-1b79-4b92-9848-aa12b25d63d7',
+            email: typeof body.email === 'string' ? body.email : 'alex.reyes@example.edu',
+            full_name: 'Alex Reyes',
+            department_id: CS_DEPARTMENT_ID,
+            role: 'faculty',
+            status: 'active',
+            created_at: '2026-10-26T00:00:00.000Z',
+            updated_at: '2026-10-26T00:00:00.000Z',
+          },
+        ]);
+      }),
+    );
+
+    renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+
+    const alexCell = await screen.findByText('Alex Reyes');
+    const alexRow = alexCell.closest('[role="row"]');
+    expect(alexRow).not.toBeNull();
+
+    await user.click(within(alexRow as HTMLElement).getByRole('button', { name: 'Edit' }));
+
+    const emailInput = await screen.findByLabelText('Email Address');
+    const dialog = screen.getByRole('dialog');
+    await user.clear(emailInput);
+    await user.type(emailInput, '  Jane.Doe@vsu.edu.ph  ');
+    await user.click(within(dialog).getByRole('button', { name: 'Update' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+    expect(capturedEmail).toBe('jane.doe@vsu.edu.ph');
+    expect(screen.getByText('Faculty Updated Successfully')).toBeInTheDocument();
+  });
+
+  it('treats case-only email differences as unchanged without sending a PATCH', async () => {
+    const user = userEvent.setup();
+    let patchCalls = 0;
+
+    server.use(
+      http.patch('*/rest/v1/faculty_profiles', () => {
+        patchCalls += 1;
+        return HttpResponse.json([]);
+      }),
+    );
+
+    renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+
+    const alexCell = await screen.findByText('Alex Reyes');
+    const alexRow = alexCell.closest('[role="row"]');
+    expect(alexRow).not.toBeNull();
+
+    await user.click(within(alexRow as HTMLElement).getByRole('button', { name: 'Edit' }));
+
+    const emailInput = await screen.findByLabelText('Email Address');
+    const dialog = screen.getByRole('dialog');
+    await user.clear(emailInput);
+    await user.type(emailInput, 'Alex.Reyes@Example.Edu');
+    await user.click(within(dialog).getByRole('button', { name: 'Update' }));
+
+    expect(
+      await within(dialog).findByText(/Please enter a new, distinct value before updating/i),
+    ).toBeInTheDocument();
+    expect(patchCalls).toBe(0);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 });

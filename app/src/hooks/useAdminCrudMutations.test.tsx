@@ -10,6 +10,8 @@ import { ApiRequestError } from '../lib/api';
 import { queryKeys } from './queryKeys';
 import { useDeleteStudent } from './useDeleteStudent';
 import { useDeleteFaculty } from './useDeleteFaculty';
+import { useDeleteDepartment } from './useDeleteDepartment';
+import { useDeleteProgram } from './useDeleteProgram';
 
 const clients: QueryClient[] = [];
 
@@ -221,5 +223,177 @@ describe('Admin CRUD mutation hooks (v1.1.0)', () => {
 
     expect(queryFn).toHaveBeenCalledOnce();
     expect(client.getQueryState(queryKeys.facultyProfiles())?.isInvalidated).toBe(false);
+  });
+
+  it('useDeleteDepartment invalidates affected query families on verified deletion', async () => {
+    const { client, wrapper } = setup();
+    const targetId = '98a12d0b-73c2-4e02-b7c9-aebc20e823de';
+    let version = 'before';
+    let deleted = false;
+
+    const invalidatedKeys = [
+      queryKeys.departments(),
+      queryKeys.searchStudents(),
+      queryKeys.auditLogs(),
+      queryKeys.facultyProfiles(),
+      queryKeys.studentReviews(),
+    ];
+    await Promise.all(
+      invalidatedKeys.map((queryKey) => client.fetchQuery({ queryKey, queryFn: async () => version })),
+    );
+
+    server.use(
+      http.get('*/rest/v1/departments', () =>
+        HttpResponse.json(
+          deleted
+            ? []
+            : [
+                {
+                  id: targetId,
+                  name: 'Mathematics',
+                  status: 'approved',
+                  proposed_by: null,
+                  created_at: '2026-10-26T00:00:00.000Z',
+                  updated_at: '2026-10-26T00:00:00.000Z',
+                },
+              ],
+        ),
+      ),
+      http.delete('*/rest/v1/departments', ({ request }) => {
+        const url = new URL(request.url);
+        expect(url.searchParams.get('id')).toBe(`eq.${targetId}`);
+        deleted = true;
+        version = 'after';
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+
+    const { result } = renderHook(() => useDeleteDepartment(), { wrapper });
+    await act(async () => {
+      await result.current.mutateAsync(targetId);
+    });
+
+    invalidatedKeys.forEach((key) => {
+      expect(client.getQueryData(key)).toBe('after');
+    });
+  });
+
+  it('useDeleteDepartment rejects without invalidating caches when 204 leaves the record intact (RLS no-op)', async () => {
+    const { client, wrapper } = setup();
+    const targetId = '98a12d0b-73c2-4e02-b7c9-aebc20e823de';
+    const queryFn = vi.fn(async () => ['original']);
+    await client.fetchQuery({ queryKey: queryKeys.departments(), queryFn });
+
+    server.use(
+      http.delete('*/rest/v1/departments', () => new HttpResponse(null, { status: 204 })),
+    );
+
+    const { result } = renderHook(() => useDeleteDepartment(), { wrapper });
+    await act(async () => {
+      await expect(result.current.mutateAsync(targetId)).rejects.toThrow(/department record could not be removed/i);
+    });
+
+    expect(queryFn).toHaveBeenCalledOnce();
+    expect(client.getQueryState(queryKeys.departments())?.isInvalidated).toBe(false);
+  });
+
+  it('useDeleteDepartment rejects when target department is missing before delete', async () => {
+    const { client, wrapper } = setup();
+    const missingId = '00000000-0000-4000-8000-000000000099';
+    const queryFn = vi.fn(async () => ['original']);
+    await client.fetchQuery({ queryKey: queryKeys.departments(), queryFn });
+
+    const { result } = renderHook(() => useDeleteDepartment(), { wrapper });
+    await act(async () => {
+      await expect(result.current.mutateAsync(missingId)).rejects.toThrow(/department record was not found/i);
+    });
+
+    expect(queryFn).toHaveBeenCalledOnce();
+    expect(client.getQueryState(queryKeys.departments())?.isInvalidated).toBe(false);
+  });
+
+  it('useDeleteProgram invalidates affected query families on verified deletion', async () => {
+    const { client, wrapper } = setup();
+    const targetId = '9625620d-2d60-4bb2-ad06-d041e6023158';
+    let version = 'before';
+    let deleted = false;
+
+    const invalidatedKeys = [
+      queryKeys.programs(),
+      queryKeys.searchStudents(),
+      queryKeys.auditLogs(),
+    ];
+    await Promise.all(
+      invalidatedKeys.map((queryKey) => client.fetchQuery({ queryKey, queryFn: async () => version })),
+    );
+
+    server.use(
+      http.get('*/rest/v1/programs', () =>
+        HttpResponse.json(
+          deleted
+            ? []
+            : [
+                {
+                  id: targetId,
+                  name: 'Bachelor of Science in Mathematics',
+                  status: 'approved',
+                  proposed_by: null,
+                  created_at: '2026-10-26T00:00:00.000Z',
+                  updated_at: '2026-10-26T00:00:00.000Z',
+                },
+              ],
+        ),
+      ),
+      http.delete('*/rest/v1/programs', ({ request }) => {
+        const url = new URL(request.url);
+        expect(url.searchParams.get('id')).toBe(`eq.${targetId}`);
+        deleted = true;
+        version = 'after';
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+
+    const { result } = renderHook(() => useDeleteProgram(), { wrapper });
+    await act(async () => {
+      await result.current.mutateAsync(targetId);
+    });
+
+    invalidatedKeys.forEach((key) => {
+      expect(client.getQueryData(key)).toBe('after');
+    });
+  });
+
+  it('useDeleteProgram rejects without invalidating caches when 204 leaves the record intact (RLS no-op)', async () => {
+    const { client, wrapper } = setup();
+    const targetId = '9625620d-2d60-4bb2-ad06-d041e6023158';
+    const queryFn = vi.fn(async () => ['original']);
+    await client.fetchQuery({ queryKey: queryKeys.programs(), queryFn });
+
+    server.use(
+      http.delete('*/rest/v1/programs', () => new HttpResponse(null, { status: 204 })),
+    );
+
+    const { result } = renderHook(() => useDeleteProgram(), { wrapper });
+    await act(async () => {
+      await expect(result.current.mutateAsync(targetId)).rejects.toThrow(/program record could not be removed/i);
+    });
+
+    expect(queryFn).toHaveBeenCalledOnce();
+    expect(client.getQueryState(queryKeys.programs())?.isInvalidated).toBe(false);
+  });
+
+  it('useDeleteProgram rejects when target program is missing before delete', async () => {
+    const { client, wrapper } = setup();
+    const missingId = '00000000-0000-4000-8000-000000000099';
+    const queryFn = vi.fn(async () => ['original']);
+    await client.fetchQuery({ queryKey: queryKeys.programs(), queryFn });
+
+    const { result } = renderHook(() => useDeleteProgram(), { wrapper });
+    await act(async () => {
+      await expect(result.current.mutateAsync(missingId)).rejects.toThrow(/program record was not found/i);
+    });
+
+    expect(queryFn).toHaveBeenCalledOnce();
+    expect(client.getQueryState(queryKeys.programs())?.isInvalidated).toBe(false);
   });
 });
