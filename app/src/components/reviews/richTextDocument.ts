@@ -222,61 +222,101 @@ export function deserializeDocumentToEditorHtml(
   return parts.join('');
 }
 
-function domNodeToMarkdownText(node: Node): string {
-  if (node.nodeType === Node.TEXT_NODE) {
-    return (node.nodeValue ?? '').replace(/\u200B/g, '');
-  }
-  if (node.nodeType !== Node.ELEMENT_NODE) {
-    return '';
-  }
-
-  const el = node as HTMLElement;
-  const tag = el.tagName.toLowerCase();
-
-  if (tag === 'br') {
-    return '\n';
-  }
-
-  const childrenText = Array.from(el.childNodes)
-    .map((child) => domNodeToMarkdownText(child))
-    .join('');
-
-  if (tag === 'strong' || tag === 'b') {
-    const trimmed = childrenText.trim();
-    return trimmed ? `**${trimmed}**` : childrenText;
-  }
-
-  if (tag === 'em' || tag === 'i') {
-    const trimmed = childrenText.trim();
-    return trimmed ? `*${trimmed}*` : childrenText;
-  }
-
-  if (tag === 'ul') {
-    const items = Array.from(el.children)
-      .filter((child) => child.tagName.toLowerCase() === 'li')
-      .map((li) => `- ${domNodeToMarkdownText(li).trim()}`);
-    return `\n${items.join('\n')}\n`;
-  }
-
-  if (tag === 'ol') {
-    const items = Array.from(el.children)
-      .filter((child) => child.tagName.toLowerCase() === 'li')
-      .map((li, idx) => `${idx + 1}. ${domNodeToMarkdownText(li).trim()}`);
-    return `\n${items.join('\n')}\n`;
-  }
-
-  if (tag === 'div' || tag === 'p') {
-    return `${childrenText}\n`;
-  }
-
-  return childrenText;
+interface InlineFormat {
+  bold?: boolean;
+  italic?: boolean;
 }
 
-export function extractEditorDomToMarkdownText(root: HTMLElement): string {
-  const raw = Array.from(root.childNodes)
-    .map((child) => domNodeToMarkdownText(child))
-    .join('')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-  return raw;
+function appendTextRun(runs: RichTextRun[], rawText: string, format: InlineFormat): void {
+  const text = rawText.replace(/\u200B/g, '');
+  if (!text) return;
+
+  const bold = format.bold || undefined;
+  const italic = format.italic || undefined;
+  const previous = runs[runs.length - 1];
+  if (previous && Boolean(previous.bold) === Boolean(bold) && Boolean(previous.italic) === Boolean(italic)) {
+    previous.text = `${previous.text ?? ''}${text}`;
+    return;
+  }
+  runs.push({ text, ...(bold ? { bold: true } : {}), ...(italic ? { italic: true } : {}) });
+}
+
+function appendInlineNode(node: Node, runs: RichTextRun[], format: InlineFormat): void {
+  if (node.nodeType === Node.TEXT_NODE) {
+    appendTextRun(runs, node.nodeValue ?? '', format);
+    return;
+  }
+  if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+  const element = node as HTMLElement;
+  const tag = element.tagName.toLowerCase();
+  if (tag === 'br') {
+    appendTextRun(runs, '\n', format);
+    return;
+  }
+
+  const childFormat: InlineFormat = {
+    bold: format.bold || tag === 'strong' || tag === 'b',
+    italic: format.italic || tag === 'em' || tag === 'i',
+  };
+  for (const child of Array.from(element.childNodes)) {
+    appendInlineNode(child, runs, childFormat);
+  }
+
+  if ((tag === 'p' || tag === 'div') && runs.length > 0 && !runs[runs.length - 1].text?.endsWith('\n')) {
+    appendTextRun(runs, '\n', format);
+  }
+}
+
+function serializeInlineNodes(nodes: Iterable<Node>): RichTextRun[] {
+  const runs: RichTextRun[] = [];
+  for (const node of nodes) appendInlineNode(node, runs, {});
+  return runs.length > 0 ? runs : [{ text: '' }];
+}
+
+function runsHaveContent(runs: readonly RichTextRun[]): boolean {
+  return runs.some((run) => Boolean(run.text?.trim()));
+}
+
+/** Build the review contract document from editor nodes without parsing user text as markup. */
+export function serializeEditorDomToDocument(root: HTMLElement): ReviewDocument {
+  const blocks: ReviewBlock[] = [];
+  let inlineNodes: Node[] = [];
+
+  const flushInlineParagraph = () => {
+    if (inlineNodes.length === 0) return;
+    const content = serializeInlineNodes(inlineNodes);
+    inlineNodes = [];
+    if (runsHaveContent(content)) blocks.push({ type: 'paragraph', content });
+  };
+
+  for (const node of Array.from(root.childNodes)) {
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      inlineNodes.push(node);
+      continue;
+    }
+
+    const element = node as HTMLElement;
+    const tag = element.tagName.toLowerCase();
+    if (tag === 'ul' || tag === 'ol') {
+      flushInlineParagraph();
+      const items = Array.from(element.children)
+        .filter((child) => child.tagName.toLowerCase() === 'li')
+        .map((item) => serializeInlineNodes(Array.from(item.childNodes)));
+      if (items.length > 0) {
+        blocks.push(tag === 'ul' ? { type: 'bullet_list', items } : { type: 'ordered_list', items });
+      }
+    } else if (tag === 'p' || tag === 'div') {
+      flushInlineParagraph();
+      const content = serializeInlineNodes(Array.from(element.childNodes));
+      blocks.push({ type: 'paragraph', content });
+    } else {
+      inlineNodes.push(node);
+    }
+  }
+  flushInlineParagraph();
+
+  return blocks.length > 0
+    ? { blocks }
+    : { blocks: [{ type: 'paragraph', content: [{ text: '' }] }] };
 }

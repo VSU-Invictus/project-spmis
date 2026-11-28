@@ -13,7 +13,7 @@ import type { Review } from '../../hooks/useStudentReviews';
 import {
   deserializeDocumentToEditorHtml,
   deserializeDocumentToEditorText,
-  extractEditorDomToMarkdownText,
+  serializeEditorDomToDocument,
   serializeEditorTextToDocument,
 } from './richTextDocument';
 
@@ -252,9 +252,14 @@ export function ReviewFormModal({
     const el = editorDivRef.current;
     if (!el) return;
     syncEmptyDataset(el);
-    const mdText = extractEditorDomToMarkdownText(el);
-    handleEditorChange(mdText, false);
-  }, [handleEditorChange, syncEmptyDataset]);
+    const nextDocument = serializeEditorDomToDocument(el);
+    setEditorText(extractPlainText(nextDocument));
+    setServerError(null);
+    form.setValue('body_document', nextDocument, {
+      shouldDirty: true,
+      shouldValidate: form.formState.isSubmitted,
+    });
+  }, [form, syncEmptyDataset]);
 
   const applyFormat = (format: 'bold' | 'italic' | 'bullet' | 'number') => {
     const el = editorDivRef.current;
