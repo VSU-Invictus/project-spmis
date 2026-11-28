@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, useLayoutEffect, useRef } from 'react';
 import { useAskChatbot, type ChatTurn } from '../hooks/useAskChatbot';
 import { ApiRequestError } from '../lib/api';
 import { SessionContext } from './SessionContext';
@@ -167,19 +167,12 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const session = useContext(SessionContext);
   const currentUserId = session?.profile?.id ?? null;
   const previousUserIdRef = useRef<string | null>(currentUserId);
-  const resetEffectUserIdRef = useRef<string | null>(currentUserId);
   const requestGenerationRef = useRef(0);
 
-  // Invalidate requests during render so a completion cannot slip in between
-  // an identity change and the reset effect below.
-  if (previousUserIdRef.current !== currentUserId) {
-    previousUserIdRef.current = currentUserId;
-    requestGenerationRef.current += 1;
-  }
-
-  useEffect(() => {
-    if (resetEffectUserIdRef.current !== currentUserId) {
-      resetEffectUserIdRef.current = currentUserId;
+  useLayoutEffect(() => {
+    if (previousUserIdRef.current !== currentUserId) {
+      previousUserIdRef.current = currentUserId;
+      requestGenerationRef.current += 1;
       dispatch({ type: 'RESET_CHAT' });
     }
   }, [currentUserId]);
