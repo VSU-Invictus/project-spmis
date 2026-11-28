@@ -222,11 +222,13 @@ describe('ChatContext state machine (#156)', () => {
 });
 
 function TestChatComponent() {
-  const { state, sendMessage, retryLastMessage } = useChat();
+  const { state, isPending, sendMessage, retryLastMessage } = useChat();
   return (
     <div>
       <div data-testid="status">{state.status}</div>
       <div data-testid="message-count">{state.messages.length}</div>
+      <div data-testid="messages">{state.messages.map((message) => message.content).join('\n')}</div>
+      <div data-testid="is-pending">{String(isPending)}</div>
       <div data-testid="pending-message">{state.pendingMessage ?? ''}</div>
       <button onClick={() => sendMessage('Hello world')}>Send Message</button>
       <button onClick={() => retryLastMessage()}>Retry Last</button>
@@ -235,6 +237,80 @@ function TestChatComponent() {
 }
 
 describe('ChatProvider integration (#156)', () => {
+  it('discards an in-flight reply from User A after switching to User B', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    let requestStarted = false;
+    let releaseReply!: () => void;
+    const replyGate = new Promise<void>((resolve) => {
+      releaseReply = resolve;
+    });
+    const userAReply = 'Private review synthesis for User A';
+
+    server.use(
+      http.post('*/functions/v1/chat', async () => {
+        requestStarted = true;
+        await replyGate;
+        return HttpResponse.json({ message: userAReply });
+      })
+    );
+
+    const createMockSession = (profileId: string | null): SessionContextValue => ({
+      session: null,
+      profile: profileId
+        ? {
+            id: profileId,
+            email: `${profileId}@example.edu`,
+            full_name: profileId,
+            department_id: 'dept-1',
+            role: 'faculty',
+            status: 'active',
+            created_at: '2026-10-26T00:00:00Z',
+            updated_at: '2026-10-26T00:00:00Z',
+          }
+        : null,
+      role: profileId ? 'faculty' : null,
+      status: profileId ? 'active' : null,
+      loading: false,
+      error: null,
+      mockRole: null,
+      setMockRole: () => {},
+      syncProfile: () => {},
+      refreshProfile: async () => null,
+      signOut: async () => {},
+    });
+
+    function TestApp({ profileId }: { profileId: string | null }) {
+      return (
+        <QueryClientProvider client={queryClient}>
+          <SessionContext.Provider value={createMockSession(profileId)}>
+            <ChatProvider>
+              <TestChatComponent />
+            </ChatProvider>
+          </SessionContext.Provider>
+        </QueryClientProvider>
+      );
+    }
+
+    const { rerender } = render(<TestApp profileId="faculty-user-a" />);
+    await userEvent.click(screen.getByRole('button', { name: 'Send Message' }));
+    await waitFor(() => expect(requestStarted).toBe(true));
+
+    rerender(<TestApp profileId="faculty-user-b" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('status')).toHaveTextContent('idle');
+      expect(screen.getByTestId('message-count')).toHaveTextContent('1');
+    });
+
+    releaseReply();
+
+    await waitFor(() => expect(screen.getByTestId('is-pending')).toHaveTextContent('false'));
+    expect(screen.getByTestId('messages')).not.toHaveTextContent(userAReply);
+    expect(screen.getByTestId('message-count')).toHaveTextContent('1');
+    expect(screen.getByTestId('status')).toHaveTextContent('idle');
+  });
+
   it('resets chat state when session profile id changes or signs out', async () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
