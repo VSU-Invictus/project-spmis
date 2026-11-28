@@ -178,7 +178,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           hasResolvedInitialSessionRef.current = true;
         }
       } finally {
-        if (current && requestId === resolution && shouldShowLoading) {
+        if (current && requestId === resolution) {
           setLoading(false);
         }
       }
