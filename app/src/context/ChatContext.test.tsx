@@ -307,6 +307,8 @@ describe('ChatProvider integration (#156)', () => {
 
     await waitFor(() => expect(screen.getByTestId('is-pending')).toHaveTextContent('false'));
     expect(screen.getByTestId('messages')).not.toHaveTextContent(userAReply);
+    expect(screen.getByTestId('messages')).not.toHaveTextContent('Hello world');
+    expect(screen.getByTestId('messages')).toHaveTextContent(INITIAL_WELCOME_MESSAGE.content);
     expect(screen.getByTestId('message-count')).toHaveTextContent('1');
     expect(screen.getByTestId('status')).toHaveTextContent('idle');
   });
