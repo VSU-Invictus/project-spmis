@@ -9,7 +9,6 @@ import { __resetMocks } from '../mocks/handlers';
 import { ApiRequestError } from '../lib/api';
 import { queryKeys } from './queryKeys';
 import { useDeleteStudent } from './useDeleteStudent';
-import { useCreateFacultyByAdmin } from './useCreateFacultyByAdmin';
 import { useDeleteFaculty } from './useDeleteFaculty';
 
 const clients: QueryClient[] = [];
@@ -144,62 +143,6 @@ describe('Admin CRUD mutation hooks (v1.1.0)', () => {
 
     expect(queryFn).toHaveBeenCalledOnce();
     expect(client.getQueryState(queryKeys.searchStudents())?.isInvalidated).toBe(false);
-  });
-
-  it('useCreateFacultyByAdmin posts with Prefer header and invalidates affected query families', async () => {
-    const { client, wrapper } = setup();
-    let version = 'before';
-    const invalidatedKeys = [
-      queryKeys.facultyProfiles(),
-      queryKeys.auditLogs(),
-      queryKeys.searchStudents(),
-      queryKeys.studentReviews(),
-    ];
-    await Promise.all(
-      invalidatedKeys.map((queryKey) => client.fetchQuery({ queryKey, queryFn: async () => version })),
-    );
-    client.setQueryData(queryKeys.tags(), ['unchanged']);
-
-    let preferHeader: string | null = null;
-    server.use(
-      http.post('*/rest/v1/faculty_profiles', async ({ request }) => {
-        preferHeader = request.headers.get('Prefer');
-        version = 'after';
-        return HttpResponse.json(
-          [
-            {
-              id: '11111111-1111-4111-8111-111111111111',
-              email: 'new.faculty@example.edu',
-              full_name: 'Dr. New Faculty',
-              department_id: '5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb',
-              role: 'faculty',
-              status: 'active',
-              created_at: '2026-11-24T00:00:00.000Z',
-              updated_at: '2026-11-24T00:00:00.000Z',
-            },
-          ],
-          { status: 201 },
-        );
-      }),
-    );
-
-    const { result } = renderHook(() => useCreateFacultyByAdmin(), { wrapper });
-    await act(async () => {
-      const created = await result.current.mutateAsync({
-        email: 'new.faculty@example.edu',
-        full_name: 'Dr. New Faculty',
-        department_id: '5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb',
-        role: 'faculty',
-        status: 'active',
-      });
-      expect(created).toHaveLength(1);
-    });
-
-    expect(preferHeader).toBe('return=representation');
-    invalidatedKeys.forEach((key) => {
-      expect(client.getQueryData(key)).toBe('after');
-    });
-    expect(client.getQueryData(queryKeys.tags())).toEqual(['unchanged']);
   });
 
   it('useDeleteFaculty invalidates affected query families on verified deletion and preserves 409 errors', async () => {

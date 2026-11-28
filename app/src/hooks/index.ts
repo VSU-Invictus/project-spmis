@@ -25,7 +25,6 @@ export * from './useCreateStudentDirect';
 export * from './useUpdateStudent';
 export * from './useDeleteStudent';
 export * from './useFacultyList';
-export * from './useCreateFacultyByAdmin';
 export * from './useInviteFaculty';
 export * from './useFacultyOnboarding';
 export * from './useUpdateFacultyByAdmin';

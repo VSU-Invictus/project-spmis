@@ -12,14 +12,22 @@ values
   ('30000000-0000-4000-8000-000000000001', 'authenticated', 'authenticated', 'owner@example.test', now()),
   ('30000000-0000-4000-8000-000000000002', 'authenticated', 'authenticated', 'faculty@example.test', now()),
   ('30000000-0000-4000-8000-000000000003', 'authenticated', 'authenticated', 'pending@example.test', now()),
-  ('30000000-0000-4000-8000-000000000004', 'authenticated', 'authenticated', 'admin@example.test', now());
+  ('30000000-0000-4000-8000-000000000004', 'authenticated', 'authenticated', 'admin@example.test', now()),
+  ('30000000-0000-4000-8000-000000000005', 'authenticated', 'authenticated', 'faculty.two@example.test', now()),
+  ('30000000-0000-4000-8000-000000000006', 'authenticated', 'authenticated', 'faculty.three@example.test', now()),
+  ('30000000-0000-4000-8000-000000000007', 'authenticated', 'authenticated', 'faculty.four@example.test', now()),
+  ('30000000-0000-4000-8000-000000000008', 'authenticated', 'authenticated', 'faculty.five@example.test', now());
 
 insert into public.faculty_profiles (id, email, full_name, department_id, role, status)
 values
   ('30000000-0000-4000-8000-000000000001', 'owner@example.test', 'Example Owner', '10000000-0000-4000-8000-000000000001', 'faculty', 'active'),
   ('30000000-0000-4000-8000-000000000002', 'faculty@example.test', 'Example Faculty', '10000000-0000-4000-8000-000000000002', 'faculty', 'active'),
   ('30000000-0000-4000-8000-000000000003', 'pending@example.test', 'Example Pending Faculty', '10000000-0000-4000-8000-000000000001', 'faculty', 'pending'),
-  ('30000000-0000-4000-8000-000000000004', 'admin@example.test', 'Example Admin', '10000000-0000-4000-8000-000000000001', 'admin', 'active');
+  ('30000000-0000-4000-8000-000000000004', 'admin@example.test', 'Example Admin', '10000000-0000-4000-8000-000000000001', 'admin', 'active'),
+  ('30000000-0000-4000-8000-000000000005', 'faculty.two@example.test', 'Example Faculty Applicant Two', '10000000-0000-4000-8000-000000000001', 'faculty', 'pending'),
+  ('30000000-0000-4000-8000-000000000006', 'faculty.three@example.test', 'Example Faculty Applicant Three', '10000000-0000-4000-8000-000000000002', 'faculty', 'pending'),
+  ('30000000-0000-4000-8000-000000000007', 'faculty.four@example.test', 'Example Faculty Applicant Four', '10000000-0000-4000-8000-000000000001', 'faculty', 'pending'),
+  ('30000000-0000-4000-8000-000000000008', 'faculty.five@example.test', 'Example Faculty Applicant Five', '10000000-0000-4000-8000-000000000002', 'faculty', 'pending');
 
 insert into public.student_profiles (id, student_id_number, first_name, last_name, program_id)
 values
@@ -57,13 +65,13 @@ insert into public.approval_queue_items (type, submitted_by, payload) values
 
 -- Five synthetic pending faculty applications keep the roster Queue badge representative.
 insert into public.approval_queue_items (type, submitted_by, payload) values
-  ('faculty_account', '30000000-0000-4000-8000-000000000002',
+  ('faculty_account', '30000000-0000-4000-8000-000000000005',
    '{"full_name":"Example Faculty Applicant Two","email":"faculty.two@example.test","department_id":"10000000-0000-4000-8000-000000000001"}'),
-  ('faculty_account', '30000000-0000-4000-8000-000000000002',
+  ('faculty_account', '30000000-0000-4000-8000-000000000006',
    '{"full_name":"Example Faculty Applicant Three","email":"faculty.three@example.test","department_id":"10000000-0000-4000-8000-000000000002"}'),
-  ('faculty_account', '30000000-0000-4000-8000-000000000002',
+  ('faculty_account', '30000000-0000-4000-8000-000000000007',
    '{"full_name":"Example Faculty Applicant Four","email":"faculty.four@example.test","department_id":"10000000-0000-4000-8000-000000000001"}'),
-  ('faculty_account', '30000000-0000-4000-8000-000000000002',
+  ('faculty_account', '30000000-0000-4000-8000-000000000008',
    '{"full_name":"Example Faculty Applicant Five","email":"faculty.five@example.test","department_id":"10000000-0000-4000-8000-000000000002"}');
 
 insert into public.approval_queue_items (type, submitted_by, payload, status, decided_by, decided_at, decision_reason)

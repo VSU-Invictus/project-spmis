@@ -239,14 +239,8 @@ async function startApp() {
   const root = document.getElementById('root')!;
   if (import.meta.env.DEV && isLocalMockAuth &&
       ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
-    try {
-      const { waitForLocalMocks } = await import('./mocks/browser');
-      await waitForLocalMocks();
-    } catch (error) {
-      console.error('Unable to start local API mocks.', error);
-      root.textContent = 'Unable to start local API mocks. Check service worker permissions and reload.';
-      return;
-    }
+    const { waitForLocalMocks } = await import('./mocks/browser');
+    await waitForLocalMocks();
   }
 
   createRoot(root).render(
