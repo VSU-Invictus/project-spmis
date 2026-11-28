@@ -4,10 +4,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
-import type { Session } from '@supabase/supabase-js';
+import { QueryClientContext } from '@tanstack/react-query';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import type { components } from '../../../contract/generated/schema';
 import { apiClient, configureApiAuth, DEFAULT_MOCK_DEV_TOKEN, request } from '../lib/api';
 import { isLocalMockAuth, supabase } from '../lib/supabase';
@@ -66,15 +68,19 @@ function createMockProfile(mockRole: MockRole): FacultyProfile {
 export const SessionContext = createContext<SessionContextValue | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
+  const queryClient = useContext(QueryClientContext);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<FacultyProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [mockRole, setMockRoleState] = useState<MockRole>(readMockRole);
+  const hasResolvedInitialSessionRef = useRef(false);
+  const lastResolvedUserIdRef = useRef<string | null>(null);
 
   const setMockRole = useCallback((nextRole: MockRole) => {
     if (!MOCK_ENABLED) return;
     setLoading(true);
+    queryClient?.clear();
     setProfile(createMockProfile(nextRole));
     setMockRoleState(nextRole);
     try {
@@ -83,7 +89,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       // Role switching still works for the current session if storage is unavailable.
     }
     setLoading(false);
-  }, []);
+  }, [queryClient]);
   const syncProfile = useCallback((nextProfile: FacultyProfile) => {
     setProfile(nextProfile);
   }, []);
@@ -95,6 +101,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [profile]);
   const signOut = useCallback(async () => {
     if (MOCK_ENABLED) {
+      queryClient?.clear();
       setProfile(null);
       setSession(null);
       return;
@@ -103,11 +110,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       const { error: signOutError } = await supabase.auth.signOut();
       if (signOutError) throw signOutError;
     }
+    queryClient?.clear();
+    lastResolvedUserIdRef.current = null;
     configureApiAuth({ accessToken: undefined });
     setSession(null);
     setProfile(null);
     setLoading(false);
-  }, []);
+  }, [queryClient]);
 
   useEffect(() => {
     if (MOCK_ENABLED) {
@@ -120,31 +129,58 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     let current = true;
     let resolution = 0;
 
-    const resolveSession = async (nextSession: Session | null) => {
+    const resolveSession = async (event: AuthChangeEvent, nextSession: Session | null) => {
       const requestId = ++resolution;
+      const prevUserId = lastResolvedUserIdRef.current;
+      const nextUserId = nextSession?.user?.id ?? null;
+      const userChanged = prevUserId !== nextUserId;
+
+      if (prevUserId !== null && userChanged) {
+        queryClient?.clear();
+      }
+      lastResolvedUserIdRef.current = nextUserId;
+
       setSession(nextSession);
       setError(null);
       configureApiAuth({ accessToken: nextSession?.access_token });
 
       if (!nextSession) {
+        hasResolvedInitialSessionRef.current = true;
         setProfile(null);
         setLoading(false);
         return;
       }
 
-      setLoading(true);
+      const isSilentRefresh =
+        hasResolvedInitialSessionRef.current &&
+        !userChanged &&
+        (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN');
+      const shouldShowLoading = !isSilentRefresh && (!hasResolvedInitialSessionRef.current || userChanged);
+
+      if (shouldShowLoading) {
+        setLoading(true);
+      }
+
       try {
         const ownProfile = await request(
           apiClient.GET('/rest/v1/rpc/get_own_profile')
         );
-        if (current && requestId === resolution) setProfile(ownProfile ?? null);
+        if (current && requestId === resolution) {
+          setProfile(ownProfile ?? null);
+          hasResolvedInitialSessionRef.current = true;
+        }
       } catch (cause) {
         if (current && requestId === resolution) {
-          setProfile(null);
-          setError(cause instanceof Error ? cause : new Error('Unable to load your profile.'));
+          if (shouldShowLoading) {
+            setProfile(null);
+            setError(cause instanceof Error ? cause : new Error('Unable to load your profile.'));
+          }
+          hasResolvedInitialSessionRef.current = true;
         }
       } finally {
-        if (current && requestId === resolution) setLoading(false);
+        if (current && requestId === resolution) {
+          setLoading(false);
+        }
       }
     };
 
@@ -158,8 +194,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      void resolveSession(nextSession);
+    } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      void resolveSession(event, nextSession);
     });
 
     return () => {
@@ -167,7 +203,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       subscription.unsubscribe();
       configureApiAuth({ accessToken: undefined });
     };
-  }, [mockRole]);
+  }, [mockRole, queryClient]);
 
   const value = useMemo<SessionContextValue>(() => ({
     session,
