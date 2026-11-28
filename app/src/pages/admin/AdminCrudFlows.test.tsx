@@ -442,3 +442,81 @@ describe('AdminTaxonomyManagementPage delete flow (#249)', () => {
     expect(screen.queryByText('Program Removed Successfully')).not.toBeInTheDocument();
   });
 });
+
+describe('AdminFacultyPage edit email normalization (#249)', () => {
+  it('lowercases mixed-case email input before sending PATCH and updates the roster', async () => {
+    const user = userEvent.setup();
+    let capturedEmail: unknown;
+
+    server.use(
+      http.patch('*/rest/v1/faculty_profiles', async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>;
+        capturedEmail = body.email;
+        return HttpResponse.json([
+          {
+            id: 'e48adc9e-1b79-4b92-9848-aa12b25d63d7',
+            email: typeof body.email === 'string' ? body.email : 'alex.reyes@example.edu',
+            full_name: 'Alex Reyes',
+            department_id: CS_DEPARTMENT_ID,
+            role: 'faculty',
+            status: 'active',
+            created_at: '2026-10-26T00:00:00.000Z',
+            updated_at: '2026-10-26T00:00:00.000Z',
+          },
+        ]);
+      }),
+    );
+
+    renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+
+    const alexCell = await screen.findByText('Alex Reyes');
+    const alexRow = alexCell.closest('[role="row"]');
+    expect(alexRow).not.toBeNull();
+
+    await user.click(within(alexRow as HTMLElement).getByRole('button', { name: 'Edit' }));
+
+    const emailInput = await screen.findByLabelText('Email Address');
+    const dialog = screen.getByRole('dialog');
+    await user.clear(emailInput);
+    await user.type(emailInput, '  Jane.Doe@vsu.edu.ph  ');
+    await user.click(within(dialog).getByRole('button', { name: 'Update' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+    expect(capturedEmail).toBe('jane.doe@vsu.edu.ph');
+    expect(screen.getByText('Faculty Updated Successfully')).toBeInTheDocument();
+  });
+
+  it('treats case-only email differences as unchanged without sending a PATCH', async () => {
+    const user = userEvent.setup();
+    let patchCalls = 0;
+
+    server.use(
+      http.patch('*/rest/v1/faculty_profiles', () => {
+        patchCalls += 1;
+        return HttpResponse.json([]);
+      }),
+    );
+
+    renderAdminPage(<AdminFacultyPage />, '/admin/faculty');
+
+    const alexCell = await screen.findByText('Alex Reyes');
+    const alexRow = alexCell.closest('[role="row"]');
+    expect(alexRow).not.toBeNull();
+
+    await user.click(within(alexRow as HTMLElement).getByRole('button', { name: 'Edit' }));
+
+    const emailInput = await screen.findByLabelText('Email Address');
+    const dialog = screen.getByRole('dialog');
+    await user.clear(emailInput);
+    await user.type(emailInput, 'Alex.Reyes@Example.Edu');
+    await user.click(within(dialog).getByRole('button', { name: 'Update' }));
+
+    expect(
+      await within(dialog).findByText(/Please enter a new, distinct value before updating/i),
+    ).toBeInTheDocument();
+    expect(patchCalls).toBe(0);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+});
