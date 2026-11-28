@@ -186,8 +186,25 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
   const askChatbotMutation = useAskChatbot();
 
-  const handleMutationError = useCallback((err: ApiRequestError | Error, isCurrentRequest: () => boolean) => {
-    if (!isCurrentRequest()) return;
+  const isCurrentRequest = useCallback((userId: string | null, generation: number) => {
+    return requestGenerationRef.current === generation && previousUserIdRef.current === userId;
+  }, []);
+
+  const handleMutationSuccess = useCallback((
+    data: { message: string },
+    requestUserId: string | null,
+    requestGeneration: number
+  ) => {
+    if (!isCurrentRequest(requestUserId, requestGeneration)) return;
+    dispatch({ type: 'SEND_SUCCESS', payload: { message: data.message } });
+  }, [isCurrentRequest]);
+
+  const handleMutationError = useCallback((
+    err: ApiRequestError | Error,
+    requestUserId: string | null,
+    requestGeneration: number
+  ) => {
+    if (!isCurrentRequest(requestUserId, requestGeneration)) return;
     if (err instanceof ApiRequestError) {
       if (err.status === 429 || err.code === 'RATE_LIMITED') {
         dispatch({
@@ -218,7 +235,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         },
       });
     }
-  }, []);
+  }, [isCurrentRequest]);
 
   const sendMessage = useCallback(
     (textToSend: string, forceSuccess = false) => {
@@ -226,9 +243,6 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       if (!text || askChatbotMutation.isPending) return;
       const requestUserId = currentUserId;
       const requestGeneration = requestGenerationRef.current;
-      const isCurrentRequest = () =>
-        requestGenerationRef.current === requestGeneration &&
-        previousUserIdRef.current === requestUserId;
 
       const isRetry = text === state.pendingMessage && (state.status === 'rate_limited' || state.status === 'failed');
 
@@ -268,15 +282,12 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           headers,
         },
         {
-          onSuccess: (data) => {
-            if (!isCurrentRequest()) return;
-            dispatch({ type: 'SEND_SUCCESS', payload: { message: data.message } });
-          },
-          onError: (err) => handleMutationError(err, isCurrentRequest),
+          onSuccess: (data) => handleMutationSuccess(data, requestUserId, requestGeneration),
+          onError: (err) => handleMutationError(err, requestUserId, requestGeneration),
         }
       );
     },
-    [askChatbotMutation, currentUserId, handleMutationError, state.messages, state.pendingMessage, state.simulateRateLimit, state.status]
+    [askChatbotMutation, currentUserId, handleMutationError, handleMutationSuccess, state.messages, state.pendingMessage, state.simulateRateLimit, state.status]
   );
 
   const retryLastMessage = useCallback(() => {
