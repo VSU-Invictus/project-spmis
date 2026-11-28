@@ -167,21 +167,27 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const session = useContext(SessionContext);
   const currentUserId = session?.profile?.id ?? null;
   const previousUserIdRef = useRef<string | null>(currentUserId);
+  const resetEffectUserIdRef = useRef<string | null>(currentUserId);
+  const requestGenerationRef = useRef(0);
+
+  // Invalidate requests during render so a completion cannot slip in between
+  // an identity change and the reset effect below.
+  if (previousUserIdRef.current !== currentUserId) {
+    previousUserIdRef.current = currentUserId;
+    requestGenerationRef.current += 1;
+  }
 
   useEffect(() => {
-    if (previousUserIdRef.current !== currentUserId) {
-      previousUserIdRef.current = currentUserId;
+    if (resetEffectUserIdRef.current !== currentUserId) {
+      resetEffectUserIdRef.current = currentUserId;
       dispatch({ type: 'RESET_CHAT' });
     }
   }, [currentUserId]);
 
   const askChatbotMutation = useAskChatbot();
 
-  const handleMutationSuccess = useCallback((data: { message: string }) => {
-    dispatch({ type: 'SEND_SUCCESS', payload: { message: data.message } });
-  }, []);
-
-  const handleMutationError = useCallback((err: ApiRequestError | Error) => {
+  const handleMutationError = useCallback((err: ApiRequestError | Error, isCurrentRequest: () => boolean) => {
+    if (!isCurrentRequest()) return;
     if (err instanceof ApiRequestError) {
       if (err.status === 429 || err.code === 'RATE_LIMITED') {
         dispatch({
@@ -218,6 +224,11 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     (textToSend: string, forceSuccess = false) => {
       const text = textToSend.trim();
       if (!text || askChatbotMutation.isPending) return;
+      const requestUserId = currentUserId;
+      const requestGeneration = requestGenerationRef.current;
+      const isCurrentRequest = () =>
+        requestGenerationRef.current === requestGeneration &&
+        previousUserIdRef.current === requestUserId;
 
       const isRetry = text === state.pendingMessage && (state.status === 'rate_limited' || state.status === 'failed');
 
@@ -257,12 +268,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           headers,
         },
         {
-          onSuccess: handleMutationSuccess,
-          onError: handleMutationError,
+          onSuccess: (data) => {
+            if (!isCurrentRequest()) return;
+            dispatch({ type: 'SEND_SUCCESS', payload: { message: data.message } });
+          },
+          onError: (err) => handleMutationError(err, isCurrentRequest),
         }
       );
     },
-    [askChatbotMutation, handleMutationError, handleMutationSuccess, state.messages, state.pendingMessage, state.simulateRateLimit, state.status]
+    [askChatbotMutation, currentUserId, handleMutationError, state.messages, state.pendingMessage, state.simulateRateLimit, state.status]
   );
 
   const retryLastMessage = useCallback(() => {
@@ -280,6 +294,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const resetChat = useCallback(() => {
+    requestGenerationRef.current += 1;
     dispatch({ type: 'RESET_CHAT' });
   }, []);
 
