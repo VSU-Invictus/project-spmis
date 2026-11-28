@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, useLayoutEffect, useRef } from 'react';
 import { useAskChatbot, type ChatTurn } from '../hooks/useAskChatbot';
 import { ApiRequestError } from '../lib/api';
 import { SessionContext } from './SessionContext';
@@ -167,21 +167,37 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const session = useContext(SessionContext);
   const currentUserId = session?.profile?.id ?? null;
   const previousUserIdRef = useRef<string | null>(currentUserId);
+  const requestGenerationRef = useRef(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (previousUserIdRef.current !== currentUserId) {
       previousUserIdRef.current = currentUserId;
+      requestGenerationRef.current += 1;
       dispatch({ type: 'RESET_CHAT' });
     }
   }, [currentUserId]);
 
   const askChatbotMutation = useAskChatbot();
 
-  const handleMutationSuccess = useCallback((data: { message: string }) => {
-    dispatch({ type: 'SEND_SUCCESS', payload: { message: data.message } });
+  const isCurrentRequest = useCallback((userId: string | null, generation: number) => {
+    return requestGenerationRef.current === generation && previousUserIdRef.current === userId;
   }, []);
 
-  const handleMutationError = useCallback((err: ApiRequestError | Error) => {
+  const handleMutationSuccess = useCallback((
+    data: { message: string },
+    requestUserId: string | null,
+    requestGeneration: number
+  ) => {
+    if (!isCurrentRequest(requestUserId, requestGeneration)) return;
+    dispatch({ type: 'SEND_SUCCESS', payload: { message: data.message } });
+  }, [isCurrentRequest]);
+
+  const handleMutationError = useCallback((
+    err: ApiRequestError | Error,
+    requestUserId: string | null,
+    requestGeneration: number
+  ) => {
+    if (!isCurrentRequest(requestUserId, requestGeneration)) return;
     if (err instanceof ApiRequestError) {
       if (err.status === 429 || err.code === 'RATE_LIMITED') {
         dispatch({
@@ -212,12 +228,14 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         },
       });
     }
-  }, []);
+  }, [isCurrentRequest]);
 
   const sendMessage = useCallback(
     (textToSend: string, forceSuccess = false) => {
       const text = textToSend.trim();
       if (!text || askChatbotMutation.isPending) return;
+      const requestUserId = currentUserId;
+      const requestGeneration = requestGenerationRef.current;
 
       const isRetry = text === state.pendingMessage && (state.status === 'rate_limited' || state.status === 'failed');
 
@@ -257,12 +275,12 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           headers,
         },
         {
-          onSuccess: handleMutationSuccess,
-          onError: handleMutationError,
+          onSuccess: (data) => handleMutationSuccess(data, requestUserId, requestGeneration),
+          onError: (err) => handleMutationError(err, requestUserId, requestGeneration),
         }
       );
     },
-    [askChatbotMutation, handleMutationError, handleMutationSuccess, state.messages, state.pendingMessage, state.simulateRateLimit, state.status]
+    [askChatbotMutation, currentUserId, handleMutationError, handleMutationSuccess, state.messages, state.pendingMessage, state.simulateRateLimit, state.status]
   );
 
   const retryLastMessage = useCallback(() => {
@@ -280,6 +298,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const resetChat = useCallback(() => {
+    requestGenerationRef.current += 1;
     dispatch({ type: 'RESET_CHAT' });
   }, []);
 
