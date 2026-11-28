@@ -1,0 +1,36 @@
+/* Scoped Student Detail overrides aligning React primitives with student-detail mockup (#186) */
+
+.ui-kebab-item--primary {
+  color: var(--primary, #D97251);
+}
+
+.ui-kebab-item--primary svg {
+  opacity: 1;
+}
+
+html:not(.dark) .ui-kebab-menu {
+  background: var(--card, #FAF9F6);
+  border-color: var(--border, #E2DDD4);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.06);
+}
+
+html:not(.dark) .ui-kebab-item {
+  color: var(--foreground, #21201E);
+}
+
+html:not(.dark) .ui-kebab-item--primary {
+  color: var(--primary, #D97251);
+}
+
+html:not(.dark) .ui-kebab-item--danger {
+  color: var(--destructive, #DC2626);
+}
+
+/* Ensure the Delete Review modal title divider is clearly visible in dark and light modes */
+.ui-modal-card.delete-review-modal {
+  --color-border-subtle: var(--border, #383734);
+}
+
+html:not(.dark) .ui-modal-card.delete-review-modal {
+  --color-border-subtle: var(--border, #E2DDD4);
+}

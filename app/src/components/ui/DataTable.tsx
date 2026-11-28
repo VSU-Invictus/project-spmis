@@ -3,6 +3,8 @@ import { Button } from './Button';
 import { Checkbox } from './Checkbox';
 import { EmptyState } from './EmptyState';
 import { RejectionRow } from './RejectionRow';
+import { useMinimumLoadingDuration } from './Skeleton';
+import { useOptionalPreferences } from '../../context/PreferencesContext';
 
 export interface DataTableColumn<T> {
   key: string;
@@ -24,7 +26,17 @@ export interface DataTableProps<T> {
   selectionStatusFormat?: 'rows' | 'compact';
   bulkActions?: React.ReactNode;
   entityName?: string;
+  singularEntityName?: string;
   defaultPageSize?: number;
+  /** When supplied, data contains only the current server page. */
+  pagination?: {
+    page: number;
+    pageSize: number;
+    totalEntries: number;
+    onPageChange: (page: number) => void;
+    onPageSizeChange: (pageSize: number) => void;
+  };
+  preferenceKey?: string;
   dynamicPageSizeOptions?: boolean;
   isLoading?: boolean;
   emptyTitle?: string;
@@ -50,9 +62,12 @@ export function DataTable<T>({
   selectionStatusFormat = 'rows',
   bulkActions,
   entityName = 'entries',
+  singularEntityName,
   defaultPageSize = 5,
+  pagination,
+  preferenceKey,
   dynamicPageSizeOptions = true,
-  isLoading = false,
+  isLoading: rawIsLoading = false,
   emptyTitle = 'No pending applications',
   emptyDescription = 'Items awaiting review or matching your filters will appear here.',
   layoutMode = 'table',
@@ -63,11 +78,15 @@ export function DataTable<T>({
   className = '',
   ariaLabel = 'Data table',
 }: DataTableProps<T>) {
+  const isLoading = useMinimumLoadingDuration(rawIsLoading);
+  const preferences = useOptionalPreferences();
   const rowsPerPageSelectId = useId();
   const [uncontrolledSelected, setUncontrolledSelected] = useState<Set<string>>(
     () => new Set(defaultSelectedIds)
   );
-  const [pageSize, setPageSize] = useState<number>(defaultPageSize);
+  const [pageSize, setPageSize] = useState<number>(
+    () => (preferenceKey && preferences?.tablePageSizes[preferenceKey]) || defaultPageSize
+  );
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const selectedSet = useMemo(() => {
@@ -86,7 +105,7 @@ export function DataTable<T>({
     onSelectionChange?.(Array.from(nextSet));
   };
 
-  const totalMatches = data.length;
+  const totalMatches = pagination?.totalEntries ?? data.length;
 
   // Dynamic Rows Per Page rules:
   // - If entries <= 9: dropdown is disabled, option [5]
@@ -99,23 +118,24 @@ export function DataTable<T>({
     return [5];
   }, [dynamicPageSizeOptions, totalMatches]);
 
-  const effectivePageSize = allowedPageSizes.includes(pageSize)
+  const effectivePageSize = pagination?.pageSize ?? (allowedPageSizes.includes(pageSize)
     ? pageSize
-    : allowedPageSizes[0];
+    : allowedPageSizes[0]);
 
   const totalPages = Math.max(1, Math.ceil(totalMatches / effectivePageSize));
-  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+  const safeCurrentPage = Math.min(Math.max(1, pagination?.page ?? currentPage), totalPages);
 
   useEffect(() => {
-    if (currentPage > totalPages) {
+    if (!pagination && currentPage > totalPages) {
       setCurrentPage(totalPages);
     }
-  }, [currentPage, totalPages]);
+  }, [currentPage, totalPages, pagination]);
 
   const visibleRows = useMemo(() => {
+    if (pagination) return data;
     const startIndex = (safeCurrentPage - 1) * effectivePageSize;
     return data.slice(startIndex, startIndex + effectivePageSize);
-  }, [data, safeCurrentPage, effectivePageSize]);
+  }, [data, safeCurrentPage, effectivePageSize, pagination]);
 
   const checkRowSelectable = (row: T) =>
     isRowSelectable ? isRowSelectable(row) : true;
@@ -210,13 +230,23 @@ export function DataTable<T>({
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody aria-busy={isLoading || undefined}>
                 {isLoading
-                  ? [0, 1, 2].map((skeletonIdx) => (
+                  ? [0, 1, 2, 3, 4].map((skeletonIdx) => (
                       <tr key={`skeleton-${skeletonIdx}`} className="skeleton-row">
-                        <td colSpan={totalColCount}>
-                          <div className="skeleton" />
-                        </td>
+                        {selectable && (
+                          <td className="checkbox-cell">
+                            <div className="skeleton skeleton-checkbox" />
+                          </td>
+                        )}
+                        {columns.map((col, colIdx) => (
+                          <td key={col.key} className={col.colClass || undefined}>
+                            <div
+                              className="skeleton"
+                              style={{ width: colIdx === 0 ? '72%' : colIdx === columns.length - 1 ? '55%' : '82%' }}
+                            />
+                          </td>
+                        ))}
                       </tr>
                     ))
                   : visibleRows.map((row, rowIdx) => {
@@ -300,17 +330,27 @@ export function DataTable<T>({
                 ))}
               </div>
 
-              <div className="table-body" role="rowgroup">
+              <div className="table-body" role="rowgroup" aria-busy={isLoading || undefined}>
                 {isLoading
-                  ? [0, 1, 2].map((skeletonIdx) => (
+                  ? [0, 1, 2, 3, 4].map((skeletonIdx) => (
                       <div key={`skeleton-${skeletonIdx}`} className="table-row skeleton-row" role="row">
-                        <div
-                          className="td-cell"
-                          role="cell"
-                          style={{ width: '100%', flex: '1 1 100%', display: 'flex', flexDirection: 'column', gap: '8px', border: 'none' }}
-                        >
-                          <div className="skeleton" />
-                        </div>
+                        {selectable && (
+                          <div className="td-cell checkbox-cell" role="cell">
+                            <div className="skeleton skeleton-checkbox" />
+                          </div>
+                        )}
+                        {columns.map((col, colIdx) => (
+                          <div
+                            key={col.key}
+                            className={`td-cell ${col.colClass || ''}`.trim()}
+                            role="cell"
+                          >
+                            <div
+                              className="skeleton"
+                              style={{ width: colIdx === 0 ? '72%' : colIdx === columns.length - 1 ? '55%' : '82%' }}
+                            />
+                          </div>
+                        ))}
                       </div>
                     ))
                   : visibleRows.map((row, rowIdx) => {
@@ -391,13 +431,16 @@ export function DataTable<T>({
         dynamicPageSizeOptions={dynamicPageSizeOptions}
         isLoading={isLoading}
         entityName={entityName}
+        singularEntityName={singularEntityName}
         selectionText={selectionText}
         bulkActions={bulkActions}
         onPageSizeChange={(newSize) => {
+          if (pagination) { pagination.onPageSizeChange(newSize); return; }
           setPageSize(newSize);
+          if (preferenceKey) preferences?.setTablePageSize(preferenceKey, newSize);
           setCurrentPage(1);
         }}
-        onPageChange={(newPage) => setCurrentPage(newPage)}
+        onPageChange={(newPage) => pagination ? pagination.onPageChange(newPage) : setCurrentPage(newPage)}
       />
     </div>
   );
@@ -470,6 +513,22 @@ export function RowsPerPageSelect({
   );
 }
 
+export function formatEntityCount(
+  count: number,
+  entityName = 'entries',
+  singularEntityName?: string
+): string {
+  if (count !== 1) return entityName;
+  if (singularEntityName) return singularEntityName;
+  if (entityName.length > 3 && entityName.endsWith('ies')) {
+    return `${entityName.slice(0, -3)}y`;
+  }
+  if (entityName.length > 1 && entityName.endsWith('s') && !entityName.endsWith('ss')) {
+    return entityName.slice(0, -1);
+  }
+  return entityName;
+}
+
 export interface TablePaginationFooterProps {
   currentPage: number;
   totalPages: number;
@@ -480,6 +539,7 @@ export interface TablePaginationFooterProps {
   dynamicPageSizeOptions?: boolean;
   isLoading?: boolean;
   entityName?: string;
+  singularEntityName?: string;
   selectionText?: string;
   bulkActions?: React.ReactNode;
   rowsPerPageSelectId?: string;
@@ -495,10 +555,12 @@ export function TablePaginationFooter({
   dynamicPageSizeOptions = true,
   isLoading = false,
   entityName = 'entries',
+  singularEntityName,
   selectionText = '',
   bulkActions,
   rowsPerPageSelectId,
 }: TablePaginationFooterProps) {
+  const entityLabel = formatEntityCount(totalEntries, entityName, singularEntityName);
   return (
     <div className="ui-table-pagination is-0272b5f">
       {bulkActions ? (
@@ -528,7 +590,7 @@ export function TablePaginationFooter({
           {isLoading
             ? `Loading ${entityName}…`
             : totalEntries > 0
-            ? `Page ${currentPage} of ${totalPages} · ${totalEntries} ${entityName}`
+            ? `Page ${currentPage} of ${totalPages} · ${totalEntries} ${entityLabel}`
             : `0 ${entityName}`}
         </span>
 

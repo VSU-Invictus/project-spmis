@@ -1,0 +1,18 @@
+.admin-portal-main .admin-remove-button {
+  min-height: 0;
+}
+
+html:not(.dark) .admin-portal-main .admin-remove-button {
+  --destructive: color-mix(in srgb, var(--color-status-danger) 88%, black);
+  border-color: transparent !important;
+  color: var(--destructive-foreground) !important;
+}
+
+html:not(.dark) .admin-portal-main .admin-remove-button:is(:hover, :active):not(:disabled) {
+  background: color-mix(in srgb, var(--destructive) 88%, var(--foreground)) !important;
+  opacity: 1 !important;
+}
+
+.admin-portal-main .admin-remove-button:focus-visible {
+  outline-color: var(--ring);
+}

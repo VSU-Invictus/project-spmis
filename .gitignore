@@ -3,5 +3,7 @@ dist/
 /contract/dist/
 .env*
 !.env.example
+/app/env
+/app/env.download
 *.tsbuildinfo
 .vite/

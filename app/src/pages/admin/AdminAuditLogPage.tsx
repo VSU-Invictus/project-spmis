@@ -8,6 +8,7 @@ import {
   TableHead,
   TableCell,
   TableRowSkeleton,
+  useMinimumLoadingDuration,
   EmptyState,
   Badge,
   Button,
@@ -15,9 +16,10 @@ import {
 import { useAuditLogs } from '../../hooks/useAuditLogs';
 
 export function AdminAuditLogPage() {
-  const { data: auditLogs, isPending, isError, error, refetch } = useAuditLogs({
+  const { data: auditLogs, isPending, isFetching, isError, error, refetch } = useAuditLogs({
     order: 'created_at.desc,id.asc',
   });
+  const isLoading = useMinimumLoadingDuration(isPending || isFetching);
 
   return (
     <AppShell
@@ -25,17 +27,17 @@ export function AdminAuditLogPage() {
       activeNavKey="audit-log"
       breadcrumb="Admin Portal / System Audit Logs"
     >
-      <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div className="admin-page-intro-layout" style={{ paddingBottom: '8px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <h1 className="ui-page-title" style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 6px 0' }}>
+            <h1 className="ui-page-title" style={{ margin: '0 0 6px 0' }}>
               System Audit Trail
             </h1>
             <p className="ui-page-subtitle" style={{ margin: 0, color: 'var(--muted-foreground, #64748b)', fontSize: '14px' }}>
               Read-only immutable log of system events and metadata-only changes per SPMIS §9/§10.
             </p>
           </div>
-          <Button variant="secondary" onClick={() => refetch()}>
+          <Button variant="secondary" disabled={isLoading} onClick={() => refetch()}>
             Refresh Audit Logs
           </Button>
         </div>
@@ -67,16 +69,18 @@ export function AdminAuditLogPage() {
                 <TableHead>Event Metadata</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {isPending && (
+            <TableBody aria-busy={isLoading || undefined}>
+              {isLoading && (
                 <>
+                  <TableRowSkeleton columns={5} />
+                  <TableRowSkeleton columns={5} />
                   <TableRowSkeleton columns={5} />
                   <TableRowSkeleton columns={5} />
                   <TableRowSkeleton columns={5} />
                 </>
               )}
 
-              {!isPending && (!auditLogs || auditLogs.length === 0) && (
+              {!isLoading && (!auditLogs || auditLogs.length === 0) && (
                 <TableRow>
                   <TableCell colSpan={5} style={{ padding: '36px 0', textAlign: 'center' }}>
                     <EmptyState
@@ -87,7 +91,7 @@ export function AdminAuditLogPage() {
                 </TableRow>
               )}
 
-              {!isPending &&
+              {!isLoading &&
                 auditLogs?.map((log) => (
                   <TableRow key={log.id}>
                     <TableCell style={{ fontSize: '13px', fontFamily: 'var(--font-mono, monospace)' }}>

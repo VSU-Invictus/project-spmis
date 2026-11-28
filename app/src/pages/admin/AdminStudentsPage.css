@@ -1,0 +1,38 @@
+/* The shell gap already separates the portal header from the roster. */
+.ui-dashboard-main:has(> .ui-dashboard-content > .admin-student-management) > .ui-dashboard-top-header {
+  margin-bottom: 0 !important;
+}
+
+/* Admin Students Specific Column Widths */
+.admin-student-management .table-scroll :is(.table-header-row, .table-row) {
+  min-width: 900px;
+}
+
+/* Keep the roster table from showing a nested vertical scrollbar while it loads. */
+.admin-student-management .table-container,
+.admin-student-management .table-scroll {
+  overflow-y: hidden !important;
+}
+
+.admin-student-management .th-cell.col-id, .admin-student-management .td-cell.col-id { width: auto; flex: 130 1 0; padding-left: var(--space-9, 24px); }
+.admin-student-management .th-cell.col-fname, .admin-student-management .td-cell.col-fname { width: auto; flex: 150 1 0; }
+.admin-student-management .th-cell.col-mname, .admin-student-management .td-cell.col-mname { width: auto; flex: 120 1 0; }
+.admin-student-management .th-cell.col-lname, .admin-student-management .td-cell.col-lname { width: auto; flex: 120 1 0; }
+.admin-student-management .th-cell.col-program, .admin-student-management .td-cell.col-program { width: auto; flex: 250 1 0; }
+.admin-student-management .th-cell.col-action, .admin-student-management .td-cell.col-action {
+  width: auto;
+  flex: 160 1 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3, 8px);
+  padding: 0.875rem var(--space-9, 24px) 0.875rem var(--space-5, 12px);
+  border: none !important;
+}
+
+/* Same two-column name group as the approved Student modal. */
+.admin-student-name-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4, 10px);
+}

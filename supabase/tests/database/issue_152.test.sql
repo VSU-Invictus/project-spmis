@@ -54,7 +54,7 @@ set local request.jwt.claim.sub = '30000000-0000-4000-8000-000000000004';
 select is_empty('select id from public.review_details', 'Admins receive no raw reviews');
 select is(
   (select count(*) from public.approval_queue_items),
-  6::bigint, 'Admins can read the seeded approval queue'
+  10::bigint, 'Admins can read the seeded approval queue'
 );
 select throws_ok(
   $$update public.approval_queue_items set status = 'approved', decided_by = auth.uid(), decided_at = now()

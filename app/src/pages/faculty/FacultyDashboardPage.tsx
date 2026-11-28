@@ -1,128 +1,76 @@
-import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
-  Button,
-  Card,
   Badge,
-  Input,
-  Label,
   EmptyState,
-  CardSkeleton,
-  Modal,
+  Skeleton,
+  useMinimumLoadingDuration,
 } from '../../components/ui';
+import { ReviewDocumentView, getTagBadgeVariant } from '../../components/reviews';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
-import { useCreateReview } from '../../hooks/useCreateReview';
+import { useStudentSearchPage } from '../../hooks/useSearchStudents';
+import { useStudentsByIds } from '../../hooks/useStudentById';
+import { useApprovedProgramOptions } from '../../hooks/usePrograms';
 import { ApiRequestError } from '../../lib/api';
-import { extractPlainText, REVIEW_WORD_LIMIT, validateReviewWordLimit } from '../../lib/rules/review';
-import { normalizeTags } from '../../lib/rules/tags';
+import { useSession } from '../../context/SessionContext';
+
+function ReviewCardSkeleton() {
+  return (
+    <article className="review-feed-item" aria-hidden="true">
+      <Skeleton className="skeleton" width="28%" height="16px" style={{ margin: 0 }} />
+      <Skeleton className="skeleton" width="42%" height="13px" style={{ margin: 0 }} />
+      <Skeleton className="skeleton" width="64%" height="16px" style={{ margin: 0 }} />
+      <Skeleton className="skeleton" width="84px" height="26px" borderRadius="9999px" style={{ margin: 0 }} />
+    </article>
+  );
+}
 
 export function FacultyDashboardPage() {
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [studentId, setStudentId] = useState('45b54332-e470-4c21-a839-7428c4f6bf42');
-  const [reviewBody, setReviewBody] = useState('');
-  const [tagsInput, setTagsInput] = useState('research, leadership');
-  const [failureMode, setFailureMode] = useState<'none' | '422_word_limit' | '422_empty_body'>('none');
-  const [formError, setFormError] = useState<{
-    code?: string;
-    message: string;
-    details?: string | null;
-    hint?: string | null;
-  } | null>(null);
-
+  const { profile } = useSession();
+  const isActiveFaculty = profile?.role === 'faculty' && profile?.status === 'active';
   const {
-    data: reviews,
-    isPending,
-    isError,
-    error: reviewsError,
-    refetch,
+    data: recentReviews,
+    isPending: isRecentReviewsPending,
+    isError: isRecentReviewsError,
+    error: recentReviewsError,
   } = useStudentReviews({
     status: 'eq.active',
     order: 'created_at.desc,id.asc',
+    limit: 5,
+  }, {
+    enabled: isActiveFaculty,
   });
-
-  const createReviewMutation = useCreateReview({
-    onSuccess: () => {
-      setIsCreateOpen(false);
-      setReviewBody('');
-      setFormError(null);
-      setFailureMode('none');
-    },
-    onError: (err) => {
-      if (err instanceof ApiRequestError) {
-        setFormError({
-          code: err.code,
-          message: err.message,
-          details: err.details,
-          hint: err.hint,
-        });
-      } else {
-        setFormError({ message: err.message });
-      }
-    },
+  const { data: ownReviews, isPending: isOwnReviewsPending } = useStudentReviews({
+    owner_id: profile?.id ? `eq.${profile.id}` : undefined,
+  }, {
+    enabled: isActiveFaculty && Boolean(profile?.id),
   });
+  const { data: studentPage, isPending: isStudentCountPending } = useStudentSearchPage({
+    limit: 1,
+    offset: 0,
+    order: 'created_at.desc,id.asc',
+  }, { enabled: isActiveFaculty });
+  const { data: programs } = useApprovedProgramOptions({ enabled: isActiveFaculty });
+  const studentIds = [...new Set((recentReviews ?? []).map((review) => review.student_id))];
+  const studentQueries = useStudentsByIds(studentIds, isActiveFaculty);
+  const studentsById = new Map(studentIds.map((id, index) => [id, studentQueries[index]?.data]));
+  const programsById = new Map((programs ?? []).map((program) => [program.id, program.name]));
+  const isRecentContentPending = useMinimumLoadingDuration(
+    isRecentReviewsPending || studentQueries.some((query) => query.isPending)
+  );
 
-  const handleSubmitReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(null);
-    const tagResult = normalizeTags(tagsInput.split(','));
-    if (!tagResult.valid) {
-      setFormError({
-        code: tagResult.reason === 'too_many_tags' ? 'TOO_MANY_TAGS' : 'TAG_TOO_LONG',
-        message: tagResult.reason === 'too_many_tags'
-          ? 'A review can have no more than 30 tags.'
-          : 'Each tag must be 50 characters or fewer.',
-      });
-      return;
-    }
-
-    const bodyDocument = {
-      blocks: [
-        {
-          type: 'paragraph' as const,
-          content: [{ text: reviewBody }],
-        },
-      ],
-    };
-    const plainText = extractPlainText(bodyDocument);
-    const normalizedBodyDocument = {
-      blocks: [{ type: 'paragraph' as const, content: [{ text: plainText }] }],
-    };
-    const isFailureSimulation = import.meta.env.DEV && failureMode !== 'none';
-    if (!isFailureSimulation) {
-      const validation = validateReviewWordLimit(reviewBody);
-      if (!validation.valid) {
-        setFormError({
-          code: validation.code,
-          message: validation.code === 'REVIEW_BODY_REQUIRED'
-            ? 'Enter a review before saving.'
-            : `A review can contain no more than ${REVIEW_WORD_LIMIT} words.`,
-          details: validation.code === 'REVIEW_WORD_LIMIT'
-            ? `This review contains ${validation.wordCount} words.`
-            : null,
-          hint: validation.code === 'REVIEW_WORD_LIMIT'
-            ? 'Shorten the review and submit it again.'
-            : 'Add review text and submit it again.',
-        });
-        return;
-      }
-    }
-
-    let headers: Record<string, string> | undefined;
-    if (import.meta.env.DEV && failureMode === '422_word_limit') {
-      headers = { Prefer: 'code=422, example=wordLimit' };
-    } else if (import.meta.env.DEV && failureMode === '422_empty_body') {
-      headers = { Prefer: 'code=422, example=emptyReview' };
-    }
-
-    createReviewMutation.mutate({
-      body: {
-        student_id: studentId,
-        body_document: normalizedBodyDocument,
-        tags: tagResult.tags.length > 0 ? tagResult.tags : undefined,
-      },
-      headers,
-    });
-  };
+  if (!isActiveFaculty) {
+    return (
+      <AppShell role={profile?.role === 'admin' ? 'admin' : 'faculty'} activeNavKey="dashboard" breadcrumb="Faculty Portal / Overview">
+        <div style={{ padding: '24px 0', maxWidth: '640px' }}>
+          <div role="alert" style={{ padding: '20px 24px', backgroundColor: 'var(--destructive-subtle, #fee2e2)', border: '1px solid var(--destructive, #ef4444)', borderRadius: 'var(--radius-md, 8px)', color: 'var(--destructive, #b91c1c)' }}>
+            <h2 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 600 }}>Access Restricted</h2>
+            <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.5 }}>The faculty dashboard is available only to active, verified faculty members.</p>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell
@@ -134,25 +82,52 @@ export function FacultyDashboardPage() {
         {/* Header with Title and Create Action */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <h1 className="ui-page-title" style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 6px 0' }}>
-              Faculty Intelligence Feed
+            <h1 className="ui-page-title ui-heading-1" style={{ marginBottom: '6px' }}>
+              Good day, {profile?.full_name || 'Faculty Member'}
             </h1>
             <p className="ui-page-subtitle" style={{ margin: 0, color: 'var(--muted-foreground, #64748b)', fontSize: '14px' }}>
-              Recent peer reviews across academic departments powered by Prism mock API.
+              Your reviews, student research, and application updates in one place.
             </p>
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <Button variant="secondary" onClick={() => refetch()}>
-              Refresh Feed
-            </Button>
-            <Button variant="primary" onClick={() => setIsCreateOpen(true)}>
-              + Write Student Review
-            </Button>
           </div>
         </div>
 
-        {/* Global Error Banner */}
-        {isError && (
+        {/* Dashboard statistics */}
+        <div className="stats">
+          <section className="ui-card stat" aria-label="Students statistic">
+            <span className="muted">Students</span>
+            <strong>{isStudentCountPending ? '—' : studentPage?.total ?? 0}</strong>
+            <small>Approved sample roster</small>
+          </section>
+          <section className="ui-card stat" aria-label="Your reviews statistic">
+            <span className="muted">Your reviews</span>
+            <strong>{isOwnReviewsPending ? '—' : ownReviews?.length ?? 0}</strong>
+            <small>Active and hidden</small>
+          </section>
+        </div>
+
+        <section className="ui-card dashboard-quick-links" aria-labelledby="dashboard-quick-links-title">
+          <h2 id="dashboard-quick-links-title">Quick links</h2>
+          <div className="quick-links">
+            <Link to="/faculty/students" className="quick-link-item ui-card-interactive">
+              <h3>Browse students <span className="arrow" aria-hidden="true">&rarr;</span></h3>
+              <p>Search records and active reviews.</p>
+            </Link>
+            <Link to="/faculty/students" className="quick-link-item ui-card-interactive">
+              <h3>Write a review <span className="arrow" aria-hidden="true">&rarr;</span></h3>
+              <p>Select a student to add text and tags.</p>
+            </Link>
+            <Link to="/faculty/chat" className="quick-link-item ui-card-interactive">
+              <h3>Open Chats <span className="arrow" aria-hidden="true">&rarr;</span></h3>
+              <p>Explore reviews across students.</p>
+            </Link>
+            <Link to="/faculty/students?register=true" className="quick-link-item ui-card-interactive">
+              <h3>Register a student <span className="arrow" aria-hidden="true">&rarr;</span></h3>
+              <p>Submit a registration application.</p>
+            </Link>
+          </div>
+        </section>
+
+        {isRecentReviewsError && (
           <div
             role="alert"
             style={{
@@ -164,230 +139,78 @@ export function FacultyDashboardPage() {
               fontSize: '14px',
             }}
           >
-            <strong>Prism Mock Error:</strong> {reviewsError?.message}
+            <strong>Unable to load recent reviews.</strong>{' '}
+            {recentReviewsError instanceof ApiRequestError
+              ? <>{recentReviewsError.message}{recentReviewsError.hint ? ` ${recentReviewsError.hint}` : ''}</>
+              : 'Please try again in a moment.'}
           </div>
         )}
+        <section className="ui-card dashboard-reviews" aria-labelledby="dashboard-reviews-title">
+          <div className="between">
+            <h2 id="dashboard-reviews-title">Recent active reviews</h2>
+            <Link className="ui-link-neutral" to="/faculty/students">
+              Browse all students <span className="arrow" aria-hidden="true">&rarr;</span>
+            </Link>
+          </div>
+          <div className="review-feed" aria-busy={isRecentContentPending}>
+            {isRecentContentPending && (
+              <>
+                <ReviewCardSkeleton />
+                <ReviewCardSkeleton />
+                <ReviewCardSkeleton />
+              </>
+            )}
 
-        {/* Feed List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {isPending && (
-            <>
-              <CardSkeleton />
-              <CardSkeleton />
-              <CardSkeleton />
-            </>
-          )}
+            {!isRecentContentPending && !isRecentReviewsError && (!recentReviews || recentReviews.length === 0) && (
+              <EmptyState title="No recent active reviews" description="Active reviews will appear here." />
+            )}
 
-          {!isPending && (!reviews || reviews.length === 0) && (
-            <EmptyState
-              title="No recent reviews in feed"
-              description="Click 'Write Student Review' to create your first attributed review."
-            />
-          )}
+            {!isRecentContentPending && recentReviews?.map((review) => {
+              const student = studentsById.get(review.student_id);
+              const studentName = student
+                ? [student.first_name, student.middle_name, student.last_name].filter(Boolean).join(' ')
+                : 'Student';
+              const programName = student ? programsById.get(student.program_id) : undefined;
+              const isOwnReview = review.owner_id === profile?.id;
 
-          {!isPending &&
-            reviews?.map((review) => (
-              <Card
-                key={review.id}
-                style={{
-                  padding: '20px',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius-lg, 12px)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
-                  backgroundColor: 'var(--card)',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
-                  <div>
-                    <span style={{ fontWeight: 700, fontSize: '15px' }}>
-                      {review.author_name}
-                    </span>
-                    <span style={{ fontSize: '13px', color: 'var(--muted-foreground)', marginLeft: '8px' }}>
-                      · {review.author_department_name}
-                    </span>
+              return (
+                <article className="review-feed-item" key={review.id}>
+                  <div className="review-feed-head">
+                    <div className="review-feed-meta">
+                      <span className="review-feed-contributor">
+                        {review.author_name}
+                        {isOwnReview && <span className="review-feed-you"> · You</span>}
+                      </span>
+                      <span className="review-feed-sub">
+                        Reviewing{' '}
+                        {student ? (
+                          <Link className="review-feed-student" to={`/faculty/students/${student.id}`}>
+                            {studentName}
+                          </Link>
+                        ) : studentName}
+                        {' · '}{programName || 'Program unavailable'}{' · '}{review.created_at.slice(0, 10)}
+                      </span>
+                    </div>
+                    <Badge variant="success">Active</Badge>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Badge variant={review.status === 'active' ? 'success' : 'muted'}>
-                      {review.status}
-                    </Badge>
-                    <span style={{ fontSize: '12px', color: 'var(--muted-foreground)' }}>
-                      {new Date(review.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
 
-                <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: 'var(--foreground)' }}>
-                  {review.body_text}
-                </p>
-
-                {review.tags && review.tags.length > 0 && (
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
-                    {review.tags.map((tag, idx) => (
-                      <Badge key={idx} variant="neutral">
-                        #{tag}
-                      </Badge>
-                    ))}
+                  <div className="review-feed-body">
+                    <ReviewDocumentView document={review.body_document} fallbackText={review.body_text} />
                   </div>
-                )}
-              </Card>
-            ))}
-        </div>
+
+                  {review.tags.length > 0 && (
+                    <div className="review-feed-tags">
+                      {review.tags.map((tag) => (
+                        <Badge key={tag} variant={getTagBadgeVariant(tag)}>{tag}</Badge>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
       </div>
-
-      {/* Create Review Modal */}
-      <Modal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-        title="Contribute Student Review"
-        description="Your review will be attributed to your verified faculty profile."
-      >
-        <form onSubmit={handleSubmitReview} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {formError && (
-            <div
-              role="alert"
-              style={{
-                padding: '12px 14px',
-                backgroundColor: 'var(--destructive-subtle, #fee2e2)',
-                border: '1px solid var(--destructive, #ef4444)',
-                borderRadius: 'var(--radius-md, 8px)',
-                color: 'var(--destructive, #b91c1c)',
-                fontSize: '13px',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                {formError.code && (
-                  <Badge variant="destructive">
-                    {formError.code}
-                  </Badge>
-                )}
-                <span style={{ fontWeight: 700 }}>{formError.message}</span>
-              </div>
-              {formError.details && (
-                <div style={{ fontSize: '12px', marginTop: '4px', opacity: 0.9 }}>
-                  {formError.details}
-                </div>
-              )}
-              {formError.hint && (
-                <div style={{ marginTop: '6px', fontWeight: 600, color: '#991b1b' }}>
-                  💡 Hint: {formError.hint}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Gate A5 Demo / Test Helper */}
-          {import.meta.env.DEV && (
-          <div
-            style={{
-              padding: '10px 12px',
-              backgroundColor: 'var(--muted, #f1f5f9)',
-              borderRadius: 'var(--radius-sm, 6px)',
-              fontSize: '13px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '6px',
-            }}
-          >
-            <span style={{ fontWeight: 600 }}>Milestone 2 Gate A5: Reachable Failure Test</span>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <Button
-                type="button"
-                size="sm"
-                variant={failureMode === '422_word_limit' ? 'destructive' : 'outline'}
-                onClick={() => {
-                  setFailureMode('422_word_limit');
-                  setReviewBody('A '.repeat(505)); // 505 words to trigger word limit
-                }}
-              >
-                Trigger 422 (Word Limit &gt;500)
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant={failureMode === '422_empty_body' ? 'destructive' : 'outline'}
-                onClick={() => {
-                  setFailureMode('422_empty_body');
-                  setReviewBody('');
-                }}
-              >
-                Trigger 422 (Empty Body)
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant={failureMode === 'none' ? 'secondary' : 'ghost'}
-                onClick={() => {
-                  setFailureMode('none');
-                  setReviewBody('Demonstrated great analytical ability and project leadership in software engineering.');
-                }}
-              >
-                Reset to Normal (201)
-              </Button>
-            </div>
-          </div>
-          )}
-
-          <div>
-            <Label htmlFor="student-id-field">Student UUID</Label>
-            <Input
-              id="student-id-field"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              placeholder="e.g. 45b54332-e470-4c21-a839-7428c4f6bf42"
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="review-body-field">Review Body Text</Label>
-            <textarea
-              id="review-body-field"
-              className="ui-input"
-              rows={5}
-              value={reviewBody}
-              onChange={(e) => setReviewBody(e.target.value)}
-              placeholder="Provide constructive review comments about the student..."
-              required={!(import.meta.env.DEV && failureMode === '422_empty_body')}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                borderRadius: 'var(--radius-md, 8px)',
-                border: formError ? '2px solid var(--destructive, #ef4444)' : '1px solid var(--border)',
-                fontFamily: 'inherit',
-                fontSize: '14px',
-                boxSizing: 'border-box',
-                backgroundColor: 'var(--input-bg, transparent)',
-                color: 'inherit',
-              }}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="review-tags-field">Competency Tags (comma separated)</Label>
-            <Input
-              id="review-tags-field"
-              value={tagsInput}
-              onChange={(e) => setTagsInput(e.target.value)}
-              placeholder="e.g. research, academic diligence, python"
-            />
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '12px' }}>
-            <Button type="button" variant="secondary" onClick={() => setIsCreateOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={createReviewMutation.isPending}
-            >
-              {createReviewMutation.isPending ? 'Submitting to Prism...' : 'Submit Review'}
-            </Button>
-          </div>
-        </form>
-      </Modal>
     </AppShell>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '../ui/Button';
 
@@ -7,7 +7,7 @@ export interface LogoutModalProps {
   role?: 'admin' | 'faculty';
   syncWithUrl?: boolean;
   onCancel?: () => void;
-  onConfirm?: () => void;
+  onConfirm?: () => void | Promise<void>;
 }
 
 export function LogoutModal({
@@ -20,6 +20,8 @@ export function LogoutModal({
   const [searchParams, setSearchParams] = useSearchParams();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const cancelBtnRef = useRef<HTMLButtonElement>(null);
+  const [confirming, setConfirming] = useState(false);
+  const [signOutError, setSignOutError] = useState('');
 
   const urlRequested = syncWithUrl && searchParams.get('logout') === 'true';
   const isOpen = controlledOpen !== undefined ? controlledOpen : urlRequested;
@@ -52,17 +54,25 @@ export function LogoutModal({
     onCancel?.();
   };
 
-  const handleConfirm = () => {
-    clearUrlParam();
-    if (role === 'faculty') {
-      try {
-        window.sessionStorage.removeItem('faculty-demo-v1');
-        window.sessionStorage.removeItem('faculty-sidebar-collapsed');
-      } catch {
-        // Ignore sessionStorage restrictions
+  const handleConfirm = async () => {
+    if (confirming) return;
+    setConfirming(true);
+    setSignOutError('');
+    try {
+      await onConfirm?.();
+      clearUrlParam();
+      if (role === 'faculty') {
+        try {
+          window.sessionStorage.removeItem('faculty-demo-v1');
+          window.sessionStorage.removeItem('faculty-sidebar-collapsed');
+        } catch {
+          // Ignore sessionStorage restrictions
+        }
       }
+    } catch (error) {
+      setSignOutError(error instanceof Error ? error.message : 'Unable to log out. Please try again.');
+      setConfirming(false);
     }
-    onConfirm?.();
   };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
@@ -103,12 +113,14 @@ export function LogoutModal({
         <p id="ui-logout-description" className="ui-logout-description">
           Are you sure you want to end your {role} session? You will return to the sign-in page.
         </p>
+        {signOutError && <p role="alert" className="ui-logout-error">{signOutError}</p>}
         <div className="ui-logout-actions">
           <Button
             ref={cancelBtnRef}
             type="button"
             value="cancel"
             variant="outline"
+            disabled={confirming}
             onClick={handleDismiss}
           >
             Cancel
@@ -117,9 +129,10 @@ export function LogoutModal({
             type="button"
             value="confirm"
             variant="primary"
-            onClick={handleConfirm}
+            disabled={confirming}
+            onClick={() => void handleConfirm()}
           >
-            Log out
+            {confirming ? 'Logging out…' : 'Log out'}
           </Button>
         </div>
       </form>

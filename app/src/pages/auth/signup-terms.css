@@ -1,0 +1,140 @@
+.signup-terms-backdrop {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(12, 12, 11, .78);
+  backdrop-filter: blur(8px);
+}
+
+.signup-terms-dialog {
+  display: flex;
+  width: min(620px, 100%);
+  max-height: min(760px, calc(100dvh - 48px));
+  flex-direction: column;
+  padding: 28px;
+  overflow: hidden;
+  border: 1px solid #46433e;
+  border-radius: 24px;
+  background: #2b2a27;
+  color: #faf9f5;
+  box-shadow: 0 24px 70px rgba(0,0,0,.5);
+}
+
+.signup-terms-logo { display: block; width: 132px; max-height: 42px; align-self: center; margin: 0 auto 16px; object-fit: contain; }
+.signup-terms-dialog .signup-terms-logo-light { display: none; }
+.signup-terms-dialog h2 { margin: 0 0 8px; color: #faf9f5; text-align: center; font-size: 1.5rem; line-height: 1.25; }
+.signup-terms-intro { margin: 0 0 18px; color: #bdb7af; text-align: center; font-size: .9rem; line-height: 1.5; }
+
+.signup-terms-scroll {
+  min-height: 120px;
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 18px 20px;
+  border: 1px solid #46433e;
+  border-radius: 14px;
+  background: #201f1d;
+  color: #c7c1b9;
+  font-size: .86rem;
+  line-height: 1.65;
+  scrollbar-color: rgba(217,114,81,.55) transparent;
+  scrollbar-width: thin;
+}
+
+.signup-terms-scroll p { margin: 0 0 14px; }
+.signup-terms-scroll p:last-child { margin-bottom: 0; }
+.signup-terms-scroll strong, .signup-terms-scroll h3 { color: #faf9f5; }
+.signup-terms-scroll h3 { margin: 18px 0 6px; font-size: .9rem; font-weight: 700; }
+.signup-terms-scroll section:first-of-type h3 { margin-top: 0; }
+
+.signup-terms-hint { min-height: 18px; margin: 10px 0 8px; color: #aaa49c; font-size: .75rem; text-align: center; }
+.signup-terms-hint.is-read { color: #83c994; }
+.signup-terms-agreement { display: flex; align-items: flex-start; gap: 10px; margin: 0 0 18px; color: #e5e1db; font-size: .85rem; line-height: 1.45; cursor: pointer; }
+.signup-terms-agreement.is-locked { color: #817c75; cursor: not-allowed; }
+.signup-terms-agreement input { width: 17px; height: 17px; flex: 0 0 17px; margin: 1px 0 0; accent-color: #d97757; }
+.signup-terms-agreement input:focus-visible { outline: 2px solid rgba(217,114,81,.8); outline-offset: 3px; }
+
+.signup-terms-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.signup-terms-actions button { min-height: 42px; padding: 10px 18px; border-radius: 999px; font: 600 .86rem/1 var(--font-sans, sans-serif); cursor: pointer; transition: background-color .18s ease, color .18s ease, transform .18s ease, opacity .18s ease; }
+.signup-terms-back { border: 1px solid #55514b; background: transparent; color: #e6e1da; }
+.signup-terms-back:hover { transform: translateY(-1px); background: rgba(255,255,255,.06); }
+.signup-terms-continue { border: 1px solid transparent; background: #d97757; color: #171615; }
+.signup-terms-continue:not(:disabled):hover { transform: translateY(-1px); background: #e78867; }
+.signup-terms-continue:disabled { cursor: not-allowed; opacity: .45; }
+.signup-terms-actions button:focus-visible { outline: 2px solid rgba(217,114,81,.8); outline-offset: 3px; }
+
+html[data-theme="light"] .signup-terms-backdrop {
+  background: color-mix(in srgb, var(--foreground) 45%, transparent);
+}
+
+html[data-theme="light"] .signup-terms-dialog {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--foreground);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 25%);
+}
+
+html[data-theme="light"] .signup-terms-dialog .signup-terms-logo:not(.signup-terms-logo-light) { display: none; }
+html[data-theme="light"] .signup-terms-dialog .signup-terms-logo-light {
+  display: block;
+  aspect-ratio: 774 / 244;
+}
+
+html[data-theme="light"] .signup-terms-dialog :is(h2, h3, strong, .signup-terms-agreement) {
+  color: var(--foreground);
+}
+
+html[data-theme="light"] .signup-terms-dialog :is(.signup-terms-intro, .signup-terms-hint, .signup-terms-agreement.is-locked) {
+  color: var(--muted-foreground);
+}
+
+html[data-theme="light"] .signup-terms-dialog .signup-terms-hint.is-read { color: #376541; }
+
+html[data-theme="light"] .signup-terms-scroll {
+  background: var(--background);
+  border-color: var(--border);
+  color: var(--foreground);
+  scrollbar-color: var(--muted-foreground) transparent;
+}
+
+html[data-theme="light"] .signup-terms-agreement input { accent-color: var(--primary); }
+
+html[data-theme="light"] .signup-terms-back {
+  border-color: var(--muted-foreground);
+  color: var(--foreground);
+}
+
+html[data-theme="light"] .signup-terms-back:hover { background: var(--accent); }
+
+html[data-theme="light"] .signup-terms-continue {
+  background: color-mix(in srgb, var(--primary) 90%, var(--card-foreground));
+  color: var(--primary-foreground);
+}
+
+html[data-theme="light"] .signup-terms-continue:not(:disabled):hover {
+  background: color-mix(in srgb, var(--primary) 85%, var(--card-foreground));
+}
+
+html[data-theme="light"] .signup-terms-continue:disabled {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  opacity: 1;
+}
+
+html[data-theme="light"] .signup-terms-dialog :is(.signup-terms-actions button, .signup-terms-agreement input):focus-visible {
+  outline-color: var(--ring);
+}
+
+@media (max-width: 560px) {
+  .signup-terms-backdrop { padding: 12px; }
+  .signup-terms-dialog { max-height: calc(100dvh - 24px); padding: 20px 16px; border-radius: 20px; }
+  .signup-terms-scroll { padding: 14px; font-size: .8rem; }
+  .signup-terms-actions button { flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signup-terms-actions button { transition: none; }
+  .signup-terms-actions button:hover { transform: none; }
+}

@@ -1,0 +1,413 @@
+/* Approved M1 Faculty taxonomy styles, scoped to these pages and dialogs. */
+.faculty-taxonomy {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.faculty-taxonomy .header h1 {
+  font-family: var(--font-sans) !important;
+  font-size: 30px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  color: var(--foreground) !important;
+  margin: 0 0 4px 0 !important;
+  line-height: 1.25 !important;
+}
+
+/* Faculty Departments & Programs Table Styles (matching mockup .table-wrap) */
+#faculty-entity-list .table-margin-container {
+  margin: 0;
+}
+
+#faculty-entity-list .table-container,
+#faculty-entity-list .ui-table-wrap {
+  border-radius: 12px !important;
+  border: 1px solid var(--border, #2E2D2A) !important;
+  background: var(--card, #1A1918) !important;
+  box-shadow: none !important;
+  margin-bottom: 20px !important;
+  box-sizing: border-box !important;
+}
+
+html:not(.dark) #faculty-entity-list .table-container,
+html:not(.dark) #faculty-entity-list .ui-table-wrap {
+  background: #FAF9F6 !important;
+  border-color: #E2DDD4 !important;
+}
+
+#faculty-entity-list table,
+#faculty-entity-list .ui-table {
+  table-layout: fixed !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background: transparent !important;
+}
+
+#faculty-entity-list thead,
+#faculty-entity-list thead tr {
+  height: 48px !important;
+  background: transparent !important;
+}
+
+#faculty-entity-list th {
+  height: 48px !important;
+  background: transparent !important;
+  color: #FFFFFF !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.2 !important;
+  border-bottom: 1px solid var(--border, #2E2D2A) !important;
+  vertical-align: middle !important;
+}
+
+html:not(.dark) #faculty-entity-list th {
+  color: #2B2A27 !important;
+  border-bottom-color: #E2DDD4 !important;
+}
+
+#faculty-entity-list tbody tr:not(.skeleton-row),
+#faculty-entity-list tbody tr:not(.skeleton-row) > td {
+  height: auto !important;
+  vertical-align: middle !important;
+}
+
+#faculty-entity-list td {
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  border-bottom: 1px solid var(--border, #2E2D2A) !important;
+}
+
+html:not(.dark) #faculty-entity-list td {
+  color: #2B2A27 !important;
+  border-bottom-color: #E2DDD4 !important;
+}
+
+#faculty-entity-list tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+#faculty-entity-list th:nth-child(1):first-child,
+#faculty-entity-list td:nth-child(1):first-child {
+  padding-top: 18px !important;
+  padding-right: var(--space-9, 24px) !important;
+  padding-bottom: 18px !important;
+  padding-left: var(--space-9, 24px) !important;
+  width: 60%;
+}
+
+#faculty-entity-list th:nth-child(2),
+#faculty-entity-list td:nth-child(2) {
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+  width: 20%;
+}
+
+#faculty-entity-list th:nth-child(3):last-child,
+#faculty-entity-list td:nth-child(3):last-child {
+  padding-top: 18px !important;
+  padding-right: var(--space-9, 24px) !important;
+  padding-bottom: 18px !important;
+  width: 20%;
+  white-space: nowrap;
+}
+
+#faculty-entity-list td .ui-btn {
+  white-space: nowrap;
+}
+
+#faculty-entity-list td .ui-btn-outline {
+  border-radius: 9999px !important;
+  background: var(--secondary, #21201E) !important;
+  border: 1px solid var(--border, #383734) !important;
+  color: #FFFFFF !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 16px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+#faculty-entity-list td .ui-btn-outline:hover:not(:disabled) {
+  background: var(--accent, #33322E) !important;
+  transform: translateY(-1px) !important;
+}
+
+html:not(.dark) #faculty-entity-list td .ui-btn-outline {
+  background: #FFFFFF !important;
+  border: 1px solid #D8D0C4 !important;
+  color: #2B2A27 !important;
+}
+
+html:not(.dark) #faculty-entity-list td .ui-btn-outline:hover:not(:disabled) {
+  background: #F4F1EA !important;
+  border-color: #C8C0B4 !important;
+}
+
+/* Match mockup .table-wrap status pill sizing and colors */
+#faculty-entity-list .ui-badge {
+  border-radius: 9999px !important;
+  padding: 5px 14px !important;
+  min-height: 26px !important;
+  gap: 6px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+#faculty-entity-list .ui-badge .ui-icon {
+  width: 12px !important;
+  height: 12px !important;
+  stroke-width: 2.5 !important;
+  flex-shrink: 0 !important;
+}
+
+#faculty-entity-list .ui-badge--success {
+  background: #142E1F !important;
+  border: 1px solid #1E5C38 !important;
+  color: #4ADE80 !important;
+}
+
+html:not(.dark) #faculty-entity-list .ui-badge--success {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  color: #059669 !important;
+}
+
+/* Reduced-motion safety */
+@media (prefers-reduced-motion: reduce) {
+  #faculty-entity-list .skeleton {
+    animation: none !important;
+  }
+}
+
+dialog#faculty-taxonomy-proposal:not([open]),
+.faculty-taxonomy-proposal:not([open]) {
+  display: none !important;
+}
+
+dialog#faculty-taxonomy-proposal[open],
+.faculty-taxonomy-proposal[open] {
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(440px, calc(100% - 32px)) !important;
+  max-width: 440px !important;
+  padding: 0 !important;
+  background: var(--card, #21201E) !important;
+  border: 1px solid var(--border, #383734) !important;
+  border-radius: var(--radius-xl, 16px) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6), 0 8px 16px -4px rgba(0, 0, 0, 0.4) !important;
+  overflow: hidden !important;
+  margin: auto !important;
+  position: fixed !important;
+  inset: 0 !important;
+}
+
+dialog#faculty-taxonomy-proposal::backdrop {
+  background: rgba(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+dialog#faculty-taxonomy-proposal[open] {
+  animation: modalPopIn 200ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.faculty-taxonomy-proposal .modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  padding: 16px 20px 14px !important;
+  border-bottom: 1px solid var(--border, #383734) !important;
+  gap: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+.faculty-taxonomy-proposal .modal-close {
+  display: none !important;
+}
+
+.faculty-taxonomy-proposal .modal-header-content {
+  flex: 1 !important;
+}
+
+.faculty-taxonomy-proposal .modal-title {
+  margin: 0 !important;
+  font-size: 1.0625rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--foreground, #FAF9F5) !important;
+  line-height: 1.25 !important;
+}
+
+.faculty-taxonomy-proposal .modal-subtitle {
+  margin: 3px 0 0 !important;
+  font-size: 0.78125rem !important;
+  color: var(--muted-foreground, #A0988E) !important;
+  line-height: 1.35 !important;
+}
+
+.faculty-taxonomy-proposal .modal-body {
+  padding: 16px 20px 20px !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+}
+
+.faculty-taxonomy-proposal .modal-form {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.faculty-taxonomy-proposal .ui-form-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: 0 !important;
+}
+
+.faculty-taxonomy-proposal .ui-form-label {
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  color: var(--foreground, #FAF9F5) !important;
+  line-height: 1.35 !important;
+}
+
+.faculty-taxonomy-proposal .ui-input {
+  width: 100% !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 6px 12px !important;
+  background: var(--background, #1C1B1A) !important;
+  border: 1px solid var(--border, #383734) !important;
+  border-radius: var(--radius-md, 8px) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  font-size: 0.875rem !important;
+  font-family: var(--font-sans) !important;
+  outline: none !important;
+  transition: border-color var(--transition-fast, 150ms ease), box-shadow var(--transition-fast, 150ms ease) !important;
+  box-sizing: border-box !important;
+}
+
+.faculty-taxonomy-proposal .ui-input:focus {
+  border-color: var(--primary, #D97251) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent) !important;
+}
+
+.faculty-taxonomy-proposal .ui-input::placeholder {
+  color: var(--muted-foreground, #706B65) !important;
+  opacity: 0.8 !important;
+}
+
+.faculty-taxonomy-proposal .modal-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-top: 18px !important;
+  padding-top: 0 !important;
+}
+
+.faculty-taxonomy-proposal .modal-actions .ui-btn {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 16px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-md, 8px) !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  flex: initial !important;
+  width: auto !important;
+}
+
+.faculty-taxonomy-proposal .modal-actions .ui-btn-primary {
+  background: var(--primary, #D97251) !important;
+  color: #000000 !important;
+  border: 1px solid var(--primary, #D97251) !important;
+  transition: opacity 150ms ease, transform 150ms ease !important;
+}
+
+html:not(.dark) .faculty-taxonomy-proposal .modal-actions .ui-btn-primary {
+  color: #FFFFFF !important;
+}
+
+.faculty-taxonomy-proposal .modal-actions .ui-btn-primary:hover {
+  opacity: 0.92 !important;
+  transform: translateY(-1px) !important;
+}
+
+.faculty-taxonomy-proposal .modal-actions .ui-btn-primary:active {
+  transform: translateY(0) !important;
+}
+
+.faculty-taxonomy-proposal .modal-actions .ui-btn-outline {
+  background: transparent !important;
+  border: 1px solid var(--border, #383734) !important;
+  color: var(--foreground, #FAF9F5) !important;
+  transition: background-color 150ms ease, border-color 150ms ease !important;
+}
+
+.faculty-taxonomy-proposal .modal-actions .ui-btn-outline:hover {
+  background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+  border-color: var(--primary, #D97251) !important;
+}
+
+/* Light Theme Overrides */
+html:not(.dark) dialog#faculty-taxonomy-proposal,
+html:not(.dark) .faculty-taxonomy-proposal {
+  background: var(--card, #FAF9F6) !important;
+  border-color: var(--border, #E2DDD4) !important;
+  color: var(--foreground, #21201E) !important;
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.15), 0 8px 16px -4px rgba(0, 0, 0, 0.08) !important;
+}
+
+html:not(.dark) .faculty-taxonomy-proposal .modal-header {
+  border-bottom-color: var(--border, #E2DDD4) !important;
+}
+
+html:not(.dark) .faculty-taxonomy-proposal .modal-title {
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) .faculty-taxonomy-proposal .modal-subtitle {
+  color: var(--muted-foreground, #706B65) !important;
+}
+
+html:not(.dark) .faculty-taxonomy-proposal .ui-form-label {
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) .faculty-taxonomy-proposal .ui-input {
+  background: #FFFFFF !important;
+  border-color: var(--border, #E2DDD4) !important;
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) .faculty-taxonomy-proposal .ui-input:focus {
+  border-color: var(--primary, #D97251) !important;
+}
+
+html:not(.dark) .faculty-taxonomy-proposal .modal-actions .ui-btn-outline {
+  border-color: var(--border, #E2DDD4) !important;
+  color: var(--foreground, #21201E) !important;
+}
+
+html:not(.dark) .faculty-taxonomy-proposal .modal-actions .ui-btn-outline:hover {
+  background: var(--muted, #F4F1EA) !important;
+}
+
+/* Submission note placed at very bottom above footer */
+.faculty-taxonomy .application-footer-note {
+  margin-top: auto !important;
+  margin-bottom: 0.75rem !important;
+  font-size: 0.8125rem !important;
+  color: var(--color-text-muted, #A0988E) !important;
+  line-height: 1.5;
+}
+

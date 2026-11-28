@@ -774,6 +774,7 @@ export function DataTablesShowcaseSection() {
         />
       ) : (
         <DataTable
+          preferenceKey="styleguide-roster"
           columns={columns}
           data={students}
           getRowId={(r) => r.id}

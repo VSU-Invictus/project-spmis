@@ -1,70 +1,338 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AppShell } from '../../components/navigation/AppShell';
 import {
-  TableContainer,
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-  TableRowSkeleton,
-  EmptyState,
   Badge,
   Button,
-  Input,
+  EmptyState,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TablePaginationFooter,
+  TableRow,
+  TableRowSkeleton,
+  TagCluster,
+  useMinimumLoadingDuration,
 } from '../../components/ui';
-import { useSearchStudents, type StudentSearchResult } from '../../hooks/useSearchStudents';
+import { getTagBadgeVariant } from '../../components/reviews';
+import { useSession } from '../../context/SessionContext';
+import { useApprovedDepartmentOptions } from '../../hooks/useDepartments';
+import { useStudentSearchPage, type StudentSearchResult } from '../../hooks/useSearchStudents';
 import { useStudentReviews } from '../../hooks/useStudentReviews';
-import { Modal } from '../../components/ui/Modal';
+import { useTags } from '../../hooks/useTags';
+import { FacultyStudentRegistration } from './FacultyStudentRegistration';
+import './FacultyStudentsPage.css';
+
+export function formatShortProgramName(program?: string | null): string {
+  if (!program) return 'N/A';
+  const trimmed = program.trim();
+  if (!trimmed || trimmed.toLowerCase() === 'string') {
+    return 'N/A';
+  }
+  return trimmed
+    .replace(/^Bachelor of Science in\s+/i, 'BS ')
+    .replace(/^Bachelor of Arts in\s+/i, 'BA ')
+    .replace(/^BS in\s+/i, 'BS ')
+    .replace(/^BA in\s+/i, 'BA ');
+}
+
+export function sanitizeVisibleReviewTags(tags?: string[] | null): string[] {
+  if (!tags || tags.length === 0) return [];
+  const filtered = tags
+    .map((t) => t.trim())
+    .filter((t) => Boolean(t) && t.toLowerCase() !== 'string');
+  return filtered;
+}
 
 export function FacultyStudentsPage() {
+  const { profile } = useSession();
+  const isActiveFaculty = profile?.role === 'faculty' && profile?.status === 'active';
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStudent, setSelectedStudent] = useState<StudentSearchResult | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
+  const [selectedOwner, setSelectedOwner] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
 
-  const { data: students, isPending, isError, error, refetch } = useSearchStudents({
-    query: searchTerm.trim() || undefined,
+  const { data: departments, isPending: isDepartmentsPending } = useApprovedDepartmentOptions({
+    enabled: Boolean(isActiveFaculty),
   });
+  const { data: tagsData, isPending: isTagsPending } = useTags(undefined, {
+    enabled: Boolean(isActiveFaculty),
+  });
+  const { data: activeReviews } = useStudentReviews(
+    { status: 'eq.active' },
+    { enabled: Boolean(isActiveFaculty) }
+  );
 
-  return (
-    <AppShell
-      role="faculty"
-      activeNavKey="students"
-      breadcrumb="Faculty Portal / Student Roster"
-    >
-      <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-          <div>
-            <h1 className="ui-page-title" style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 6px 0' }}>
-              Student Directory
-            </h1>
-            <p className="ui-page-subtitle" style={{ margin: 0, color: 'var(--muted-foreground, #64748b)', fontSize: '14px' }}>
-              Search across university students and browse attributed faculty intelligence.
+  const distinctTags = useMemo(() => {
+    const list = (tagsData ?? [])
+      .map((t) => t.tag.trim())
+      .filter((t) => Boolean(t) && t.toLowerCase() !== 'string');
+    return [...new Set(list)].sort((a, b) => a.localeCompare(b));
+  }, [tagsData]);
+
+  const facultyContributors = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const review of activeReviews ?? []) {
+      if (
+        review.owner_id &&
+        review.owner_id !== profile?.id &&
+        review.author_name &&
+        review.author_name.toLowerCase() !== 'string'
+      ) {
+        map.set(review.owner_id, review.author_name);
+      }
+    }
+    return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
+  }, [activeReviews, profile?.id]);
+
+  const resolvedOwnerId = useMemo(() => {
+    if (!selectedOwner) return undefined;
+    if (selectedOwner === 'self') return profile?.id;
+    return selectedOwner;
+  }, [selectedOwner, profile?.id]);
+
+  const searchParams = useMemo(() => {
+    return {
+      query: searchTerm.trim() || undefined,
+      owner_department_id: selectedDepartment || undefined,
+      tag: selectedTag || undefined,
+      owner_id: resolvedOwnerId || undefined,
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
+      order: 'created_at.desc,id.asc' as const,
+    };
+  }, [searchTerm, selectedDepartment, selectedTag, resolvedOwnerId, page, pageSize]);
+
+  const {
+    data: studentPage,
+    isPending,
+    isFetching,
+    isError,
+    error,
+  } = useStudentSearchPage(searchParams, {
+    enabled: Boolean(isActiveFaculty),
+  });
+  const isLoading = useMinimumLoadingDuration(isPending || isFetching);
+
+  const students = studentPage?.students ?? [];
+  const totalEntries = studentPage?.total ?? 0;
+
+  useEffect(() => {
+    if (!studentPage) return;
+    const total = studentPage.total;
+    const allowedSize = total < 10 ? 5 : total < 20 ? Math.min(pageSize, 10) : pageSize;
+    if (allowedSize !== pageSize) {
+      setPageSize(allowedSize);
+      setPage(1);
+    } else {
+      const maxPage = Math.max(1, Math.ceil(total / pageSize));
+      if (page > maxPage) {
+        setPage(maxPage);
+      }
+    }
+  }, [studentPage, page, pageSize]);
+
+  const totalPages = Math.max(1, Math.ceil(totalEntries / pageSize));
+  const safeCurrentPage = Math.min(Math.max(1, page), totalPages);
+
+  const handleResetFilters = () => {
+    setSearchTerm('');
+    setSelectedDepartment('');
+    setSelectedTag('');
+    setSelectedOwner('');
+    setPage(1);
+  };
+
+  const hasActiveFilters = Boolean(
+    searchTerm.trim() || selectedDepartment || selectedTag || selectedOwner
+  );
+
+  if (!isActiveFaculty) {
+    return (
+      <AppShell
+        role={profile?.role === 'admin' ? 'admin' : 'faculty'}
+        activeNavKey="students"
+        breadcrumb={
+          profile?.role === 'admin' ? 'Admin Portal / Students' : 'Faculty Portal / Students'
+        }
+      >
+        <div style={{ padding: '24px 0', maxWidth: '640px' }}>
+          <div
+            role="alert"
+            style={{
+              padding: '20px 24px',
+              backgroundColor: 'var(--destructive-subtle, #fee2e2)',
+              border: '1px solid var(--destructive, #ef4444)',
+              borderRadius: 'var(--radius-md, 8px)',
+              color: 'var(--destructive, #b91c1c)',
+            }}
+          >
+            <h2 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 600 }}>
+              Access Restricted
+            </h2>
+            <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.5 }}>
+              The student directory and review mining tools are reserved exclusively for active,
+              verified faculty members. Pending accounts and administrative users are restricted
+              from querying attributed student reviews.
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Button variant="secondary" onClick={() => refetch()}>
-              Refresh Roster
+        </div>
+      </AppShell>
+    );
+  }
+
+  return (
+    <AppShell role="faculty" activeNavKey="students" breadcrumb="Faculty Portal / Students">
+      <div className="faculty-students-page" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="header">
+          <div>
+            <h1 className="ui-heading-1">Students</h1>
+            <p>Browse students and search the text of active reviews.</p>
+          </div>
+          <FacultyStudentRegistration />
+        </div>
+
+        <div className="controls-container">
+          <div className="search-wrapper">
+            <svg className="search-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="6.5" cy="6.5" r="5" stroke="#8A837A" strokeWidth="1.33" />
+              <path
+                d="M10.5 10.5L14 14"
+                stroke="#8A837A"
+                strokeWidth="1.33"
+                strokeLinecap="round"
+              />
+            </svg>
+            <input
+              aria-label="Search by student name or keyword"
+              id="search"
+              type="search"
+              className="search-input"
+              placeholder="Search by student name or keyword..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(1);
+              }}
+            />
+          </div>
+
+          <div className="controls-actions">
+            <div className="dropdown-container department">
+              <select
+                aria-label="Filter by department"
+                id="department"
+                className="dropdown-select"
+                value={selectedDepartment}
+                disabled={isDepartmentsPending}
+                onChange={(e) => {
+                  setSelectedDepartment(e.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">Department: All</option>
+                {departments?.map((dept) => (
+                  <option
+                    key={dept.id}
+                    value={dept.id}
+                  >
+                    {dept.name.toLowerCase() === 'string' ? 'N/A' : dept.name}
+                  </option>
+                ))}
+              </select>
+              <svg className="dropdown-chevron" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path
+                  d="M3.5 5.25L7 8.75L10.5 5.25"
+                  stroke="#6C655D"
+                  strokeWidth="1.17"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div className="dropdown-container tag">
+              <select
+                aria-label="Filter by review tag"
+                id="tag"
+                className="dropdown-select"
+                value={selectedTag}
+                disabled={isTagsPending}
+                onChange={(e) => {
+                  setSelectedTag(e.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">Tag: All</option>
+                {distinctTags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
+              <svg className="dropdown-chevron" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path
+                  d="M3.5 5.25L7 8.75L10.5 5.25"
+                  stroke="#6C655D"
+                  strokeWidth="1.17"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div className="dropdown-container owner">
+              <select
+                aria-label="Filter by faculty contributor"
+                id="owner"
+                className="dropdown-select"
+                value={selectedOwner}
+                onChange={(e) => {
+                  setSelectedOwner(e.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">Faculty: All</option>
+                <option value="self">You</option>
+                {facultyContributors.map((faculty) => (
+                  <option key={faculty.id} value={faculty.id}>
+                    {faculty.name}
+                  </option>
+                ))}
+              </select>
+              <svg className="dropdown-chevron" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path
+                  d="M3.5 5.25L7 8.75L10.5 5.25"
+                  stroke="#6C655D"
+                  strokeWidth="1.17"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <Button
+              variant="outline"
+              id="clear-filters"
+              onClick={handleResetFilters}
+            >
+              Clear filters
             </Button>
           </div>
         </div>
 
-        {/* Search controls */}
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', maxWidth: '480px' }}>
-          <Input
-            placeholder="Search by student name or ID number..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </div>
-
-        {/* Error notification */}
         {isError && (
           <div
             role="alert"
             style={{
               padding: '12px 16px',
+              marginBottom: '16px',
               backgroundColor: 'var(--destructive-subtle, #fee2e2)',
               border: '1px solid var(--destructive, #ef4444)',
               borderRadius: 'var(--radius-md, 8px)',
@@ -72,172 +340,116 @@ export function FacultyStudentsPage() {
               fontSize: '14px',
             }}
           >
-            <strong>Error loading students from Prism mock:</strong> {error?.message}
+            <strong>Error loading students:</strong> {error?.message}
           </div>
         )}
 
-        {/* Students Data Table */}
-        <TableContainer>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead style={{ width: '140px' }}>Student ID</TableHead>
-                <TableHead>Full Name</TableHead>
-                <TableHead>Program</TableHead>
-                <TableHead>Review Tags</TableHead>
-                <TableHead style={{ width: '130px', textAlign: 'right' }}>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isPending && (
-                <>
-                  <TableRowSkeleton columns={5} />
-                  <TableRowSkeleton columns={5} />
-                  <TableRowSkeleton columns={5} />
-                  <TableRowSkeleton columns={5} />
-                </>
-              )}
+        <section id="roster-results" aria-live="polite" aria-label="Student results">
+          {!isLoading && students.length === 0 ? (
+            <EmptyState
+              title={hasActiveFilters ? 'No matching students' : 'No students yet'}
+              description={
+                hasActiveFilters
+                  ? 'Try another review keyword or clear your filters.'
+                  : 'Student records will appear here when they are added.'
+              }
+              action={
+                hasActiveFilters ? (
+                  <Button
+                    id="empty-clear"
+                    variant="outline"
+                    onClick={handleResetFilters}
+                  >
+                    Clear filters
+                  </Button>
+                ) : undefined
+              }
+            />
+          ) : (
+            <TableContainer className="table-wrap">
+              <Table aria-label="Student results">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student ID</TableHead>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Program</TableHead>
+                    <TableHead>Visible review tags</TableHead>
+                    <TableHead className="ui-table-heading-center">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody aria-busy={isLoading || undefined}>
+                  {isLoading
+                    ? [0, 1, 2, 3, 4].map((idx) => (
+                        <TableRowSkeleton key={`skeleton-${idx}`} columns={5} />
+                      ))
+                    : students.map((student: StudentSearchResult) => {
+                        const fullName = [
+                          student.first_name,
+                          student.middle_name,
+                          student.last_name,
+                        ]
+                          .filter(Boolean)
+                          .join(' ');
+                        const shortProgram = formatShortProgramName(student.program_name);
+                        const cleanedTags = sanitizeVisibleReviewTags(student.visible_review_tags);
 
-              {!isPending && (!students || students.length === 0) && (
-                <TableRow>
-                  <TableCell colSpan={5} style={{ padding: '36px 0', textAlign: 'center' }}>
-                    <EmptyState
-                      title="No students matched your search"
-                      description="Adjust your search keywords or clear the search input to view the complete roster."
-                    />
-                  </TableCell>
-                </TableRow>
-              )}
+                        return (
+                          <TableRow key={student.id}>
+                            <TableCell>{student.student_id_number}</TableCell>
+                            <TableCell>
+                              <Link
+                                to={`/faculty/students/${student.id}`}
+                                className="ui-link-neutral"
+                              >
+                                {fullName}
+                              </Link>
+                            </TableCell>
+                            <TableCell>{shortProgram}</TableCell>
+                            <TableCell className="is-315a7a5">
+                              {cleanedTags.length > 0 ? (
+                                <TagCluster
+                                  maxVisible={2}
+                                  tags={cleanedTags.map((tag) => ({
+                                    label: tag,
+                                    variant: getTagBadgeVariant(tag),
+                                  }))}
+                                />
+                              ) : (
+                                <Badge variant="neutral">No active reviews</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Link
+                                to={`/faculty/students/${student.id}/new-review`}
+                                className="ui-link-neutral"
+                              >
+                                Write review <span className="arrow">&rarr;</span>
+                              </Link>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </section>
 
-              {!isPending &&
-                students?.map((student) => {
-                  const fullName = [student.first_name, student.middle_name, student.last_name]
-                    .filter(Boolean)
-                    .join(' ');
-                  return (
-                    <TableRow key={student.id}>
-                      <TableCell style={{ fontWeight: 600, fontFamily: 'var(--font-mono, monospace)' }}>
-                        {student.student_id_number}
-                      </TableCell>
-                      <TableCell>
-                        <div style={{ fontWeight: 600 }}>{fullName}</div>
-                        <div style={{ fontSize: '12px', color: 'var(--muted-foreground, #64748b)' }}>
-                          Registered via {student.registration_source === 'admin_direct' ? 'Admin Direct' : 'Faculty Application'}
-                        </div>
-                      </TableCell>
-                      <TableCell>{student.program_name || 'N/A'}</TableCell>
-                      <TableCell>
-                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                          {student.visible_review_tags && student.visible_review_tags.length > 0 ? (
-                            student.visible_review_tags.map((tag, idx) => (
-                              <Badge key={idx} variant="outline">
-                                #{tag}
-                              </Badge>
-                            ))
-                          ) : (
-                            <span style={{ fontSize: '13px', color: 'var(--muted-foreground, #94a3b8)' }}>
-                              No review tags yet
-                            </span>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => setSelectedStudent(student)}
-                        >
-                          View Reviews
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-
-      {/* Student Reviews Modal */}
-      {selectedStudent && (
-        <StudentReviewsDialog
-          student={selectedStudent}
-          onClose={() => setSelectedStudent(null)}
+        <TablePaginationFooter
+          rowsPerPageSelectId="rows-per-page"
+          currentPage={safeCurrentPage}
+          totalPages={totalPages}
+          totalEntries={totalEntries}
+          pageSize={pageSize}
+          isLoading={isLoading}
+          entityName="entries"
+          onPageSizeChange={(newSize) => {
+            setPageSize(newSize);
+            setPage(1);
+          }}
+          onPageChange={(newPage) => setPage(newPage)}
         />
-      )}
+      </div>
     </AppShell>
-  );
-}
-
-function StudentReviewsDialog({
-  student,
-  onClose,
-}: {
-  student: StudentSearchResult;
-  onClose: () => void;
-}) {
-  const { data: reviews, isPending, isError } = useStudentReviews({
-    student_id: `eq.${student.id}`,
-    status: 'eq.active',
-  });
-
-  const fullName = [student.first_name, student.middle_name, student.last_name].filter(Boolean).join(' ');
-
-  return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title={`Reviews for ${fullName}`}
-      description={`${student.student_id_number} · ${student.program_name}`}
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '60vh', overflowY: 'auto' }}>
-        {isPending && <p>Loading reviews from Prism mock...</p>}
-        {isError && <p style={{ color: 'var(--destructive)' }}>Failed to load reviews.</p>}
-        {!isPending && (!reviews || reviews.length === 0) && (
-          <EmptyState
-            title="No reviews yet"
-            description="Be the first faculty member to submit a review for this student."
-          />
-        )}
-        {!isPending &&
-          reviews?.map((review) => (
-            <div
-              key={review.id}
-              style={{
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-md, 8px)',
-                padding: '14px',
-                backgroundColor: 'var(--card)',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <span style={{ fontWeight: 600, fontSize: '14px' }}>
-                  {review.author_name || 'Faculty Member'} ({review.author_department_name || 'Department'})
-                </span>
-                <span style={{ fontSize: '12px', color: 'var(--muted-foreground)' }}>
-                  {new Date(review.created_at).toLocaleDateString()}
-                </span>
-              </div>
-              <p style={{ margin: '0 0 10px 0', fontSize: '14px', lineHeight: 1.5 }}>
-                {review.body_text}
-              </p>
-              {review.tags && review.tags.length > 0 && (
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  {review.tags.map((tag, idx) => (
-                    <Badge key={idx} variant="muted">
-                      #{tag}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-        <Button variant="secondary" onClick={onClose}>
-          Close
-        </Button>
-      </div>
-    </Modal>
   );
 }

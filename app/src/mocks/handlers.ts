@@ -6,16 +6,32 @@ const programId = '8ef76d5f-e6b2-49aa-a627-171dee1b8b65';
 const departmentId = '5c52a935-befa-4e5f-8bc9-ef4ea9bf5ccb';
 const ownerId = 'e48adc9e-1b79-4b92-9848-aa12b25d63d7';
 const reviewWordLimit = 500;
+const onboardingUserId = '31300000-abcd-4000-8000-000000000011';
 const chatbotRateLimit = 3;
 
+type RichTextRun = { text?: string; bold?: boolean; italic?: boolean };
+
+type ReviewDocumentBlock = {
+  type?: string;
+  content?: Array<RichTextRun>;
+  items?: Array<Array<RichTextRun>>;
+};
+
 type ReviewDocument = {
-  blocks?: Array<{ type?: string; content?: Array<{ text?: string }> }>;
+  blocks?: Array<ReviewDocumentBlock>;
 };
 
 type ReviewInput = {
   student_id?: string;
   body_document?: ReviewDocument;
   tags?: string[];
+};
+
+type MockAttachment = {
+  id: string;
+  mime_type: string;
+  size_bytes: number;
+  created_at: string;
 };
 
 type MockReview = {
@@ -28,21 +44,43 @@ type MockReview = {
   body_document: ReviewDocument;
   status: 'active' | 'hidden';
   tags: string[];
-  attachments: never[];
+  attachments: MockAttachment[];
   created_at: string;
   updated_at: string;
 };
 
+type MockReviewRevision = {
+  id: string;
+  review_id: string;
+  body_text_snapshot: string;
+  edited_by: string;
+  edited_at: string;
+  body_document_snapshot?: ReviewDocument;
+  tags_snapshot?: string[];
+};
+
+type ApprovalItemType =
+  | 'faculty_account'
+  | 'student_registration'
+  | 'program_proposal'
+  | 'department_proposal';
+
+type ApprovalPayload = {
+  full_name?: string;
+  email?: string;
+  student_id_number?: string;
+  first_name?: string;
+  last_name?: string;
+  middle_name?: string | null;
+  program_id?: string;
+  name?: string;
+  department_id?: string;
+};
+
 type ApprovalItem = {
   id: string;
-  type: 'student_registration';
-  payload: {
-    student_id_number: string;
-    first_name: string;
-    last_name: string;
-    middle_name: string | null;
-    program_id: string;
-  };
+  type: ApprovalItemType;
+  payload: ApprovalPayload;
   status: 'pending' | 'approved' | 'rejected';
   submitted_by: string;
   decided_by: string | null;
@@ -51,7 +89,21 @@ type ApprovalItem = {
   decided_at: string | null;
 };
 
-const students = [
+type MockStudentProfile = {
+  id: string;
+  student_id_number: string;
+  first_name: string;
+  middle_name: string | null;
+  last_name: string;
+  program_id: string;
+  program_name: string;
+  registration_source: string;
+  visible_review_tags: string[];
+  created_at: string;
+  updated_at: string;
+};
+
+const students: MockStudentProfile[] = [
   {
     id: studentId,
     student_id_number: '27-1-12345',
@@ -80,24 +132,45 @@ const students = [
   },
 ];
 
-const reviews: MockReview[] = [
-  {
-    id: '67015de8-1ce8-4ac4-8634-384bf5fb3821',
-    student_id: studentId,
-    owner_id: ownerId,
-    author_name: 'Alex Reyes',
-    author_department_name: 'Computer Science',
-    body_text: 'Demonstrated strong leadership and research skills.',
-    body_document: {
-      blocks: [{ type: 'paragraph', content: [{ text: 'Demonstrated strong leadership and research skills.' }] }],
-    },
-    status: 'active' as const,
-    tags: ['leadership', 'research'],
-    attachments: [],
-    created_at: now,
-    updated_at: now,
+const initialReview: MockReview = {
+  id: '67015de8-1ce8-4ac4-8634-384bf5fb3821',
+  student_id: studentId,
+  owner_id: ownerId,
+  author_name: 'Alex Reyes',
+  author_department_name: 'Computer Science',
+  body_text: 'Demonstrated strong leadership and research skills.',
+  body_document: {
+    blocks: [{ type: 'paragraph', content: [{ text: 'Demonstrated strong leadership and research skills.' }] }],
   },
-];
+  status: 'active' as const,
+  tags: ['leadership', 'research'],
+  attachments: [
+    {
+      id: 'c32b11a0-51df-4e3f-8c04-75a10885a201',
+      mime_type: 'application/pdf',
+      size_bytes: 184320,
+      created_at: now,
+    },
+  ],
+  created_at: now,
+  updated_at: now,
+};
+
+const reviews: MockReview[] = [structuredClone(initialReview)];
+
+const initialRevision: MockReviewRevision = {
+  id: '5180c0d4-9423-4ef8-b7d8-9418193d02f9',
+  review_id: initialReview.id,
+  body_text_snapshot: 'Demonstrated strong leadership skills.',
+  edited_by: ownerId,
+  edited_at: '2026-10-25T12:00:00.000Z',
+  body_document_snapshot: {
+    blocks: [{ type: 'paragraph', content: [{ text: 'Demonstrated strong leadership skills.' }] }],
+  },
+  tags_snapshot: ['leadership'],
+};
+
+const reviewRevisions: MockReviewRevision[] = [structuredClone(initialRevision)];
 
 const approvalQueue: ApprovalItem[] = [
   {
@@ -117,6 +190,22 @@ const approvalQueue: ApprovalItem[] = [
     created_at: now,
     decided_at: null,
   },
+  ...[
+    ['07e42297-6b44-4b35-ab2f-d216d547bdc8', 'Example Faculty Applicant Two', 'faculty.two@example.test', departmentId],
+    ['07e42297-6b44-4b35-ab2f-d216d547bdc9', 'Example Faculty Applicant Three', 'faculty.three@example.test', '98a12d0b-73c2-4e02-b7c9-aebc20e823de'],
+    ['07e42297-6b44-4b35-ab2f-d216d547bda0', 'Example Faculty Applicant Four', 'faculty.four@example.test', departmentId],
+    ['07e42297-6b44-4b35-ab2f-d216d547bda1', 'Example Faculty Applicant Five', 'faculty.five@example.test', '98a12d0b-73c2-4e02-b7c9-aebc20e823de'],
+  ].map(([id, full_name, email, department_id]) => ({
+    id,
+    type: 'faculty_account' as const,
+    payload: { full_name, email, department_id },
+    status: 'pending' as const,
+    submitted_by: '98b5fca9-0d8c-4c0a-a10a-7aa10b9bb3a1',
+    decided_by: null,
+    decision_reason: null,
+    created_at: now,
+    decided_at: null,
+  })),
 ];
 
 const departments = [
@@ -128,6 +217,60 @@ const programs = [
   { id: programId, name: 'Bachelor of Science in Computer Science', status: 'approved', proposed_by: null, created_at: now, updated_at: now },
   { id: '9625620d-2d60-4bb2-ad06-d041e6023158', name: 'Bachelor of Science in Mathematics', status: 'approved', proposed_by: null, created_at: now, updated_at: now },
 ];
+
+type MockFacultyProfile = {
+  id: string;
+  email: string;
+  full_name: string;
+  department_id: string;
+  role: 'faculty' | 'admin';
+  status: 'pending' | 'active' | 'suspended';
+  created_at: string;
+  updated_at: string;
+};
+
+const facultyProfiles: MockFacultyProfile[] = [
+  {
+    id: ownerId,
+    email: 'alex.reyes@example.edu',
+    full_name: 'Alex Reyes',
+    department_id: departmentId,
+    role: 'faculty',
+    status: 'active',
+    created_at: now,
+    updated_at: now,
+  },
+  {
+    id: '98b5fca9-0d8c-4c0a-a10a-7aa10b9bb3a1',
+    email: 'pending.faculty@example.edu',
+    full_name: 'Pending Faculty',
+    department_id: departmentId,
+    role: 'faculty',
+    status: 'pending',
+    created_at: now,
+    updated_at: now,
+  },
+  {
+    id: 'b6f6d2fb-1536-4d80-8599-337eaa8ec3ab',
+    email: 'admin@example.edu',
+    full_name: 'SPMIS Administrator',
+    department_id: departmentId,
+    role: 'admin',
+    status: 'active',
+    created_at: now,
+    updated_at: now,
+  },
+];
+
+const initialStudents = structuredClone(students);
+const initialApprovalQueue = structuredClone(approvalQueue);
+const initialDepartments = structuredClone(departments);
+const initialPrograms = structuredClone(programs);
+const initialFacultyProfiles = structuredClone(facultyProfiles);
+
+const restore = <T>(target: T[], initial: T[]) => {
+  target.splice(0, target.length, ...structuredClone(initial));
+};
 
 const auditLogs = [
   {
@@ -144,14 +287,27 @@ const auditLogs = [
 
 let chatbotCallCount = 0;
 let nextReviewId = 1;
+let nextRevisionId = 1;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+export function isStudentRegistrationDecision(input: unknown): boolean {
+  if (!isRecord(input) || !Array.isArray(input.application_ids) || input.application_ids.length === 0) return false;
+  return input.application_ids.every(id =>
+    approvalQueue.some(item => item.type === 'student_registration' && item.id === id),
+  );
+}
+
 const extractReviewText = (document: ReviewDocument | undefined): string =>
   (document?.blocks ?? [])
-    .flatMap((block) => block.content ?? [])
-    .map((item) => item.text ?? '')
+    .map((block) =>
+      block.type === 'paragraph'
+        ? (block.content ?? []).map((item) => item.text ?? '').join('')
+        : (block.items ?? [])
+            .map((item) => item.map((run) => run.text ?? '').join(''))
+            .join(' ')
+    )
     .join(' ')
     .trim();
 
@@ -165,6 +321,70 @@ const matches = (value: string, filter: string | null): boolean => {
   }
   return value.toLowerCase().includes(filter.toLowerCase());
 };
+
+function rosterPage<T extends { id: string; created_at: string }>(
+  request: Request,
+  records: T[],
+  compareByName: (left: T, right: T) => number,
+) {
+  const params = new URL(request.url).searchParams;
+  const order = params.get('order');
+  const limit = Number(params.get('limit') ?? 20);
+  const offset = Number(params.get('offset') ?? 0);
+  const total = records.length;
+  const exactCount = request.headers.get('Prefer')?.split(',').some(value => value.trim() === 'count=exact');
+  const reportedTotal = exactCount ? total : '*';
+
+  if (offset > 0 && offset >= total) {
+    return HttpResponse.json({
+      code: 'PGRST103',
+      message: 'Requested range not satisfiable',
+      details: `An offset of ${offset} was requested, but there are only ${total} rows.`,
+      hint: null,
+    }, { status: 416, headers: { 'Content-Range': `*/${reportedTotal}` } });
+  }
+
+  // Both callers pass a filtered copy, so sorting leaves the mutation fixtures in place.
+  records.sort((left, right) => {
+    const byDate = left.created_at.localeCompare(right.created_at);
+    const primary = order === 'created_at.asc,id.asc' ? byDate
+      : !order || order === 'created_at.desc,id.asc' ? -byDate
+      : compareByName(left, right);
+    return primary || left.id.localeCompare(right.id);
+  });
+  const page = records.slice(offset, offset + limit);
+  const range = page.length ? `${offset}-${offset + page.length - 1}` : '*';
+  return HttpResponse.json(page, {
+    status: exactCount && page.length < total ? 206 : 200,
+    headers: { 'Content-Range': `${range}/${reportedTotal}` },
+  });
+}
+
+function facultySearch(expression: string | null): (profile: MockFacultyProfile) => boolean {
+  if (!expression) return () => true;
+
+  // Accept the documented OR filters and the quoted operands sent by the Faculty roster.
+  const filters = Array.from(
+    expression.matchAll(/(?:\(|,)(full_name|email)\.ilike\.("(?:\\.|[^"\\])*"|[^,()]+)(?=,|\)$)/g),
+    ([, column, operand]) => {
+      const pattern = operand.startsWith('"')
+        ? operand.slice(1, -1).replace(/\\(["\\])/g, '$1')
+        : operand;
+      const source = pattern.replace(/\\(.)|./gs, (token, literal: string | undefined) => {
+        if (literal === undefined && (token === '%' || token === '*')) return '.*';
+        if (literal === undefined && token === '_') return '.';
+        return (literal ?? token).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      });
+      return { column: column as 'full_name' | 'email', pattern: new RegExp(`^${source}$`, 'is') };
+    },
+  );
+  return profile => filters.some(({ column, pattern }) => pattern.test(profile[column]));
+}
+
+const uuidFilterPattern = /^eq\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const parseEqUuidFilter = (filter: string | null): string | null =>
+  filter && uuidFilterPattern.test(filter) ? filter.slice(3) : null;
 
 const reviewValidationError = (code: 'REVIEW_BODY_REQUIRED' | 'REVIEW_WORD_LIMIT', details: string) =>
   HttpResponse.json(
@@ -180,6 +400,43 @@ const reviewValidationError = (code: 'REVIEW_BODY_REQUIRED' | 'REVIEW_WORD_LIMIT
     },
     { status: 422 },
   );
+
+export function auditLogHandler(origin = '*') {
+  return http.get(`${origin}/rest/v1/audit_log_entries`, async ({ request }) => {
+    await delay(10);
+    const { searchParams } = new URL(request.url);
+    const offset = Number(searchParams.get('offset') ?? 0);
+    const limit = Number(searchParams.get('limit') ?? 20);
+    const ascending = searchParams.get('order') === 'created_at.asc,id.asc';
+    const exactCount = request.headers.get('Prefer')?.split(',').some(value => value.trim() === 'count=exact');
+    const records = auditLogs.filter(entry =>
+      matches(entry.action, searchParams.get('action')) && matches(entry.actor_role, searchParams.get('actor_role')),
+    ).sort((a, b) => {
+      const dateOrder = Date.parse(a.created_at) - Date.parse(b.created_at);
+      return (ascending ? dateOrder : -dateOrder) || a.id.localeCompare(b.id);
+    });
+    const total = exactCount ? records.length : '*';
+
+    if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(limit) || limit < 1 || limit > 100) {
+      return HttpResponse.json({
+        code: 'BAD_REQUEST', message: 'Invalid audit log pagination.', details: null, hint: null,
+      }, { status: 400 });
+    }
+    if (offset > 0 && offset >= records.length) {
+      return HttpResponse.json({
+        code: 'PGRST103', message: 'Requested range not satisfiable',
+        details: `An offset of ${offset} was requested, but there are only ${records.length} rows.`, hint: null,
+      }, { status: 416, headers: { 'Content-Range': `*/${total}` } });
+    }
+
+    const page = records.slice(offset, offset + limit);
+    const range = page.length ? `${offset}-${offset + page.length - 1}` : '*';
+    return HttpResponse.json(page, {
+      status: exactCount && page.length < records.length ? 206 : 200,
+      headers: { 'Content-Range': `${range}/${total}` },
+    });
+  });
+}
 
 export const handlers = [
   http.get('*/rest/v1/rpc/search_students', async ({ request }) => {
@@ -203,7 +460,199 @@ export const handlers = [
         && (!query || text.includes(query) || matchingFilteredReviews.some((review) => review.body_text.toLowerCase().includes(query)))
         && (!hasReviewFilter || matchingFilteredReviews.length > 0);
     });
-    return HttpResponse.json(result);
+    return rosterPage(request, result, (left, right) =>
+      left.last_name.localeCompare(right.last_name) || left.first_name.localeCompare(right.first_name),
+    );
+  }),
+
+  http.get('*/rest/v1/rpc/get_own_profile', async () => {
+    await delay(10);
+
+    return HttpResponse.json(
+      facultyProfiles.find((profile) => profile.id === ownerId) ?? null,
+    );
+  }),
+
+  http.post('*/rest/v1/rpc/update_own_profile', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+    const profile = facultyProfiles.find((item) => item.id === ownerId);
+
+    if (!profile) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'Your profile was not found.',
+          details: null,
+          hint: 'Refresh the page and try again.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (!isRecord(input) || typeof input.full_name !== 'string' || !input.full_name.trim()) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The profile update is invalid.',
+          details: 'A nonblank full_name is required.',
+          hint: 'Enter your full name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    profile.full_name = input.full_name.trim();
+    profile.updated_at = new Date().toISOString();
+
+    return HttpResponse.json([profile]);
+  }),
+
+  http.get('*/rest/v1/rpc/get_student_by_id', async ({ request }) => {
+    await delay(10);
+    const url = new URL(request.url);
+    const targetId = url.searchParams.get('p_student_id');
+    const found = students.find((student) => student.id === targetId);
+    if (!found) {
+      return HttpResponse.json(null);
+    }
+    return HttpResponse.json({
+      id: found.id,
+      student_id_number: found.student_id_number,
+      first_name: found.first_name,
+      middle_name: found.middle_name,
+      last_name: found.last_name,
+      program_id: found.program_id,
+      registration_source: found.registration_source,
+      created_at: found.created_at,
+      updated_at: found.updated_at,
+    });
+  }),
+
+  http.post('*/rest/v1/student_profiles', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+
+    if (!isRecord(input)) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The student profile is invalid.',
+          details: 'Expected a JSON object.',
+          hint: 'Correct the student details and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const timestamp = new Date().toISOString();
+    const program = programs.find((item) => item.id === input.program_id);
+
+    const student = {
+      id: crypto.randomUUID(),
+      student_id_number: String(input.student_id_number ?? ''),
+      first_name: String(input.first_name ?? ''),
+      middle_name: typeof input.middle_name === 'string' ? input.middle_name : null,
+      last_name: String(input.last_name ?? ''),
+      program_id: String(input.program_id ?? ''),
+      program_name: program?.name ?? '',
+      registration_source: 'admin_direct',
+      visible_review_tags: [],
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    students.push(student);
+    return HttpResponse.json([student], { status: 201 });
+  }),
+
+  http.patch('*/rest/v1/student_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const input: unknown = await request.json().catch(() => null);
+    const student = students.find((item) => matches(item.id, idFilter));
+
+    if (!student) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The student profile was not found.',
+          details: null,
+          hint: 'Check the student identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (isRecord(input)) {
+      if (typeof input.student_id_number === 'string') {
+        student.student_id_number = input.student_id_number;
+      }
+      if (typeof input.first_name === 'string') student.first_name = input.first_name;
+      if (typeof input.last_name === 'string') student.last_name = input.last_name;
+      if (typeof input.middle_name === 'string' || input.middle_name === null) {
+        student.middle_name = input.middle_name;
+      }
+      if (typeof input.program_id === 'string') {
+        student.program_id = input.program_id;
+        student.program_name = programs.find((program) => program.id === input.program_id)?.name ?? '';
+      }
+    }
+
+    student.updated_at = new Date().toISOString();
+    return HttpResponse.json([student]);
+  }),
+
+  http.delete('*/rest/v1/student_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const targetId = parseEqUuidFilter(url.searchParams.get('id'));
+    if (!targetId) {
+      return HttpResponse.json(
+        {
+          code: 'PGRST100',
+          message: 'A valid id=eq.<uuid> filter is required.',
+          details: 'Provide an equality filter matching a valid UUID.',
+          hint: 'Pass ?id=eq.<uuid> in the request query string.',
+        },
+        { status: 400 },
+      );
+    }
+
+    const index = students.findIndex((item) => item.id === targetId);
+
+    if (index === -1) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The student profile was not found.',
+          details: null,
+          hint: 'Check the student identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    const target = students[index];
+    if (reviews.some((review) => review.student_id === target.id)) {
+      return HttpResponse.json(
+        {
+          code: '23503',
+          message: 'Cannot delete a student profile that still has reviews.',
+          details: 'Key is still referenced from table "reviews".',
+          hint: 'Delete or reassign dependent reviews before removing this student.',
+        },
+        { status: 409 },
+      );
+    }
+
+    students.splice(index, 1);
+    return new HttpResponse(null, { status: 204 });
   }),
 
   http.get('*/rest/v1/review_details', async ({ request }) => {
@@ -211,9 +660,11 @@ export const handlers = [
     const url = new URL(request.url);
     const studentFilter = url.searchParams.get('student_id');
     const statusFilter = url.searchParams.get('status');
+    const ownerFilter = url.searchParams.get('owner_id');
     const result = reviews.filter((review) =>
       matches(review.student_id, studentFilter)
       && (!statusFilter || statusFilter === `eq.${review.status}`)
+      && matches(review.owner_id, ownerFilter)
       && (review.status === 'active' || review.owner_id === ownerId),
     );
     return HttpResponse.json(result);
@@ -250,6 +701,130 @@ export const handlers = [
     return HttpResponse.json(review, { status: 201 });
   }),
 
+  http.patch('*/functions/v1/reviews/:id', async ({ params, request }) => {
+    await delay(10);
+    const id = String(params.id ?? '');
+    const review = reviews.find((item) => item.id === id);
+    if (!review) {
+      return HttpResponse.json(
+        { code: 'NOT_FOUND', message: 'The requested review was not found.', details: null, hint: 'Check the review identifier.' },
+        { status: 404 },
+      );
+    }
+    if (review.owner_id !== ownerId) {
+      return HttpResponse.json(
+        { code: 'FORBIDDEN', message: 'Only the review owner can update this review.', details: null, hint: 'Sign in as the owning faculty member.' },
+        { status: 403 },
+      );
+    }
+    const input: unknown = await request.json().catch(() => null);
+    if (!isRecord(input)) {
+      return HttpResponse.json(
+        { code: 'VALIDATION_ERROR', message: 'The request contains invalid data.', details: 'Expected a JSON object.', hint: 'Correct the request and retry.' },
+        { status: 422 },
+      );
+    }
+    const body = input as ReviewInput;
+    const text = extractReviewText(body.body_document);
+    if (!text) return reviewValidationError('REVIEW_BODY_REQUIRED', 'The extracted review contains no non-whitespace text.');
+    const wordCount = countWords(text);
+    if (wordCount > reviewWordLimit) return reviewValidationError('REVIEW_WORD_LIMIT', `The extracted review contains ${wordCount} words; the limit is ${reviewWordLimit}.`);
+
+    const timestamp = new Date().toISOString();
+    reviewRevisions.unshift({
+      id: `mock-revision-${nextRevisionId++}`,
+      review_id: review.id,
+      body_text_snapshot: review.body_text,
+      edited_by: ownerId,
+      edited_at: timestamp,
+      body_document_snapshot: structuredClone(review.body_document),
+      tags_snapshot: [...review.tags],
+    });
+
+    review.body_text = text;
+    review.body_document = body.body_document ?? { blocks: [] };
+    if (body.tags !== undefined) {
+      review.tags = [...new Set(body.tags.flatMap((tag) => tag.toLowerCase().trim().split(/\s+/).filter(Boolean)))];
+    }
+    review.updated_at = timestamp;
+    return HttpResponse.json(review);
+  }),
+
+  http.post('*/functions/v1/reviews/:id/status', async ({ params, request }) => {
+    await delay(10);
+    const id = String(params.id ?? '');
+    const reviewIndex = reviews.findIndex((item) => item.id === id);
+    if (reviewIndex === -1) {
+      return HttpResponse.json(
+        { code: 'NOT_FOUND', message: 'The requested review was not found.', details: null, hint: 'Check the review identifier.' },
+        { status: 404 },
+      );
+    }
+    const review = reviews[reviewIndex];
+    if (review.owner_id !== ownerId) {
+      return HttpResponse.json(
+        { code: 'FORBIDDEN', message: 'Only the review owner can change this review status.', details: null, hint: 'Sign in as the owning faculty member.' },
+        { status: 403 },
+      );
+    }
+    const input: unknown = await request.json().catch(() => null);
+    const action = isRecord(input) ? String(input.action ?? '') : '';
+    if (!['hide', 'unhide', 'delete'].includes(action)) {
+      return HttpResponse.json(
+        { code: 'VALIDATION_ERROR', message: 'Invalid status action.', details: 'Expected hide, unhide, or delete.', hint: 'Choose a valid review status action.' },
+        { status: 422 },
+      );
+    }
+    if (action === 'hide' && review.status !== 'active') {
+      return HttpResponse.json(
+        { code: 'INVALID_STATE', message: 'Only active reviews can be hidden.', details: null, hint: 'Refresh the page and try again.' },
+        { status: 409 },
+      );
+    }
+    if (action === 'unhide' && review.status !== 'hidden') {
+      return HttpResponse.json(
+        { code: 'INVALID_STATE', message: 'Only hidden reviews can be restored.', details: null, hint: 'Refresh the page and try again.' },
+        { status: 409 },
+      );
+    }
+    if (action === 'delete') {
+      reviews.splice(reviewIndex, 1);
+      return HttpResponse.json({ id, status: 'deleted' as const });
+    }
+    review.status = action === 'hide' ? 'hidden' : 'active';
+    review.updated_at = new Date().toISOString();
+    return HttpResponse.json({ id: review.id, status: review.status });
+  }),
+
+  http.get('*/rest/v1/review_revisions', async ({ request }) => {
+    await delay(10);
+    const url = new URL(request.url);
+    const reviewIdFilter = url.searchParams.get('review_id');
+    const result = reviewRevisions.filter((revision) => matches(revision.review_id, reviewIdFilter));
+    return HttpResponse.json(result);
+  }),
+
+  http.get('*/rest/v1/rpc/suggest_review_tags', async ({ request }) => {
+    await delay(10);
+    const url = new URL(request.url);
+    const prefix = (url.searchParams.get('prefix') ?? '').trim().toLowerCase();
+    const defaultSuggestions = [
+      'algorithms',
+      'communication',
+      'leadership',
+      'mentorship',
+      'research',
+      'robotics',
+      'teamwork',
+    ];
+    const activeTags = reviews
+      .filter((review) => review.status === 'active')
+      .flatMap((review) => review.tags);
+    const distinct = [...new Set([...defaultSuggestions, ...activeTags])].sort((a, b) => a.localeCompare(b));
+    const filtered = prefix ? distinct.filter((tag) => tag.startsWith(prefix) || tag.includes(prefix)) : distinct;
+    return HttpResponse.json(filtered.map((tag) => ({ tag })));
+  }),
+
   http.post('*/functions/v1/chat', async ({ request }) => {
     await delay(10);
     chatbotCallCount += 1;
@@ -259,6 +834,281 @@ export const handlers = [
     const body: unknown = await request.json().catch(() => null);
     const message = isRecord(body) && typeof body.message === 'string' ? body.message : '';
     return HttpResponse.json({ message: `Mock answer to: ${message}` });
+  }),
+
+  http.get('*/rest/v1/faculty_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const departmentFilter = url.searchParams.get('department_id');
+    const roleFilter = url.searchParams.get('role');
+    const statusFilter = url.searchParams.get('status');
+    const matchesSearch = facultySearch(url.searchParams.get('or'));
+
+    const result = facultyProfiles.filter((profile) =>
+      matches(profile.id, idFilter)
+      && matches(profile.department_id, departmentFilter)
+      && matches(profile.role, roleFilter)
+      && matches(profile.status, statusFilter)
+      && matchesSearch(profile),
+    );
+    return rosterPage(request, result, (left, right) => left.full_name.localeCompare(right.full_name));
+  }),
+
+  http.post('*/rest/v1/faculty_profiles', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+    if (
+      !isRecord(input)
+      || typeof input.email !== 'string'
+      || !input.email.trim()
+      || typeof input.full_name !== 'string'
+      || !input.full_name.trim()
+      || typeof input.department_id !== 'string'
+      || !input.department_id.trim()
+      || (input.role !== 'faculty' && input.role !== 'admin')
+      || (input.status !== undefined && input.status !== 'pending' && input.status !== 'active' && input.status !== 'suspended')
+    ) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The faculty profile is invalid.',
+          details: 'Expected email, full_name, department_id, and role (faculty or admin).',
+          hint: 'Correct the faculty details and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const normalizedEmail = input.email.trim().toLowerCase();
+    if (facultyProfiles.some((item) => item.email.toLowerCase() === normalizedEmail)) {
+      return HttpResponse.json(
+        {
+          code: '23505',
+          message: 'A faculty profile with that email address already exists.',
+          details: `Key (email)=(${normalizedEmail}) already exists.`,
+          hint: 'Use a different email address.',
+        },
+        { status: 409 },
+      );
+    }
+
+    const timestamp = new Date().toISOString();
+    const profile: MockFacultyProfile = {
+      id: crypto.randomUUID(),
+      email: normalizedEmail,
+      full_name: input.full_name.trim(),
+      department_id: input.department_id,
+      role: input.role,
+      status: input.status ?? 'active',
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    facultyProfiles.push(profile);
+    return HttpResponse.json([profile], { status: 201 });
+  }),
+
+  http.get('*/functions/v1/faculty-onboarding', async () => {
+    await delay(10);
+    return HttpResponse.json(
+      departments.filter((item) => item.status === 'approved').map(({ id, name }) => ({ id, name })),
+    );
+  }),
+
+  http.post('*/functions/v1/faculty-onboarding', async ({ request }) => {
+    await delay(10);
+    const input: unknown = await request.json().catch(() => null);
+    const invalid = (message: string) => HttpResponse.json(
+      { code: 'VALIDATION_ERROR', message, details: null, hint: null }, { status: 422 });
+    if (!isRecord(input) || Object.keys(input).some((key) => key !== 'full_name' && key !== 'department_id')) {
+      return HttpResponse.json({ code: 'INVALID_REQUEST', message: 'The request must contain only the documented fields.', details: null, hint: null }, { status: 422 });
+    }
+    if (typeof input.full_name !== 'string' || !input.full_name.trim() || input.full_name.length > 200) {
+      return invalid('A nonblank name of at most 200 characters is required.');
+    }
+    const department = departments.find((item) => item.id === input.department_id && item.status === 'approved');
+    if (!department) return invalid('The faculty name or department is invalid.');
+    if (facultyProfiles.some((item) => item.id === onboardingUserId)) {
+      return HttpResponse.json({ code: 'CONFLICT', message: 'A faculty profile already exists for this account.', details: null, hint: null }, { status: 409 });
+    }
+    const timestamp = new Date().toISOString();
+    const profile: MockFacultyProfile = {
+      id: onboardingUserId, email: 'google.applicant@example.test', full_name: input.full_name.trim(),
+      department_id: department.id, role: 'faculty', status: 'pending', created_at: timestamp, updated_at: timestamp,
+    };
+    facultyProfiles.push(profile);
+    approvalQueue.push({
+      id: crypto.randomUUID(), type: 'faculty_account',
+      payload: { full_name: profile.full_name, email: profile.email, department_id: profile.department_id },
+      status: 'pending', submitted_by: profile.id, decided_by: null, decision_reason: null, created_at: timestamp, decided_at: null,
+    });
+    return HttpResponse.json(profile, { status: 201 });
+  }),
+
+  http.post('*/functions/v1/faculty-invitations', async ({ request }) => {
+    await delay(10);
+    const input: unknown = await request.json().catch(() => null);
+    const allowed = ['email', 'full_name', 'department_id'];
+    if (!isRecord(input) || Object.keys(input).some((key) => !allowed.includes(key))) {
+      return HttpResponse.json({ code: 'INVALID_REQUEST', message: 'The request must contain only the documented fields.', details: null, hint: null }, { status: 422 });
+    }
+    const email = typeof input.email === 'string' ? input.email.trim().toLowerCase() : '';
+    if (typeof input.full_name !== 'string' || !input.full_name.trim() || input.full_name.length > 200
+      || !email || (input.email as string).length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)
+      || !departments.some((item) => item.id === input.department_id && item.status === 'approved')) {
+      return HttpResponse.json({ code: 'VALIDATION_ERROR', message: 'The faculty email or department is invalid.', details: null, hint: null }, { status: 422 });
+    }
+    if (email.startsWith('ratelimit')) {
+      return HttpResponse.json({ code: 'RATE_LIMITED', message: 'Faculty invitations are temporarily unavailable.', details: null, hint: 'Try again later.' }, { status: 429 });
+    }
+    if (email.startsWith('authfail')) {
+      return HttpResponse.json({ code: 'INVITATION_FAILED', message: 'The Auth service could not complete the invitation.', details: null, hint: null }, { status: 502 });
+    }
+    if (facultyProfiles.some((item) => item.email.toLowerCase() === email)) {
+      return HttpResponse.json({ code: 'CONFLICT', message: 'An account already exists for this email address.', details: null, hint: null }, { status: 409 });
+    }
+    const timestamp = new Date().toISOString();
+    const profile: MockFacultyProfile = {
+      id: crypto.randomUUID(), email, full_name: input.full_name.trim(), department_id: input.department_id as string,
+      role: 'faculty', status: 'pending', created_at: timestamp, updated_at: timestamp,
+    };
+    facultyProfiles.push(profile);
+    approvalQueue.push({
+      id: crypto.randomUUID(), type: 'faculty_account',
+      payload: { full_name: profile.full_name, email, department_id: profile.department_id },
+      status: 'pending', submitted_by: ownerId, decided_by: null, decision_reason: null, created_at: timestamp, decided_at: null,
+    });
+    return HttpResponse.json({ id: profile.id, email, status: 'pending' }, { status: 201 });
+  }),
+
+  http.patch('*/rest/v1/faculty_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const input: unknown = await request.json().catch(() => null);
+    const profile = facultyProfiles.find((item) => matches(item.id, idFilter));
+
+    if (!profile) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The faculty profile was not found.',
+          details: null,
+          hint: 'Check the faculty identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (!isRecord(input)) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The request contains invalid data.',
+          details: 'Expected a JSON object.',
+          hint: 'Correct the request and retry.',
+        },
+        { status: 422 },
+      );
+    }
+
+    if (typeof input.email === 'string') profile.email = input.email.trim();
+    if (typeof input.full_name === 'string') profile.full_name = input.full_name.trim();
+    if (typeof input.department_id === 'string') profile.department_id = input.department_id;
+    if (input.role === 'faculty' || input.role === 'admin') profile.role = input.role;
+    if (input.status === 'pending' || input.status === 'active' || input.status === 'suspended') {
+      profile.status = input.status;
+    }
+
+    profile.updated_at = new Date().toISOString();
+    return HttpResponse.json([profile]);
+  }),
+
+  http.delete('*/rest/v1/faculty_profiles', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const targetId = parseEqUuidFilter(url.searchParams.get('id'));
+    if (!targetId) {
+      return HttpResponse.json(
+        {
+          code: 'PGRST100',
+          message: 'A valid id=eq.<uuid> filter is required.',
+          details: 'Provide an equality filter matching a valid UUID.',
+          hint: 'Pass ?id=eq.<uuid> in the request query string.',
+        },
+        { status: 400 },
+      );
+    }
+
+    const index = facultyProfiles.findIndex((item) => item.id === targetId);
+
+    if (index === -1) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The faculty profile was not found.',
+          details: null,
+          hint: 'Check the faculty identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    const target = facultyProfiles[index];
+    if (reviews.some((review) => review.owner_id === target.id)) {
+      return HttpResponse.json(
+        {
+          code: '23503',
+          message: 'Cannot delete a faculty profile that still owns reviews.',
+          details: 'Key is still referenced from table "reviews".',
+          hint: 'Remove dependent reviews before removing this faculty account.',
+        },
+        { status: 409 },
+      );
+    }
+
+    facultyProfiles.splice(index, 1);
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.post('*/rest/v1/approval_queue_items', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+
+    if (!isRecord(input) || !isRecord(input.payload)) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The application is invalid.',
+          details: 'Expected an application type and payload.',
+          hint: 'Correct the application and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const item: ApprovalItem = {
+      id: input.type === 'student_registration' ? crypto.randomUUID() : `mock-approval-${approvalQueue.length + 1}`,
+      type: input.type === 'program_proposal' || input.type === 'department_proposal'
+        ? input.type
+        : 'student_registration',
+      payload: input.payload as ApprovalPayload,
+      status: 'pending',
+      submitted_by: ownerId,
+      decided_by: null,
+      decision_reason: null,
+      created_at: new Date().toISOString(),
+      decided_at: null,
+    };
+
+    approvalQueue.push(item);
+    return HttpResponse.json([item], { status: 201 });
   }),
 
   http.get('*/rest/v1/approval_queue_items', async ({ request }) => {
@@ -312,6 +1162,105 @@ export const handlers = [
     ));
   }),
 
+  http.post('*/rest/v1/departments', async ({ request }) => {
+    await delay(10);
+
+    const input: unknown = await request.json().catch(() => null);
+    const name = isRecord(input) && typeof input.name === 'string'
+      ? input.name.trim()
+      : '';
+
+    if (!name) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The department name is invalid.',
+          details: 'A nonblank name is required.',
+          hint: 'Enter a department name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const timestamp = new Date().toISOString();
+    const department = {
+      id: `mock-department-${departments.length + 1}`,
+      name,
+      status: 'approved' as const,
+      proposed_by: null,
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    departments.push(department);
+    return HttpResponse.json([department], { status: 201 });
+  }),
+
+  http.patch('*/rest/v1/departments', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const input: unknown = await request.json().catch(() => null);
+    const name = isRecord(input) && typeof input.name === 'string'
+      ? input.name.trim()
+      : '';
+
+    const department = departments.find((item) => matches(item.id, idFilter));
+
+    if (!department) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The department was not found.',
+          details: null,
+          hint: 'Check the department identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (!name) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The department name is invalid.',
+          details: 'A nonblank name is required.',
+          hint: 'Enter a department name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    department.name = name;
+    department.updated_at = new Date().toISOString();
+
+    return HttpResponse.json([department]);
+  }),
+
+  http.delete('*/rest/v1/departments', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const index = departments.findIndex((item) => matches(item.id, idFilter));
+
+    if (index === -1) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The department was not found.',
+          details: null,
+          hint: 'Check the department identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    departments.splice(index, 1);
+    return new HttpResponse(null, { status: 204 });
+  }),
+
   http.get('*/rest/v1/programs', async ({ request }) => {
     await delay(10);
     const url = new URL(request.url);
@@ -322,25 +1271,118 @@ export const handlers = [
     ));
   }),
 
-  http.get('*/rest/v1/audit_log_entries', async ({ request }) => {
+  http.post('*/rest/v1/programs', async ({ request }) => {
     await delay(10);
-    const url = new URL(request.url);
-    const actionFilter = url.searchParams.get('action');
-    const roleFilter = url.searchParams.get('actor_role');
-    return HttpResponse.json(auditLogs.filter((entry) =>
-      matches(entry.action, actionFilter) && matches(entry.actor_role, roleFilter),
-    ));
+
+    const input: unknown = await request.json().catch(() => null);
+    const name = isRecord(input) && typeof input.name === 'string'
+      ? input.name.trim()
+      : '';
+
+    if (!name) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The program name is invalid.',
+          details: 'A nonblank name is required.',
+          hint: 'Enter a program name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    const timestamp = new Date().toISOString();
+    const program = {
+      id: `mock-program-${programs.length + 1}`,
+      name,
+      status: 'approved' as const,
+      proposed_by: null,
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    programs.push(program);
+    return HttpResponse.json([program], { status: 201 });
   }),
+
+  http.patch('*/rest/v1/programs', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const input: unknown = await request.json().catch(() => null);
+    const name = isRecord(input) && typeof input.name === 'string'
+      ? input.name.trim()
+      : '';
+
+    const program = programs.find((item) => matches(item.id, idFilter));
+
+    if (!program) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The program was not found.',
+          details: null,
+          hint: 'Check the program identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (!name) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message: 'The program name is invalid.',
+          details: 'A nonblank name is required.',
+          hint: 'Enter a program name and try again.',
+        },
+        { status: 422 },
+      );
+    }
+
+    program.name = name;
+    program.updated_at = new Date().toISOString();
+
+    return HttpResponse.json([program]);
+  }),
+
+  http.delete('*/rest/v1/programs', async ({ request }) => {
+    await delay(10);
+
+    const url = new URL(request.url);
+    const idFilter = url.searchParams.get('id');
+    const index = programs.findIndex((item) => matches(item.id, idFilter));
+
+    if (index === -1) {
+      return HttpResponse.json(
+        {
+          code: 'NOT_FOUND',
+          message: 'The program was not found.',
+          details: null,
+          hint: 'Check the program identifier.',
+        },
+        { status: 404 },
+      );
+    }
+
+    programs.splice(index, 1);
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  auditLogHandler(),
 ];
 
 export const __resetMocks = () => {
   chatbotCallCount = 0;
   nextReviewId = 1;
-  reviews.splice(1);
-  approvalQueue.forEach((item) => {
-    item.status = 'pending';
-    item.decided_by = null;
-    item.decision_reason = null;
-    item.decided_at = null;
-  });
+  nextRevisionId = 1;
+
+  restore(students, initialStudents);
+  restore(approvalQueue, initialApprovalQueue);
+  restore(departments, initialDepartments);
+  restore(programs, initialPrograms);
+  restore(facultyProfiles, initialFacultyProfiles);
+  restore(reviews, [initialReview]);
+  restore(reviewRevisions, [initialRevision]);
 };

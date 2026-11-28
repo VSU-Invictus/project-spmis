@@ -9,6 +9,7 @@ export interface ModalProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  className?: string;
   closeOnBackdropClick?: boolean;
   closeOnEscape?: boolean;
 }
@@ -21,11 +22,19 @@ export function Modal({
   children,
   footer,
   size = 'md',
+  className,
   closeOnBackdropClick = true,
   closeOnEscape = true,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedElementRef = useRef<HTMLElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  const closeOnEscapeRef = useRef(closeOnEscape);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+    closeOnEscapeRef.current = closeOnEscape;
+  }, [onClose, closeOnEscape]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -36,8 +45,11 @@ export function Modal({
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // Focus the modal or first focusable element
+    // Focus the modal or first focusable element unless focus is already inside the modal
     const timer = setTimeout(() => {
+      if (modalRef.current && modalRef.current.contains(document.activeElement)) {
+        return;
+      }
       const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
@@ -49,9 +61,9 @@ export function Modal({
     }, 50);
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (closeOnEscape && e.key === 'Escape') {
+      if (closeOnEscapeRef.current && e.key === 'Escape') {
         e.preventDefault();
-        onClose();
+        onCloseRef.current();
         return;
       }
 
@@ -82,7 +94,7 @@ export function Modal({
       window.removeEventListener('keydown', handleKeyDown);
       previouslyFocusedElementRef.current?.focus?.();
     };
-  }, [isOpen, onClose, closeOnEscape]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -117,7 +129,7 @@ export function Modal({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="ui-modal-card"
+        className={className ? `ui-modal-card ${className}` : 'ui-modal-card'}
         style={{
           width: '100%',
           maxWidth: sizeMaxWidth,

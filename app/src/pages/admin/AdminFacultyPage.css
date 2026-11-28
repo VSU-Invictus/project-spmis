@@ -1,0 +1,49 @@
+/* The shell gap already separates the portal header from the roster. */
+.ui-dashboard-main:has(> .ui-dashboard-content > .admin-faculty-management) > .ui-dashboard-top-header {
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 560px) {
+  .admin-faculty-mock-role {
+    --faculty-mock-role-bottom: 7.5rem;
+  }
+}
+
+/* Approved M1 Faculty column geometry, scoped to this roster. */
+.admin-faculty-management .table-scroll :is(.table-header-row, .table-row) {
+  min-width: 960px;
+}
+
+/* Keep this fixed-page roster free of a nested vertical scrollbar. */
+.admin-faculty-management .table-container,
+.admin-faculty-management .table-scroll {
+  overflow-y: hidden !important;
+}
+
+.admin-faculty-management .th-cell.col-name, .admin-faculty-management .td-cell.col-name {
+  flex: 210 1 0;
+  padding-left: var(--space-9, 24px);
+}
+
+.admin-faculty-management .th-cell.col-email, .admin-faculty-management .td-cell.col-email {
+  flex: 220 1 0;
+}
+
+.admin-faculty-management .th-cell.col-dept, .admin-faculty-management .td-cell.col-dept {
+  flex: 290 1 0;
+}
+
+.admin-faculty-management .th-cell.col-role, .admin-faculty-management .td-cell.col-role {
+  flex: 100 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-faculty-management .th-cell.col-action, .admin-faculty-management .td-cell.col-action {
+  flex: 180 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: var(--space-9, 24px);
+}
