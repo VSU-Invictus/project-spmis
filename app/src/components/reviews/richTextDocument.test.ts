@@ -1,7 +1,26 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from 'vitest';
+import { cleanup, render } from '@testing-library/react';
+import { createElement } from 'react';
+import { afterEach, describe, expect, it } from 'vitest';
 import { extractPlainText } from '../../lib/rules/review';
-import { serializeEditorDomToDocument } from './richTextDocument';
+import { ReviewDocumentView } from './ReviewDocumentView';
+import {
+  deserializeDocumentToEditorHtml,
+  serializeEditorDomToDocument,
+} from './richTextDocument';
+import type { ReviewDocument } from './ReviewDocumentView';
+
+afterEach(() => {
+  cleanup();
+  document.body.innerHTML = '';
+});
+
+function nodeSnapshot(node: Node): unknown {
+  if (node.nodeType === Node.TEXT_NODE) return ['text', node.nodeValue];
+  if (node.nodeType !== Node.ELEMENT_NODE) return null;
+  const element = node as Element;
+  return [element.tagName.toLowerCase(), ...Array.from(element.childNodes).map(nodeSnapshot)];
+}
 
 describe('serializeEditorDomToDocument', () => {
   it('preserves literal asterisks in text and plain search text', () => {
@@ -47,5 +66,33 @@ describe('serializeEditorDomToDocument', () => {
       { type: 'bullet_list', items: [[{ text: 'One' }], [{ text: 'Two', bold: true }]] },
       { type: 'ordered_list', items: [[{ text: 'First' }]] },
     ]);
+  });
+
+  it('renders saved documents identically in the editor and ReviewDocumentView', () => {
+    const savedDocument: ReviewDocument = {
+      blocks: [
+        {
+          type: 'paragraph',
+          content: [
+            { text: 'Rating 5*4*3 & <details>. ' },
+            { text: 'Earned A* in Calculus', italic: true },
+            { text: ' and A*', bold: true, italic: true },
+            { text: '\nContinued line.' },
+          ],
+        },
+        { type: 'bullet_list', items: [[{ text: 'First' }], [{ text: 'Second', bold: true }]] },
+        { type: 'ordered_list', items: [[{ text: 'Third', italic: true }]] },
+      ],
+    };
+
+    const editorRoot = document.createElement('div');
+    editorRoot.innerHTML = deserializeDocumentToEditorHtml(savedDocument);
+    const { container } = render(createElement(ReviewDocumentView, { document: savedDocument }));
+    const viewRoot = container.querySelector('.review-body');
+
+    expect(viewRoot).not.toBeNull();
+    expect(Array.from(viewRoot!.childNodes).map(nodeSnapshot)).toEqual(
+      Array.from(editorRoot.childNodes).map(nodeSnapshot)
+    );
   });
 });
