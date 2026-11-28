@@ -16,9 +16,72 @@ export const isLocalMockAuth = (() => {
   }
 })();
 
+const SESSION_ONLY_STORAGE_KEY = 'spmis-auth-session-only';
+
+function isSessionOnlyAuth(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.sessionStorage.getItem(SESSION_ONLY_STORAGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+export function setAuthPersistence(remember: boolean): void {
+  if (typeof window === 'undefined') return;
+  try {
+    if (remember) {
+      window.sessionStorage.removeItem(SESSION_ONLY_STORAGE_KEY);
+    } else {
+      window.sessionStorage.setItem(SESSION_ONLY_STORAGE_KEY, '1');
+    }
+  } catch {
+    // Ignore storage errors in restricted environments.
+  }
+}
+
+export const authStorage = {
+  getItem(key: string): string | null {
+    if (typeof window === 'undefined') return null;
+    try {
+      const sessionValue = window.sessionStorage.getItem(key);
+      if (sessionValue !== null) return sessionValue;
+      if (isSessionOnlyAuth()) return null;
+      return window.localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  setItem(key: string, value: string): void {
+    if (typeof window === 'undefined') return;
+    try {
+      if (isSessionOnlyAuth()) {
+        window.sessionStorage.setItem(key, value);
+        window.localStorage.removeItem(key);
+      } else {
+        window.localStorage.setItem(key, value);
+        window.sessionStorage.removeItem(key);
+      }
+    } catch {
+      // Ignore storage errors in restricted environments.
+    }
+  },
+  removeItem(key: string): void {
+    if (typeof window === 'undefined') return;
+    try {
+      window.sessionStorage.removeItem(key);
+      window.localStorage.removeItem(key);
+    } catch {
+      // Ignore storage errors in restricted environments.
+    }
+  },
+};
+
 export const supabase =
   supabaseUrl && supabaseKey
-    ? createClient(supabaseUrl, supabaseKey, { auth: { flowType: 'pkce' } })
+    ? createClient(supabaseUrl, supabaseKey, {
+        auth: { flowType: 'pkce', storage: authStorage },
+      })
     : null;
 
 export async function startGoogleOAuth(redirectTo: string): Promise<string | null> {

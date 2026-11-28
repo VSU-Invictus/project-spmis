@@ -28,7 +28,7 @@ export default function PendingVerificationPage() {
     navigate('/signin', { replace: true, viewTransition: true });
   }
 
-  if (session && !profile && !signupPending) {
+  if (session && !profile) {
     return (
       <main className="verification-page auth-bg-pixel">
         <section className="verification-wrapper">
